@@ -347,10 +347,7 @@ C 0xB803 se pinta en (0x68, 0x40)
 C 0xB812 y se cobra: carry si no llegaba
 C 0xB828 se sale del interior (p01:72B8)
 C 0xB836 el texto A: la caja del texto y el rotulo 0x16 delante
-C 0xB843 el laberinto: los marcos de caracteres en blanco de alrededor
 C 0xB867 y ocho trozos mas (0xB882): [x][y][x][y]
-C 0xB8A2 14 caracteres en blanco seguidos, hacia abajo
-C 0xB8B3 16 hacia la derecha
 C 0xB8C3 el laberinto, un cuadro: 0xCDC5 = 1 si hay que repintar
 C 0xB8C8 arriba: un paso adelante
 C 0xB8D0 izquierda: gira a la izquierda
@@ -426,6 +423,9 @@ C 0xBEBB ... el 3, la vida maxima a 0x20...
 C 0xBEBE ... el 4, 2000 ryo...
 C 0xBEC1 ... el 5, continuar
 C 0xBEDD cambiar la opcion del menu del titulo 6 o 7 veces (p00:5EB6) pone el bit 6 de 0xEF80
+C 0xB8A2 el caracter de HL, 14 veces hacia abajo
+C 0xB8B3 el caracter de HL, 16 veces hacia la derecha
+C 0xB843 el laberinto: el marco de alrededor, con los caracteres de la pagina 1
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
@@ -819,6 +819,7 @@ C 0xAF84 de_mas_a: DE += A
 C 0xAF97 guarda la x de la figura
 C 0xAFA2 de_mas_a: DE += A
 C 0xAFB1 pinta_bcd: pinta cifras en BCD
+C 0xAFBA copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xAFC2 de_mas_a: DE += A
 C 0xB02A apunta a las 10 cosas del marcador
 C 0xB03A apunta a las 10 cosas del marcador
@@ -986,8 +987,11 @@ C 0xB82D guarda el lado al que mira el jugador
 C 0xB830 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xB83C rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB840 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
+C 0xB878 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB87F iconos_del_laberinto: los iconos de lo cogido en el laberinto
+C 0xB8A6 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB8AD de_mas_a: DE += A
+C 0xB8B7 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB8E2 mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
 C 0xB8FF hl_mas_a: HL += A
 C 0xB94F lado_izquierdo: las paredes del lado izquierdo de la vista
@@ -1016,9 +1020,11 @@ C 0xBB12 pinta_el_mapa: el laberinto en piezas de 8 x 8, centrado
 C 0xBB15 donde_se_esta: la marca del jugador en el mapa
 C 0xBB18 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xBB7F de_mas_a: DE += A
+C 0xBB89 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xBB91 hl_mas_de: HL += DE
 C 0xBB9B de_mas_a: DE += A
 C 0xBBA2 hl_mas_de: HL += DE
+C 0xBBCA copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xBBF8 de_mas_a: DE += A
 C 0xBC31 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xBC34 pinta_el_laberinto: la vista del laberinto y el marcador

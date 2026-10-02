@@ -12,6 +12,98 @@ D 0x6868 0x6869 ff_de_mas_6868  un segundo 0xFF detras del que acaba el efecto d
 D 0x6B14 0x6B15 ff_de_mas_6B14  un segundo 0xFF detras del que acaba la partitura de 0x6B13; no lo lee nadie (1 byte)
 D 0x6B28 0x6B29 ff_de_mas_6B28  un segundo 0xFF detras del que acaba la partitura de 0x6B27; no lo lee nadie (1 byte)
 D 0x6B81 0x6B82 ff_de_mas_6B81  un segundo 0xFF detras del que acaba la musica de la pausa (0x6B74, p00:5182); no lo lee nadie (1 byte)
+C 0x6000 el mezclador del PSG (registro 7), de su copia
+C 0x6009 en la pausa, solo la musica de la pausa (0xC018)
+C 0x6010 el fundido (0xC0A9): cada 0x3A cuadros...
+C 0x601A ... un punto de volumen menos (0xC0AA)...
+C 0x6021 ... y a -16, todo callado
+C 0x603E los tres canales y el efecto: B = el canal, 0xC09C el del PSG
+C 0x6058 el efecto suena por el canal C del PSG
+C 0x605F 0xC09C = el canal del PSG, 0xC09D = la ficha (0-3); salta al manejador
+C 0x6067 el canal se acabo: el manejador pasa a un ret...
+C 0x606A ... y si era el efecto, 0xC09E = 0 (ninguno)
+C 0x6085 y su volumen a 0
+C 0x608F el tono DE en los registros 2 * canal y 2 * canal + 1
+C 0x609B el volumen E en el registro 8 + canal
+C 0x60A3 el mezclador del canal, con una de cuatro mascaras (0x60D5-0x60EC): tono, ruido, los dos o nada
+C 0x60C5 AND y OR con la pareja del canal
+C 0x60ED la musica de la pausa, con la ficha de 0xC082
+C 0x60F4 el canal A de la musica, ficha 0xC01A
+C 0x60FB el B, 0xC034
+C 0x6102 el C, 0xC04E
+C 0x6106 con un efecto sonando, el canal C de la musica se calla (bit 5)
+C 0x6119 con 0xC0B0 (las musicas de las zonas con prisas): cada 5 cuadros un paso de mas, mas deprisa
+C 0x6134 la nota sigue: cuando acaba, la siguiente
+C 0x613A en un canal de tono...
+C 0x6141 ... el vibrato, si lo lleva
+C 0x6148 la caida del volumen: al llegar a (ix+0x0B) o pasado (ix+0x06)...
+C 0x6155 ... un punto menos, hasta 0
+C 0x6165 el vibrato: espera 10 pasos...
+C 0x617B ... y luego, cada (ix+0x19 / 16) pasos, el tono sube o baja (ix+0x19 mod 16)
+C 0x61BE el tono + 1 si el bit 6 lo pide
+C 0x61DA un canal de efecto: su cuadro, y al acabar, callado
+C 0x61F1 la partitura: el byte siguiente
+C 0x61FA 0xD0 o mas: una orden
+C 0x6205 0xC0-0xCF: otra cosa (p10:631B)
+C 0x620A una nota: el nibble de abajo + 1, la duracion en pasos de (ix+3)
+C 0x6211 sin vibrato aun
+C 0x621C la duracion = (n + 1) * (ix+3) cuadros
+C 0x6222 el canal C de la musica vuelve si ya no hay efecto
+C 0x6235 en un canal de tono:
+C 0x623C cuando empieza a bajar el volumen: la duracion - (ix+5)
+C 0x624A el nibble de arriba: la nota (tabla de 0x6303)...
+C 0x625B ... bajada (ix+7) octavas
+C 0x627B el volumen: (ix+4) + el del fundido, no menos de 0
+C 0x628C y el mezclador con tono
+C 0x628F en un canal de ruido, segun su clase (ix+8)
+C 0x62B2 las clases 8 en adelante, la envolvente de 0x8121
+C 0x62C7 el nibble de arriba de la nota elige la envolvente de la clase...
+C 0x62D2 ... (ix+0x0C, 0x0D), que lee p10:6454 cuadro a cuadro
+C 0x62DB y empieza: el bit 7 a cero, la primera ya
+C 0x62E5 clase 1, 0x806B
+C 0x62EB clase 2, 0x8085
+C 0x62F1 clase 3, 0x809F
+C 0x62F7 clase 4, 0x80B9
+C 0x62FD clase 5, 0x80D3
+C 0x631B 0xC0-0xCF: un silencio de (n + 1) pasos
+C 0x6334 volumen 0
+C 0x6341 las ordenes: 0xD0-0xDF el paso (ix+3) = n
+C 0x6348 0xE0-0xEF, otras (p10:63AA)
+C 0x634D 0xFF: el canal se acaba
+C 0x6355 0xFE [veces][direccion]: repetir desde la direccion, (ix+0x10) cuenta las veces
+C 0x6371 hechas todas, sigue
+C 0x637A 0xF0-0xFD: el volumen (n + 2; 0 con 0xC0B2) y un byte [caida][duracion]
+C 0x6393 cuando empieza a caer (ix+5) y cada cuanto (ix+6)
+C 0x63A1 0xDn: el paso
+C 0x63AA 0xE0-0xE5: la octava (6 - n)
+C 0x63B2 0xE6: 0xC0AC = 1
+C 0x63B5 0xE7: el tono + 1 (bit 6)
+C 0x63BA 0xEA [direccion]: salto
+C 0x63BF 0xEB: 0xC0AC = 0
+C 0x63C4 0xED [direccion]: subrutina (la vuelta en (ix+0x12))
+C 0x63C9 0xEE: vuelta de la subrutina
+C 0x63CE 0xE8 [clase]: canal de ruido, con la clase (ix+8)
+C 0x63D7 0xEC [vibrato]: vibrato (ix+0x19)
+C 0x63EF 0xE9: canal de tono
+C 0x6434 el canal acabado: fuera su bit de 0xC0AB
+C 0x6449 el efecto de sonido (ficha 0xC068), un cuadro; al acabar, callado
+C 0x6454 un cuadro de envolvente: cada (ix+0x0F) cuadros, el paso siguiente
+C 0x6466 0xFF acaba (carry)
+C 0x646E 0xFE: repetir
+C 0x6473 0x2n: el mezclador y la duracion
+C 0x647A 0x1n: el ruido (registro 6 = n * 2) y el byte siguiente
+C 0x648E el nibble de arriba, el volumen
+C 0x6493 con el bit 4, la envolvente del PSG (registro 13)
+C 0x64A8 con 0xC0B2, callado
+C 0x64B2 en la musica, menos el fundido
+C 0x64C6 el nibble de abajo y el byte siguiente, el tono
+C 0x64D5 0xFE [veces][direccion]: repetir (ix+0x11)
+C 0x64F5 0x2n: bits 0-1, el mezclador (tono, ruido, los dos o nada)
+C 0x6519 el bit 3 pasa a ser el 4: el volumen por envolvente
+C 0x6524 la duracion de cada paso (ix+0x0E y 0x0F)
+C 0x652C 0x28 o mas: el periodo de la envolvente del PSG (registros 12 y 11)
+C 0x654E NC: sigue sonando
+C 0x6550 carry: se acabo
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6552 0x6592 efectos_de_sonido  32 punteros, los de los efectos 0x01-0x20 (p00:50DF suma el doble del numero a 0x6550: la palabra del 0 serian los bytes 37 C9 de `scf / ret` de p10:6550, y no se lee porque p00:5009 para el sonido con el 0): la lista de cuadros del canal de efectos que p00:50E7 deja en 0xC074; lo leen p00:50DF (64 bytes)
@@ -36,32 +128,53 @@ F 0x6B82 16
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
 L 0x6000 sonido_del_cuadro un cuadro de sonido: musica y efectos
+L 0x605F al_manejador 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 L 0x6067 canal_en_reposo el canal que no suena
 L 0x608F pon_el_tono escribe el tono del canal en el PSG
 L 0x609B pon_el_volumen escribe el volumen del canal en el PSG
+L 0x60A3 mezclador_nada el canal, ni tono ni ruido
+L 0x60AA mezclador_ruido el canal, con ruido
+L 0x60B1 mezclador_tono_y_ruido el canal, con tono y ruido
+L 0x60B8 mezclador_tono el canal, con tono
+L 0x60ED musica_de_la_pausa la ficha 0xC082
+L 0x60F4 canal_a la ficha 0xC01A
+L 0x60FB canal_b la ficha 0xC034
+L 0x6102 canal_c la ficha 0xC04E
+L 0x6106 un_canal un cuadro del canal de la ficha IX
+L 0x6165 vibrato el vibrato del canal
 L 0x61F1 lee_la_partitura lee la nota siguiente de la partitura
+L 0x631B silencio una pausa de la partitura
+L 0x6341 orden_de_la_partitura las ordenes 0xD0-0xFF
+L 0x6449 el_efecto un cuadro del efecto (ficha 0xC068)
 L 0x6454 cuadro_del_efecto un cuadro del efecto de sonido
-C 0x6000 lee la copia del registro 7 del PSG (el mezclador)
 C 0x6029 guarda el manejador del canal A del sonido
 C 0x602C guarda el manejador del canal B del sonido
 C 0x602F guarda el manejador del canal C del sonido
 C 0x6033 guarda los canales que suenan
 C 0x6040 lee el manejador del canal A del sonido
+C 0x6043 al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 C 0x6049 lee el manejador del canal B del sonido
+C 0x604C al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 C 0x6052 lee el manejador del canal C del sonido
+C 0x6055 al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 C 0x605C lee el manejador del efecto de sonido
 C 0x6077 apunta a el manejador del canal A del sonido
 C 0x6087 pon_el_volumen: escribe el volumen del canal en el PSG
 C 0x608B lee el manejador del segundo efecto
-C 0x60C5 lee la copia del registro 7 del PSG (el mezclador)
 C 0x60CB guarda la copia del registro 7 del PSG (el mezclador)
+C 0x60F1 un_canal: un cuadro del canal de la ficha IX
+C 0x60F8 un_canal: un cuadro del canal de la ficha IX
+C 0x60FF un_canal: un cuadro del canal de la ficha IX
 C 0x6131 lee_la_partitura: lee la nota siguiente de la partitura
 C 0x6137 lee_la_partitura: lee la nota siguiente de la partitura
+C 0x6145 vibrato: el vibrato del canal
 C 0x6162 pon_el_volumen: escribe el volumen del canal en el PSG
 C 0x61B6 pon_el_tono: escribe el tono del canal en el PSG
 C 0x61D7 pon_el_tono: escribe el tono del canal en el PSG
 C 0x61E4 cuadro_del_efecto: un cuadro del efecto de sonido
 C 0x61EE pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x61FC orden_de_la_partitura: las ordenes 0xD0-0xFF
+C 0x6207 silencio: una pausa de la partitura
 C 0x6278 pon_el_tono: escribe el tono del canal en el PSG
 C 0x6289 pon_el_volumen: escribe el volumen del canal en el PSG
 C 0x633E pon_el_volumen: escribe el volumen del canal en el PSG
@@ -72,5 +185,9 @@ C 0x644D cuadro_del_efecto: un cuadro del efecto de sonido
 C 0x6451 canal_en_reposo: el canal que no suena
 C 0x64C3 pon_el_volumen: escribe el volumen del canal en el PSG
 C 0x64D2 pon_el_tono: escribe el tono del canal en el PSG
+C 0x64FF mezclador_nada: el canal, ni tono ni ruido
+C 0x6505 mezclador_tono: el canal, con tono
+C 0x6510 mezclador_tono_y_ruido: el canal, con tono y ruido
+C 0x6516 mezclador_ruido: el canal, con ruido
 C 0x6521 pon_el_volumen: escribe el volumen del canal en el PSG
 # --- fin de las anotaciones de anota.py ---

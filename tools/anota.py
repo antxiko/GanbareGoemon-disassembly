@@ -147,6 +147,7 @@ RUTINAS = {
     (0, 0x4EB9): ("pinta_icono", "pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra"),
     (0, 0x4ED7): ("borra_icono", "pinta en blanco los cuatro caracteres de 16x16 desde DE"),
     (0, 0x4EEC): ("caracter_en_blanco", "DE += HL y pinta alli el caracter en blanco"),
+    (0, 0x4EF1): ("copia_caracter", "el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)"),
     (0, 0x4F26): ("marca_el_caracter", "pone la marca de 0xCD2A en el caracter (D, E) del mapa de 0xD800"),
     (0, 0x4F47): ("pinta_pasadizo", "pinta el pasadizo A con la pieza de (0x00, 0x80): 9 filas de bits de 0xAB18 (banco 9)"),
     (0, 0x4F94): ("ocho_piezas", "pinta la pieza de BC donde haya un bit a uno en A, de 16 en 16 puntos"),
@@ -466,6 +467,20 @@ RUTINAS = {
     (10, 0x608F): ("pon_el_tono", "escribe el tono del canal en el PSG"),
     (10, 0x609B): ("pon_el_volumen", "escribe el volumen del canal en el PSG"),
     (10, 0x61F1): ("lee_la_partitura", "lee la nota siguiente de la partitura"),
+    (10, 0x605F): ("al_manejador", "0xC09C el canal del PSG, 0xC09D la ficha; salta a HL"),
+    (10, 0x60A3): ("mezclador_nada", "el canal, ni tono ni ruido"),
+    (10, 0x60AA): ("mezclador_ruido", "el canal, con ruido"),
+    (10, 0x60B1): ("mezclador_tono_y_ruido", "el canal, con tono y ruido"),
+    (10, 0x60B8): ("mezclador_tono", "el canal, con tono"),
+    (10, 0x60ED): ("musica_de_la_pausa", "la ficha 0xC082"),
+    (10, 0x60F4): ("canal_a", "la ficha 0xC01A"),
+    (10, 0x60FB): ("canal_b", "la ficha 0xC034"),
+    (10, 0x6102): ("canal_c", "la ficha 0xC04E"),
+    (10, 0x6106): ("un_canal", "un cuadro del canal de la ficha IX"),
+    (10, 0x6165): ("vibrato", "el vibrato del canal"),
+    (10, 0x631B): ("silencio", "una pausa de la partitura"),
+    (10, 0x6341): ("orden_de_la_partitura", "las ordenes 0xD0-0xFF"),
+    (10, 0x6449): ("el_efecto", "un cuadro del efecto (ficha 0xC068)"),
     (10, 0x6454): ("cuadro_del_efecto", "un cuadro del efecto de sonido"),
 }
 
@@ -646,6 +661,8 @@ def comentario(b, filas, k, fichas):
         for (bb, aa), (nom, que) in RUTINAS.items():
             if bb == 10 and b != bb:
                 continue            # el sonido solo esta en 0x6000 cuando lo llama la interrupcion
+            if b == 10 and bb != 10 and bb != 0:
+                continue            # y en el banco 10 no hay otro en 0x6000-0x7FFF
             if aa == dest and (bb == b or ORG[bb] == 0x4000 or not (ORG[b] <= dest < ORG[b] + 0x2000)):
                 if bb == 0 or ORG[bb] <= dest < ORG[bb] + 0x2000:
                     return "%s: %s" % (nom, que)

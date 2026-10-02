@@ -2156,7 +2156,7 @@ L_AF7D:
 	call 04420h		;afb1   ; pinta_bcd: pinta cifras en BCD
 	ld de,08087h		;afb4
 	ld hl,05050h		;afb7
-	call 04ef1h		;afba
+	call 04ef1h		;afba   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	ret			;afbd
 L_AFBE:
 	ld a,b			;afbe   ; el valor segun las veces que se ha comprado: 0 o 1, la mitad...
@@ -3394,7 +3394,7 @@ L_B836:
 	pop af			;b83f
 	jp 04280h		;b840   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 L_B843:
-	ld de,04030h		;b843   ; el laberinto: los marcos de caracteres en blanco de alrededor
+	ld de,04030h		;b843   ; el laberinto: el marco de alrededor, con los caracteres de la pagina 1
 	ld hl,0a008h		;b846
 	call L_B8A2		;b849
 	ld de,0c830h		;b84c
@@ -3421,7 +3421,7 @@ L_B86C:
 	push hl			;b875
 	ld l,c			;b876
 	ld h,b			;b877
-	call 04ef1h		;b878
+	call 04ef1h		;b878   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	pop hl			;b87b
 	pop bc			;b87c
 	djnz L_B86C		;b87d
@@ -3447,11 +3447,11 @@ DATA_ocho_B882:
 
 
 L_B8A2:
-	ld b,00eh		;b8a2   ; 14 caracteres en blanco seguidos, hacia abajo
+	ld b,00eh		;b8a2   ; el caracter de HL, 14 veces hacia abajo
 L_B8A4:
 	push bc			;b8a4
 	push hl			;b8a5
-	call 04ef1h		;b8a6
+	call 04ef1h		;b8a6   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	pop hl			;b8a9
 	pop bc			;b8aa
 	ld a,008h		;b8ab
@@ -3459,11 +3459,11 @@ L_B8A4:
 	djnz L_B8A4		;b8b0
 	ret			;b8b2
 L_B8B3:
-	ld b,010h		;b8b3   ; 16 hacia la derecha
+	ld b,010h		;b8b3   ; el caracter de HL, 16 veces hacia la derecha
 L_B8B5:
 	push bc			;b8b5
 	push hl			;b8b6
-	call 04ef1h		;b8b7
+	call 04ef1h		;b8b7   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	pop hl			;b8ba
 	pop bc			;b8bb
 	ld a,008h		;b8bc
@@ -3910,7 +3910,7 @@ L_BB86:
 	pop hl			;bb86
 	ex de,hl			;bb87
 	push bc			;bb88
-	call 04ef1h		;bb89
+	call 04ef1h		;bb89   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	pop bc			;bb8c
 	ex de,hl			;bb8d
 L_BB8E:
@@ -3948,7 +3948,7 @@ donde_se_esta:		; la marca del jugador en el mapa
 	ld h,a			;bbc5
 	ex de,hl			;bbc6
 	ld hl,06098h		;bbc7
-	jp 04ef1h		;bbca
+	jp 04ef1h		;bbca   ; copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 L_BBCD:
 	ld a,(0ef80h)		;bbcd   ; la salida se ve en el mapa solo con el bit 6 de 0xEF80 y la cosa 0x0A...
 	and 040h		;bbd0

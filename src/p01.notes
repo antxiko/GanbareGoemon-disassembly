@@ -1138,6 +1138,7 @@ C 0x6D3D baja_0xc4a7: 0xC4A7 cuenta hasta 0
 C 0x6D40 direccion_que_vale: 0xC485 = la direccion apretada
 C 0x6D43 prisas: por debajo de 50 segundos, su musica
 C 0x6D49 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x6D64 entrada_del_laberinto: con 0xCDB0, arriba en (0x30-0x50, 0x40) se entra en el laberinto
 C 0x6D6C sin_vida_o_tiempo: sin vida (y sin la cosa 7) o sin tiempo: estado 3
 C 0x6D6F lee el estado del jugador
 C 0x6D75 salidas_especiales: las puertas de 0xC28A: la de la zona (3 cosas 9) y la de la fase

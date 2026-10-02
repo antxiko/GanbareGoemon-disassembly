@@ -1937,7 +1937,7 @@ jugador_en_el_suelo:		; estado 0: andar, saltar, el golpe, los hoyos
 	ret nz			;6d5f
 	ld a,(0cdb0h)		;6d60
 	and a			;6d63
-	call nz,entrada_del_laberinto		;6d64
+	call nz,entrada_del_laberinto		;6d64   ; entrada_del_laberinto: con 0xCDB0, arriba en (0x30-0x50, 0x40) se entra en el laberinto
 	call en_un_hoyo		;6d67   ; con carry de p01:7763 (los dos caracteres bajo los pies), a morir (estado 2)
 	jr c,cae_al_hoyo		;6d6a
 	call sin_vida_o_tiempo		;6d6c   ; sin_vida_o_tiempo: sin vida (y sin la cosa 7) o sin tiempo: estado 3

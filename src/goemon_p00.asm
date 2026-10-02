@@ -2146,7 +2146,7 @@ sprites_de_0xF8C0:		; patrones de sprite de 0x9369 (banco 8) a 0xF8C0 y de 0x87D
 dibujos_de_siempre:		; los dibujos de la pagina 1 que estan en todas las zonas (bancos 7 y 8)
 	call bancos_7_8_9		;4da4   ; bancos_7_8_9: pone los bancos 7, 8 y 9
 	ld hl,06f60h		;4da7   ; 21 dibujos de 16x16 del banco 7 a la pagina 1, en y 0x80
-	ld de,0c000h		;4daa   ; apunta a el ESTADO del juego
+	ld de,0c000h		;4daa   ; DE = 0xC000 de la VRAM: la pagina 1, y 0x80
 	ld b,015h		;4dad
 	call sube_dibujos_de_16		;4daf   ; sube_dibujos_de_16: B dibujos de 16x16 seguidos a la VRAM
 	ld hl,079e0h		;4db2   ; 4 mas, en (0x60, 0x90)
@@ -2285,7 +2285,7 @@ caracter_en_blanco:		; DE += HL y pinta alli el caracter en blanco
 	add hl,de			;4eec
 	ex de,hl			;4eed
 	ld hl,00000h		;4eee   ; el caracter (0, 0) de la pagina 1, en blanco
-L_4EF1:
+copia_caracter:		; el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 	push de			;4ef1
 	ld bc,00808h		;4ef2
 	ld a,040h		;4ef5   ; de la pagina 1 a la 0, IMP
@@ -3546,11 +3546,11 @@ entra_en_el_laberinto:		; pasa al laberinto de la zona, en primera persona
 	ld (0a000h),a		;5974   ; el mapper: pone en 0xA000 el banco de A
 	ld (0f0f3h),a		;5977   ; guarda la copia del banco de 0xA000
 	ei			;597a
-	call monta_el_laberinto		;597b
+	call monta_el_laberinto		;597b   ; monta_el_laberinto: monta en 0xD800 el laberinto de la zona (tablas 0xA575 y 0xA86D, banco 9)
 	call bancos_1_2_3		;597e   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call apaga_la_pantalla		;5981   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call dibujos_del_laberinto		;5984
-	call pinta_el_laberinto		;5987
+	call dibujos_del_laberinto		;5984   ; dibujos_del_laberinto: los dibujos, la paleta y los sprites del laberinto
+	call pinta_el_laberinto		;5987   ; pinta_el_laberinto: la vista del laberinto y el marcador
 	jp enciende_la_pantalla		;598a   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 pinta_el_laberinto:		; la vista del laberinto y el marcador
 	call 0b936h		;598d
