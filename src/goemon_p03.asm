@@ -355,7 +355,7 @@ L_A2CF:
 	ld a,(0c00dh)		;a2cf
 	and 01fh		;a2d2
 	ld a,002h		;a2d4
-	call z,04fe4h		;a2d6   ; sonido: arranca la musica o el efecto A
+	call z,04fe4h		;a2d6   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_A31F		;a2d9
 	bit 0,(ix+071h)		;a2dc
 	jr nz,L_A2ED		;a2e0
@@ -1563,7 +1563,7 @@ L_AB8C:
 	ld a,004h		;aba1
 	call 089c2h		;aba3   ; dispara: crea el disparo A (tabla de 0x8B6B)
 	ld a,005h		;aba6
-	call 04fe4h		;aba8   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;aba8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld (ix+001h),000h		;abab   ; el paso en que va la figura = 0x00
 	jp L_AB2E		;abaf
 L_ABB2:
@@ -1826,7 +1826,7 @@ DATA_tabla_AD7E:
 
 
 L_AD84:
-	ld a,(0c006h)		;ad84
+	ld a,(0c006h)		;ad84   ; lee lo que se acaba de apretar (mando y cursores)
 	ld b,a			;ad87
 	and 010h		;ad88
 	jr nz,L_AD93		;ad8a
@@ -1954,7 +1954,7 @@ L_AE38:
 	xor a			;ae52
 	ld (hl),a			;ae53
 	ld a,015h		;ae54
-	call 04fe4h		;ae56   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;ae56   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	or a			;ae59
 	ret			;ae5a
 L_AE5B:
@@ -1982,7 +1982,7 @@ L_AE81:
 	inc hl			;ae8c
 	ld d,(hl)			;ae8d
 	ld a,0ffh		;ae8e
-	jp 04eb9h		;ae90   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	jp 04eb9h		;ae90   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_AE93:
 	ld a,064h		;ae93
 	ld (0c27ch),a		;ae95
@@ -2008,7 +2008,7 @@ L_AEB2:
 	pop bc			;aeb6
 	jr c,L_AED9		;aeb7
 	ld a,b			;aeb9
-	call 05884h		;aeba   ; suma_vida: suma vida al jugador
+	call 05884h		;aeba   ; suma_vida: suma A a la vida, hasta la maxima, y la pinta
 	call L_AE81		;aebd
 	call L_AEF9		;aec0
 	ret			;aec3
@@ -2018,7 +2018,7 @@ L_AEC4:
 	call L_AE81		;aec9
 	call L_AEF9		;aecc
 	ld de,00200h		;aecf
-	jp 05945h		;aed2
+	jp 05945h		;aed2   ; suma_tiempo: suma DE (BCD) al tiempo, hasta 5000
 L_AED5:
 	ld c,000h		;aed5
 	jr L_AEDB		;aed7
@@ -2096,7 +2096,7 @@ DATA_tabla_AF3C:
 
 
 L_AF42:
-	ld a,(0c006h)		;af42
+	ld a,(0c006h)		;af42   ; lee lo que se acaba de apretar (mando y cursores)
 	ld b,a			;af45
 	and 010h		;af46
 	jr nz,L_AF51		;af48
@@ -2326,7 +2326,7 @@ DATA_tabla_B0A5:
 
 
 L_B0AD:
-	ld a,(0c006h)		;b0ad
+	ld a,(0c006h)		;b0ad   ; lee lo que se acaba de apretar (mando y cursores)
 	ld b,a			;b0b0
 	and 010h		;b0b1
 	jr nz,L_B0BC		;b0b3
@@ -2553,15 +2553,15 @@ L_B213:
 	call L_B836		;b23c
 	call L_B25F		;b23f
 	ld a,019h		;b242
-	jp 04fe4h		;b244   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;b244   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_B247:
 	call 0701eh		;b247
-	call 0593ah		;b24a   ; pinta_el_dinero: pinta el dinero
+	call 0593ah		;b24a   ; pinta_el_dinero: pinta el dinero (4 cifras) en (0x70, 8)
 	ld a,009h		;b24d
 	call L_B836		;b24f
 	call L_B25F		;b252
 	ld a,018h		;b255
-	jp 04fe4h		;b257   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;b257   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_B25A:
 	ld (ix+001h),003h		;b25a   ; el paso en que va la figura = 0x03
 L_B25E:
@@ -2570,11 +2570,11 @@ L_B25F:
 	ld a,(0cd8eh)		;b25f
 	add a,020h		;b262
 	ld de,07040h		;b264
-	call 0491ch		;b267   ; letra: pinta una letra
+	call 0491ch		;b267   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 	ld a,(0cd8dh)		;b26a
 	add a,020h		;b26d
 	ld de,08040h		;b26f
-	call 0491ch		;b272   ; letra: pinta una letra
+	call 0491ch		;b272   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 	ld a,(0cd8dh)		;b275
 	ld b,a			;b278
 	ld a,(0cd8eh)		;b279
@@ -2593,7 +2593,7 @@ L_B289:
 	ret nz			;b28f
 	call 092adh		;b290
 	ld a,01bh		;b293
-	call 04fe4h		;b295   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b295   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	scf			;b298
 	ret			;b299
 L_B29A:
@@ -2659,7 +2659,7 @@ L_B2E7:
 	dec (ix+00bh)		;b2f5
 	jr z,L_B30C		;b2f8
 	ld a,00fh		;b2fa
-	call 04fe4h		;b2fc   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b2fc   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_B320		;b2ff
 	ret			;b302
 L_B303:
@@ -2703,7 +2703,7 @@ L_B332:
 L_B340:
 	ld a,b			;b340
 	ld (ix+025h),a		;b341
-	jp 054e6h		;b344   ; colores_de_la_figura: pinta los colores de los sprites de la figura
+	jp 054e6h		;b344   ; colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 L_B347:
 	ld de,0889ah		;b347
 	ld a,02ch		;b34a
@@ -2757,7 +2757,7 @@ L_B37E:
 	ld (ix+00bh),000h		;b398
 	ld (ix+075h),008h		;b39c
 	ld a,000h		;b3a0
-	call 04fe4h		;b3a2   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b3a2   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,001h		;b3a5
 	ld (0cd32h),a		;b3a7
 	ld (0cd91h),a		;b3aa
@@ -2796,7 +2796,7 @@ L_B3E9:
 	cp 008h		;b3fa
 	ret nz			;b3fc
 	call 045eeh		;b3fd   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call 045cbh		;b400
+	call 045cbh		;b400   ; borra_la_pagina: esconde los sprites y pinta del color 0 los 256 x 256 puntos
 	ld a,(0c002h)		;b403   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;b406
 	ld hl,090a0h		;b407
@@ -2807,7 +2807,7 @@ L_B3E9:
 L_B415:
 	ld de,08080h		;b415
 	ld a,001h		;b418
-	call 0476eh		;b41a   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;b41a   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	call 04cfch		;b41d   ; paleta_base: pone la paleta base
 	call 04d08h		;b420
 	ld a,005h		;b423
@@ -2908,7 +2908,7 @@ L_B4A7:
 	ld a,(ix+018h)		;b4be
 	cp 002h		;b4c1
 	ld a,017h		;b4c3
-	call z,04fe4h		;b4c5   ; sonido: arranca la musica o el efecto A
+	call z,04fe4h		;b4c5   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	dec (ix+018h)		;b4c8
 	ret nz			;b4cb
 	ld (ix+018h),004h		;b4cc
@@ -2923,11 +2923,11 @@ L_B4DF:
 	ret nz			;b4e2
 	call 045eeh		;b4e3   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	ld a,096h		;b4e6
-	call 04fe4h		;b4e8   ; sonido: arranca la musica o el efecto A
-	call 051edh		;b4eb   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
-	call 0534eh		;b4ee   ; pinta_la_pantalla: pinta la pantalla montada
+	call 04fe4h		;b4e8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+	call 051edh		;b4eb   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
+	call 0534eh		;b4ee   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	ld de,00020h		;b4f1
-	call 05884h		;b4f4   ; suma_vida: suma vida al jugador
+	call 05884h		;b4f4   ; suma_vida: suma A a la vida, hasta la maxima, y la pinta
 	call 043e2h		;b4f7   ; pinta_el_marcador: pinta el marcador entero
 	call 04cfch		;b4fa   ; paleta_base: pone la paleta base
 	call 04d08h		;b4fd
@@ -2946,7 +2946,7 @@ L_B508:
 	ld a,(0cd34h)		;b51c
 	ld (0c494h),a		;b51f   ; guarda la y del jugador
 	ld a,081h		;b522
-	call 04fe4h		;b524   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b524   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,00fh		;b527
 	call L_AEFC		;b529
 	ld a,003h		;b52c
@@ -2972,9 +2972,9 @@ L_B539:
 	push de			;b53c
 	rst 20h			;b53d
 	pop de			;b53e
-	jp nc,05958h		;b53f   ; resta_dinero: resta ryo al dinero
+	jp nc,05958h		;b53f   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 	ld a,01bh		;b542
-	call 04fe4h		;b544   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b544   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	scf			;b547
 	ret			;b548
 L_B549:
@@ -3035,11 +3035,11 @@ L_B58E:
 	jr c,L_B5BC		;b5a6
 	ld de,03020h		;b5a8
 	ld a,00eh		;b5ab
-	call 04eb9h		;b5ad   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	call 04eb9h		;b5ad   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 	ld a,001h		;b5b0
 	ld (0cdb0h),a		;b5b2
 	ld a,091h		;b5b5
-	call 04fe4h		;b5b7   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b5b7   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jr L_B5C0		;b5ba
 L_B5BC:
 	ld a,06eh		;b5bc
@@ -3222,7 +3222,7 @@ L_B70A:
 	xor a			;b70a
 	ld (hl),a			;b70b
 	ld de,(0c265h)		;b70c   ; lee el DINERO (ryo, BCD)
-	call 05958h		;b710   ; resta_dinero: resta ryo al dinero
+	call 05958h		;b710   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 	jp L_B7AB		;b713
 
 ; ----------------------------------------------------------------------
@@ -3334,7 +3334,7 @@ L_B7B4:
 	ld a,003h		;b7c4
 	ld (0c490h),a		;b7c6   ; guarda el estado del jugador
 	ld a,08bh		;b7c9
-	call 04fe4h		;b7cb   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;b7cb   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call 067dah		;b7ce   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	jr L_B759		;b7d1
 L_B7D3:
@@ -3373,7 +3373,7 @@ L_B803:
 	rst 20h			;b819
 	push af			;b81a
 	ld de,(0ee80h)		;b81b
-	call 05958h		;b81f   ; resta_dinero: resta ryo al dinero
+	call 05958h		;b81f   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 	pop af			;b822
 	ret			;b823
 L_B824:
@@ -3474,7 +3474,7 @@ L_B8B5:
 L_B8C3:
 	ld a,001h		;b8c3
 	ld (0cdc5h),a		;b8c5
-	ld a,(0c006h)		;b8c8
+	ld a,(0c006h)		;b8c8   ; lee lo que se acaba de apretar (mando y cursores)
 	ld b,a			;b8cb
 	and 001h		;b8cc
 	jr nz,L_B8EA		;b8ce
@@ -3562,7 +3562,7 @@ L_B955:
 	xor a			;b955
 	ld (0cdcch),a		;b956
 	ld hl,(0cdc6h)		;b959
-	call 05a6ah		;b95c
+	call 05a6ah		;b95c   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b95f
 	cp 006h		;b960
 	call z,L_B9AB		;b962
@@ -3577,7 +3577,7 @@ L_B975:
 	push hl			;b978
 	exx			;b979
 	pop hl			;b97a
-	call 05a6ah		;b97b
+	call 05a6ah		;b97b   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b97e
 	exx			;b97f
 	cp 001h		;b980
@@ -3617,7 +3617,7 @@ L_B9AB:
 	call 0447ch		;b9b5   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;b9b8
 	call hl_mas_de		;b9bb   ; hl_mas_de: HL += DE
-	call 05a6ah		;b9be
+	call 05a6ah		;b9be   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b9c1
 	cp 001h		;b9c2
 	ret z			;b9c4
@@ -3741,7 +3741,7 @@ L_BA8F:
 	push bc			;ba8f
 	push de			;ba90
 	push hl			;ba91
-	call 05a6ah		;ba92
+	call 05a6ah		;ba92   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;ba95
 	pop hl			;ba96
 	pop de			;ba97
@@ -3832,7 +3832,7 @@ L_BAF1:
 	inc a			;bafa
 	ld (0cdc8h),a		;bafb
 	ld a,01ah		;bafe
-	call 04fe4h		;bb00   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;bb00   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call 045eeh		;bb03   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call L_BC3A		;bb06
 	call 05856h		;bb09   ; pinta_las_cosas: pinta las cosas del marcador
@@ -4010,17 +4010,17 @@ DATA_seis_BC1B:
 
 
 L_BC27:
-	ld a,(0c006h)		;bc27
+	ld a,(0c006h)		;bc27   ; lee lo que se acaba de apretar (mando y cursores)
 	and 010h		;bc2a
 	ret z			;bc2c
 	xor a			;bc2d
 	ld (0cdc8h),a		;bc2e
 	call 045eeh		;bc31   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call 0598dh		;bc34
+	call 0598dh		;bc34   ; pinta_lo_del_plano: lo que va encima del plano y el marcador
 	jp 045e1h		;bc37   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 L_BC3A:
 	ld bc,000d4h		;bc3a
-	call 045fbh		;bc3d
+	call 045fbh		;bc3d   ; pinta_de_color_0: rellena del color 0 B x C puntos desde (0, 0) y pone el scroll a 0
 	jp 0460ah		;bc40   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 L_BC43:
 	ld a,(0c27ah)		;bc43
@@ -4042,7 +4042,7 @@ L_BC51:
 	ret			;bc5b
 L_BC5C:
 	ld hl,(0cdc6h)		;bc5c
-	call 05a6ah		;bc5f
+	call 05a6ah		;bc5f   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;bc62
 	or a			;bc63
 	ret z			;bc64
@@ -4088,19 +4088,19 @@ L_BC89:
 	add a,040h		;bc8f
 	ld e,a			;bc91
 	ld a,010h		;bc92
-	jp 04eb9h		;bc94   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	jp 04eb9h		;bc94   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_BC97:
 	ld hl,0c279h		;bc97
 	inc (hl)			;bc9a
 	ld a,009h		;bc9b
-	jp 057fah		;bc9d   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;bc9d   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_BCA0:
 	ld a,001h		;bca0
 	ld (0c27ah),a		;bca2
 L_BCA5:
 	ld a,011h		;bca5
 	ld de,02830h		;bca7
-	jp 04eb9h		;bcaa   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	jp 04eb9h		;bcaa   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_BCAD:
 	ld hl,0c260h		;bcad   ; apunta a las vidas
 	ld a,(hl)			;bcb0
@@ -4121,7 +4121,7 @@ L_BCBE:
 	ld a,00fh		;bcc9
 	ld (0cdceh),a		;bccb
 	ld a,080h		;bcce
-	jp 04fe4h		;bcd0   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;bcd0   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_BCD3:
 	ld de,0c290h		;bcd3
 	ld b,00bh		;bcd6
@@ -4145,7 +4145,7 @@ L_BCE3:
 	ex de,hl			;bce9
 	push hl			;bcea
 	ld a,012h		;bceb
-	call 04fe4h		;bced   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;bced   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	pop hl			;bcf0
 	ret			;bcf1
 L_BCF2:
@@ -4194,10 +4194,10 @@ L_BD12:
 	inc (hl)			;bd2d
 	ld de,07848h		;bd2e
 	ld a,013h		;bd31
-	call 04eb9h		;bd33   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	call 04eb9h		;bd33   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 	ld de,08848h		;bd36
 	ld a,014h		;bd39
-	call 04eb9h		;bd3b   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	call 04eb9h		;bd3b   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 	ld a,(0c28eh)		;bd3e
 	or a			;bd41
 	ret z			;bd42
@@ -4219,7 +4219,7 @@ L_BD57:
 	add hl,de			;bd61
 	ld bc,(0cd0ah)		;bd62
 	xor a			;bd66
-	call 0476eh		;bd67   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;bd67   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	ld a,(0cd0dh)		;bd6a
 	ld b,a			;bd6d
 	ld de,(0cd08h)		;bd6e
@@ -4246,7 +4246,7 @@ L_BD7F:
 	ld a,(0cd0ah)		;bd90
 	ld c,a			;bd93
 	xor a			;bd94
-	call 0476eh		;bd95   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;bd95   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	pop hl			;bd98
 	pop bc			;bd99
 	djnz L_BD7F		;bd9a
@@ -4261,7 +4261,7 @@ L_BD7F:
 	ld c,a			;bdac
 	xor a			;bdad
 	ld d,a			;bdae
-	jp 04732h		;bdaf   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	jp 04732h		;bdaf   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 L_BDB2:
 	ld hl,0cdceh		;bdb2
 	dec (hl)			;bdb5
@@ -4278,7 +4278,7 @@ L_BDB2:
 	ld a,001h		;bdcb
 	ld (0c28eh),a		;bdcd
 	ld a,093h		;bdd0
-	jp 04fe4h		;bdd2   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;bdd2   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_BDD5:
 	ld hl,0cdceh		;bdd5
 	dec (hl)			;bdd8

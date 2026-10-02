@@ -92,13 +92,13 @@ C 0x806E intercambia: intercambia los bytes de (HL) y (DE)
 C 0x807E guarda la ZONA (0-6)
 C 0x8092 guarda las vidas
 C 0x80C6 hl_mas_a: HL += A
-C 0x80CD letra: pinta una letra
-C 0x80D3 letra: pinta una letra
-C 0x80EA sube_colores_de_sprite: sube los colores de los sprites
-C 0x810F hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x80CD letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
+C 0x80D3 letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
+C 0x80EA sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
+C 0x810F hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x8125 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-C 0x8130 marco: pinta un marco
-C 0x813B marco: pinta un marco
+C 0x8130 marco: pinta un marco: (H, L), D de ancho, E de alto, color C
+C 0x813B marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 C 0x8145 lee la FASE (0-6)
 C 0x814E de_mas_a: DE += A
 C 0x8192 lee la ZONA (0-6)
@@ -110,13 +110,13 @@ C 0x81FA lee la FASE (0-6)
 C 0x8205 de_mas_a: DE += A
 C 0x8221 apunta a el manejador del canal A del sonido
 C 0x8227 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x8238 hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x8238 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x823B lee el contador de cuadros
-C 0x8252 sube_colores_de_sprite: sube los colores de los sprites
+C 0x8252 sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x8255 lee el estado del jugador
 C 0x825B lee si esta en un pasadizo
 C 0x8260 lee la pantalla especial
-C 0x8278 figuras_de_la_casilla: crea las figuras de la casilla
+C 0x8278 figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
 C 0x8291 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8358 hl_mas_a: HL += A
 C 0x835C guarda cuantos sprites lleva la figura
@@ -126,21 +126,21 @@ C 0x839D lee cuantos sprites lleva la figura
 C 0x83AB hl_mas_a: HL += A
 C 0x83B5 hl_mas_a: HL += A
 C 0x8411 lee el tipo de la figura
-C 0x8417 colores_de_la_figura: pinta los colores de los sprites de la figura
+C 0x8417 colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0x8420 lee el tipo de la figura
 C 0x8424 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8485 lee cuantos sprites lleva la figura
 C 0x848A lee el tipo de la figura
 C 0x848D palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x84AA hl_mas_a: HL += A
-C 0x8585 figuras_de_la_casilla: crea las figuras de la casilla
+C 0x8585 figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
 C 0x85EB borra_la_figura: borra la figura
 C 0x85EE lee la x del jugador
 C 0x860B guarda la x de la figura
 C 0x860E lee la x del jugador
 C 0x8611 lee la x de la figura
-C 0x862A figuras_de_la_casilla: crea las figuras de la casilla
-C 0x867F hmmv: orden HMMV del V9938: rellena un rectangulo
+C 0x862A figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
+C 0x867F hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 C 0x869A lee el tipo de la figura
 C 0x86BC apunta a las 10 cosas del marcador
 C 0x86D1 lee la FASE (0-6)
@@ -194,10 +194,10 @@ C 0x8938 apunta a el contador de cuadros
 C 0x8948 guarda la pose de la figura
 C 0x8972 guarda la pose de la figura
 C 0x8978 lee el tipo de la figura
-C 0x897E colores_de_la_figura: pinta los colores de los sprites de la figura
+C 0x897E colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0x8981 lee el paso en que va la figura
 C 0x8990 compara con la y de la figura
-C 0x8996 sonido: arranca la musica o el efecto A
+C 0x8996 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x89A9 guarda la pose de la figura
 C 0x89BC guarda la pose de la figura
 C 0x89CB lee la y de la figura
@@ -208,24 +208,24 @@ C 0x8A29 hl_mas_a: HL += A
 C 0x8A5D lee el tipo de la figura
 C 0x8A63 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x8A82 lee el tipo de la figura
-C 0x8A8A colores_de_la_figura: pinta los colores de los sprites de la figura
+C 0x8A8A colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0x8A8D lee el tipo de la figura
 C 0x8A91 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8AA2 la pose de la figura = 0x3C
 C 0x8AAD pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8AB6 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0x8ABB sonido: arranca la musica o el efecto A
+C 0x8ABB sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8AC0 guarda la pose de la figura
 C 0x8AC8 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8ACC pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0x8AD1 sonido: arranca la musica o el efecto A
-C 0x8ADA sonido: arranca la musica o el efecto A
-C 0x8AE3 sonido: arranca la musica o el efecto A
+C 0x8AD1 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x8ADA sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x8AE3 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8AE8 guarda la pose de la figura
 C 0x8AEE pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8AFC niega_de: DE = -DE
 C 0x8AFF pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0x8B04 sonido: arranca la musica o el efecto A
+C 0x8B04 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8B09 lee la x de la figura
 C 0x8B16 borra_la_figura: borra la figura
 C 0x8B19 guarda la x de la figura
@@ -254,7 +254,7 @@ C 0x8D24 de_mas_a: DE += A
 C 0x8D28 guarda la pose de la figura
 C 0x8D32 lee el paso en que va la figura
 C 0x8D35 despacha: salta a la entrada A de la tabla que va detras del call
-C 0x8D50 suma_dinero: suma ryo al dinero
+C 0x8D50 suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 C 0x8D57 sube el paso en que va la figura
 C 0x8D5E lee la y de la figura
 C 0x8D66 guarda la y de la figura
@@ -284,11 +284,11 @@ C 0x8E45 compara con la y de la figura
 C 0x8E4F lee el paso en que va la figura
 C 0x8E56 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8E6C guarda el paso en que va la figura
-C 0x8E71 guarda la marca de 0xD800
-C 0x8E7B guarda la marca de 0xD800
-C 0x8E8A guarda la marca de 0xD800
-C 0x8E94 guarda la marca de 0xD800
-C 0x8E9E guarda la marca de 0xD800
+C 0x8E71 guarda la marca que se pone en 0xD800
+C 0x8E7B guarda la marca que se pone en 0xD800
+C 0x8E8A guarda la marca que se pone en 0xD800
+C 0x8E94 guarda la marca que se pone en 0xD800
+C 0x8E9E guarda la marca que se pone en 0xD800
 C 0x8EAE sube el paso en que va la figura
 C 0x8EB1 lee la y de la figura
 C 0x8EB7 lee la x de la figura
@@ -301,7 +301,7 @@ C 0x8EF9 lee las vidas
 C 0x8F03 guarda las vidas
 C 0x8F0C pinta_el_marcador: pinta el marcador entero
 C 0x8F0F borra_la_figura: borra la figura
-C 0x8F19 suma_vida: suma vida al jugador
+C 0x8F19 suma_vida: suma A a la vida, hasta la maxima, y la pinta
 C 0x8F22 borra_la_figura: borra la figura
 C 0x8F2A lee las 10 cosas del marcador
 C 0x8F34 guarda las 10 cosas del marcador
@@ -313,7 +313,7 @@ C 0x8F74 lee la y de la figura
 C 0x8FA6 lee el paso en que va la figura
 C 0x8FA9 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8FB9 sube el paso en que va la figura
-C 0x8FC8 sonido: arranca la musica o el efecto A
+C 0x8FC8 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8FD2 borra_la_figura: borra la figura
 C 0x8FDC lee el tipo de la figura
 C 0x8FEC lee si esta en un pasadizo
@@ -322,7 +322,7 @@ C 0x901D guarda cuantos sprites lleva la figura
 C 0x903F lee el tipo de la figura
 C 0x904A lee cuantos sprites lleva la figura
 C 0x904F lee el tipo de la figura
-C 0x9069 guarda la marca de 0xD800
+C 0x9069 guarda la marca que se pone en 0xD800
 C 0x90C3 el mapper: pone en 0xA000 el banco de A
 C 0x90C6 guarda la copia del banco de 0xA000
 C 0x90CE lee si esta en un pasadizo
@@ -331,26 +331,26 @@ C 0x90E1 lee la ZONA (0-6)
 C 0x90E5 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x90EB bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x90F0 lee la CASILLA de la zona
-C 0x9105 guarda la y de la pieza
-C 0x910D guarda la x de la pieza
+C 0x9105 guarda lo que se baja la pieza
+C 0x910D guarda lo que se corre la pieza
 C 0x911B bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x9124 lee la CASILLA de la zona
 C 0x9135 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
-C 0x914C guarda la marca de 0xD800
-C 0x914F pinta_bloque: pinta un bloque de 4x4 caracteres
+C 0x914C guarda la marca que se pone en 0xD800
+C 0x914F pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
 C 0x9158 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
-C 0x9168 pinta_bloque: pinta un bloque de 4x4 caracteres
+C 0x9168 pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
 C 0x917F de_mas_a: DE += A
-C 0x9185 guarda la marca de 0xD800
-C 0x91A9 guarda la y de la pieza
-C 0x91B0 guarda la x de la pieza
+C 0x9185 guarda la marca que se pone en 0xD800
+C 0x91A9 guarda lo que se baja la pieza
+C 0x91B0 guarda lo que se corre la pieza
 C 0x920A hl_mas_a: HL += A
 C 0x9221 lee la FASE (0-6)
 C 0x922A lee la ZONA (0-6)
 C 0x9231 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x925D lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x9266 sonido: arranca la musica o el efecto A
-C 0x9282 figura_del_interior: la figura de un interior (tipos 0x22-0x24)
+C 0x9266 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x9282 figura_del_interior: los sprites de un interior (figuras 0x22-0x24)
 C 0x928C palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x92AA rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0x92AF rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
@@ -362,7 +362,7 @@ C 0x9338 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x933B lee la FASE (0-6)
 C 0x9344 lee la ZONA (0-6)
 C 0x9360 de_mas_a: DE += A
-C 0x9512 pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+C 0x9512 pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 C 0x9542 pinta_bcd: pinta cifras en BCD
 C 0x960C lee la FASE (0-6)
 C 0x9614 lee la ZONA (0-6)
@@ -371,7 +371,7 @@ C 0x9620 guarda la copia del banco de 0xA000
 C 0x9628 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x962F empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 C 0x9632 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x9648 sube_colores_de_sprite: sube los colores de los sprites
+C 0x9648 sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x964F crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0x9653 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x965D guarda la pose de la figura
@@ -381,12 +381,12 @@ C 0x9681 lee la x de la figura
 C 0x9688 lee el contador de cuadros
 C 0x9696 lee la x de la figura
 C 0x9699 lee la y de la figura
-C 0x96A5 sonido: arranca la musica o el efecto A
+C 0x96A5 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x96A8 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x96B8 hl_mas_a: HL += A
 C 0x96BC guarda la pose de la figura
-C 0x96F3 hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
-C 0x9701 hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x96F3 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
+C 0x9701 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x970E crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0x9712 la pose de la figura = 0x84
 C 0x9719 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -413,6 +413,7 @@ C 0x981E lee la y del jugador
 C 0x9824 lee la y de la figura
 C 0x9830 borra_la_figura: borra la figura
 C 0x9853 hl_mas_a: HL += A
+C 0x987D gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 C 0x989D apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x98A0 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0x98AC enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
@@ -432,7 +433,7 @@ C 0x9A6E lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x9AAD lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
 C 0x9B37 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x9B83 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-C 0x9B90 hmmv: orden HMMV del V9938: rellena un rectangulo
+C 0x9B90 hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 C 0x9B9E empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 C 0x9BA8 sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
 C 0x9BBF lee la FASE (0-6)
@@ -450,10 +451,10 @@ C 0x9C25 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x9C28 la pose de la figura = 0x74
 C 0x9C34 lee el tipo de la figura
 C 0x9C3D lee la FASE (0-6)
-C 0x9C55 sonido: arranca la musica o el efecto A
+C 0x9C55 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x9C5B el paso en que va la figura = 0x03
 C 0x9C5F la pose de la figura = 0x95
-C 0x9C6F sonido: arranca la musica o el efecto A
+C 0x9C6F sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x9C75 sube el paso en que va la figura
 C 0x9C78 la pose de la figura = 0x75
 C 0x9CAA baja el paso en que va la figura

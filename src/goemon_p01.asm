@@ -52,12 +52,12 @@ L_6034:
 	call 045eeh		;6040   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 04babh		;6043
 	call 04d63h		;6046
-	call 051edh		;6049   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
-	call 0534eh		;604c   ; pinta_la_pantalla: pinta la pantalla montada
+	call 051edh		;6049   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
+	call 0534eh		;604c   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	call 045e1h		;604f   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	call 0960ch		;6052   ; texto_de_la_zona: el texto de la zona
 	ld a,08ch		;6055
-	call 04fe4h		;6057   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;6057   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jp 05e43h		;605a   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_605D:
 	djnz L_6073		;605d
@@ -70,7 +70,7 @@ L_605D:
 L_606B:
 	call 08f7bh		;606b
 	ld a,004h		;606e
-	jp 05e2dh		;6070   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6070   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_6073:
 	ld hl,(0c4b0h)		;6073   ; lee el TIEMPO (BCD)
 	ld a,h			;6076
@@ -119,7 +119,7 @@ L_60C6:
 	xor a			;60c6
 	ld (0c283h),a		;60c7   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ld a,005h		;60ca
-	jp 05e2dh		;60cc   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;60cc   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_60CF:
 	call L_6A06		;60cf
 	jr L_60C6		;60d2
@@ -131,8 +131,8 @@ L_60D4:
 	xor a			;60dc
 L_60DD:
 	ld (0c00eh),a		;60dd
-	call 049d2h		;60e0   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
-	ld a,(0c00bh)		;60e3   ; lee lo que se acaba de apretar
+	call 049d2h		;60e0   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
+	ld a,(0c00bh)		;60e3   ; lee F1-F3 recien apretadas (bits 0-2)
 	rra			;60e6
 	jr c,L_60F9		;60e7
 	rra			;60e9
@@ -141,15 +141,15 @@ L_60DD:
 	and a			;60f0
 	jp nz,0bdf6h		;60f1   ; teclea_palabra: lo que se teclea en la pausa
 	ld a,00dh		;60f4
-	jp 05e2dh		;60f6   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;60f6   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_60F9:
 	xor a			;60f9
 	ld (0c008h),a		;60fa
 	call L_6374		;60fd
 	ld a,0feh		;6100
-	call 04fe4h		;6102   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;6102   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,005h		;6105
-	jp 05e2dh		;6107   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6107   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_610A:
 	djnz L_6120		;610a
 	ld hl,0c004h		;610c   ; apunta a la espera del estado, en cuadros
@@ -170,12 +170,12 @@ L_6120:
 	call 08f7bh		;6128
 	call 04bc5h		;612b
 	call 04d72h		;612e
-	call 051edh		;6131   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
-	call 0534eh		;6134   ; pinta_la_pantalla: pinta la pantalla montada
+	call 051edh		;6131   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
+	call 0534eh		;6134   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	call 09a46h		;6137
 	call 045e1h		;613a   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	ld a,08ah		;613d
-	call 04fe4h		;613f   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;613f   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jp 05e43h		;6142   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6145:
 	djnz L_6168		;6145
@@ -183,7 +183,7 @@ L_6145:
 	call 0868eh		;614a
 	call 086fch		;614d
 	call 08861h		;6150
-	call 05b61h		;6153   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 05b61h		;6153   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	ld a,(0cd11h)		;6156
 	or a			;6159
 	ret nz			;615a
@@ -207,32 +207,32 @@ L_6168:
 	cp 007h		;617d
 	jr nc,L_6186		;617f
 	ld a,004h		;6181
-	jp 05e2dh		;6183   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6183   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_6186:
 	ld hl,0c002h		;6186   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	ld a,(hl)			;6189
 	and 0bfh		;618a
 	ld (hl),a			;618c
 	ld a,00fh		;618d
-	jp 05e2dh		;618f   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;618f   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_6192:
-	call 05b61h		;6192   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 05b61h		;6192   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	ld de,08038h		;6195
 	ld hl,01e28h		;6198
 	ld a,002h		;619b
 	ld c,00fh		;619d
 	call 0bd48h		;619f
 	ld a,004h		;61a2
-	call 04fe4h		;61a4   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;61a4   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,050h		;61a7
 	ld (0c004h),a		;61a9   ; guarda la espera del estado, en cuadros
 	jp 05e43h		;61ac   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_61AF:
 	push bc			;61af
-	call 049d2h		;61b0   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	call 049d2h		;61b0   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
 	pop bc			;61b3
 	djnz L_61E9		;61b4
-	ld a,(0c006h)		;61b6
+	ld a,(0c006h)		;61b6   ; lee lo que se acaba de apretar (mando y cursores)
 	and 033h		;61b9
 	ret z			;61bb
 	and 003h		;61bc
@@ -296,15 +296,15 @@ L_621E:
 	jp 05e43h		;622f   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6232:
 	djnz L_6248		;6232
-	call 049d2h		;6234   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
-	ld a,(0c00bh)		;6237   ; lee lo que se acaba de apretar
+	call 049d2h		;6234   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
+	ld a,(0c00bh)		;6237   ; lee F1-F3 recien apretadas (bits 0-2)
 	rra			;623a
 	rra			;623b
 	ret nc			;623c
 	call L_6BE7		;623d
 	call 04631h		;6240   ; sprites_dentro: enciende los sprites (bit 1 del registro 8 del VDP a cero)
 	ld a,00ah		;6243
-	jp 05e2dh		;6245   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6245   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_6248:
 	call 04626h		;6248   ; sprites_fuera: apaga los sprites (bit 1 del registro 8 del VDP)
 	call L_6B5F		;624b
@@ -324,14 +324,14 @@ L_6256:
 	call L_662C		;626b
 	call aplica_la_contrasena		;626e   ; aplica_la_contrasena: saca de la contrasena la fase, el jugador, la zona y la casilla
 	ld a,004h		;6271
-	jp 05e2dh		;6273   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6273   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_6276:
 	call L_6CB8		;6276
 	call 045d3h		;6279   ; borra_la_pantalla: borra la pantalla
 	ld c,0ffh		;627c
 	ld hl,0628ah		;627e
 	ld de,06060h		;6281
-	call 048fdh		;6284   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
+	call 048fdh		;6284   ; rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
 	jp 05e43h		;6287   ; siguiente_paso: pasa al paso siguiente (0xC001)
 
 ; ----------------------------------------------------------------------
@@ -364,12 +364,12 @@ L_6292:
 	call 045d3h		;62b1   ; borra_la_pantalla: borra la pantalla
 	call 04cd4h		;62b4
 	call L_65A2		;62b7
-	call 05b61h		;62ba   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 05b61h		;62ba   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	call 045e1h		;62bd   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	ld a,08fh		;62c0
-	call 04fe4h		;62c2   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;62c2   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,03ch		;62c5
-	jp 05e40h		;62c7   ; espera_y_sigue: espera y pasa al paso siguiente
+	jp 05e40h		;62c7   ; espera_y_sigue: A cuadros de espera y el paso siguiente
 L_62CA:
 	djnz L_62E5		;62ca
 	ld a,(0c0abh)		;62cc   ; lee los canales que suenan
@@ -391,13 +391,13 @@ L_62E5:
 	ld hl,0d800h		;62ee
 	call 042e1h		;62f1   ; empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 	ld a,08dh		;62f4
-	call 04fe4h		;62f6   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;62f6   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,0f0h		;62f9
-	jp 05e40h		;62fb   ; espera_y_sigue: espera y pasa al paso siguiente
+	jp 05e40h		;62fb   ; espera_y_sigue: A cuadros de espera y el paso siguiente
 L_62FE:
-	call 049eeh		;62fe
+	call 049eeh		;62fe   ; lee_mando_y_teclado: A = el mando 1 y el teclado juntos: bits 0-3 direcciones, 4-5 botones
 	ld hl,0c251h		;6301
-	call 049e7h		;6304
+	call 049e7h		;6304   ; apretado_y_nuevo: guarda A en (HL) y en (HL-1) lo que no estaba apretado antes
 	or a			;6307
 	ret z			;6308
 	ld hl,0c004h		;6309   ; apunta a la espera del estado, en cuadros
@@ -433,8 +433,8 @@ L_6325:
 L_6341:
 	ld (hl),001h		;6341
 	ld a,000h		;6343
-	call 04fe4h		;6345   ; sonido: arranca la musica o el efecto A
-	jp 05a93h		;6348   ; pantalla_del_titulo: monta la pantalla del titulo
+	call 04fe4h		;6345   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+	jp 05a93h		;6348   ; pantalla_del_titulo: pinta el titulo: dibujo de 20 x 12, 23 sprites, el marco y el menu
 L_634B:
 	ld a,(de)			;634b
 	xor 001h		;634c
@@ -445,14 +445,14 @@ L_634B:
 	ret			;6354
 L_6355:
 	ld a,00eh		;6355
-	jp 05e2dh		;6357   ; cambia_de_estado: pasa al estado A
+	jp 05e2dh		;6357   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_635A:
 	ld hl,06a54h		;635a
 	ld bc,02c10h		;635d
 	ld de,0d070h		;6360
 	call L_6382		;6363
 	ld hl,0636ch		;6366
-	jp 048f3h		;6369   ; rotulo: pinta un rotulo
+	jp 048f3h		;6369   ; rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_636C: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -471,25 +471,25 @@ L_6374:
 	ld bc,02c10h		;6377
 	ld hl,0d070h		;637a
 	ld a,001h		;637d
-	jp 0476eh		;637f   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	jp 0476eh		;637f   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 L_6382:
 	ld a,004h		;6382
 	push hl			;6384
 	push bc			;6385
-	call 0476eh		;6386   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;6386   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	pop bc			;6389
 	pop hl			;638a
 	push hl			;638b
 	push bc			;638c
 	xor a			;638d
 	ld d,a			;638e
-	call 04732h		;638f   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04732h		;638f   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 	pop bc			;6392
 	pop hl			;6393
 	ld d,b			;6394
 	ld e,c			;6395
 	ld c,00eh		;6396
-	jp 04704h		;6398   ; marco: pinta un marco
+	jp 04704h		;6398   ; marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_639B: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -576,7 +576,7 @@ L_643F:
 	ld bc,0a848h		;6452
 	xor a			;6455
 	ld d,001h		;6456
-	call 04732h		;6458   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04732h		;6458   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 	call 04a43h		;645b   ; dibujos_de_konami: sube los dibujos del logotipo de Konami
 	ld de,04040h		;645e
 	ld hl,064c9h		;6461
@@ -622,7 +622,7 @@ L_6498:
 	ld hl,02840h		;649e
 	ld de,02840h		;64a1
 	ld a,001h		;64a4
-	jp 0476eh		;64a6   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	jp 0476eh		;64a6   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 L_64A9:
 	push de			;64a9
 L_64AA:
@@ -644,8 +644,8 @@ L_64AA:
 	jr L_64A9		;64bc
 L_64BE:
 	ld a,c			;64be
-	call 04964h		;64bf   ; caracter_en_la_pagina_1: pinta un caracter en la pagina 1 de la VRAM
-	call 04984h		;64c2   ; siguiente_sitio: pasa al sitio del caracter siguiente
+	call 04964h		;64bf   ; caracter_en_la_pagina_1: pinta el caracter A de la pagina 1 en DE de la misma pagina
+	call 04984h		;64c2   ; siguiente_sitio: D 8 puntos a la derecha; al dar la vuelta, E 8 mas abajo
 	jr L_64AA		;64c5
 L_64C7:
 	pop de			;64c7
@@ -692,12 +692,12 @@ L_652A:
 	ld (hl),a			;652d
 	push bc			;652e
 	push de			;652f
-	call 058f5h		;6530   ; pinta_el_tiempo: pinta el tiempo
+	call 058f5h		;6530   ; pinta_el_tiempo: pinta el tiempo (4 cifras) en (0x48, 8)
 	pop de			;6533
 	call 0437eh		;6534   ; suma_puntos: suma puntos en BCD al jugador que juega
 	pop bc			;6537
 	ld a,b			;6538
-	jp 04fe4h		;6539   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;6539   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_653C:
 	di			;653c
 	ld a,00ch		;653d
@@ -876,7 +876,7 @@ L_6617:
 	ret			;662b
 L_662C:
 	call 04a6dh		;662c   ; letras_del_texto: sube las letras de los textos
-	call 04da4h		;662f   ; dibujos_de_siempre: sube los dibujos que estan en todas las zonas
+	call 04da4h		;662f   ; dibujos_de_siempre: los dibujos de la pagina 1 que estan en todas las zonas (bancos 7 y 8)
 	ld de,01010h		;6632
 	ld (0c480h),de		;6635   ; guarda la vida maxima
 	ret			;6639
@@ -893,14 +893,14 @@ carga_la_zona:		; carga la zona de 0xC280
 	ld a,(hl)			;664f
 	ld (0c289h),a		;6650   ; guarda el juego de graficos de la zona
 	call 04206h		;6653   ; bancos_1_2_3: pone los bancos 1, 2 y 3
-	call 04da4h		;6656   ; dibujos_de_siempre: sube los dibujos que estan en todas las zonas
+	call 04da4h		;6656   ; dibujos_de_siempre: los dibujos de la pagina 1 que estan en todas las zonas (bancos 7 y 8)
 	call 04a96h		;6659   ; caracteres_del_juego: sube los caracteres del juego de graficos de la zona
 	ld hl,0d000h		;665c
 	ld de,0d001h		;665f
 	ld bc,017ffh		;6662
 	ld (hl),000h		;6665
 	ldir		;6667
-	call 04d89h		;6669
+	call 04d89h		;6669   ; sprites_de_0xF8C0: patrones de sprite de 0x9369 (banco 8) a 0xF8C0 y de 0x87D1 (banco 11) a 0xF900
 	call 04295h		;666c   ; pantallas_de_la_zona: descomprime las pantallas de la zona a 0xD000
 	call 042ach		;666f   ; bloques_de_la_zona: descomprime los bloques de la zona a 0xE100
 	di			;6672
@@ -953,11 +953,11 @@ L_66BC:
 	ld hl,00080h		;66db
 	ld bc,01010h		;66de
 	ld a,005h		;66e1
-	call 0476eh		;66e3   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;66e3   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 L_66E6:
 	xor a			;66e6
 	ld (0c0afh),a		;66e7
-	call 05311h		;66ea   ; rejilla_de_la_zona: la rejilla de casillas de la zona
+	call 05311h		;66ea   ; rejilla_de_la_zona: la pantalla de cada casilla de la zona, a 0xE700 (tabla 0x600C, banco 13)
 	call 04188h		;66ed   ; enlaces_de_la_zona: copia los enlaces entre casillas de la zona a 0xE780
 	call 0955ch		;66f0
 	call L_7E42		;66f3
@@ -970,11 +970,11 @@ L_66F6:
 	call L_67E8		;6705
 	call 045eeh		;6708   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 0460ah		;670b   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-	call 051edh		;670e   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
-	call 0534eh		;6711   ; pinta_la_pantalla: pinta la pantalla montada
+	call 051edh		;670e   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
+	call 0534eh		;6711   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	call 090c0h		;6714   ; cosas_fijas: pinta las cosas fijas de la casilla
 	call L_6756		;6717
-	call 05413h		;671a   ; dibujos_de_las_figuras: sube los dibujos de las figuras (fichas de 0xA830, banco 12)
+	call 05413h		;671a   ; dibujos_de_las_figuras: los patrones y los colores 4 y 6 de las figuras de la casilla (fichas de 0xA830, banco 12)
 	call 05856h		;671d   ; pinta_las_cosas: pinta las cosas del marcador
 	call 04ce3h		;6720   ; paleta_de_la_zona: pone la paleta del juego de graficos de la zona
 	call 04d14h		;6723
@@ -988,8 +988,8 @@ L_672F:
 	call L_67E8		;6738
 	call 045eeh		;673b   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 0460ah		;673e   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-	call 051edh		;6741   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
-	call 0534eh		;6744   ; pinta_la_pantalla: pinta la pantalla montada
+	call 051edh		;6741   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
+	call 0534eh		;6744   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	call L_6798		;6747
 	call 04d08h		;674a
 	call 0925dh		;674d
@@ -1092,11 +1092,11 @@ L_67F4:
 	ldir		;67ff
 	ret			;6801
 L_6802:
-	call 05b09h		;6802
+	call 05b09h		;6802   ; franja_a_la_pagina_1: con el jugador en el estado 0-1, copia la franja de y 0xE8 a la pagina 1; si no, los colores de los sprites
 	ld a,(0cdb1h)		;6805   ; lee si se esta viendo el plano
 	or a			;6808
 	jr z,L_6815		;6809
-	call 049d2h		;680b   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	call 049d2h		;680b   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
 	call L_6877		;680e
 	ret c			;6811
 	jp 0987ah		;6812
@@ -1106,7 +1106,7 @@ L_6815:
 	jr c,L_685F		;6819
 	ld hl,0c00dh		;681b
 	inc (hl)			;681e
-	call 049d2h		;681f   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	call 049d2h		;681f   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
 	ld a,(0c490h)		;6822   ; lee el estado del jugador
 	cp 003h		;6825
 	jr z,L_682D		;6827
@@ -1141,17 +1141,17 @@ L_685F:
 	call 086f1h		;6868
 	call 08857h		;686b
 	call L_7833		;686e
-	call 058c5h		;6871
-	jp 05b1dh		;6874
+	call 058c5h		;6871   ; cuenta_el_tiempo: cada 60 - fase * 5 cuadros, un segundo menos
+	jp 05b1dh		;6874   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 L_6877:
-	ld a,(0c00bh)		;6877   ; lee lo que se acaba de apretar
+	ld a,(0c00bh)		;6877   ; lee F1-F3 recien apretadas (bits 0-2)
 	rra			;687a
 	ret nc			;687b
 	ld a,001h		;687c
 	ld (0c008h),a		;687e
 	call 04cabh		;6881   ; sprites_del_jugador: sube los sprites del jugador
 	ld a,0fdh		;6884
-	call 04fe4h		;6886   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;6886   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	scf			;6889
 	ret			;688a
 L_688B:
@@ -1180,10 +1180,10 @@ L_689E:
 	ld (0c280h),a		;68b1   ; guarda la ZONA (0-6)
 	ld (0c288h),a		;68b4   ; guarda la FASE (0-6)
 	ld (0c009h),a		;68b7
-	ld (0c007h),a		;68ba
+	ld (0c007h),a		;68ba   ; guarda lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	inc a			;68bd
 	ld (0c263h),a		;68be
-	ld (0c00ah),a		;68c1   ; guarda el mando de la demostracion
+	ld (0c00ah),a		;68c1   ; guarda los cuadros que le quedan a la tecla de la demostracion
 	ld (0c267h),a		;68c4   ; guarda los colores del sitio
 	ld a,00ch		;68c7
 	ld (0c281h),a		;68c9   ; guarda la CASILLA de la zona
@@ -1243,7 +1243,7 @@ L_6923:
 	ld a,(0c003h)		;6923   ; lee el contador de cuadros
 	rra			;6926
 	ret c			;6927
-	ld hl,0c00ah		;6928   ; apunta a el mando de la demostracion
+	ld hl,0c00ah		;6928   ; apunta a los cuadros que le quedan a la tecla de la demostracion
 	dec (hl)			;692b
 	jr z,L_693F		;692c
 L_692E:
@@ -1254,7 +1254,7 @@ L_692E:
 L_6938:
 	xor a			;6938
 	ld (0c263h),a		;6939
-	jp 04d48h		;693c
+	jp 04d48h		;693c   ; paleta_del_titulo: pone la paleta de 0xA44E (banco 9)
 L_693F:
 	dec hl			;693f
 	ld c,(hl)			;6940
@@ -1265,7 +1265,7 @@ L_693F:
 	add hl,hl			;6948
 	add hl,de			;6949
 	ld a,(hl)			;694a
-	ld (0c00ah),a		;694b   ; guarda el mando de la demostracion
+	ld (0c00ah),a		;694b   ; guarda los cuadros que le quedan a la tecla de la demostracion
 	inc hl			;694e
 	ld a,(hl)			;694f
 	ld (0cd54h),a		;6950
@@ -1364,7 +1364,7 @@ L_69D1:
 	and 040h		;69f5
 	ret z			;69f7
 	ld a,088h		;69f8
-	jp 04fe4h		;69fa   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;69fa   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_69FD:
 	call L_66F6		;69fd
 	call L_6A9C		;6a00
@@ -1395,12 +1395,12 @@ L_6A14:
 	ld (hl),001h		;6a36
 	ld bc,002ffh		;6a38
 	ldir		;6a3b
-	call 0534eh		;6a3d   ; pinta_la_pantalla: pinta la pantalla montada
+	call 0534eh		;6a3d   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 	ld a,(0c484h)		;6a40
 	ld hl,0ea00h		;6a43
 	call 04083h		;6a46   ; hl_mas_a: HL += A
 	ld a,(hl)			;6a49
-	call 04f47h		;6a4a   ; pinta_pasadizo: pinta un pasadizo
+	call 04f47h		;6a4a   ; pinta_pasadizo: pinta el pasadizo A con la pieza de (0x00, 0x80): 9 filas de bits de 0xAB18 (banco 9)
 	call L_67F4		;6a4d
 	call 090c0h		;6a50   ; cosas_fijas: pinta las cosas fijas de la casilla
 	call L_6A9C		;6a53
@@ -1681,16 +1681,16 @@ L_6BC1:
 	ld de,0a0c0h		;6bd2
 	call L_6382		;6bd5
 	ld hl,06ccch		;6bd8
-	call 048f3h		;6bdb   ; rotulo: pinta un rotulo
+	call 048f3h		;6bdb   ; rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 	ld hl,0eba0h		;6bde
 	ld de,06080h		;6be1
-	jp 048fdh		;6be4   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
+	jp 048fdh		;6be4   ; rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
 L_6BE7:
 	ld de,05070h		;6be7
 	ld bc,0601ch		;6bea
 	ld hl,0a0c0h		;6bed
 	ld a,001h		;6bf0
-	jp 0476eh		;6bf2   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	jp 0476eh		;6bf2   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 L_6BF5:
 	ld b,a			;6bf5
 	rra			;6bf6
@@ -1726,7 +1726,7 @@ teclea_la_contrasena:		; la pantalla de la contrasena
 	ld c,0ffh		;6c21
 	ld hl,0ebb0h		;6c23
 	ld de,06080h		;6c26
-	call 048fdh		;6c29   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
+	call 048fdh		;6c29   ; rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
 	exx			;6c2c
 	inc de			;6c2d
 	inc (hl)			;6c2e
@@ -1948,7 +1948,7 @@ L_6D58:
 	ld a,(0c482h)		;6d78   ; lee la pantalla especial
 	and a			;6d7b
 	jr nz,L_6D89		;6d7c
-	ld a,(0c006h)		;6d7e
+	ld a,(0c006h)		;6d7e   ; lee lo que se acaba de apretar (mando y cursores)
 	bit 4,a		;6d81
 	jr nz,L_6DB9		;6d83
 	bit 5,a		;6d85
@@ -1995,7 +1995,7 @@ L_6DBF:
 	ld (0c49fh),a		;6dcb   ; guarda la accion del jugador
 	call L_7395		;6dce
 	ld a,001h		;6dd1
-	jp 04fe4h		;6dd3   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;6dd3   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_6DD6:
 	call borra_las_figuras		;6dd6   ; borra_las_figuras: borra todas las figuras
 	call esconde_los_sprites_de_ram		;6dd9   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
@@ -2013,7 +2013,7 @@ L_6DD6:
 	ld (0c49fh),a		;6df9   ; guarda la accion del jugador
 	ld (0c4a9h),a		;6dfc
 	ld a,08bh		;6dff
-	jp 04fe4h		;6e01   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;6e01   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_6E04:
 	xor a			;6e04
 	ld (0c4a2h),a		;6e05   ; guarda el lado al que mira el jugador
@@ -2101,7 +2101,7 @@ L_6E9A:
 	ld a,(0c492h)		;6e9a
 	and a			;6e9d
 	jr nz,L_6EA8		;6e9e
-	ld a,(0c006h)		;6ea0
+	ld a,(0c006h)		;6ea0   ; lee lo que se acaba de apretar (mando y cursores)
 	bit 4,a		;6ea3
 	call nz,L_6DB9		;6ea5
 L_6EA8:
@@ -2133,7 +2133,7 @@ L_6EB9:
 	ld a,(0c4aah)		;6ed4
 	and a			;6ed7
 	jr nz,L_6EF2		;6ed8
-	ld a,(0c006h)		;6eda
+	ld a,(0c006h)		;6eda   ; lee lo que se acaba de apretar (mando y cursores)
 	ld c,a			;6edd
 	ld a,b			;6ede
 	rr b		;6edf
@@ -2504,7 +2504,7 @@ L_714E:
 	and a			;7156
 	ret nz			;7157
 	ld a,092h		;7158
-	jp 04fe4h		;715a   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;715a   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_715D:
 	ld a,(0c481h)		;715d   ; lee la VIDA del jugador
 	and a			;7160
@@ -2524,7 +2524,7 @@ L_716C:
 	ld (0c481h),a		;7178   ; guarda la VIDA del jugador
 	call 05890h		;717b   ; pinta_la_vida: pinta la barra de vida
 	ld a,007h		;717e
-	jp 057fah		;7180   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;7180   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_7183:
 	call borra_las_figuras		;7183   ; borra_las_figuras: borra todas las figuras
 	call esconde_los_sprites_de_ram		;7186   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
@@ -2537,14 +2537,14 @@ L_7183:
 	ld a,020h		;7198
 	ld (0c4a7h),a		;719a
 	ld a,08bh		;719d
-	jp 04fe4h		;719f   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;719f   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_71A2:
 	ld hl,0c485h		;71a2
-	ld a,(0c007h)		;71a5
+	ld a,(0c007h)		;71a5   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	and 00fh		;71a8
 	ld b,a			;71aa
 	jr z,L_71B9		;71ab
-	ld a,(0c006h)		;71ad
+	ld a,(0c006h)		;71ad   ; lee lo que se acaba de apretar (mando y cursores)
 	and 00fh		;71b0
 	jr nz,L_71B9		;71b2
 	ld a,b			;71b4
@@ -2607,7 +2607,7 @@ L_7200:
 	sub 040h		;720a
 	cp 020h		;720c
 	ret nc			;720e
-	ld a,(0c007h)		;720f
+	ld a,(0c007h)		;720f   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	ld b,a			;7212
 	ld a,(0c4a5h)		;7213
 	or b			;7216
@@ -2673,7 +2673,7 @@ L_7262:
 	sub c			;7278
 	cp 010h		;7279
 	jr nc,L_7295		;727b
-	ld a,(0c007h)		;727d
+	ld a,(0c007h)		;727d   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	rra			;7280
 	jr nc,L_7295		;7281
 	pop hl			;7283
@@ -2703,7 +2703,7 @@ L_729D:
 	sub 078h		;72ad
 	cp 010h		;72af
 	ret nc			;72b1
-	ld a,(0c007h)		;72b2
+	ld a,(0c007h)		;72b2   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	rra			;72b5
 	rra			;72b6
 	ret nc			;72b7
@@ -2755,7 +2755,7 @@ L_7300:
 	sub 060h		;7303
 	cp 008h		;7305
 	ret nc			;7307
-	ld a,(0c007h)		;7308
+	ld a,(0c007h)		;7308   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	rra			;730b
 	ret nc			;730c
 	call borra_las_figuras		;730d   ; borra_las_figuras: borra todas las figuras
@@ -2771,7 +2771,7 @@ L_7300:
 	ld (0c4a7h),a		;7327
 	ld (0c279h),a		;732a
 	ld a,08fh		;732d
-	jp 04fe4h		;732f   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;732f   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7332:
 	ld a,(0c496h)		;7332   ; lee la x del jugador
 	sub 098h		;7335
@@ -2781,7 +2781,7 @@ L_7332:
 	sub 060h		;733d
 	cp 008h		;733f
 	ret nc			;7341
-	ld a,(0c007h)		;7342
+	ld a,(0c007h)		;7342   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	rra			;7345
 	ret nc			;7346
 	call borra_las_figuras		;7347   ; borra_las_figuras: borra todas las figuras
@@ -2795,7 +2795,7 @@ L_7332:
 	ld (0c28bh),a		;735b
 	call 04cabh		;735e   ; sprites_del_jugador: sube los sprites del jugador
 	ld a,000h		;7361
-	jp 04fe4h		;7363   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7363   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7366:
 	ld a,(0c496h)		;7366   ; lee la x del jugador
 	sub 080h		;7369
@@ -3231,7 +3231,7 @@ L_75E4:
 	ld hl,0c492h		;75ff
 	inc (hl)			;7602
 	ld a,008h		;7603
-	jp 04fe4h		;7605   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7605   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7608:
 	ld hl,0c4a1h		;7608
 	inc (hl)			;760b
@@ -3278,7 +3278,7 @@ L_763C:
 	ld a,(0c49ah)		;764a   ; lee la x de los sprites del jugador
 	ld (hl),a			;764d
 	ld a,009h		;764e
-	call 04fe4h		;7650   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;7650   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jr L_761A		;7653
 L_7655:
 	push hl			;7655
@@ -3661,13 +3661,13 @@ L_787D:
 	ld a,03ch		;7898
 	ld (hl),a			;789a
 	ld a,00bh		;789b
-	call 04fe4h		;789d   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;789d   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_7A08		;78a0
 	ret c			;78a3
 	xor a			;78a4
 	ld (0c271h),a		;78a5
 	inc a			;78a8
-	call 057fah		;78a9   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	call 057fah		;78a9   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 	ld a,(ix+000h)		;78ac   ; lee el tipo de la figura
 	cp 005h		;78af
 	jp z,L_79E2		;78b1
@@ -3694,13 +3694,13 @@ L_78CA:
 	ld a,03ch		;78d9
 	ld (0c4a7h),a		;78db
 	ld a,00bh		;78de
-	call 04fe4h		;78e0   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;78e0   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_7A2F		;78e3
 	ret c			;78e6
 	xor a			;78e7
 	ld (0c271h),a		;78e8
 	inc a			;78eb
-	call 057fah		;78ec   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	call 057fah		;78ec   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 	jp L_7A04		;78ef
 L_78F2:
 	ld de,00040h		;78f2
@@ -3737,7 +3737,7 @@ L_7926:
 	jr nz,L_7931		;792d
 	ld a,00ch		;792f
 L_7931:
-	jp 04fe4h		;7931   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7931   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7934:
 	ld de,00080h		;7934
 	add ix,de		;7937
@@ -3809,11 +3809,11 @@ L_799D:
 	ld hl,0b86dh		;79b3
 	call 04083h		;79b6   ; hl_mas_a: HL += A
 	ld e,(hl)			;79b9
-	call 05929h		;79ba   ; suma_dinero: suma ryo al dinero
+	call 05929h		;79ba   ; suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 	jr L_79C5		;79bd
 L_79BF:
 	ld de,00050h		;79bf
-	call 05958h		;79c2   ; resta_dinero: resta ryo al dinero
+	call 05958h		;79c2   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 L_79C5:
 	jp 04206h		;79c5   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_79C8:
@@ -3824,10 +3824,10 @@ L_79C8:
 	and 002h		;79d4
 	jr z,L_79DD		;79d6
 	ld e,010h		;79d8
-	call 05929h		;79da   ; suma_dinero: suma ryo al dinero
+	call 05929h		;79da   ; suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 L_79DD:
 	ld a,012h		;79dd
-	jp 04fe4h		;79df   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;79df   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_79E2:
 	ld hl,0c27eh		;79e2
 	ld a,(hl)			;79e5
@@ -3836,10 +3836,10 @@ L_79E2:
 	xor a			;79e9
 	ld (hl),a			;79ea
 	ld a,00ah		;79eb
-	jp 057fah		;79ed   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;79ed   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_79F0:
 	ld de,00020h		;79f0
-	jp 05958h		;79f3   ; resta_dinero: resta ryo al dinero
+	jp 05958h		;79f3   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 L_79F6:
 	ld b,004h		;79f6
 L_79F8:
@@ -3876,7 +3876,7 @@ L_7A20:
 L_7A29:
 	ld a,l			;7a29
 	sub 070h		;7a2a
-	jp 057fah		;7a2c   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;7a2c   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_7A2F:
 	ld a,(ix+000h)		;7a2f   ; lee el tipo de la figura
 	ld hl,0c275h		;7a32
@@ -4227,7 +4227,7 @@ L_7C02:
 	call L_7D56		;7c12
 	call 087b7h		;7c15   ; borra_la_figura: borra la figura
 	ld a,012h		;7c18
-	jp 04fe4h		;7c1a   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7c1a   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7C1D:
 	ld de,00040h		;7c1d
 	add ix,de		;7c20
@@ -4282,7 +4282,7 @@ L_7C25:
 	ld (0c4a7h),a		;7c91
 	call L_6F60		;7c94
 	ld a,090h		;7c97
-	jp 04fe4h		;7c99   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7c99   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7C9C:
 	ld a,(ix+00ch)		;7c9c
 	rra			;7c9f
@@ -4308,9 +4308,9 @@ L_7C9C:
 	ld a,(ix+000h)		;7ccc   ; lee el tipo de la figura
 	cp 00ah		;7ccf
 	ld a,01eh		;7cd1
-	jp nz,04fe4h		;7cd3   ; sonido: arranca la musica o el efecto A
+	jp nz,04fe4h		;7cd3   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,014h		;7cd6
-	jp 04fe4h		;7cd8   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7cd8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7CDB:
 	ld a,(0c492h)		;7cdb
 	and a			;7cde
@@ -4347,14 +4347,14 @@ L_7D0D:
 	sub 030h		;7d18
 	cp 020h		;7d1a
 	ret nc			;7d1c
-	ld a,(0c007h)		;7d1d
+	ld a,(0c007h)		;7d1d   ; lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 	rra			;7d20
 	ret nc			;7d21
 	call esconde_los_sprites_de_ram		;7d22   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
-	call 05b1dh		;7d25
-	call 05969h		;7d28   ; ensena_el_plano: ensena el plano de la zona
+	call 05b1dh		;7d25   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
+	call 05969h		;7d28   ; ensena_el_plano: pasa a la pantalla del plano de la zona
 	ld a,088h		;7d2b
-	jp 04fe4h		;7d2d   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7d2d   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_7D30:
 	ld a,(ix+005h)		;7d30   ; lee la x de la figura
 	sub 010h		;7d33
@@ -4387,12 +4387,12 @@ L_7D56:
 	cp 004h		;7d63
 	jr nc,L_7D6B		;7d65
 	xor a			;7d67
-	jp 057fah		;7d68   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;7d68   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_7D6B:
 	dec (hl)			;7d6b
 L_7D6C:
 	ld e,010h		;7d6c
-	jp 05929h		;7d6e   ; suma_dinero: suma ryo al dinero
+	jp 05929h		;7d6e   ; suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 L_7D71:
 	ld hl,0c271h		;7d71
 	ld a,(hl)			;7d74
@@ -4400,7 +4400,7 @@ L_7D71:
 	jr nz,L_7D6C		;7d76
 	inc (hl)			;7d78
 	ld a,001h		;7d79
-	jp 057fah		;7d7b   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	jp 057fah		;7d7b   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_7D7E:
 	ld a,(ix+000h)		;7d7e   ; lee el tipo de la figura
 	ld b,a			;7d81
@@ -4415,7 +4415,7 @@ L_7D8C:
 	ld hl,07d98h		;7d8e
 	call 04083h		;7d91   ; hl_mas_a: HL += A
 	ld a,(hl)			;7d94
-	jp 04fe4h		;7d95   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;7d95   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 
 ; ----------------------------------------------------------------------
 ; DATOS sonido_por_tipo: el efecto de sonido de cada tipo de figura 1-6
@@ -4700,9 +4700,9 @@ DATA_marca_de_qbert:
 L_7F1A:
 	call L_7F28		;7f1a
 	ld c,00eh		;7f1d
-	call 04704h		;7f1f   ; marco: pinta un marco
+	call 04704h		;7f1f   ; marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 	ld hl,07f41h		;7f22
-	jp 048f3h		;7f25   ; rotulo: pinta un rotulo
+	jp 048f3h		;7f25   ; rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 L_7F28:
 	ld hl,02090h		;7f28
 	ld bc,0c038h		;7f2b
@@ -4711,14 +4711,14 @@ L_7F2E:
 	ld d,000h		;7f2f
 	push bc			;7f31
 	push hl			;7f32
-	call 04732h		;7f33   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04732h		;7f33   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 	pop hl			;7f36
 	pop de			;7f37
 	ret			;7f38
 L_7F39:
 	call L_7F2E		;7f39
 	ld c,00eh		;7f3c
-	jp 04704h		;7f3e   ; marco: pinta un marco
+	jp 04704h		;7f3e   ; marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7F41: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -4767,7 +4767,7 @@ L_7FB1:
 	push hl			;7fb1
 	call L_7FC8		;7fb2
 	pop hl			;7fb5
-	jp 048f3h		;7fb6   ; rotulo: pinta un rotulo
+	jp 048f3h		;7fb6   ; rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7FB9: rotulo en (0x48, 0xA8) que p01:7FA3 escribe con 0x48F3

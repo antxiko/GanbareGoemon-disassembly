@@ -164,10 +164,10 @@ L_80C3:
 	ld e,(hl)			;80c9
 	ld d,024h		;80ca
 	ld a,b			;80cc
-	call 0491ch		;80cd   ; letra: pinta una letra
+	call 0491ch		;80cd   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 	ld d,02ch		;80d0
 	ld a,c			;80d2
-	jp 0491ch		;80d3   ; letra: pinta una letra
+	jp 0491ch		;80d3   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 
 ; ----------------------------------------------------------------------
 ; DATOS tres_x: tres x (0xA8, 0xB0 y 0xB8) donde p02:80C9 escribe un caracter
@@ -188,7 +188,7 @@ L_80D9:
 	call L_8123		;80e1
 	call L_813F		;80e4
 	call L_81F0		;80e7
-	call 05b61h		;80ea   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 05b61h		;80ea   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	ret			;80ed
 L_80EE:
 	ld hl,0a099h		;80ee
@@ -216,7 +216,7 @@ L_80F9:
 	ld l,a			;8109
 	ld a,005h		;810a
 	ld bc,00808h		;810c
-	call 0476eh		;810f   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;810f   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	exx			;8112
 	ld a,008h		;8113
 	add a,d			;8115
@@ -235,11 +235,11 @@ L_8123:
 	ld hl,07040h		;8128
 	ld de,01f4fh		;812b
 	ld c,00fh		;812e
-	call 04704h		;8130   ; marco: pinta un marco
+	call 04704h		;8130   ; marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 	ld hl,07242h		;8133
 	ld de,01b4bh		;8136
 	ld c,00fh		;8139
-	call 04704h		;813b   ; marco: pinta un marco
+	call 04704h		;813b   ; marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 	ret			;813e
 L_813F:
 	call L_81D0		;813f
@@ -425,7 +425,7 @@ L_822A:
 L_8233:
 	ld a,001h		;8233
 	ld bc,02018h		;8235
-	jp 0476eh		;8238   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	jp 0476eh		;8238   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 L_823B:
 	ld a,(0c003h)		;823b   ; lee el contador de cuadros
 	ld b,a			;823e
@@ -439,7 +439,7 @@ L_823B:
 L_824C:
 	ld (0ee00h),a		;824c
 	ld (0ee04h),a		;824f
-	jp 05b61h		;8252   ; sube_colores_de_sprite: sube los colores de los sprites
+	jp 05b61h		;8252   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 L_8255:
 	ld a,(0c490h)		;8255   ; lee el estado del jugador
 	cp 002h		;8258
@@ -459,7 +459,7 @@ L_8255:
 	dec (hl)			;8273
 	ret nz			;8274
 	call L_82F2		;8275
-	call 05b6dh		;8278   ; figuras_de_la_casilla: crea las figuras de la casilla
+	call 05b6dh		;8278   ; figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
 	ld hl,0cd17h		;827b
 	ld c,(hl)			;827e
 	ld a,(de)			;827f
@@ -716,7 +716,7 @@ L_83E6:
 	ld hl,(0cd3ch)		;840e
 	ld a,(ix+000h)		;8411   ; lee el tipo de la figura
 	ld (0cd37h),a		;8414
-	call 054e6h		;8417   ; colores_de_la_figura: pinta los colores de los sprites de la figura
+	call 054e6h		;8417   ; colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 	call 0aa04h		;841a
 	ld hl,(0cd3ch)		;841d
 	ld a,(ix+000h)		;8420   ; lee el tipo de la figura
@@ -901,7 +901,7 @@ L_8573:
 	call L_86BC		;857d
 	ld a,001h		;8580
 	ld (0cd5bh),a		;8582
-	call 05b6dh		;8585   ; figuras_de_la_casilla: crea las figuras de la casilla
+	call 05b6dh		;8585   ; figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
 	ld a,(0cd12h)		;8588
 	and 00ch		;858b
 	jr z,L_85AC		;858d
@@ -1001,7 +1001,7 @@ L_861F:
 	ld hl,0cd5eh		;8625
 	dec (hl)			;8628
 	ret nz			;8629
-	call 05b6dh		;862a   ; figuras_de_la_casilla: crea las figuras de la casilla
+	call 05b6dh		;862a   ; figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto de 0x9BF0, banco 14)
 	inc de			;862d
 	ld a,(de)			;862e
 	or a			;862f
@@ -1046,7 +1046,7 @@ L_8656:
 	ld bc,01010h		;8678
 	ld a,099h		;867b
 	ld d,001h		;867d
-	call 04732h		;867f   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04732h		;867f   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 	ld a,(0cd16h)		;8682
 	cp 020h		;8685
 	ret nc			;8687
@@ -1538,7 +1538,7 @@ L_8975:
 	pop hl			;8977
 	ld a,(ix+000h)		;8978   ; lee el tipo de la figura
 	ld (0cd37h),a		;897b
-	jp 054e6h		;897e   ; colores_de_la_figura: pinta los colores de los sprites de la figura
+	jp 054e6h		;897e   ; colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 L_8981:
 	ld a,(ix+001h)		;8981   ; lee el paso en que va la figura
 	or a			;8984
@@ -1549,7 +1549,7 @@ L_8981:
 	cp (ix+003h)		;8990   ; compara con la y de la figura
 	ret nc			;8993
 	ld a,003h		;8994
-	call 04fe4h		;8996   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8996   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_88FD		;8999
 	ld (ix+025h),003h		;899c
 	ld (ix+02ah),008h		;89a0
@@ -1684,7 +1684,7 @@ L_8A70:
 	ld a,(ix+000h)		;8a82   ; lee el tipo de la figura
 	add a,02fh		;8a85
 	ld (0cd37h),a		;8a87
-	call 054e6h		;8a8a   ; colores_de_la_figura: pinta los colores de los sprites de la figura
+	call 054e6h		;8a8a   ; colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 	ld a,(ix+000h)		;8a8d   ; lee el tipo de la figura
 	dec a			;8a90
 	call 0408dh		;8a91   ; despacha: salta a la entrada A de la tabla que va detras del call
@@ -1718,7 +1718,7 @@ L_8AA2:
 	jp pon_velocidad_y		;8ab6   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_8AB9:
 	ld a,006h		;8ab9
-	call 04fe4h		;8abb   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8abb   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,058h		;8abe
 L_8AC0:
 	ld (ix+00ah),a		;8ac0   ; guarda la pose de la figura
@@ -1729,17 +1729,17 @@ L_8AC0:
 	jp pon_velocidad_y		;8acc   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_8ACF:
 	ld a,006h		;8acf
-	call 04fe4h		;8ad1   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8ad1   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,049h		;8ad4
 	jr L_8AC0		;8ad6
 L_8AD8:
 	ld a,005h		;8ad8
-	call 04fe4h		;8ada   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8ada   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,05ah		;8add
 	jr L_8AC0		;8adf
 L_8AE1:
 	ld a,006h		;8ae1
-	call 04fe4h		;8ae3   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8ae3   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld b,093h		;8ae6
 L_8AE8:
 	ld (ix+00ah),b		;8ae8   ; guarda la pose de la figura
@@ -1753,7 +1753,7 @@ L_8AE8:
 	jp pon_velocidad_x		;8aff   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 L_8B02:
 	ld a,007h		;8b02
-	call 04fe4h		;8b04   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;8b04   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld b,03ch		;8b07
 	ld a,(ix+005h)		;8b09   ; lee la x de la figura
 	ld hl,0cd38h		;8b0c
@@ -2096,7 +2096,7 @@ L_8D40:
 	ld (ix+00bh),0f0h		;8d46
 	call 07d7eh		;8d4a
 	ld e,(ix+012h)		;8d4d
-	call 05929h		;8d50   ; suma_dinero: suma ryo al dinero
+	call 05929h		;8d50   ; suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 	ld (ix+00ch),000h		;8d53
 	inc (ix+001h)		;8d57   ; sube el paso en que va la figura
 	ld (ix+011h),001h		;8d5a
@@ -2252,29 +2252,29 @@ L_8E6F:
 	ret			;8e6f
 L_8E70:
 	xor a			;8e70
-	ld (0cd2ah),a		;8e71   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;8e71   ; guarda la marca que se pone en 0xD800
 	jr L_8EA3		;8e74
 L_8E76:
 	ld bc,0a090h		;8e76
 	ld a,0ffh		;8e79
-	ld (0cd2ah),a		;8e7b   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;8e7b   ; guarda la marca que se pone en 0xD800
 	call L_8EB1		;8e7e
 	ld bc,0b090h		;8e81
 	jr L_8EB1		;8e84
 L_8E86:
 	ld bc,0a090h		;8e86
 	xor a			;8e89
-	ld (0cd2ah),a		;8e8a   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;8e8a   ; guarda la marca que se pone en 0xD800
 	jr L_8EB1		;8e8d
 L_8E8F:
 	ld bc,07090h		;8e8f
 	ld a,000h		;8e92
-	ld (0cd2ah),a		;8e94   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;8e94   ; guarda la marca que se pone en 0xD800
 	jr L_8EB1		;8e97
 L_8E99:
 	ld bc,00080h		;8e99
 	ld a,0ffh		;8e9c
-	ld (0cd2ah),a		;8e9e   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;8e9e   ; guarda la marca que se pone en 0xD800
 	jr L_8EB1		;8ea1
 L_8EA3:
 	ld (ix+00dh),000h		;8ea3
@@ -2334,7 +2334,7 @@ L_8F12:
 	or a			;8f15
 	ret z			;8f16
 	ld a,008h		;8f17
-	call 05884h		;8f19   ; suma_vida: suma vida al jugador
+	call 05884h		;8f19   ; suma_vida: suma A a la vida, hasta la maxima, y la pinta
 	call L_8E8F		;8f1c
 	call L_8F57		;8f1f
 	jp borra_la_figura		;8f22   ; borra_la_figura: borra la figura
@@ -2443,7 +2443,7 @@ L_8FB0:
 	ld (ix+00bh),010h		;8fbf
 	call L_8F57		;8fc3
 	ld a,016h		;8fc6
-	jp 04fe4h		;8fc8   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;8fc8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_8FCB:
 	dec (ix+00bh)		;8fcb
 	ret nz			;8fce
@@ -2529,7 +2529,7 @@ L_904A:
 L_9066:
 	push af			;9066
 	ld a,0ffh		;9067
-	ld (0cd2ah),a		;9069   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;9069   ; guarda la marca que se pone en 0xD800
 L_906C:
 	pop af			;906c
 	ret			;906d
@@ -2639,12 +2639,12 @@ L_90EE:
 	ld a,(de)			;9100
 	and 0f0h		;9101
 	add a,000h		;9103
-	ld (0cd27h),a		;9105   ; guarda la y de la pieza
+	ld (0cd27h),a		;9105   ; guarda lo que se baja la pieza
 	inc de			;9108
 	ld a,(de)			;9109
 	ld b,a			;910a
 	and 0f0h		;910b
-	ld (0cd28h),a		;910d   ; guarda la x de la pieza
+	ld (0cd28h),a		;910d   ; guarda lo que se corre la pieza
 	ld a,b			;9110
 	and 00fh		;9111
 	inc de			;9113
@@ -2694,8 +2694,8 @@ L_9141:
 	inc hl			;9148
 	push hl			;9149
 	ld a,0ffh		;914a
-	ld (0cd2ah),a		;914c   ; guarda la marca de 0xD800
-	call 04e84h		;914f   ; pinta_bloque: pinta un bloque de 4x4 caracteres
+	ld (0cd2ah),a		;914c   ; guarda la marca que se pone en 0xD800
+	call 04e84h		;914f   ; pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
 	pop hl			;9152
 	jr L_9141		;9153
 L_9155:
@@ -2712,7 +2712,7 @@ L_915C:
 	ret z			;9163
 	ld de,00000h		;9164
 	push hl			;9167
-	call 04e84h		;9168   ; pinta_bloque: pinta un bloque de 4x4 caracteres
+	call 04e84h		;9168   ; pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
 	pop hl			;916b
 	jr L_915C		;916c
 L_916E:
@@ -2728,7 +2728,7 @@ L_916E:
 	ld b,004h		;9182
 L_9184:
 	xor a			;9184
-	ld (0cd2ah),a		;9185   ; guarda la marca de 0xD800
+	ld (0cd2ah),a		;9185   ; guarda la marca que se pone en 0xD800
 	ld a,(de)			;9188
 	inc a			;9189
 	jp z,L_911B		;918a
@@ -2751,11 +2751,11 @@ L_91A3:
 	ld b,a			;91a4
 	and 0f0h		;91a5
 	add a,020h		;91a7
-	ld (0cd27h),a		;91a9   ; guarda la y de la pieza
+	ld (0cd27h),a		;91a9   ; guarda lo que se baja la pieza
 	inc de			;91ac
 	ld a,(de)			;91ad
 	and 0f0h		;91ae
-	ld (0cd28h),a		;91b0   ; guarda la x de la pieza
+	ld (0cd28h),a		;91b0   ; guarda lo que se corre la pieza
 	ld a,(0cd4fh)		;91b3
 	or a			;91b6
 	jr nz,L_91CE		;91b7
@@ -2877,7 +2877,7 @@ L_925D:
 	and 040h		;9260
 	jr z,L_9269		;9262
 	ld a,081h		;9264
-	call 04fe4h		;9266   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;9266   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_9269:
 	xor a			;9269
 	ld (0cd2eh),a		;926a
@@ -2895,7 +2895,7 @@ L_927E:
 	ld a,(hl)			;927e
 	and 07fh		;927f
 	push af			;9281
-	call 053e3h		;9282   ; figura_del_interior: la figura de un interior (tipos 0x22-0x24)
+	call 053e3h		;9282   ; figura_del_interior: los sprites de un interior (figuras 0x22-0x24)
 	pop af			;9285
 	ld (0cd5fh),a		;9286
 	ld de,09567h		;9289
@@ -3286,7 +3286,7 @@ L_94FF:
 	ld d,(hl)			;950f
 	inc hl			;9510
 	push hl			;9511
-	call 04eb9h		;9512   ; pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+	call 04eb9h		;9512   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 	pop hl			;9515
 	pop de			;9516
 	pop bc			;9517
@@ -3440,7 +3440,7 @@ L_963F:
 	call L_868E		;963f
 	call L_86FC		;9642
 	call L_8861		;9645
-	call 05b61h		;9648   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 05b61h		;9648   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	ret			;964b
 L_964C:
 	ld de,04060h		;964c
@@ -3482,7 +3482,7 @@ L_9678:
 	ld (0cd0fh),de		;969c
 	call L_828F		;96a0
 	ld a,010h		;96a3
-	jp 04fe4h		;96a5   ; sonido: arranca la musica o el efecto A
+	jp 04fe4h		;96a5   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_96A8:
 	ld a,(0c002h)		;96a8   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;96ab
@@ -3535,13 +3535,13 @@ L_96D3:
 	ld bc,01008h		;96ed
 	ld a,001h		;96f0
 	push de			;96f2
-	call 0476eh		;96f3   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;96f3   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	pop de			;96f6
 	ld e,098h		;96f7
 	ld hl,000d0h		;96f9
 	ld bc,01008h		;96fc
 	ld a,001h		;96ff
-	call 0476eh		;9701   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+	call 0476eh		;9701   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	ret			;9704
 L_9705:
 	xor a			;9705
@@ -3762,7 +3762,7 @@ L_9876:
 	ret			;9879
 L_987A:
 	call L_9881		;987a
-	call 05b1dh		;987d
+	call 05b1dh		;987d   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 	ret			;9880
 L_9881:
 	ld a,(0cdcdh)		;9881
@@ -4183,7 +4183,7 @@ L_9B75:
 	ld a,022h		;9b89
 	ld d,000h		;9b8b
 	ld bc,0a018h		;9b8d
-	call 04732h		;9b90   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04732h		;9b90   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 	ld hl,0cd57h		;9b93
 	ld (hl),007h		;9b96
 	call L_9BBF		;9b98
@@ -4293,7 +4293,7 @@ L_9C3D:
 	ret nz			;9c4e
 	ld (ix+00bh),00dh		;9c4f
 	ld a,020h		;9c53
-	call 04fe4h		;9c55   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;9c55   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_9AED		;9c58
 	ld (ix+001h),003h		;9c5b   ; el paso en que va la figura = 0x03
 	ld (ix+00ah),095h		;9c5f   ; la pose de la figura = 0x95
@@ -4303,7 +4303,7 @@ L_9C65:
 	ret nz			;9c68
 	ld (ix+00bh),020h		;9c69
 	ld a,00ah		;9c6d
-	call 04fe4h		;9c6f   ; sonido: arranca la musica o el efecto A
+	call 04fe4h		;9c6f   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call L_9AED		;9c72
 	inc (ix+001h)		;9c75   ; sube el paso en que va la figura
 	ld (ix+00ah),075h		;9c78   ; la pose de la figura = 0x75

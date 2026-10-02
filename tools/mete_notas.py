@@ -19,7 +19,7 @@ import os
 import sys
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CAB = "# --- A MANO: comentarios, nombres y bloques (cada uno de lo que hace ESE codigo) ---"
+CAB = "# --- A MANO: comentarios, nombres y bloques ---"
 OTRAS = ("# --- BLOQUES QUE LEE EL CODIGO", "# --- ANOTACIONES AUTOMATICAS",
          "# --- DATOS DECLARADOS A MANO")
 
