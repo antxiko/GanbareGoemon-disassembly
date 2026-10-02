@@ -1,3 +1,6 @@
+# --- A MANO: comentarios, nombres y bloques ---
+D 0x7579 0x7581 fila_de_mas_7579  una septima fila de 8 bloques detras de la pantalla del estado 8 (0x7549), que p00:5283 monta con 6 filas: no la lee nadie (8 bytes)
+
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6000 0x600C pantallas_de_cada_juego  6 punteros, uno por juego de graficos (0xC289): las pantallas de ese juego, en rle; p00:4295 las descomprime en 0xD000 (48 bytes cada una); lo leen p00:429C (12 bytes)

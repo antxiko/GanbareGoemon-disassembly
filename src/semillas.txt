@@ -14,3 +14,17 @@ p10 0x6449 10 11 12  # a mano: p00:50EE: ld hl,0x6449 / ld (0xC016),hl (efecto d
 p10 0x60ED 10 11 12  # a mano: p00:5171: ld hl,0x60ED / ld (0xC018),hl (lo que salta p10:608B)
 p10 0x61BE 10 11 12  # a mano, codigo huerfano: nadie salta a 0x61BE (ni una constante 0x61BE en los 128 KB); es la mitad del vibrato que no se usa (sube o baja el tono de (ix+17/18) y lo escribe con 0x608F)
 p01 0x7DE9 1 2 3  # a mano, codigo huerfano: nadie salta a 0x7DE9 (ni una palabra 0x7DE9 en los 128 KB, y p01:7DE6 es un `jp`); es una version vieja del cargador de cosas de la casilla (p00:53B7 hace lo mismo con 0x981D y el banco 14 en 0x8000): esta pone el 14 en 0xA000 (la unica escritura fuera de su ranura del cartucho) y leeria 0x981D del banco 2
+p01 0x62FE 1 2 3  # a mano: p00:5DC8 hace ld hl,0x62FE / push hl antes de despachar los estados 0-2, asi que el `ret` de esos estados vuelve aqui (es una direccion de vuelta, no un dato)
+p00 0x4496 1 2 3  # a mano, codigo huerfano: lee de la VRAM con inir (pone la direccion con p00:4516); nadie la llama ni la nombra
+p00 0x44DD 1 2 3  # a mano, codigo huerfano: lee un byte de la VRAM (in a,(c) por el puerto de 0x0006); nadie la llama
+p00 0x44E9 1 2 3  # a mano, codigo huerfano: escribe un byte en la VRAM (out (c),a por el de 0x0007); nadie la llama
+p00 0x4516 1 2 3  # a mano, codigo huerfano: pone la direccion de LECTURA de la VRAM (como p00:44F7 sin el bit 6); solo la llaman 0x4496 y 0x44DD, huerfanas
+p00 0x4935 1 2 3  # a mano, codigo huerfano: escribe B veces el caracter A con p00:491C y p00:4984; nadie la llama
+p00 0x4952 1 2 3  # a mano, codigo huerfano: pinta un caracter con LMMM (p00:4803, operacion 0x48) en vez de HMMM; nadie la llama
+p00 0x5878 1 2 3  # a mano, codigo huerfano: resta A de la vida (0xC481) y salta a p00:588E, como p00:5884 pero restando; nadie la llama
+p00 0x5A4C 1 2 3  # a mano, codigo huerfano: HL = A x 28 (lo mismo que hace p00:5A6A en linea); nadie la llama
+p01 0x7F39 1 2 3  # a mano, codigo huerfano: call 0x7F2E / ld c,0x0E / jp 0x4704 (borra un recuadro y le pone marco); nadie la llama
+p03 0xA4E6 1 2 3  # a mano, codigo huerfano: call 0x85B1 / jr 0xA4D8; nadie salta a 0xA4E6
+p03 0xA579 1 2 3  # a mano, codigo huerfano: da la vuelta a (ix+0x1A) con xor 0x0C y a (ix+0x19) con xor 3; nadie la llama
+p03 0xA5C8 1 2 3  # a mano, codigo huerfano: and 3 / ret z / and 1 / ld (ix+0x0F),a; nadie la llama
+p03 0xADCD 1 2 3  # a mano, codigo huerfano: cp 3 / ret nz / xor a / dec hl / dec hl; nadie la llama (los CD AD que salen en la ROM son trozos de `call 0x92AD`)

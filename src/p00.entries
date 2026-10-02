@@ -12,11 +12,11 @@
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x4045   # gancho de interrupcion H.TIMI: INIT escribe 0xC3 en 0xFD9F y esta direccion en 0xFDA0 (p00:40D5-p00:40DD)
+0x4083   # p03:A59C call
 0x4088   # p03:BE5B call
 0x4097   # cabecera AB: INIT
 0x416F   # p01:60C3 call
 0x4188   # p01:66ED call
-0x4206   # p01:7E31 jp
 0x4280   # p03:B369 jp
 0x4295   # p01:60BD call
 0x42AC   # p01:666F call
@@ -27,17 +27,22 @@
 0x4380   # p03:BDC4 call
 0x43E2   # p03:B4F7 call
 0x4420   # p01:7F91 jp
+0x4462   # p01:633E jp
+0x4496   # a mano, codigo huerfano: lee de la VRAM con inir (pone la direccion con p00:4516); nadie la llama ni la nombra
+0x44DD   # a mano, codigo huerfano: lee un byte de la VRAM (in a,(c) por el puerto de 0x0006); nadie la llama
+0x44E9   # a mano, codigo huerfano: escribe un byte en la VRAM (out (c),a por el de 0x0007); nadie la llama
+0x4516   # a mano, codigo huerfano: pone la direccion de LECTURA de la VRAM (como p00:44F7 sin el bit 6); solo la llaman 0x4496 y 0x44DD, huerfanas
 0x45CB   # p03:B400 call
-0x45D3   # p01:62B1 call
-0x45E1   # p01:62BD call
-0x45EE   # p01:62AE call
-0x4704   # p01:6398 jp
-0x48FD   # p01:6C29 call
+0x4704   # p01:7F3E jp
+0x4732   # p01:7F33 call
+0x4935   # a mano, codigo huerfano: escribe B veces el caracter A con p00:491C y p00:4984; nadie la llama
+0x4952   # a mano, codigo huerfano: pinta un caracter con LMMM (p00:4803, operacion 0x48) en vez de HMMM; nadie la llama
 0x4964   # p01:64BF call
 0x49D2   # p01:6234 call
 0x49E4   # p01:6935 jp
+0x49E7   # p01:6304 call
+0x49EE   # p01:62FE call
 0x4A43   # p01:645B call
-0x4A6D   # p01:662C call
 0x4A96   # p03:BDF3 jp
 0x4BAB   # p01:6043 call
 0x4BC5   # p01:612B call
@@ -46,7 +51,6 @@
 0x4CE3   # p01:6720 call
 0x4D08   # p03:B4FD call
 0x4D14   # p01:6723 call
-0x4D48   # p01:693C jp
 0x4D63   # p01:6046 call
 0x4D72   # p01:612E call
 0x4D81   # p01:7DFD call
@@ -56,15 +60,16 @@
 0x4E8E   # p02:8EBD jp
 0x4EF1   # p03:AFBA call
 0x4F47   # p01:6A4A call
-0x4FE4   # p01:62C2 call
+0x4FE4   # p01:6345 call
 0x51ED   # p01:6131 call
 0x5311   # p01:66EA call
 0x534E   # p01:6134 call
 0x53E3   # p02:9282 call
 0x5413   # p01:671A call
-0x54E6   # p02:8417 call
+0x54E6   # p02:897E jp
 0x5502   # p02:89B0 jp
 0x5503   # p02:9C3A jp
+0x5878   # a mano, codigo huerfano: resta A de la vida (0xC481) y salta a p00:588E, como p00:5884 pero restando; nadie la llama
 0x5884   # p03:B4F4 call
 0x58C5   # p01:6871 call
 0x5929   # p02:8D50 call
@@ -73,15 +78,16 @@
 0x5958   # p03:B81F call
 0x5969   # p01:7D28 call
 0x598D   # p03:BC34 call
+0x5A4C   # a mano, codigo huerfano: HL = A x 28 (lo mismo que hace p00:5A6A en linea); nadie la llama
 0x5A6A   # p03:BC5F call
+0x5A93   # p01:6348 jp
 0x5B09   # p01:6802 call
 0x5B1D   # p02:987D call
-0x5B61   # p01:62BA call
 0x5B6D   # p02:8278 call
 0x5DEF   # p00:5DCC entrada 0 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
 0x5E15   # p00:5DCC entrada 1 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
 0x5E1F   # p00:5DCC entrada 2 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
-0x5E2D   # p01:6273 jp
+0x5E2D   # p01:6357 jp
 0x5E40   # p01:62C7 jp
 0x5E43   # p01:6287 jp
 0x5E48   # p00:5DCC entrada 3 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)

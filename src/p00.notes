@@ -1,5 +1,22 @@
+# Notas del banco 0: comentarios (C), etiquetas (L) y datos (D) anclados a direccion.
+# El banco 0 es fijo en 0x4000-0x5FFF: arranque, interrupcion, despachador, los
+# cambios de banco y los lectores de datos que usa todo el cartucho.
+
+# --- A MANO: comentarios, nombres y bloques ---
+D 0x4182 0x4188 musica_de_cada_juego  la musica de cada juego de graficos (0xC289): 0x82, 0x83, 0x86, 0x84, 0x85 y 0x87; p00:416F la pide con p00:4FE4 si el bit 6 de 0xC002 esta puesto (6 bytes)
+D 0x437B 0x437E al_empezar_la_partida  los tres bytes que p00:435E copia a 0xC260-0xC262 al empezar: 3 vidas (0xC260, que p00:5F00 resta), 0xC261 = 1 y 0xC262 = 0x10, los puntos (en BCD, x 10.000) de la proxima vida que mira p00:43AA (3 bytes)
+D 0x49CA 0x49D2 registros_del_vdp  cuatro parejas [registro][valor] que p00:49B7 escribe con WRTVDP tras pasar a SCREEN 5: R1 = 0x62, R5 = 0xEF, R6 = 0x1F y R11 = 0x01 (8 bytes)
+F 0x49CA 2
+D 0x4EFC 0x4F26 iconos_del_marcador  21 parejas [x][y] en la pagina 1 de la VRAM de los dibujos que p00:4EB9 copia con HMMM (0x476E): el 0x0E de 32x32 y el resto de 16x16 (42 bytes)
+F 0x4EFC 2
+D 0x50A3 0x50BD canal_en_blanco  los 26 bytes con los que p00:5038-5054 y p00:50D3 ponen a cero la ficha de cada canal del sonido (0xC01A, 0xC034, 0xC04E, 0xC068 y 0xC082) antes de arrancar una musica o un efecto (26 bytes)
+D 0x582A 0x5834 sitios_del_marcador  la x de cada una de las 10 cosas del marcador (p00:57FE: 0xC270 + n dice si se tiene y p00:5825 pone esta x con y = 0x10) (10 bytes)
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x4000 0x4010 cabecera_ab  la cabecera del cartucho: 'AB', INIT (0x4097) y STATEMENT, DEVICE y TEXT a cero; lo leen la BIOS (16 bytes)
+F 0x4000 16
+D 0x4010 0x4045 cabecera_de_konami  la cabecera de Konami que lee el Game Master desde la otra ranura: 'CD', 0x07 0x48 (RC-748) y, detras, direcciones de la RAM del juego (0xC004, 0xC280, 0xC260...); el propio cartucho no la lee; lo leen el Game Master (53 bytes)
+F 0x4010 8
 D 0x4C4B 0x4C57 caracteres_de_cada_juego  6 punteros, uno por juego de graficos (0xC289), a sus caracteres de 8x8 en rle; p00:4AA7 los descomprime en 0xD000 (con los bancos 4-5-6); lo leen p00:4A9D (12 bytes)
 F 0x4C4B 16
 D 0x4C57 0x4C75 caracteres_vueltos_de_cada_juego  6 fichas de 5 bytes, una por juego de graficos: [VRAM][n][fuente en 0xD000] de los caracteres que p00:4AC7 sube dados la vuelta (0x4C75); los juegos 2 y 3 van a cero; lo leen p00:4C15 (30 bytes)
@@ -8,6 +25,10 @@ D 0x54B8 0x54E2 jefe_de_cada_fase  21 punteros (p00:5409, el numero lo da p02:92
 F 0x54B8 16
 D 0x54E2 0x54E6 jefes  los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno); lo leen p00:542F (4 bytes)
 F 0x54E2 16
+D 0x554E 0x5626 colores_de_cada_pose  108 punteros, dos por cada uno de los 54 juegos de color (0xCD37 - 1), el segundo para la figura mirando al otro lado (bit 0 de ix+0x0A) (p00:54E7); lo leen p00:54E7 (216 bytes)
+F 0x554E 16
+D 0x5626 0x57FA listas_de_color  las listas de color de las poses: cada entrada de 0x554E apunta a tantas listas seguidas como sprites tiene la figura (ix+0x20, que pone p02:835C), y cada lista son tripletes [n][desde][color] que p00:5537 pinta sobre los 16 bytes de color del sprite, con un 0 al final; unas entradas empiezan dentro de las listas de otras. Lo ultimo (desde 0x57BE, donde acaba la primera lista de la ultima entrada) solo lo lee una pose con mas sprites; eso no esta medido; lo leen p00:5537 (468 bytes)
+F 0x5626 16
 D 0x5BB2 0x5BBE conjuntos_de_cada_juego  6 punteros, uno por juego de graficos (0xC289), a sus conjuntos de figuras (p00:5BA8); lo leen p00:5BA8 (12 bytes)
 F 0x5BB2 16
 D 0x5BBE 0x5BDE conjuntos_juego_0  16 punteros, uno por conjunto de figuras del juego 0, a su lista (p00:5BAF); lo leen p00:5BAF (32 bytes)
@@ -20,6 +41,8 @@ D 0x5C14 0x5C2C conjuntos_juego_3  12 punteros, uno por conjunto de figuras del 
 F 0x5C14 16
 D 0x5C2C 0x5C46 conjuntos_juego_4  13 punteros, uno por conjunto de figuras del juego 4, a su lista (p00:5BAF); lo leen p00:5BAF (26 bytes)
 F 0x5C2C 16
+D 0x5C46 0x5C48 conjunto_13_juego_4  un decimocuarto puntero de los conjuntos del juego 4 (0x5D81); ninguna casilla de las zonas de ese juego pide el 13; lo leen nadie (2 bytes)
+F 0x5C46 16
 D 0x5C48 0x5C66 conjuntos_juego_5  15 punteros, uno por conjunto de figuras del juego 5, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
 F 0x5C48 16
 D 0x5C66 0x5C6A figuras_5C66  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
@@ -158,6 +181,8 @@ D 0x5D79 0x5D7D figuras_5D79  un conjunto de figuras: [n] y n+1 tipos (0 es ning
 F 0x5D79 16
 D 0x5D7D 0x5D81 figuras_5D7D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
 F 0x5D7D 16
+D 0x5D81 0x5D85 figuras_5D81  el conjunto al que apunta 0x5C46: [2] y los tipos 0, 0x16 y 0x15; no lo pide nadie; lo leen nadie (4 bytes)
+F 0x5D81 16
 D 0x5D85 0x5D88 figuras_5D85  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
 F 0x5D85 16
 D 0x5D88 0x5D8B figuras_5D88  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
@@ -188,4 +213,6 @@ D 0x5DB3 0x5DB7 figuras_5DB3  un conjunto de figuras: [n] y n+1 tipos (0 es ning
 F 0x5DB3 16
 D 0x5DB7 0x5DBB figuras_5DB7  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
 F 0x5DB7 16
+D 0x5DCF 0x5DEF tabla_5DCF  16 destinos del despachador de 0x408D (call en p00:5DCC): 0x5DEF, 0x5E15, 0x5E1F, 0x5E48, 0x5EA3, 0x5F17, 0x5F57, 0x5F86 ...; lo leen p00:5DCC (32 bytes)
+F 0x5DCF 2
 # --- fin de los bloques de bloques.py ---

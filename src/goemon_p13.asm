@@ -698,8 +698,11 @@ DATA_pantalla_7549:
 	defb 00bh,00ah,00bh,00ah,00bh,00ah,00bh,00ah,007h,007h,007h,007h,007h,007h,007h,007h	; 7569  ................
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7579..0x7581  (8 bytes)
-DATA_7579:
+; DATOS fila_de_mas_7579: una septima fila de 8 bloques detras de la pantalla
+;   del estado 8 (0x7549), que p00:5283 monta con 6 filas: no la lee nadie (8
+;   bytes)
+;   0x7579..0x7581  (8 bytes)
+DATA_fila_de_mas_7579:
 	defb 007h,007h,007h,007h,007h,007h,007h,007h	; 7579  ........
 
 ; ----------------------------------------------------------------------

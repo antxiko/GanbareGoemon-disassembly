@@ -342,7 +342,7 @@ DATA_rotulo_628A:
 	defb 030h,05dh,039h,063h,032h,049h,067h,0ffh	; 628a  0]9c2Ig.
 
 ; ======================================================================
-; CODIGO 0x6292..0x62fe  (108 bytes)
+; CODIGO 0x6292..0x636c  (218 bytes)
 ; ======================================================================
 
 
@@ -394,22 +394,58 @@ L_62E5:
 	call 04fe4h		;62f6
 	ld a,0f0h		;62f9
 	jp 05e40h		;62fb
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x62fe..0x635a  (92 bytes)
-DATA_62FE:
-	defb 0cdh,0eeh,049h,021h,051h,0c2h,0cdh,0e7h,049h,0b7h,0c8h,021h,004h,0c0h,036h,000h	; 62fe  ..I!Q...I..!..6.
-	defb 06eh,011h,052h,0c2h,046h,010h,02ch,0e6h,030h,028h,032h,0e6h,020h,020h,038h,01ah	; 630e  n.R.F.,.0(2.  8.
-	defb 0b7h,03eh,040h,028h,002h,03eh,060h,032h,002h,0c0h,0e5h,021h,057h,0c2h,011h,058h	; 631e  .>@(.>`2...!W..X
-	defb 0c2h,001h,005h,000h,036h,000h,0edh,0b0h,0e1h,036h,003h,023h,00eh,000h,071h,00dh	; 632e  ....6....6.#..q.
-	defb 0c3h,062h,044h,036h,001h,03eh,000h,0cdh,0e4h,04fh,0c3h,093h,05ah,01ah,0eeh,001h	; 633e  .bD6.>...O..Z...
-	defb 012h,021h,081h,0efh,07eh,034h,0c9h,03eh,00eh,0c3h,02dh,05eh	; 634e  .!..~4.>..-^
-
-; ======================================================================
-; CODIGO 0x635a..0x636c  (18 bytes)
-; ======================================================================
-
-
+L_62FE:
+	call 049eeh		;62fe
+	ld hl,0c251h		;6301
+	call 049e7h		;6304
+	or a			;6307
+	ret z			;6308
+	ld hl,0c004h		;6309
+	ld (hl),000h		;630c
+	ld l,(hl)			;630e
+	ld de,0c252h		;630f
+	ld b,(hl)			;6312
+	djnz L_6341		;6313
+	and 030h		;6315
+	jr z,L_634B		;6317
+	and 020h		;6319
+	jr nz,L_6355		;631b
+	ld a,(de)			;631d
+	or a			;631e
+	ld a,040h		;631f
+	jr z,L_6325		;6321
+	ld a,060h		;6323
+L_6325:
+	ld (0c002h),a		;6325
+	push hl			;6328
+	ld hl,0c257h		;6329
+	ld de,0c258h		;632c
+	ld bc,00005h		;632f
+	ld (hl),000h		;6332
+	ldir		;6334
+	pop hl			;6336
+	ld (hl),003h		;6337
+	inc hl			;6339
+	ld c,000h		;633a
+	ld (hl),c			;633c
+	dec c			;633d
+	jp 04462h		;633e
+L_6341:
+	ld (hl),001h		;6341
+	ld a,000h		;6343
+	call 04fe4h		;6345
+	jp 05a93h		;6348
+L_634B:
+	ld a,(de)			;634b
+	xor 001h		;634c
+	ld (de),a			;634e
+	ld hl,0ef81h		;634f
+	ld a,(hl)			;6352
+	inc (hl)			;6353
+	ret			;6354
+L_6355:
+	ld a,00eh		;6355
+	jp 05e2dh		;6357
 L_635A:
 	ld hl,06a54h		;635a
 	ld bc,02c10h		;635d
@@ -496,11 +532,26 @@ DATA_rotulo_63F0:
 	defb 06ah,0feh,0a0h,000h,073h,074h,075h,076h,077h,0feh,0e8h,000h,0afh,0b0h,0ffh	; 6400  j...stuvw......
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x640f..0x6435  (38 bytes)
-DATA_640F:
-	defb 054h,060h,083h,084h,085h,086h,087h,000h,079h,07ah,07bh,07ch,07dh,0ffh,04ch,060h	; 640f  T`......yz{|}.L`
-	defb 088h,089h,08ah,08bh,08ch,08dh,08eh,000h,079h,07ah,07bh,07ch,07dh,0ffh,010h,000h	; 641f  ........yz{|}...
-	defb 083h,084h,085h,086h,087h,0ffh	; 642f
+; DATOS rotulo_640F: un rotulo con el formato de 0x48F3 en (0x54, 0x60): los
+;   caracteres 0x83-0x87 (los mismos que el de 0x642D, el del jugador 1), un 0
+;   y 0x79-0x7D; no lo escribe nadie (14 bytes)
+;   0x640f..0x641d  (14 bytes)
+DATA_rotulo_640F:
+	defb 054h,060h,083h,084h,085h,086h,087h,000h,079h,07ah,07bh,07ch,07dh,0ffh	; 640f  T`......yz{|}.
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_641D: lo mismo para el jugador 2 en (0x4C, 0x60), con 0x88-0x8E
+;   (los del rotulo de 0x6435); no lo escribe nadie (16 bytes)
+;   0x641d..0x642d  (16 bytes)
+DATA_rotulo_641D:
+	defb 04ch,060h,088h,089h,08ah,08bh,08ch,08dh,08eh,000h,079h,07ah,07bh,07ch,07dh,0ffh	; 641d  L`........yz{|}.
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_642D: el rotulo del jugador 1 en (0x10, 0x00) que p00:43E5
+;   escribe con 0x48F3 (el del 2 es 0x6435) (8 bytes)
+;   0x642d..0x6435  (8 bytes)
+DATA_rotulo_642D:
+	defb 010h,000h,083h,084h,085h,086h,087h,0ffh	; 642d  ........
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_6435: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -601,8 +652,10 @@ L_64C7:
 	ret			;64c8
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x64c9..0x650a  (65 bytes)
-DATA_64C9:
+; DATOS cartel_64C9: los caracteres que p01:64A9 pinta desde (0x40, 0x40) con
+;   p00:4964: 0xFE [dx] baja una fila y corre dx, 0xFF acaba (65 bytes)
+;   0x64c9..0x650a  (65 bytes)
+DATA_cartel_64C9:
 	defb 001h,002h,003h,0feh,0f8h,004h,005h,006h,007h,0feh,0f0h,008h,009h,00ah,00bh,00eh	; 64c9  ................
 	defb 00fh,010h,011h,01bh,01ch,01dh,01eh,01fh,020h,021h,022h,023h,024h,025h,026h,0feh	; 64d9  ........ !"#$%&.
 	defb 000h,00ch,002h,00dh,012h,013h,014h,015h,027h,028h,029h,02ah,02bh,02ch,02dh,02eh	; 64e9  ........'()*+,-.
@@ -696,10 +749,39 @@ L_6567:
 	jp 04206h		;6586
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6589..0x65a2  (25 bytes)
-DATA_6589:
-	defb 091h,065h,094h,065h,099h,065h,09dh,065h,002h,001h,003h,004h,000h,002h,004h,005h	; 6589  .e.e.e.e........
-	defb 003h,001h,003h,006h,004h,000h,002h,004h,006h	; 6599  .........
+; DATOS frases: 4 punteros (0xC26A = 7 y el bit de B, p01:655A) a las frases
+;   de p01:6567; lo leen p01:655C (8 bytes)
+;   0x6589..0x6591  (8 bytes)
+DATA_frases:
+	defb 091h,065h,094h,065h,099h,065h,09dh,065h	; 6589  .e.e.e.e
+
+; ----------------------------------------------------------------------
+; DATOS frase_6591: [n] y n numeros de trozo de texto (0xBCD3) que p01:6567
+;   junta; lo leen p01:6562 (3 bytes)
+;   0x6591..0x6594  (3 bytes)
+DATA_frase_6591:
+	defb 002h,001h,003h	; 6591
+
+; ----------------------------------------------------------------------
+; DATOS frase_6594: [n] y n numeros de trozo de texto (0xBCD3) que p01:6567
+;   junta; lo leen p01:6562 (5 bytes)
+;   0x6594..0x6599  (5 bytes)
+DATA_frase_6594:
+	defb 004h,000h,002h,004h,005h	; 6594
+
+; ----------------------------------------------------------------------
+; DATOS frase_6599: [n] y n numeros de trozo de texto (0xBCD3) que p01:6567
+;   junta; lo leen p01:6562 (4 bytes)
+;   0x6599..0x659d  (4 bytes)
+DATA_frase_6599:
+	defb 003h,001h,003h,006h	; 6599
+
+; ----------------------------------------------------------------------
+; DATOS frase_659D: [n] y n numeros de trozo de texto (0xBCD3) que p01:6567
+;   junta; lo leen p01:6562 (5 bytes)
+;   0x659d..0x65a2  (5 bytes)
+DATA_frase_659D:
+	defb 004h,000h,002h,004h,006h	; 659d
 
 ; ======================================================================
 ; CODIGO 0x65a2..0x65c7  (37 bytes)
@@ -733,11 +815,26 @@ L_65AA:
 	ret			;65c6
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x65c7..0x65f7  (48 bytes)
-DATA_65C7:
-	defb 040h,060h,000h,040h,070h,004h,040h,080h,008h,040h,090h,00ch,050h,060h,010h,050h	; 65c7  @`.@p.@..@..P`.P
-	defb 070h,014h,050h,080h,018h,050h,090h,01ch,060h,060h,020h,060h,070h,024h,060h,080h	; 65d7  p.P..P..`` `p$`.
-	defb 028h,060h,090h,02ch,070h,060h,030h,070h,070h,034h,070h,080h,038h,070h,090h,03ch	; 65e7  (`.,p`0pp4p.8p.<
+; DATOS sprites_65C7: 16 sprites [y][x][dibujo] que p01:65AA copia a 0xEE00
+;   (el color, 3, lo pone p01:65C2 en 0xEC00) (48 bytes)
+;   0x65c7..0x65f7  (48 bytes)
+DATA_sprites_65C7:
+	defb 040h,060h,000h	; 65c7
+	defb 040h,070h,004h	; 65ca
+	defb 040h,080h,008h	; 65cd
+	defb 040h,090h,00ch	; 65d0
+	defb 050h,060h,010h	; 65d3
+	defb 050h,070h,014h	; 65d6
+	defb 050h,080h,018h	; 65d9
+	defb 050h,090h,01ch	; 65dc
+	defb 060h,060h,020h	; 65df
+	defb 060h,070h,024h	; 65e2
+	defb 060h,080h,028h	; 65e5
+	defb 060h,090h,02ch	; 65e8
+	defb 070h,060h,030h	; 65eb
+	defb 070h,070h,034h	; 65ee
+	defb 070h,080h,038h	; 65f1
+	defb 070h,090h,03ch	; 65f4
 
 ; ======================================================================
 ; CODIGO 0x65f7..0x68e9  (754 bytes)
@@ -1102,8 +1199,11 @@ L_689E:
 	jp 043e2h		;68e6
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x68e9..0x68f3  (10 bytes)
-DATA_68E9:
+; DATOS cosas_de_la_demo: las diez cosas con las que empieza la demo, que
+;   p01:68DB copia a 0xC270-0xC279 (la demo empieza ademas con 99 vidas y 999
+;   de dinero, p01:68CF-68D7) (10 bytes)
+;   0x68e9..0x68f3  (10 bytes)
+DATA_cosas_de_la_demo:
 	defb 002h,000h,005h,005h,003h,005h,005h,001h,000h,002h	; 68e9  ..........
 
 ; ======================================================================
@@ -1172,16 +1272,73 @@ L_693F:
 	jr L_692E		;6953
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6955..0x69d1  (124 bytes)
-DATA_6955:
-	defb 016h,000h,016h,008h,002h,018h,004h,001h,010h,008h,002h,018h,026h,008h,002h,018h	; 6955  ............&...
-	defb 016h,002h,016h,008h,016h,028h,002h,008h,002h,018h,024h,004h,016h,000h,028h,008h	; 6965  .....(....$...(.
-	defb 010h,002h,032h,022h,010h,002h,038h,008h,016h,000h,044h,004h,032h,024h,007h,008h	; 6975  ..2"..8...D.2$..
-	defb 044h,001h,032h,000h,01ch,008h,048h,028h,002h,018h,016h,008h,016h,020h,008h,004h	; 6985  D.2...H(..... ..
-	defb 010h,002h,016h,020h,010h,004h,020h,001h,032h,000h,010h,002h,00ch,008h,016h,028h	; 6995  ... .. .2......(
-	defb 010h,008h,002h,018h,016h,001h,002h,010h,010h,000h,002h,020h,016h,000h,016h,002h	; 69a5  ........... ....
-	defb 040h,008h,016h,002h,016h,020h,016h,008h,032h,000h,002h,018h,016h,008h,008h,002h	; 69b5  @.... ..2.......
-	defb 038h,008h,016h,001h,024h,008h,002h,018h,032h,000h,001h,0ffh	; 69c5  8...$...2...
+; DATOS guion_de_la_demo: 62 parejas [mando][cuadros]: p01:693F deja el mando
+;   en 0xC00A y cuantos cuadros dura en 0xCD54; es lo que juega la demo (124
+;   bytes)
+;   0x6955..0x69d1  (124 bytes)
+DATA_guion_de_la_demo:
+	defb 016h,000h	; 6955
+	defb 016h,008h	; 6957
+	defb 002h,018h	; 6959
+	defb 004h,001h	; 695b
+	defb 010h,008h	; 695d
+	defb 002h,018h	; 695f
+	defb 026h,008h	; 6961
+	defb 002h,018h	; 6963
+	defb 016h,002h	; 6965
+	defb 016h,008h	; 6967
+	defb 016h,028h	; 6969
+	defb 002h,008h	; 696b
+	defb 002h,018h	; 696d
+	defb 024h,004h	; 696f
+	defb 016h,000h	; 6971
+	defb 028h,008h	; 6973
+	defb 010h,002h	; 6975
+	defb 032h,022h	; 6977
+	defb 010h,002h	; 6979
+	defb 038h,008h	; 697b
+	defb 016h,000h	; 697d
+	defb 044h,004h	; 697f
+	defb 032h,024h	; 6981
+	defb 007h,008h	; 6983
+	defb 044h,001h	; 6985
+	defb 032h,000h	; 6987
+	defb 01ch,008h	; 6989
+	defb 048h,028h	; 698b
+	defb 002h,018h	; 698d
+	defb 016h,008h	; 698f
+	defb 016h,020h	; 6991
+	defb 008h,004h	; 6993
+	defb 010h,002h	; 6995
+	defb 016h,020h	; 6997
+	defb 010h,004h	; 6999
+	defb 020h,001h	; 699b
+	defb 032h,000h	; 699d
+	defb 010h,002h	; 699f
+	defb 00ch,008h	; 69a1
+	defb 016h,028h	; 69a3
+	defb 010h,008h	; 69a5
+	defb 002h,018h	; 69a7
+	defb 016h,001h	; 69a9
+	defb 002h,010h	; 69ab
+	defb 010h,000h	; 69ad
+	defb 002h,020h	; 69af
+	defb 016h,000h	; 69b1
+	defb 016h,002h	; 69b3
+	defb 040h,008h	; 69b5
+	defb 016h,002h	; 69b7
+	defb 016h,020h	; 69b9
+	defb 016h,008h	; 69bb
+	defb 032h,000h	; 69bd
+	defb 002h,018h	; 69bf
+	defb 016h,008h	; 69c1
+	defb 008h,002h	; 69c3
+	defb 038h,008h	; 69c5
+	defb 016h,001h	; 69c7
+	defb 024h,008h	; 69c9
+	defb 002h,018h	; 69cb
+	defb 032h,000h	; 69cd
+	defb 001h,0ffh	; 69cf
 
 ; ======================================================================
 ; CODIGO 0x69d1..0x6af4  (291 bytes)
@@ -1358,9 +1515,14 @@ L_6AE0:
 	ret			;6af3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6af4..0x6afc  (8 bytes)
-DATA_6AF4:
-	defb 0ech,000h,004h,000h,0f8h,0f4h,0f8h,00ch	; 6af4  ........
+; DATOS cuatro_puntos: cuatro parejas [dx][dy] con signo que p01:6ACB suma a
+;   una posicion para mirar cuatro puntos con p01:781F (8 bytes)
+;   0x6af4..0x6afc  (8 bytes)
+DATA_cuatro_puntos:
+	defb 0ech,000h	; 6af4
+	defb 004h,000h	; 6af6
+	defb 0f8h,0f4h	; 6af8
+	defb 0f8h,00ch	; 6afa
 
 ; ======================================================================
 ; CODIGO 0x6afc..0x6ccc  (464 bytes)
@@ -1751,9 +1913,17 @@ L_6D38:
 	call 0408dh		;6d49
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6d4c..0x6d58  (12 bytes)
-DATA_6D4C:
-	defb 058h,06dh,09ah,06eh,048h,06fh,08fh,06fh,06eh,070h,0a9h,070h	; 6d4c  Xm.nHo.onp.p
+; DATOS tabla_6D4C: 6 destinos del despachador de 0x408D (call en p01:6D49):
+;   0x6D58, 0x6E9A, 0x6F48, 0x6F8F, 0x706E, 0x70A9; lo leen p01:6D49 (12
+;   bytes)
+;   0x6d4c..0x6d58  (12 bytes)
+DATA_tabla_6D4C:
+	defb 058h,06dh	; 6d4c
+	defb 09ah,06eh	; 6d4e
+	defb 048h,06fh	; 6d50
+	defb 08fh,06fh	; 6d52
+	defb 06eh,070h	; 6d54
+	defb 0a9h,070h	; 6d56
 
 ; ======================================================================
 ; CODIGO 0x6d58..0x6e92  (314 bytes)
@@ -1913,9 +2083,14 @@ L_6E7B:
 	ret			;6e91
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6e92..0x6e9a  (8 bytes)
-DATA_6E92:
-	defb 000h,001h,080h,001h,000h,002h,080h,002h	; 6e92  ........
+; DATOS velocidades: cuatro palabras, una por cada valor de 0xC270, que
+;   p01:6E85 deja en 0xC4A3: 0x0100, 0x0180, 0x0200 y 0x0280 (8 bytes)
+;   0x6e92..0x6e9a  (8 bytes)
+DATA_velocidades:
+	defb 000h,001h	; 6e92
+	defb 080h,001h	; 6e94
+	defb 000h,002h	; 6e96
+	defb 080h,002h	; 6e98
 
 ; ======================================================================
 ; CODIGO 0x6e9a..0x6f2a  (144 bytes)
@@ -2006,8 +2181,10 @@ L_6F1F:
 	jr L_6EF2		;6f28
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6f2a..0x6f48  (30 bytes)
-DATA_6F2A:
+; DATOS curva_del_salto: 30 bytes con signo que p01:6EF2 suma a la y del
+;   jugador (0xC498), uno por cuadro (0xC4A0 cuenta hasta 0x1E) (30 bytes)
+;   0x6f2a..0x6f48  (30 bytes)
+DATA_curva_del_salto:
 	defb 0fbh,0fch,0fdh,0fdh,0feh,0feh,0feh,0ffh,0ffh,000h,0ffh,000h,000h,000h,000h,000h	; 6f2a  ................
 	defb 000h,000h,000h,001h,000h,001h,001h,002h,002h,002h,003h,003h,004h,005h	; 6f3a  ..............
 
@@ -2725,9 +2902,14 @@ L_741B:
 	call 0408dh		;7422
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7425..0x742d  (8 bytes)
-DATA_7425:
-	defb 02dh,074h,038h,074h,048h,074h,05dh,074h	; 7425  -t8tHt]t
+; DATOS tabla_7425: 4 destinos del despachador de 0x408D (call en p01:7422):
+;   0x742D, 0x7438, 0x7448, 0x745D; lo leen p01:7422 (8 bytes)
+;   0x7425..0x742d  (8 bytes)
+DATA_tabla_7425:
+	defb 02dh,074h	; 7425
+	defb 038h,074h	; 7427
+	defb 048h,074h	; 7429
+	defb 05dh,074h	; 742b
 
 ; ======================================================================
 ; CODIGO 0x742d..0x75e0  (435 bytes)
@@ -3020,8 +3202,10 @@ L_75DB:
 	ret			;75df
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x75e0..0x75e4  (4 bytes)
-DATA_75E0:
+; DATOS color_por_lado: un byte por lado al que mira el jugador (0xC4A2): el
+;   sitio en 0xEC50 donde p01:75C9 cambia el color (0, ninguno) (4 bytes)
+;   0x75e0..0x75e4  (4 bytes)
+DATA_color_por_lado:
 	defb 000h,006h,00ah,00ah	; 75e0
 
 ; ======================================================================
@@ -3225,8 +3409,10 @@ L_7706:
 	ret			;770e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x770f..0x771f  (16 bytes)
-DATA_770F:
+; DATOS color_08: 16 veces 0x08: los colores de un sprite que p01:7706 copia a
+;   0xEC40 y 0xEC50 (16 bytes)
+;   0x770f..0x771f  (16 bytes)
+DATA_color_08:
 	defb 008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h,008h	; 770f  ................
 
 ; ======================================================================
@@ -3331,10 +3517,16 @@ L_77AA:
 	ret			;77be
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x77bf..0x77d1  (18 bytes)
-DATA_77BF:
-	defb 00dh,006h,007h,026h,015h,012h,001h,0f0h,001h,035h,019h,01dh,01eh,00fh,010h,015h	; 77bf  ...&.....5......
-	defb 007h,00fh	; 77cf
+; DATOS tres_por_juego: tres bytes por juego de graficos (0xC289) que p01:77B0
+;   copia a 0xC4F0-0xC4F2 (18 bytes)
+;   0x77bf..0x77d1  (18 bytes)
+DATA_tres_por_juego:
+	defb 00dh,006h,007h	; 77bf
+	defb 026h,015h,012h	; 77c2
+	defb 001h,0f0h,001h	; 77c5
+	defb 035h,019h,01dh	; 77c8
+	defb 01eh,00fh,010h	; 77cb
+	defb 015h,007h,00fh	; 77ce
 
 ; ======================================================================
 ; CODIGO 0x77d1..0x7a44  (627 bytes)
@@ -3697,9 +3889,15 @@ L_7A3E:
 	call 0408dh		;7a41
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7a44..0x7a4e  (10 bytes)
-DATA_7A44:
-	defb 0f5h,07ah,0fbh,07ah,001h,07bh,001h,07bh,007h,07bh	; 7a44  .z.z.{.{.{
+; DATOS tabla_7A44: 5 destinos del despachador de 0x408D (call en p01:7A41):
+;   0x7AF5, 0x7AFB, 0x7B01, 0x7B01, 0x7B07; lo leen p01:7A41 (10 bytes)
+;   0x7a44..0x7a4e  (10 bytes)
+DATA_tabla_7A44:
+	defb 0f5h,07ah	; 7a44
+	defb 0fbh,07ah	; 7a46
+	defb 001h,07bh	; 7a48
+	defb 001h,07bh	; 7a4a
+	defb 007h,07bh	; 7a4c
 
 ; ======================================================================
 ; CODIGO 0x7a4e..0x7a59  (11 bytes)
@@ -3713,9 +3911,14 @@ L_7A4E:
 	call 0408dh		;7a56
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7a59..0x7a61  (8 bytes)
-DATA_7A59:
-	defb 00dh,07bh,01fh,07bh,025h,07bh,037h,07bh	; 7a59  .{.{%{7{
+; DATOS tabla_7A59: 4 destinos del despachador de 0x408D (call en p01:7A56):
+;   0x7B0D, 0x7B1F, 0x7B25, 0x7B37; lo leen p01:7A56 (8 bytes)
+;   0x7a59..0x7a61  (8 bytes)
+DATA_tabla_7A59:
+	defb 00dh,07bh	; 7a59
+	defb 01fh,07bh	; 7a5b
+	defb 025h,07bh	; 7a5d
+	defb 037h,07bh	; 7a5f
 
 ; ======================================================================
 ; CODIGO 0x7a61..0x7a6b  (10 bytes)
@@ -3729,9 +3932,14 @@ L_7A61:
 	call 0408dh		;7a68
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7a6b..0x7a73  (8 bytes)
-DATA_7A6B:
-	defb 013h,07bh,013h,07bh,02bh,07bh,03dh,07bh	; 7a6b  .{.{+{={
+; DATOS tabla_7A6B: 4 destinos del despachador de 0x408D (call en p01:7A68):
+;   0x7B13, 0x7B13, 0x7B2B, 0x7B3D; lo leen p01:7A68 (8 bytes)
+;   0x7a6b..0x7a73  (8 bytes)
+DATA_tabla_7A6B:
+	defb 013h,07bh	; 7a6b
+	defb 013h,07bh	; 7a6d
+	defb 02bh,07bh	; 7a6f
+	defb 03dh,07bh	; 7a71
 
 ; ======================================================================
 ; CODIGO 0x7a73..0x7a7d  (10 bytes)
@@ -3745,9 +3953,14 @@ L_7A73:
 	call 0408dh		;7a7a
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7a7d..0x7a85  (8 bytes)
-DATA_7A7D:
-	defb 019h,07bh,019h,07bh,031h,07bh,043h,07bh	; 7a7d  .{.{1{C{
+; DATOS tabla_7A7D: 4 destinos del despachador de 0x408D (call en p01:7A7A):
+;   0x7B19, 0x7B19, 0x7B31, 0x7B43; lo leen p01:7A7A (8 bytes)
+;   0x7a7d..0x7a85  (8 bytes)
+DATA_tabla_7A7D:
+	defb 019h,07bh	; 7a7d
+	defb 019h,07bh	; 7a7f
+	defb 031h,07bh	; 7a81
+	defb 043h,07bh	; 7a83
 
 ; ======================================================================
 ; CODIGO 0x7a85..0x7ae8  (99 bytes)
@@ -3810,9 +4023,19 @@ L_7ACA:
 	ret			;7ae7
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7ae8..0x7af5  (13 bytes)
-DATA_7AE8:
-	defb 001h,001h,004h,001h,003h,002h,005h,003h,004h,006h,005h,007h,002h	; 7ae8  .............
+; DATOS caja_por_tipo: un byte por tipo de figura 1-8 (ix+0): la clase de su
+;   caja de choque, 1-5, por la que despacha p01:7A41 en la tabla 0x7A44
+;   (p01:7ACE) (8 bytes)
+;   0x7ae8..0x7af0  (8 bytes)
+DATA_caja_por_tipo:
+	defb 001h,001h,004h,001h,003h,002h,005h,003h	; 7ae8  ........
+
+; ----------------------------------------------------------------------
+; DATOS y_de_la_caja: lo que p01:7ADA resta a la y de la figura (ix+3) en cada
+;   clase de caja (5 bytes)
+;   0x7af0..0x7af5  (5 bytes)
+DATA_y_de_la_caja:
+	defb 004h,006h,005h,007h,002h	; 7af0
 
 ; ======================================================================
 ; CODIGO 0x7af5..0x7ba2  (173 bytes)
@@ -3928,9 +4151,14 @@ L_7BA0:
 	ret			;7ba1
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7ba2..0x7baa  (8 bytes)
-DATA_7BA2:
-	defb 000h,0e2h,000h,0ffh,010h,0f0h,010h,0f0h	; 7ba2  ........
+; DATOS delante_por_lado: cuatro parejas [dx][dy], una por lado al que mira el
+;   jugador (0xC4A2): el punto de delante que mira p01:7B67 (8 bytes)
+;   0x7ba2..0x7baa  (8 bytes)
+DATA_delante_por_lado:
+	defb 000h,0e2h	; 7ba2
+	defb 000h,0ffh	; 7ba4
+	defb 010h,0f0h	; 7ba6
+	defb 010h,0f0h	; 7ba8
 
 ; ======================================================================
 ; CODIGO 0x7baa..0x7d98  (494 bytes)
@@ -4190,8 +4418,10 @@ L_7D8C:
 	jp 04fe4h		;7d95
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7d98..0x7d9e  (6 bytes)
-DATA_7D98:
+; DATOS sonido_por_tipo: el efecto de sonido de cada tipo de figura 1-6
+;   (p01:7D8E): 0x11, 0x11, 0x11, 0x10, 0x10 y 0x13 (6 bytes)
+;   0x7d98..0x7d9e  (6 bytes)
+DATA_sonido_por_tipo:
 	defb 011h,011h,011h,010h,010h,013h	; 7d98
 
 ; ======================================================================
@@ -4447,12 +4677,23 @@ L_7F0C:
 	ret			;7f0d
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7f0e..0x7f1a  (12 bytes)
-DATA_7F0E:
-	defb 000h,030h,031h,013h,035h,0aah,0bah,0b2h,086h,007h,046h,0aah	; 7f0e  .01.5.....F.
+; DATOS marca_del_game_master: los seis ultimos bytes del Konami Game Master
+;   (RC-735, 0x7FFA de su ranura): p01:7EF1 los busca en las otras ranuras con
+;   RDSLT (6 bytes)
+;   0x7f0e..0x7f14  (6 bytes)
+DATA_marca_del_game_master:
+	defb 000h,030h,031h,013h,035h,0aah	; 7f0e
+
+; ----------------------------------------------------------------------
+; DATOS marca_de_qbert: los seis ultimos bytes de Q*bert (RC-746, 0xBFFA de su
+;   ranura), que p01:7EE5 busca igual; si sale una de las dos, p01:7EC6 pone
+;   0xEF00 a 0xFF (6 bytes)
+;   0x7f14..0x7f1a  (6 bytes)
+DATA_marca_de_qbert:
+	defb 0bah,0b2h,086h,007h,046h,0aah	; 7f14
 
 ; ======================================================================
-; CODIGO 0x7f1a..0x7f39  (31 bytes)
+; CODIGO 0x7f1a..0x7f41  (39 bytes)
 ; ======================================================================
 
 
@@ -4474,11 +4715,10 @@ L_7F2E:
 	pop hl			;7f36
 	pop de			;7f37
 	ret			;7f38
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7f39..0x7f41  (8 bytes)
-DATA_7F39:
-	defb 0cdh,02eh,07fh,00eh,00eh,0c3h,004h,047h	; 7f39  .......G
+L_7F39:
+	call L_7F2E		;7f39
+	ld c,00eh		;7f3c
+	jp 04704h		;7f3e
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7F41: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -4506,8 +4746,10 @@ L_7F8F:
 	jp 04420h		;7f91
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7f94..0x7fa3  (15 bytes)
-DATA_7F94:
+; DATOS rotulo_7F94: rotulo en (0x48, 0xA8) que p01:7F83 escribe con 0x48F3
+;   (p01:7FB1) (15 bytes)
+;   0x7f94..0x7fa3  (15 bytes)
+DATA_rotulo_7F94:
 	defb 048h,0a8h,037h,045h,048h,049h,063h,05dh,039h,063h,032h,049h,000h,067h,0ffh	; 7f94  H.7EHIc]9c2I.g.
 
 ; ======================================================================
@@ -4528,8 +4770,10 @@ L_7FB1:
 	jp 048f3h		;7fb6
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7fb9..0x7fc8  (15 bytes)
-DATA_7FB9:
+; DATOS rotulo_7FB9: rotulo en (0x48, 0xA8) que p01:7FA3 escribe con 0x48F3
+;   (p01:7FB1) (15 bytes)
+;   0x7fb9..0x7fc8  (15 bytes)
+DATA_rotulo_7FB9:
 	defb 048h,0a8h,039h,063h,033h,052h,05dh,048h,035h,03ch,063h,049h,000h,067h,0ffh	; 7fb9  H.9c3R]H5<cI.g.
 
 ; ======================================================================

@@ -811,22 +811,221 @@ def tablas_del_banco_9(rom, t, bl):
 
 
 def rellenos(rom, t, bl):
-    """Los 0xFF con los que acaba un banco, si son 16 o mas: no los lee nadie."""
+    """Los 0xFF con los que acaba un banco, si son 16 o mas: no los lee nadie.
+
+    El banco 3 acaba ademas en la marca oculta de Konami (tools/marca_konami.py):
+    el titulo al reves, [11], [0x48] de RC-748 y [0xAA]."""
     for b in range(N_PAGINAS):
         blq = rom[b * TAM_PAGINA:(b + 1) * TAM_PAGINA]
+        if b == 3:
+            n = blq[-3]
+            bl.anota(S1, 0xC000 - 3 - n, 0xC000, "marca_de_konami",
+                     "la marca que Konami escondio al final del banco: el titulo al reves en %d "
+                     "caracteres del propio juego (35 63 5D 49 63 59 39 63 33 52 5D, o sea "
+                     "ka-dakuten-n-ha-dakuten-re-ko-dakuten-e-mo-n: GANBARE GOEMON), [%d], [0x48] del "
+                     "RC-748 y [0xAA]; no la lee el cartucho (la destapo Manuel Pazos)" % (n, n),
+                     "nadie")
+            blq = blq[:-3 - n]
         i = len(blq)
         while i > 0 and blq[i - 1] == 0xFF:
             i -= 1
         if len(blq) - i >= 16:
             s = {0: S1, 1: S1, 2: S1, 3: S1}.get(b) or (
                 tuple(b if ORG[b] == r else x for r, x in zip((0x6000, 0x8000, 0xA000), S1)))
-            bl.anota(s, ORG[b] + i, ORG[b] + TAM_PAGINA, "relleno_%02d" % b,
-                     "%d bytes 0xFF hasta el final del banco: relleno, no lo lee nadie" % (len(blq) - i),
+            bl.anota(s, ORG[b] + i, ORG[b] + len(blq), "relleno_%02d" % b,
+                     "%d bytes 0xFF hasta el final del banco%s: relleno, no lo lee nadie"
+                     % (len(blq) - i, " (o hasta la marca de Konami)" if b == 3 else ""),
                      "nadie")
 
 
+# ------------------------------------------------------------------ banco 15: lo que hay en cada casilla
+S15 = (1, 2, 15)            # p02:90C1, p02:961B: el 15 en 0xA000
+
+
+def fin_texto(rom, s, a):
+    """El texto que p00:42F1 escribe letra a letra: 0xFF o 0xE0 acaban, 0xFE
+    baja una fila, 0xE1-0xFD corren (n - 0xE0) x 8 pixeles."""
+    for _ in range(2000):
+        c = byte(rom, s, a)
+        a += 1
+        if c in (0xFF, 0xE0):
+            return a
+    raise FueraDelBanco("texto sin fin desde 0x%04X" % a)
+
+
+def banco_15(rom, t, bl):
+    bl.anota(S15, 0xA02B, 0xA03D, "piezas",
+             "9 punteros a las piezas de decorado que p02:9132 pinta (el numero es el nibble "
+             "bajo del tercer byte de cada cosa de 0xA08E)", "p02:9132")
+    for k in range(9):
+        a = palabra(rom, S15, 0xA02B + 2 * k)
+        f = a + 2
+        if byte(rom, S15, a + 1) != 0xFF:
+            while byte(rom, S15, f) != 0xFF:
+                f += 2
+            f += 1
+        bl.anota(S15, a, f, "pieza_%d" % k,
+                 "pieza %d: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y "
+                 "parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba" % k, "p02:9139")
+    bl.anota(S15, 0xA08E, 0xA08E + 2 * FASES * ZONAS, "cosas_fijas_de_cada_zona",
+             "49 punteros, uno por zona, a las cosas fijas de sus casillas (p02:90E5)", "p02:90D5")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S15, 0xA08E + 2 * k)
+        bl.anota(S15, a, a + 2 + 3 * byte(rom, S15, a), "cosas_fijas_%04X" % a,
+                 "[n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble "
+                 "bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza "
+                 "(0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras "
+                 "la ultima ficha",
+                 "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+    bl.anota(S15, 0xB36D, 0xB38D, "piezas_del_subsuelo",
+             "16 punteros a listas de bloques que p02:9155 pinta en los pasadizos", "p02:9155")
+    for k in range(16):
+        a = palabra(rom, S15, 0xB36D + 2 * k)
+        f = a
+        while byte(rom, S15, f) != 0xFF:
+            f += 2
+        bl.anota(S15, a, f + 1, "subsuelo_%04X" % a,
+                 "parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba", "p02:915C")
+    bl.anota(S15, 0xB3BE, 0xB3BE + 2 * FASES * ZONAS, "huecos_de_cada_zona",
+             "49 punteros, uno por zona, a sus fichas de pasadizo (p02:9231)", "p02:922E")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S15, 0xB3BE + 2 * k)
+        f = a
+        for _ in range(400):
+            f += 2
+            if byte(rom, S15, f - 1) & 0x04:
+                break
+        bl.anota(S15, a, f, "huecos_%04X" % a,
+                 "parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por "
+                 "pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena "
+                 "lo que falta con 0xFF; el bit 2 acaba la lista", "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+    bl.anota(S15, 0xBC16, 0xBC16 + 2 * 35, "textos_de_cada_zona",
+             "35 punteros, uno por (fase x 5 + zona - 1), al texto que p02:962F escribe con "
+             "p00:42E1 al llegar", "p02:9625")
+    for k in range(35):
+        a = palabra(rom, S15, 0xBC16 + 2 * k)
+        bl.anota(S15, a, fin_texto(rom, S15, a), "texto_%04X" % a,
+                 "texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una "
+                 "fila, 0xE1-0xFD dejan hueco)", "p02:962F")
+
+
+# ------------------------------------------------------------------ banco 12: rotulos y poses
+S12B = (1, 2, 12)           # p02:87F3: el 12 en 0xA000 sobre los de siempre
+N_ROTULOS = 114
+
+
+def banco_12(rom, t, bl):
+    bl.anota(S12, 0xA783, fin_rle(rom, S12, 0xA783, False), "rle_A783",
+             "rle a la VRAM 0xF9C0 (p00:53F6) para el jugador 1; el del 2 es 0xA7DD (p00:53EB-53F0)",
+             "p00:53F6")
+    bl.anota(S12, 0xA9C0, 0xA9C0 + 2 * 120, "rotulos",
+             "120 punteros a los rotulos que p00:4280 escribe con 0x48F3 (el numero lo pasa quien "
+             "llama, hasta 0x70); los seis ultimos apuntan a 0xB6D2, donde acaban los rotulos: "
+             "no hay rotulo 114-119", "p00:4288")
+    for k in range(N_ROTULOS):
+        a = palabra(rom, S12, 0xA9C0 + 2 * k)
+        bl.anota(S12, a, fin_rotulo(rom, S12, a), "rotulo_%d" % k,
+                 "rotulo %d: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3)" % k,
+                 "p00:428F")
+    bl.anota(S12B, 0xB6D2, 0xB7FE, "poses_de_figura",
+             "150 punteros, uno por pose de figura (ix+0x0A), a su ficha de sprites (p02:8800)",
+             "p02:8800")
+    bl.anota(S12B, 0xB7FE, 0xBAF3, "fichas_de_pose",
+             "las fichas de pose: [desplazamientos] (el numero de la lista de 0xBAF3) y el dibujo "
+             "de cada sprite; cuantos sprites lleva lo dice (ix+0x20), que pone quien crea la "
+             "figura, asi que cada ficha llega hasta la siguiente (p02:8806, 8831)", "p02:8806")
+    bl.anota(S12B, 0xBAF3, 0xBB3F, "desplazamientos_de_pose",
+             "38 punteros a listas de desplazamientos de sprite (p02:8809)", "p02:8809")
+    bl.anota(S12B, 0xBB3F, 0xBCD3, "listas_de_desplazamientos",
+             "parejas [dy][dx] de cada sprite respecto a (ix+3, ix+5), un dx negativo con el bit 7 "
+             "(p02:8821, 883C); cada lista llega hasta la siguiente", "p02:8821")
+    bl.anota(S12B, 0xBCD3, 0xBCE1, "palabras",
+             "7 punteros a trozos de texto que p01:656E junta en 0xD800 separados por 0xFE 0xFE",
+             "p01:656B")
+    for k in range(7):
+        a = palabra(rom, S12B, 0xBCD3 + 2 * k)
+        bl.anota(S12B, a, a + 1 + byte(rom, S12B, a), "palabra_%d" % k,
+                 "trozo de texto %d: [n] y n caracteres (p01:6573 los copia con ldir)" % k, "p01:6571")
+    bl.anota(S1, 0x6589, 0x6591, "frases",
+             "4 punteros (0xC26A = 7 y el bit de B, p01:655A) a las frases de p01:6567", "p01:655C")
+    for a in (0x6591, 0x6594, 0x6599, 0x659D):
+        bl.anota(S1, a, a + 1 + byte(rom, S1, a), "frase_%04X" % a,
+                 "[n] y n numeros de trozo de texto (0xBCD3) que p01:6567 junta", "p01:6562")
+
+
+# ------------------------------------------------------------------ cabecera y despachador
+def tablas_del_despachador(rom, t, bl):
+    """Las tablas de destinos pegadas detras de cada `call 0x408D`.
+
+    Las mide tools/bancos.py (hasta el destino mas bajo, o lo que diga
+    src/tablas.txt) y ya estan en el .nocode para que el trazador no entre;
+    aqui se declaran como datos, con cuantos destinos tienen.
+    """
+    for (b, pc), (tab, n, dest, ss) in sorted(t.tablas.items()):
+        if not n:
+            continue
+        bl.anota(ss, tab, tab + 2 * n, "tabla_%04X" % tab,
+                 "%d destinos del despachador de 0x408D (call en %s:%04X): %s"
+                 % (n, nombre(b), pc, ", ".join("0x%04X" % w for w in dest[:8])
+                    + (" ..." if n > 8 else "")),
+                 "%s:%04X" % (nombre(b), pc), ancho=2)
+
+
+def cabecera(rom, t, bl):
+    """0x4000-0x4044: la cabecera AB y la que lee el Konami Game Master."""
+    bl.anota(S1, 0x4000, 0x4010, "cabecera_ab",
+             "la cabecera del cartucho: 'AB', INIT (0x4097) y STATEMENT, DEVICE y TEXT a cero",
+             "la BIOS", ancho=16)
+    bl.anota(S1, 0x4010, 0x4045, "cabecera_de_konami",
+             "la cabecera de Konami que lee el Game Master desde la otra ranura: 'CD', 0x07 0x48 "
+             "(RC-748) y, detras, direcciones de la RAM del juego (0xC004, 0xC280, 0xC260...); el "
+             "propio cartucho no la lee", "el Game Master", ancho=8)
+
+
+# ------------------------------------------------------------------ banco 8: los dibujos del jugador
+def banco_8(rom, t, bl):
+    bl.anota(S7, 0x92D9, 0x92F9, "dibujo_92D9",
+             "un dibujo de 8x8 a 4 bits (0x4879) que p00:4AFA sube dos veces en el juego 5; los "
+             "otros dos son 0x92F9", "p00:4B07")
+    for base, quien in ((0x9319, "jugador 1"), (0x9341, "jugador 2")):
+        bl.anota(S7, base, base + 40, "sprites_%s" % quien.replace(" ", "_"),
+                 "20 punteros, uno por pose (0xC49F x 4 + 0xC4A2), a los sprites del %s en rle, "
+                 "que p00:4CCE sube a 0xF800 (p00:4CB2/4CB7 por el bit 7 de 0xC002)" % quien,
+                 "p00:4CC5")
+        for k in range(20):
+            a = palabra(rom, S7, base + 2 * k)
+            bl.anota(S7, a, fin_rle(rom, S7, a, False), "sprites_%04X" % a,
+                     "los sprites de una pose del %s, en rle a 0xF800 (0x4539)" % quien, "p00:4CCE")
+
+
+# ------------------------------------------------------------------ los colores de los sprites
+def colores_de_sprite(rom, t, bl):
+    """p00:54E6: el color de cada linea de los sprites de una figura. La tabla
+    0x554E da, por (0xCD37 - 1) x 2 + el bit 0 de (ix+0x0A), una lista de
+    tripletes [n][desde][color] (0 acaba) que p00:5537 pinta sobre los 16
+    bytes de color de cada sprite."""
+    bl.anota(S1, 0x554E, 0x5626, "colores_de_cada_pose",
+             "108 punteros, dos por cada uno de los 54 juegos de color (0xCD37 - 1), el segundo "
+             "para la figura mirando al otro lado (bit 0 de ix+0x0A) (p00:54E7)", "p00:54E7")
+    bl.anota(S1, 0x5626, 0x57FA, "listas_de_color",
+             "las listas de color de las poses: cada entrada de 0x554E apunta a tantas listas "
+             "seguidas como sprites tiene la figura (ix+0x20, que pone p02:835C), y cada lista son "
+             "tripletes [n][desde][color] que p00:5537 pinta sobre los 16 bytes de color del "
+             "sprite, con un 0 al final; unas entradas empiezan dentro de las listas de otras. "
+             "Lo ultimo (desde 0x57BE, donde acaba la primera lista de la ultima entrada) solo lo "
+             "lee una pose con mas sprites; eso no esta medido", "p00:5537")
+    # el conjunto 13 del juego 4, que ninguna casilla usa
+    bl.anota(S1, 0x5C46, 0x5C48, "conjunto_13_juego_4",
+             "un decimocuarto puntero de los conjuntos del juego 4 (0x5D81); ninguna casilla de "
+             "las zonas de ese juego pide el 13", "nadie")
+    bl.anota(S1, 0x5D81, 0x5D85, "figuras_5D81",
+             "el conjunto al que apunta 0x5C46: [2] y los tipos 0, 0x16 y 0x15; no lo pide nadie",
+             "nadie")
+
+
 RECORRIDOS = [llamadas_a_lectores, mapas, sonido, figuras, caracteres, paletas_y_planos, jugador_y_pasadizos,
-              tablas_del_banco_9, rellenos]
+              tablas_del_banco_9, banco_15, banco_12, tablas_del_despachador, cabecera,
+              banco_8, colores_de_sprite, rellenos]
 
 
 # ------------------------------------------------------------------ escritura

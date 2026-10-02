@@ -21,11 +21,12 @@
 0x823B   # p00:5EA5 call
 0x8334   # p02:8291 entrada 0 de la tabla de 0x8294 (call 0x408D en 0x8291)
 0x8573   # p01:6729 call
-0x85B1   # p03:ABFD jp
+0x85B1   # p03:A4E6 call
 0x8656   # p01:6726 call
 0x868E   # p01:614A call
 0x86FC   # p01:614D call
-0x87B7   # p03:AD75 jp
+0x87E4   # p03:A5B3 call
+0x87EB   # p03:A5AD call
 0x8861   # p01:6150 call
 0x88B0   # p01:6865 call
 0x88EA   # p02:88D9 entrada 0 de la tabla de 0x88DC (call 0x408D en 0x88D9)

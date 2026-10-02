@@ -1,3 +1,6 @@
+# --- A MANO: comentarios, nombres y bloques ---
+D 0xAFDE 0xAFE6 rotulo_AFDE  un rotulo con el formato de 0x48F3 en (0x68, 0x50) entre los rotulos 67 y 68, al que no apunta ninguna de las 120 entradas de 0xA9C0: nadie lo escribe (8 bytes)
+
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA000 0xA0BE figura_1E_cola  el dibujo de la figura de tipo 0x1E en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide) (sigue del banco anterior, 0x9F67); lo leen p00:547C (190 bytes)
@@ -16,12 +19,266 @@ D 0xA59C 0xA68F figura_23  el dibujo de la figura de tipo 0x23 en rle (p00:547C;
 F 0xA59C 16
 D 0xA68F 0xA783 figura_24  el dibujo de la figura de tipo 0x24 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (244 bytes)
 F 0xA68F 16
+D 0xA783 0xA7DD rle_A783  rle a la VRAM 0xF9C0 (p00:53F6) para el jugador 1; el del 2 es 0xA7DD (p00:53EB-53F0); lo leen p00:53F6 (90 bytes)
+F 0xA783 16
 D 0xA7DD 0xA830 rle_A7DD  rle a la VRAM (0x4539); lo leen p00:53F6 (83 bytes)
 F 0xA7DD 16
 D 0xA830 0xA998 fichas_de_figura  36 fichas de 10 bytes, una por tipo de figura 1-0x24 (p00:5465): el dibujo en rle, su sitio en la VRAM, los colores 4 y 6 de la paleta (0xFFFF, sin tocar) y el sitio de la copia dada la vuelta (0xFF, sin copia); lo leen p00:5465 (360 bytes)
 F 0xA830 16
 D 0xA998 0xA9C0 dibujos_de_mas  8 fichas de 5 bytes: [tipo][rle][VRAM], un dibujo de mas para los tipos 2, 3, 0x0A, 0x0B, 0x0C, 0x0F, 0x15 y 0x1F (p00:5436); lo leen p00:5436 (40 bytes)
 F 0xA998 16
+D 0xA9C0 0xAAB0 rotulos  120 punteros a los rotulos que p00:4280 escribe con 0x48F3 (el numero lo pasa quien llama, hasta 0x70); los seis ultimos apuntan a 0xB6D2, donde acaban los rotulos: no hay rotulo 114-119; lo leen p00:4288 (240 bytes)
+F 0xA9C0 16
+D 0xAAB0 0xAABA rotulo_0  rotulo 0: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (10 bytes)
+F 0xAAB0 16
+D 0xAABA 0xAAC3 rotulo_1  rotulo 1: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (9 bytes)
+F 0xAABA 16
+D 0xAAC3 0xAAD3 rotulo_2  rotulo 2: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xAAC3 16
+D 0xAAD3 0xAAE3 rotulo_3  rotulo 3: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xAAD3 16
+D 0xAAE3 0xAB04 rotulo_4  rotulo 4: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (33 bytes)
+F 0xAAE3 16
+D 0xAB04 0xAB18 rotulo_5  rotulo 5: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (20 bytes)
+F 0xAB04 16
+D 0xAB18 0xAB28 rotulo_6  rotulo 6: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xAB18 16
+D 0xAB28 0xAB5B rotulo_7  rotulo 7: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (51 bytes)
+F 0xAB28 16
+D 0xAB5B 0xAB7A rotulo_8  rotulo 8: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xAB5B 16
+D 0xAB7A 0xAB95 rotulo_9  rotulo 9: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (27 bytes)
+F 0xAB7A 16
+D 0xAB95 0xAB9B rotulo_10  rotulo 10: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (6 bytes)
+F 0xAB95 16
+D 0xAB9B 0xABA0 rotulo_11  rotulo 11: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (5 bytes)
+F 0xAB9B 16
+D 0xABA0 0xABF3 rotulo_12  rotulo 12: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (83 bytes)
+F 0xABA0 16
+D 0xABF3 0xAC3D rotulo_13  rotulo 13: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (74 bytes)
+F 0xABF3 16
+D 0xAC3D 0xAC5B rotulo_14  rotulo 14: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xAC3D 16
+D 0xAC5B 0xAC68 rotulo_15  rotulo 15: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (13 bytes)
+F 0xAC5B 16
+D 0xAC68 0xAC80 rotulo_16  rotulo 16: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (24 bytes)
+F 0xAC68 16
+D 0xAC80 0xAC9D rotulo_18  rotulo 18: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xAC80 16
+D 0xAC9D 0xACC0 rotulo_19  rotulo 19: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (35 bytes)
+F 0xAC9D 16
+D 0xACC0 0xACED rotulo_20  rotulo 20: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (45 bytes)
+F 0xACC0 16
+D 0xACED 0xAD09 rotulo_21  rotulo 21: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xACED 16
+D 0xAD09 0xAD1A rotulo_22  rotulo 22: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (17 bytes)
+F 0xAD09 16
+D 0xAD1A 0xAD2F rotulo_23  rotulo 23: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (21 bytes)
+F 0xAD1A 16
+D 0xAD2F 0xAD52 rotulo_24  rotulo 24: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (35 bytes)
+F 0xAD2F 16
+D 0xAD52 0xAD6C rotulo_25  rotulo 25: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xAD52 16
+D 0xAD6C 0xAD83 rotulo_26  rotulo 26: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (23 bytes)
+F 0xAD6C 16
+D 0xAD83 0xADAC rotulo_27  rotulo 27: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (41 bytes)
+F 0xAD83 16
+D 0xADAC 0xADB4 rotulo_28  rotulo 28: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (8 bytes)
+F 0xADAC 16
+D 0xADB4 0xADBC rotulo_29  rotulo 29: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (8 bytes)
+F 0xADB4 16
+D 0xADBC 0xADC4 rotulo_30  rotulo 30: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (8 bytes)
+F 0xADBC 16
+D 0xADC4 0xADCC rotulo_31  rotulo 31: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (8 bytes)
+F 0xADC4 16
+D 0xADCC 0xADDC rotulo_32  rotulo 32: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xADCC 16
+D 0xADDC 0xADF8 rotulo_33  rotulo 33: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xADDC 16
+D 0xADF8 0xAE12 rotulo_34  rotulo 34: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xADF8 16
+D 0xAE12 0xAE28 rotulo_35  rotulo 35: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (22 bytes)
+F 0xAE12 16
+D 0xAE28 0xAE4A rotulo_36  rotulo 36: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (34 bytes)
+F 0xAE28 16
+D 0xAE4A 0xAE62 rotulo_37  rotulo 37: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (24 bytes)
+F 0xAE4A 16
+D 0xAE62 0xAE7B rotulo_38  rotulo 38: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (25 bytes)
+F 0xAE62 16
+D 0xAE7B 0xAE94 rotulo_39  rotulo 39: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (25 bytes)
+F 0xAE7B 16
+D 0xAE94 0xAEB1 rotulo_40  rotulo 40: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xAE94 16
+D 0xAEB1 0xAEC6 rotulo_41  rotulo 41: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (21 bytes)
+F 0xAEB1 16
+D 0xAEC6 0xAEE0 rotulo_42  rotulo 42: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xAEC6 16
+D 0xAEE0 0xAEFF rotulo_43  rotulo 43: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xAEE0 16
+D 0xAEFF 0xAF1C rotulo_44  rotulo 44: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xAEFF 16
+D 0xAF1C 0xAF2B rotulo_45  rotulo 45: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (15 bytes)
+F 0xAF1C 16
+D 0xAF2B 0xAF39 rotulo_46  rotulo 46: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (14 bytes)
+F 0xAF2B 16
+D 0xAF39 0xAF46 rotulo_47  rotulo 47: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (13 bytes)
+F 0xAF39 16
+D 0xAF46 0xAF56 rotulo_48  rotulo 48: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xAF46 16
+D 0xAF56 0xAF70 rotulo_49  rotulo 49: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xAF56 16
+D 0xAF70 0xAF98 rotulo_50  rotulo 50: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (40 bytes)
+F 0xAF70 16
+D 0xAF98 0xAFB6 rotulo_51  rotulo 51: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xAF98 16
+D 0xAFB6 0xAFDE rotulo_52  rotulo 52: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (40 bytes)
+F 0xAFB6 16
+D 0xAFE6 0xB010 rotulo_53  rotulo 53: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (42 bytes)
+F 0xAFE6 16
+D 0xB010 0xB040 rotulo_54  rotulo 54: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (48 bytes)
+F 0xB010 16
+D 0xB040 0xB058 rotulo_55  rotulo 55: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (24 bytes)
+F 0xB040 16
+D 0xB058 0xB077 rotulo_56  rotulo 56: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB058 16
+D 0xB077 0xB091 rotulo_57  rotulo 57: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xB077 16
+D 0xB091 0xB0AD rotulo_58  rotulo 58: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB091 16
+D 0xB0AD 0xB0CB rotulo_59  rotulo 59: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB0AD 16
+D 0xB0CB 0xB0E2 rotulo_60  rotulo 60: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (23 bytes)
+F 0xB0CB 16
+D 0xB0E2 0xB102 rotulo_61  rotulo 61: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB0E2 16
+D 0xB102 0xB121 rotulo_62  rotulo 62: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB102 16
+D 0xB121 0xB13E rotulo_63  rotulo 63: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB121 16
+D 0xB13E 0xB15F rotulo_64  rotulo 64: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (33 bytes)
+F 0xB13E 16
+D 0xB15F 0xB17B rotulo_65  rotulo 65: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB15F 16
+D 0xB17B 0xB199 rotulo_66  rotulo 66: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB17B 16
+D 0xB199 0xB1B5 rotulo_67  rotulo 67: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB199 16
+D 0xB1B5 0xB1D0 rotulo_68  rotulo 68: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (27 bytes)
+F 0xB1B5 16
+D 0xB1D0 0xB1EF rotulo_69  rotulo 69: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB1D0 16
+D 0xB1EF 0xB20D rotulo_70  rotulo 70: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB1EF 16
+D 0xB20D 0xB229 rotulo_71  rotulo 71: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB20D 16
+D 0xB229 0xB249 rotulo_72  rotulo 72: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB229 16
+D 0xB249 0xB266 rotulo_73  rotulo 73: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB249 16
+D 0xB266 0xB284 rotulo_74  rotulo 74: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB266 16
+D 0xB284 0xB2A4 rotulo_75  rotulo 75: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB284 16
+D 0xB2A4 0xB2C4 rotulo_76  rotulo 76: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB2A4 16
+D 0xB2C4 0xB2E4 rotulo_77  rotulo 77: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB2C4 16
+D 0xB2E4 0xB301 rotulo_78  rotulo 78: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB2E4 16
+D 0xB301 0xB31E rotulo_79  rotulo 79: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB301 16
+D 0xB31E 0xB33E rotulo_80  rotulo 80: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB31E 16
+D 0xB33E 0xB35D rotulo_81  rotulo 81: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB33E 16
+D 0xB35D 0xB37C rotulo_82  rotulo 82: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB35D 16
+D 0xB37C 0xB399 rotulo_83  rotulo 83: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB37C 16
+D 0xB399 0xB3B5 rotulo_84  rotulo 84: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB399 16
+D 0xB3B5 0xB3D1 rotulo_85  rotulo 85: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB3B5 16
+D 0xB3D1 0xB3F1 rotulo_86  rotulo 86: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (32 bytes)
+F 0xB3D1 16
+D 0xB3F1 0xB413 rotulo_87  rotulo 87: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (34 bytes)
+F 0xB3F1 16
+D 0xB413 0xB42F rotulo_88  rotulo 88: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB413 16
+D 0xB42F 0xB44B rotulo_89  rotulo 89: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB42F 16
+D 0xB44B 0xB468 rotulo_90  rotulo 90: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB44B 16
+D 0xB468 0xB485 rotulo_91  rotulo 91: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB468 16
+D 0xB485 0xB4A1 rotulo_92  rotulo 92: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB485 16
+D 0xB4A1 0xB4BE rotulo_93  rotulo 93: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB4A1 16
+D 0xB4BE 0xB4DB rotulo_94  rotulo 94: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB4BE 16
+D 0xB4DB 0xB4F9 rotulo_95  rotulo 95: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB4DB 16
+D 0xB4F9 0xB515 rotulo_96  rotulo 96: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB4F9 16
+D 0xB515 0xB52D rotulo_97  rotulo 97: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (24 bytes)
+F 0xB515 16
+D 0xB52D 0xB54F rotulo_98  rotulo 98: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (34 bytes)
+F 0xB52D 16
+D 0xB54F 0xB56E rotulo_99  rotulo 99: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (31 bytes)
+F 0xB54F 16
+D 0xB56E 0xB58A rotulo_100  rotulo 100: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB56E 16
+D 0xB58A 0xB5A6 rotulo_101  rotulo 101: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (28 bytes)
+F 0xB58A 16
+D 0xB5A6 0xB5C4 rotulo_102  rotulo 102: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (30 bytes)
+F 0xB5A6 16
+D 0xB5C4 0xB5DE rotulo_103  rotulo 103: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xB5C4 16
+D 0xB5DE 0xB5E9 rotulo_104  rotulo 104: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (11 bytes)
+F 0xB5DE 16
+D 0xB5E9 0xB606 rotulo_105  rotulo 105: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB5E9 16
+D 0xB606 0xB620 rotulo_106  rotulo 106: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xB606 16
+D 0xB620 0xB63A rotulo_107  rotulo 107: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (26 bytes)
+F 0xB620 16
+D 0xB63A 0xB64C rotulo_108  rotulo 108: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (18 bytes)
+F 0xB63A 16
+D 0xB64C 0xB667 rotulo_109  rotulo 109: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (27 bytes)
+F 0xB64C 16
+D 0xB667 0xB678 rotulo_110  rotulo 110: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (17 bytes)
+F 0xB667 16
+D 0xB678 0xB688 rotulo_111  rotulo 111: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (16 bytes)
+F 0xB678 16
+D 0xB688 0xB6A5 rotulo_112  rotulo 112: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (29 bytes)
+F 0xB688 16
+D 0xB6A5 0xB6D2 rotulo_113  rotulo 113: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:428F (45 bytes)
+F 0xB6A5 16
+D 0xB6D2 0xB7FE poses_de_figura  150 punteros, uno por pose de figura (ix+0x0A), a su ficha de sprites (p02:8800); lo leen p02:8800 (300 bytes)
+F 0xB6D2 16
+D 0xB7FE 0xBAF3 fichas_de_pose  las fichas de pose: [desplazamientos] (el numero de la lista de 0xBAF3) y el dibujo de cada sprite; cuantos sprites lleva lo dice (ix+0x20), que pone quien crea la figura, asi que cada ficha llega hasta la siguiente (p02:8806, 8831); lo leen p02:8806 (757 bytes)
+F 0xB7FE 16
+D 0xBAF3 0xBB3F desplazamientos_de_pose  38 punteros a listas de desplazamientos de sprite (p02:8809); lo leen p02:8809 (76 bytes)
+F 0xBAF3 16
+D 0xBB3F 0xBCD3 listas_de_desplazamientos  parejas [dy][dx] de cada sprite respecto a (ix+3, ix+5), un dx negativo con el bit 7 (p02:8821, 883C); cada lista llega hasta la siguiente; lo leen p02:8821 (404 bytes)
+F 0xBB3F 16
+D 0xBCD3 0xBCE1 palabras  7 punteros a trozos de texto que p01:656E junta en 0xD800 separados por 0xFE 0xFE; lo leen p01:656B (14 bytes)
+F 0xBCD3 16
+D 0xBCE1 0xBCF2 palabra_0  trozo de texto 0: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (17 bytes)
+F 0xBCE1 16
+D 0xBCF2 0xBD10 palabra_1  trozo de texto 1: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (30 bytes)
+F 0xBCF2 16
+D 0xBD10 0xBD98 palabra_2  trozo de texto 2: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (136 bytes)
+F 0xBD10 16
+D 0xBD98 0xBE2E palabra_3  trozo de texto 3: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (150 bytes)
+F 0xBD98 16
+D 0xBE2E 0xBE44 palabra_4  trozo de texto 4: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (22 bytes)
+F 0xBE2E 16
+D 0xBE44 0xBE83 palabra_5  trozo de texto 5: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (63 bytes)
+F 0xBE44 16
+D 0xBE83 0xBEC0 palabra_6  trozo de texto 6: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (61 bytes)
+F 0xBE83 16
 D 0xBEC0 0xC000 relleno_12  320 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (320 bytes)
 F 0xBEC0 16
 # --- fin de los bloques de bloques.py ---

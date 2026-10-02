@@ -1,7 +1,320 @@
+# --- A MANO: comentarios, nombres y bloques ---
+D 0xB394 0xB395 ff_de_mas_B394  un segundo 0xFF detras de la lista vacia de 0xB393 (la de las piezas 2-6 de 0xB36D); no lo lee nadie (1 byte)
+
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA000 0xA02B rle_9F76_cola  rle a la VRAM (0x4539) (sigue del banco anterior, 0x9F76); lo leen p00:5402 (43 bytes)
 F 0xA000 16
-D 0xBEF8 0xC000 relleno_15  264 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (264 bytes)
-F 0xBEF8 16
+D 0xA02B 0xA03D piezas  9 punteros a las piezas de decorado que p02:9132 pinta (el numero es el nibble bajo del tercer byte de cada cosa de 0xA08E); lo leen p02:9132 (18 bytes)
+F 0xA02B 16
+D 0xA03D 0xA042 pieza_0  pieza 0: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (5 bytes)
+F 0xA03D 16
+D 0xA042 0xA047 pieza_1  pieza 1: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (5 bytes)
+F 0xA042 16
+D 0xA047 0xA04C pieza_2  pieza 2: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (5 bytes)
+F 0xA047 16
+D 0xA04C 0xA051 pieza_3  pieza 3: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (5 bytes)
+F 0xA04C 16
+D 0xA051 0xA064 pieza_4  pieza 4: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (19 bytes)
+F 0xA051 16
+D 0xA064 0xA077 pieza_5  pieza 5: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (19 bytes)
+F 0xA064 16
+D 0xA077 0xA08A pieza_6  pieza 6: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (19 bytes)
+F 0xA077 16
+D 0xA08A 0xA08C pieza_7  pieza 7: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (2 bytes)
+F 0xA08A 16
+D 0xA08C 0xA08E pieza_8  pieza 8: [x][y] del bloque de 16x16 en la hoja de la VRAM (y 0xFF, ninguna) y parejas [dx][dy] donde pintarlo con p00:4E84; 0xFF acaba; lo leen p02:9139 (2 bytes)
+F 0xA08C 16
+D 0xA08E 0xA0F0 cosas_fijas_de_cada_zona  49 punteros, uno por zona, a las cosas fijas de sus casillas (p02:90E5); lo leen p02:90D5 (98 bytes)
+F 0xA08E 16
+D 0xA0F0 0xA173 cosas_fijas_A0F0  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-0 (131 bytes)
+F 0xA0F0 16
+D 0xA173 0xA1AB cosas_fijas_A173  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-1 (56 bytes)
+F 0xA173 16
+D 0xA1AB 0xA1D4 cosas_fijas_A1AB  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-2 (41 bytes)
+F 0xA1AB 16
+D 0xA1D4 0xA233 cosas_fijas_A1D4  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-3 (95 bytes)
+F 0xA1D4 16
+D 0xA233 0xA27D cosas_fijas_A233  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-4 (74 bytes)
+F 0xA233 16
+D 0xA27D 0xA2C7 cosas_fijas_A27D  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-5 (74 bytes)
+F 0xA27D 16
+D 0xA2C7 0xA302 cosas_fijas_A2C7  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 1-6 (59 bytes)
+F 0xA2C7 16
+D 0xA302 0xA367 cosas_fijas_A302  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-0 (101 bytes)
+F 0xA302 16
+D 0xA367 0xA3AE cosas_fijas_A367  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-1 (71 bytes)
+F 0xA367 16
+D 0xA3AE 0xA428 cosas_fijas_A3AE  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-2 (122 bytes)
+F 0xA3AE 16
+D 0xA428 0xA45D cosas_fijas_A428  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-3 (53 bytes)
+F 0xA428 16
+D 0xA45D 0xA4D4 cosas_fijas_A45D  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-4 (119 bytes)
+F 0xA45D 16
+D 0xA4D4 0xA545 cosas_fijas_A4D4  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-5 (113 bytes)
+F 0xA4D4 16
+D 0xA545 0xA56B cosas_fijas_A545  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 2-6 (38 bytes)
+F 0xA545 16
+D 0xA56B 0xA603 cosas_fijas_A56B  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-0 (152 bytes)
+F 0xA56B 16
+D 0xA603 0xA64D cosas_fijas_A603  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-1 (74 bytes)
+F 0xA603 16
+D 0xA64D 0xA6B5 cosas_fijas_A64D  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-2 (104 bytes)
+F 0xA64D 16
+D 0xA6B5 0xA6FF cosas_fijas_A6B5  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-3 (74 bytes)
+F 0xA6B5 16
+D 0xA6FF 0xA791 cosas_fijas_A6FF  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-4 (146 bytes)
+F 0xA6FF 16
+D 0xA791 0xA817 cosas_fijas_A791  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-5 (134 bytes)
+F 0xA791 16
+D 0xA817 0xA840 cosas_fijas_A817  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 3-6 (41 bytes)
+F 0xA817 16
+D 0xA840 0xA8CC cosas_fijas_A840  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 4-0 (140 bytes)
+F 0xA840 16
+D 0xA8CC 0xA93A cosas_fijas_A8CC  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 4-1 (110 bytes)
+F 0xA8CC 16
+D 0xA93A 0xA97B cosas_fijas_A93A  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 4-2 (65 bytes)
+F 0xA93A 16
+D 0xA97B 0xAA16 cosas_fijas_A97B  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 4-3 (155 bytes)
+F 0xA97B 16
+D 0xAA16 0xAAFB cosas_fijas_AA16  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; se solapan 2 bloques (0xAA16-0xAAB4, 0xAAB1-0xAAFB); lo leen zona 4-4, zona 4-5 (229 bytes)
+F 0xAA16 16
+D 0xAAFB 0xAB1E cosas_fijas_AAFB  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 4-6 (35 bytes)
+F 0xAAFB 16
+D 0xAB1E 0xAC57 cosas_fijas_AB1E  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; se solapan 2 bloques (0xAB1E-0xABB0, 0xABAD-0xAC57); lo leen zona 5-0, zona 5-1 (313 bytes)
+F 0xAB1E 16
+D 0xAC57 0xAC98 cosas_fijas_AC57  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 5-2 (65 bytes)
+F 0xAC57 16
+D 0xAC98 0xACC1 cosas_fijas_AC98  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 5-3 (41 bytes)
+F 0xAC98 16
+D 0xACC1 0xAD23 cosas_fijas_ACC1  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 5-4 (98 bytes)
+F 0xACC1 16
+D 0xAD23 0xAD97 cosas_fijas_AD23  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 5-5 (116 bytes)
+F 0xAD23 16
+D 0xAD97 0xADD5 cosas_fijas_AD97  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 5-6 (62 bytes)
+F 0xAD97 16
+D 0xADD5 0xAE1F cosas_fijas_ADD5  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-0 (74 bytes)
+F 0xADD5 16
+D 0xAE1F 0xAEC6 cosas_fijas_AE1F  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-1 (167 bytes)
+F 0xAE1F 16
+D 0xAEC6 0xAF46 cosas_fijas_AEC6  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-2 (128 bytes)
+F 0xAEC6 16
+D 0xAF46 0xAF78 cosas_fijas_AF46  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-3 (50 bytes)
+F 0xAF46 16
+D 0xAF78 0xB00D cosas_fijas_AF78  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-4 (149 bytes)
+F 0xAF78 16
+D 0xB00D 0xB066 cosas_fijas_B00D  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-5 (89 bytes)
+F 0xB00D 16
+D 0xB066 0xB08F cosas_fijas_B066  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 6-6 (41 bytes)
+F 0xB066 16
+D 0xB08F 0xB0E5 cosas_fijas_B08F  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-0 (86 bytes)
+F 0xB08F 16
+D 0xB0E5 0xB132 cosas_fijas_B0E5  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-1 (77 bytes)
+F 0xB0E5 16
+D 0xB132 0xB170 cosas_fijas_B132  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-2 (62 bytes)
+F 0xB132 16
+D 0xB170 0xB223 cosas_fijas_B170  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-3 (179 bytes)
+F 0xB170 16
+D 0xB223 0xB297 cosas_fijas_B223  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-4 (116 bytes)
+F 0xB223 16
+D 0xB297 0xB33B cosas_fijas_B297  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-5 (164 bytes)
+F 0xB297 16
+D 0xB33B 0xB36D cosas_fijas_B33B  [n], n fichas de 3 bytes [casilla][x | figura][y | pieza] y un 0xFF: si el nibble bajo del segundo no es 0 p02:8FD5 pone una figura; el del tercero es la pieza (0xA02B); el 0xFF hace de casilla que no es ninguna, para que p02:90EE pare tras la ultima ficha; lo leen zona 7-6 (50 bytes)
+F 0xB33B 16
+D 0xB36D 0xB38D piezas_del_subsuelo  16 punteros a listas de bloques que p02:9155 pinta en los pasadizos; lo leen p02:9155 (32 bytes)
+F 0xB36D 16
+D 0xB38D 0xB390 subsuelo_B38D  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (3 bytes)
+F 0xB38D 16
+D 0xB390 0xB393 subsuelo_B390  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (3 bytes)
+F 0xB390 16
+D 0xB393 0xB394 subsuelo_B393  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (1 bytes)
+F 0xB393 16
+D 0xB395 0xB398 subsuelo_B395  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (3 bytes)
+F 0xB395 16
+D 0xB398 0xB39D subsuelo_B398  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB398 16
+D 0xB39D 0xB3A2 subsuelo_B39D  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB39D 16
+D 0xB3A2 0xB3A7 subsuelo_B3A2  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB3A2 16
+D 0xB3A7 0xB3AC subsuelo_B3A7  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB3A7 16
+D 0xB3AC 0xB3B1 subsuelo_B3AC  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB3AC 16
+D 0xB3B1 0xB3B6 subsuelo_B3B1  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB3B1 16
+D 0xB3B6 0xB3B9 subsuelo_B3B6  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (3 bytes)
+F 0xB3B6 16
+D 0xB3B9 0xB3BE subsuelo_B3B9  parejas [x][y] de bloques de la hoja que p02:915C pinta; 0xFF acaba; lo leen p02:915C (5 bytes)
+F 0xB3B9 16
+D 0xB3BE 0xB420 huecos_de_cada_zona  49 punteros, uno por zona, a sus fichas de pasadizo (p02:9231); lo leen p02:922E (98 bytes)
+F 0xB3BE 16
+D 0xB420 0xB432 huecos_B420  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-0 (18 bytes)
+F 0xB420 16
+D 0xB432 0xB44C huecos_B432  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-1 (26 bytes)
+F 0xB432 16
+D 0xB44C 0xB462 huecos_B44C  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-2 (22 bytes)
+F 0xB44C 16
+D 0xB462 0xB47E huecos_B462  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-3 (28 bytes)
+F 0xB462 16
+D 0xB47E 0xB49A huecos_B47E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-4 (28 bytes)
+F 0xB47E 16
+D 0xB49A 0xB4BC huecos_B49A  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-5 (34 bytes)
+F 0xB49A 16
+D 0xB4BC 0xB4E4 huecos_B4BC  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 1-6 (40 bytes)
+F 0xB4BC 16
+D 0xB4E4 0xB4FA huecos_B4E4  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-0 (22 bytes)
+F 0xB4E4 16
+D 0xB4FA 0xB53C huecos_B4FA  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-1 (66 bytes)
+F 0xB4FA 16
+D 0xB53C 0xB55E huecos_B53C  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-2 (34 bytes)
+F 0xB53C 16
+D 0xB55E 0xB57A huecos_B55E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-3 (28 bytes)
+F 0xB55E 16
+D 0xB57A 0xB596 huecos_B57A  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-4 (28 bytes)
+F 0xB57A 16
+D 0xB596 0xB5BC huecos_B596  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-5 (38 bytes)
+F 0xB596 16
+D 0xB5BC 0xB5F2 huecos_B5BC  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 2-6 (54 bytes)
+F 0xB5BC 16
+D 0xB5F2 0xB610 huecos_B5F2  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-0 (30 bytes)
+F 0xB5F2 16
+D 0xB610 0xB630 huecos_B610  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-1 (32 bytes)
+F 0xB610 16
+D 0xB630 0xB662 huecos_B630  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-2 (50 bytes)
+F 0xB630 16
+D 0xB662 0xB68E huecos_B662  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-3 (44 bytes)
+F 0xB662 16
+D 0xB68E 0xB6AE huecos_B68E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-4 (32 bytes)
+F 0xB68E 16
+D 0xB6AE 0xB6D6 huecos_B6AE  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-5 (40 bytes)
+F 0xB6AE 16
+D 0xB6D6 0xB706 huecos_B6D6  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 3-6 (48 bytes)
+F 0xB6D6 16
+D 0xB706 0xB734 huecos_B706  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-0 (46 bytes)
+F 0xB706 16
+D 0xB734 0xB74E huecos_B734  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-1 (26 bytes)
+F 0xB734 16
+D 0xB74E 0xB780 huecos_B74E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-2 (50 bytes)
+F 0xB74E 16
+D 0xB780 0xB7B6 huecos_B780  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-3 (54 bytes)
+F 0xB780 16
+D 0xB7B6 0xB7D8 huecos_B7B6  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-4 (34 bytes)
+F 0xB7B6 16
+D 0xB7D8 0xB804 huecos_B7D8  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-5 (44 bytes)
+F 0xB7D8 16
+D 0xB804 0xB834 huecos_B804  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 4-6 (48 bytes)
+F 0xB804 16
+D 0xB834 0xB85A huecos_B834  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-0 (38 bytes)
+F 0xB834 16
+D 0xB85A 0xB88E huecos_B85A  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-1 (52 bytes)
+F 0xB85A 16
+D 0xB88E 0xB8AE huecos_B88E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-2 (32 bytes)
+F 0xB88E 16
+D 0xB8AE 0xB8E8 huecos_B8AE  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-3 (58 bytes)
+F 0xB8AE 16
+D 0xB8E8 0xB90C huecos_B8E8  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-4 (36 bytes)
+F 0xB8E8 16
+D 0xB90C 0xB93E huecos_B90C  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-5 (50 bytes)
+F 0xB90C 16
+D 0xB93E 0xB970 huecos_B93E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 5-6 (50 bytes)
+F 0xB93E 16
+D 0xB970 0xB9A6 huecos_B970  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-0 (54 bytes)
+F 0xB970 16
+D 0xB9A6 0xB9C6 huecos_B9A6  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-1 (32 bytes)
+F 0xB9A6 16
+D 0xB9C6 0xB9FE huecos_B9C6  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-2 (56 bytes)
+F 0xB9C6 16
+D 0xB9FE 0xBA30 huecos_B9FE  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-3 (50 bytes)
+F 0xB9FE 16
+D 0xBA30 0xBA54 huecos_BA30  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-4 (36 bytes)
+F 0xBA30 16
+D 0xBA54 0xBA7C huecos_BA54  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-5 (40 bytes)
+F 0xBA54 16
+D 0xBA7C 0xBAC0 huecos_BA7C  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 6-6 (68 bytes)
+F 0xBA7C 16
+D 0xBAC0 0xBAE4 huecos_BAC0  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 7-0 (36 bytes)
+F 0xBAC0 16
+D 0xBAE4 0xBB18 huecos_BAE4  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 7-1 (52 bytes)
+F 0xBAE4 16
+D 0xBB18 0xBB4E huecos_BB18  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 7-2 (54 bytes)
+F 0xBB18 16
+D 0xBB4E 0xBB7C huecos_BB4E  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 7-3 (46 bytes)
+F 0xBB4E 16
+D 0xBB7C 0xBBE8 huecos_BB7C  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; se solapan 2 bloques (0xBB7C-0xBBE8, 0xBB9C-0xBBE8); lo leen zona 7-4, zona 7-5 (108 bytes)
+F 0xBB7C 16
+D 0xBBE8 0xBC16 huecos_BBE8  parejas [x | figura][y | banderas] que p02:9239 copia a 0xCDE0, cuatro por pasadizo (0xC484 x 8): el bit 3 del segundo byte cierra el pasadizo y rellena lo que falta con 0xFF; el bit 2 acaba la lista; lo leen zona 7-6 (46 bytes)
+F 0xBBE8 16
+D 0xBC16 0xBC5C textos_de_cada_zona  35 punteros, uno por (fase x 5 + zona - 1), al texto que p02:962F escribe con p00:42E1 al llegar; lo leen p02:9625 (70 bytes)
+F 0xBC16 16
+D 0xBC5C 0xBC6C texto_BC5C  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (16 bytes)
+F 0xBC5C 16
+D 0xBC6C 0xBC7F texto_BC6C  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBC6C 16
+D 0xBC7F 0xBC92 texto_BC7F  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBC7F 16
+D 0xBC92 0xBCA6 texto_BC92  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBC92 16
+D 0xBCA6 0xBCB8 texto_BCA6  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBCA6 16
+D 0xBCB8 0xBCCA texto_BCB8  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBCB8 16
+D 0xBCCA 0xBCDC texto_BCCA  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBCCA 16
+D 0xBCDC 0xBCEE texto_BCDC  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBCDC 16
+D 0xBCEE 0xBD00 texto_BCEE  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBCEE 16
+D 0xBD00 0xBD13 texto_BD00  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBD00 16
+D 0xBD13 0xBD25 texto_BD13  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBD13 16
+D 0xBD25 0xBD36 texto_BD25  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (17 bytes)
+F 0xBD25 16
+D 0xBD36 0xBD49 texto_BD36  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBD36 16
+D 0xBD49 0xBD5C texto_BD49  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBD49 16
+D 0xBD5C 0xBD6F texto_BD5C  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBD5C 16
+D 0xBD6F 0xBD83 texto_BD6F  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBD6F 16
+D 0xBD83 0xBD97 texto_BD83  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBD83 16
+D 0xBD97 0xBDA8 texto_BD97  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (17 bytes)
+F 0xBD97 16
+D 0xBDA8 0xBDBA texto_BDA8  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBDA8 16
+D 0xBDBA 0xBDCD texto_BDBA  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBDBA 16
+D 0xBDCD 0xBDE0 texto_BDCD  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBDCD 16
+D 0xBDE0 0xBDF0 texto_BDE0  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (16 bytes)
+F 0xBDE0 16
+D 0xBDF0 0xBE02 texto_BDF0  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBDF0 16
+D 0xBE02 0xBE16 texto_BE02  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBE02 16
+D 0xBE16 0xBE29 texto_BE16  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBE16 16
+D 0xBE29 0xBE3D texto_BE29  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBE29 16
+D 0xBE3D 0xBE4F texto_BE3D  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (18 bytes)
+F 0xBE3D 16
+D 0xBE4F 0xBE63 texto_BE4F  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBE4F 16
+D 0xBE63 0xBE7A texto_BE63  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (23 bytes)
+F 0xBE63 16
+D 0xBE7A 0xBE8D texto_BE7A  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBE7A 16
+D 0xBE8D 0xBEA4 texto_BE8D  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (23 bytes)
+F 0xBE8D 16
+D 0xBEA4 0xBEB9 texto_BEA4  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (21 bytes)
+F 0xBEA4 16
+D 0xBEB9 0xBECC texto_BEB9  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (19 bytes)
+F 0xBEB9 16
+D 0xBECC 0xBEE0 texto_BECC  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
+F 0xBECC 16
+D 0xBEE0 0xC000 texto_BEE0  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); se solapan 2 bloques (0xBEE0-0xBEF9, 0xBEF8-0xC000); lo leen nadie, p02:962F (288 bytes)
+F 0xBEE0 16
 # --- fin de los bloques de bloques.py ---

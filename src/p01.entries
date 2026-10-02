@@ -21,6 +21,7 @@
 0x6232   # p00:5DCC entrada 13 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
 0x6256   # p00:5DCC entrada 14 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
 0x6292   # p00:5DCC entrada 15 de la tabla de 0x5DCF (call 0x408D en 0x5DCC)
+0x62FE   # a mano: p00:5DC8 hace ld hl,0x62FE / push hl antes de despachar los estados 0-2, asi que el `ret` de esos estados vuelve aqui (es una direccion de vuelta, no un dato)
 0x635A   # p00:5F4F call
 0x643F   # p00:5E10 call
 0x6486   # p00:5DF1 call
@@ -62,3 +63,4 @@
 0x7DE9   # a mano, codigo huerfano: nadie salta a 0x7DE9 (ni una palabra 0x7DE9 en los 128 KB, y p01:7DE6 es un `jp`); es una version vieja del cargador de cosas de la casilla (p00:53B7 hace lo mismo con 0x981D y el banco 14 en 0x8000): esta pone el 14 en 0xA000 (la unica escritura fuera de su ranura del cartucho) y leeria 0x981D del banco 2
 0x7E9D   # p00:5F57 call
 0x7EAB   # p00:40CB call
+0x7F39   # a mano, codigo huerfano: call 0x7F2E / ld c,0x0E / jp 0x4704 (borra un recuadro y le pone marco); nadie la llama

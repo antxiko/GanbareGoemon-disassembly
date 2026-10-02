@@ -20,14 +20,68 @@ D 0x8413 0x858C hmmc_8413  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x 
 F 0x8413 16
 D 0x858C 0x92D9 dibujos_858C  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se solapan 4 bloques (0x858C-0x8B4C, 0x86EC-0x8ACC, 0x8ACC-0x908C, 0x8F4C-0x92D9); lo leen p00:4BB6, p00:4BBF, p00:4BD0, p00:4BDB (3405 bytes)
 F 0x858C 16
+D 0x92D9 0x92F9 dibujo_92D9  un dibujo de 8x8 a 4 bits (0x4879) que p00:4AFA sube dos veces en el juego 5; los otros dos son 0x92F9; lo leen p00:4B07 (32 bytes)
+F 0x92D9 16
 D 0x92F9 0x9319 dibujo_92F9  un dibujo de 8x8 a 4 bits (0x4879); lo leen p00:4B07 (32 bytes)
 F 0x92F9 16
+D 0x9319 0x9341 sprites_jugador_1  20 punteros, uno por pose (0xC49F x 4 + 0xC4A2), a los sprites del jugador 1 en rle, que p00:4CCE sube a 0xF800 (p00:4CB2/4CB7 por el bit 7 de 0xC002); lo leen p00:4CC5 (40 bytes)
+F 0x9319 16
+D 0x9341 0x9369 sprites_jugador_2  20 punteros, uno por pose (0xC49F x 4 + 0xC4A2), a los sprites del jugador 2 en rle, que p00:4CCE sube a 0xF800 (p00:4CB2/4CB7 por el bit 7 de 0xC002); lo leen p00:4CC5 (40 bytes)
+F 0x9341 16
 D 0x9369 0x9385 rle_9369  rle a la VRAM (0x4539); lo leen p00:4D92 (28 bytes)
 F 0x9369 16
-D 0x9810 0x986E rle_9810  rle a la VRAM (0x4539) para el jugador 1; el del 2 es 0x9DF6 (p00:4BE1-4BEA); lo leen p00:4BED (94 bytes)
+D 0x9385 0x93FC sprites_9385  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (119 bytes)
+F 0x9385 16
+D 0x93FC 0x946D sprites_93FC  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (113 bytes)
+F 0x93FC 16
+D 0x946D 0x950D sprites_946D  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (160 bytes)
+F 0x946D 16
+D 0x950D 0x9584 sprites_950D  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (119 bytes)
+F 0x950D 16
+D 0x9584 0x95F4 sprites_9584  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (112 bytes)
+F 0x9584 16
+D 0x95F4 0x9693 sprites_95F4  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (159 bytes)
+F 0x95F4 16
+D 0x9693 0x9709 sprites_9693  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (118 bytes)
+F 0x9693 16
+D 0x9709 0x9781 sprites_9709  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (120 bytes)
+F 0x9709 16
+D 0x9781 0x9810 sprites_9781  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (143 bytes)
+F 0x9781 16
+D 0x9810 0x986E rle_9810  rle a la VRAM (0x4539) para el jugador 1; el del 2 es 0x9DF6 (p00:4BE1-4BEA); lo leen p00:4BED, p00:4CCE (94 bytes)
 F 0x9810 16
-D 0x9DF6 0x9E73 rle_9DF6  rle a la VRAM (0x4539); lo leen p00:4BED (125 bytes)
+D 0x986E 0x98CC sprites_986E  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (94 bytes)
+F 0x986E 16
+D 0x98CC 0x994E sprites_98CC  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (130 bytes)
+F 0x98CC 16
+D 0x994E 0x9992 sprites_994E  los sprites de una pose del jugador 1, en rle a 0xF800 (0x4539); lo leen p00:4CCE (68 bytes)
+F 0x994E 16
+D 0x9992 0x9A0E sprites_9992  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (124 bytes)
+F 0x9992 16
+D 0x9A0E 0x9A8A sprites_9A0E  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (124 bytes)
+F 0x9A0E 16
+D 0x9A8A 0x9B0D sprites_9A8A  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (131 bytes)
+F 0x9A8A 16
+D 0x9B0D 0x9B8A sprites_9B0D  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (125 bytes)
+F 0x9B0D 16
+D 0x9B8A 0x9C05 sprites_9B8A  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (123 bytes)
+F 0x9B8A 16
+D 0x9C05 0x9C88 sprites_9C05  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (131 bytes)
+F 0x9C05 16
+D 0x9C88 0x9D06 sprites_9C88  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (126 bytes)
+F 0x9C88 16
+D 0x9D06 0x9D84 sprites_9D06  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (126 bytes)
+F 0x9D06 16
+D 0x9D84 0x9DF6 sprites_9D84  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (114 bytes)
+F 0x9D84 16
+D 0x9DF6 0x9E73 rle_9DF6  rle a la VRAM (0x4539); lo leen p00:4BED, p00:4CCE (125 bytes)
 F 0x9DF6 16
+D 0x9E73 0x9EEE sprites_9E73  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (123 bytes)
+F 0x9E73 16
+D 0x9EEE 0x9F6C sprites_9EEE  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (126 bytes)
+F 0x9EEE 16
+D 0x9F6C 0x9FB0 sprites_9F6C  los sprites de una pose del jugador 2, en rle a 0xF800 (0x4539); lo leen p00:4CCE (68 bytes)
+F 0x9F6C 16
 D 0x9FB0 0xA000 rle_9FB0  rle a la VRAM (0x4539); lo leen p00:4BF6, p00:4BFF (80 bytes)
 F 0x9FB0 16
 # --- fin de los bloques de bloques.py ---

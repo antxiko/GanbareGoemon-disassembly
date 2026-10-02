@@ -1,1 +1,75 @@
+# Notas del banco 2: comentarios (C), etiquetas (L) y datos (D) anclados a direccion.
+# El banco 2 se ejecuta en 0x8000 (con el 1 y el 3 al lado, salvo donde se diga).
 
+# --- A MANO: comentarios, nombres y bloques ---
+D 0x80D6 0x80D9 tres_x  tres x (0xA8, 0xB0 y 0xB8) donde p02:80C9 escribe un caracter en la fila 0x24 (3 bytes)
+D 0x8177 0x817D seis_8177  seis bytes que p02:8152 reparte de dos en dos por los sprites de 0xEE08 (6 bytes)
+D 0x817D 0x8192 tres_por_fase  tres bytes por fase (0xC288 x 3) que lee p02:814B (21 bytes)
+F 0x817D 3
+D 0x81C2 0x81D0 puntos_de_las_zonas  7 parejas [y][x], una por zona: p02:8196 pone ahi el sprite de la zona 0xC280 y p02:820A pinta las siete (14 bytes)
+F 0x81C2 2
+D 0x84B0 0x84DF sprites_de_cada_figura  cuantos sprites lleva cada figura 1-47 (p02:8355 suma el numero a 0x84AF, asi que la 0 seria el `ret` de p02:84AF); p02:835C lo deja en (ix+0x20) (47 bytes)
+D 0x84DF 0x853D dibujos_de_cada_figura  47 punteros, uno por figura 1-47 (p02:8408 suma el doble a 0x84DD): la lista que p02:8496 reparte por sus sprites, un byte cada uno (94 bytes)
+F 0x84DF 2
+D 0x853D 0x8573 listas_853D  las listas de 0x84DF: tantos bytes como sprites tiene la figura (0x84B0); unas figuras comparten la suya (54 bytes)
+D 0x8B54 0x8B62 dibujos_de_cada_cosa  7 punteros, uno por cosa 1-7 (p02:8A60 suma el doble a 0x8B52), a la lista que p02:8A70 reparte por sus sprites (14 bytes)
+F 0x8B54 2
+D 0x8B62 0x8B76 listas_8B62  las listas de 0x8B54, un byte por sprite; cuantos son lo dice (ix+0x20) de cada cosa, asi que no esta medido hasta donde se leen: los dos ultimos bytes (3E 80) son ademas un `ld a,0x80` justo delante de p02:8B76 al que no salta nadie (20 bytes)
+D 0x8C30 0x8C70 arcotangente  8 x 8 bytes: el angulo (0x20 son 45 grados) segun la distancia en y y en x al jugador, que p02:8BE9 lee para apuntarle (64 bytes)
+D 0x8C70 0x8CB0 seno  el cuarto de onda del seno en 64 pasos (0 a 0xFF) que p02:8B94 lee para sacar el paso en x y en y de lo que se dispara (64 bytes)
+D 0x8D2C 0x8D32 pose_de_cada_cosa  la pose (ix+0x0A) de cada cosa 1-6 (p02:8D21) (6 bytes)
+D 0x906E 0x907A dibujos_de_cada_objeto  6 punteros, uno por objeto 1-6 (p02:9052 pasa 0x906C a p02:8485): los tres primeros a 0x907B y los otros a 0x907A (12 bytes)
+F 0x906E 2
+D 0x907A 0x907C listas_907A  las listas de 0x906E: 0x907A es [0x08] y 0x907B es [0x01, 0x42], que sigue en el primer byte de la tabla de 0x907C (2 bytes)
+D 0x907C 0x908C sprites_de_cada_objeto  cuantos sprites lleva cada objeto 0-15 (p02:9016), que p02:901D deja en (ix+0x20) (16 bytes)
+D 0x9371 0x9377 precios_de_cada_tienda  3 punteros, uno por clase de tienda (0xC289 y 1 + 0xC289 / 4, p02:932A), a sus precios (6 bytes)
+F 0x9371 2
+D 0x9377 0x94F7 precios  tres tablas de 128 bytes, una por clase de tienda; cada una son cuatro tramos de 16 palabras en BCD y p02:9344 escoge el tramo por lo avanzado de la partida (fase x 7 + zona + 1: menos de 10, de 20, de 40, o mas) (384 bytes)
+F 0x9377 2
+D 0x9556 0x955C sitios_de_lo_que_se_vende  tres parejas [y][x], una por cosa a la venta, que recorre p02:94FA (6 bytes)
+F 0x9556 2
+D 0x9567 0x9591 sitios_de_cada_interior  21 punteros, uno por interior (0xCD5F, p02:9289), a su ficha (42 bytes)
+F 0x9567 2
+D 0x9591 0x960C fichas_de_interior  las 21 fichas: lo que se crea dentro (p02:828F por cada byte hasta un 0), dos bytes que p02:929F copia a 0xCD80 y el numero de rotulo que escribe p00:4280 (123 bytes)
+D 0x96CB 0x96D3 poses_del_96CB  dos tandas de cuatro poses (ix+0x0A) que p02:96B4 recorre en bucle con (ix+0x75): 0x96CB para el jugador 1 y 0x96CF para el 2 (8 bytes)
+D 0x9953 0x9973 dibujos_de_lo_que_se_vende  tabla en dos niveles: 4 punteros (tienda 2-5, p02:98FE) a grupos de 3 punteros de la misma tabla (una por cosa a la venta, p02:9904), que apuntan a su ficha de sprites (32 bytes)
+F 0x9953 2
+D 0x9973 0x99FB fichas_de_lo_que_se_vende  12 fichas: [y][x] de partida, el primer sprite, [n] y n parejas [dibujo][color] (p02:990E-9950) (136 bytes)
+D 0x9AF4 0x9B14 sprites_9AF4  8 sprites [y][x][dibujo][color] que p02:9AB0 copia a 0xEE20 (32 bytes)
+F 0x9AF4 4
+D 0x9B14 0x9B34 sprites_9B14  dos tandas de 16 bytes (4 sprites [y][x][dibujo][color]) que p02:9A7C copia a 0xEE00: 0x9B14 para el jugador 1 y 0x9B24 para el 2 (p02:9A6B-9A74) (32 bytes)
+F 0x9B14 4
+D 0x9D26 0x9D32 tres_por_cosa_9D26  cuatro tripletes que p02:9CFC va leyendo con 0xCD50 (p02:9A59 lo pone a 0x9D26 y 0xCD55 a 4): (ix+0x10), (ix+0x0F) y la x (ix+5) (12 bytes)
+F 0x9D26 3
+D 0x9E0B 0x9E19 textos_9E0B  7 punteros, uno por fase (p02:9BD1), a textos que se escriben con p00:42F1; con 0xCD60 a 8 o mas sale el de 0x9F92 (14 bytes)
+F 0x9E0B 2
+D 0x9E19 0x9FCA textos  los 8 textos de 0x9E0B y 0x9F92: caracteres, 0xFE baja una fila, 0xE1-0xFD dejan hueco y 0xFF o 0xE0 acaban (433 bytes)
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8294 0x82F2 tabla_8294  47 destinos del despachador de 0x408D (call en p02:8291): 0x8334, 0x8334, 0xA14E, 0xA360, 0x8334, 0x8334, 0xB5C9, 0x8334 ...; lo leen p02:8291 (94 bytes)
+F 0x8294 2
+D 0x8427 0x8485 tabla_8427  47 destinos del despachador de 0x408D (call en p02:8424): 0xA0ED, 0xA296, 0xA151, 0xA368, 0xA3F9, 0xA49E, 0xB5EC, 0xA4D3 ...; lo leen p02:8424 (94 bytes)
+F 0x8427 2
+D 0x871C 0x877A tabla_871C  47 destinos del despachador de 0x408D (call en p02:8719): 0xA0FE, 0xA2CF, 0xA184, 0xA3E0, 0xA48D, 0xA4BC, 0xA4EB, 0xA4EB ...; lo leen p02:8719 (94 bytes)
+F 0x871C 2
+D 0x88DC 0x88EA tabla_88DC  7 destinos del despachador de 0x408D (call en p02:88D9): 0x88EA, 0x8918, 0x8925, 0x892A, 0x8926, 0x8925, 0x8981; lo leen p02:88D9 (14 bytes)
+F 0x88DC 2
+D 0x8A94 0x8AA2 tabla_8A94  7 destinos del despachador de 0x408D (call en p02:8A91): 0x8AA2, 0x8AB9, 0x8ACF, 0x8AD8, 0x8AE1, 0x8B02, 0x8B22; lo leen p02:8A91 (14 bytes)
+F 0x8A94 2
+D 0x8CE1 0x8CFF tabla_8CE1  15 destinos del despachador de 0x408D (call en p02:8CDE): 0x8DB3, 0x8DB3, 0x8DB3, 0x8D32, 0x8D7C, 0x8E4B, 0x8E6F, 0x8EC0 ...; lo leen p02:8CDE (30 bytes)
+F 0x8CE1 2
+D 0x8D38 0x8D40 tabla_8D38  4 destinos del despachador de 0x408D (call en p02:8D35): 0x8CFF, 0x8D0D, 0x8D40, 0x8D7C; lo leen p02:8D35 (8 bytes)
+F 0x8D38 2
+D 0x8DB9 0x8DC3 tabla_8DB9  5 destinos del despachador de 0x408D (call en p02:8DB6): 0x8CFF, 0x8D0D, 0x8DC3, 0x8E04, 0x8E27; lo leen p02:8DB6 (10 bytes)
+F 0x8DB9 2
+D 0x8E59 0x8E65 tabla_8E59  6 destinos del despachador de 0x408D (call en p02:8E56): 0x8CFF, 0x8D0D, 0x8E70, 0x8E6F, 0x8E70, 0x8E6F; lo leen p02:8E56 (12 bytes)
+F 0x8E59 2
+D 0x8FAC 0x8FB0 tabla_8FAC  2 destinos del despachador de 0x408D (call en p02:8FA9): 0x8FB0, 0x8FCB; lo leen p02:8FA9 (4 bytes)
+F 0x8FAC 2
+D 0x9B3A 0x9B46 tabla_9B3A  6 destinos del despachador de 0x408D (call en p02:9B37): 0x9B46, 0x9B52, 0x9B66, 0x9B75, 0x9BA1, 0x9BB2; lo leen p02:9B37 (12 bytes)
+F 0x9B3A 2
+D 0x9C05 0x9C0D tabla_9C05  4 destinos del despachador de 0x408D (call en p02:9C02): 0x9C0D, 0x9C3D, 0x9CA2, 0x9CC8; lo leen p02:9C02 (8 bytes)
+F 0x9C05 2
+D 0x9D38 0x9D46 tabla_9D38  7 destinos del despachador de 0x408D (call en p02:9D35): 0x9D46, 0x9D67, 0x9D84, 0x9DA5, 0x9DAE, 0x9DD1, 0x9DAD; lo leen p02:9D35 (14 bytes)
+F 0x9D38 2
+# --- fin de los bloques de bloques.py ---

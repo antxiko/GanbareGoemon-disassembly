@@ -1,1 +1,79 @@
+# Notas del banco 3: comentarios (C), etiquetas (L) y datos (D) anclados a direccion.
+# El banco 3 se ejecuta en 0xA000 (con el 1 y el 2 al lado).
 
+# --- A MANO: comentarios, nombres y bloques ---
+D 0xA008 0xA028 curva_de_caida  32 bytes con signo que p02:9FDE suma a la y de una figura (ix+3), uno por cuadro ((ix+0x7F) cuenta hasta 0x20): sube, se para y cae (32 bytes)
+D 0xA099 0xA0ED tres_filas  3 filas de 28 caracteres que p02:80EE pinta desde (0x00, 0x10) (84 bytes)
+D 0xA3C6 0xA3CE cuatro_fichas_A3C6  4 punteros (p03:A36B, por los dos bits bajos) a fichas de 6 bytes (16 bytes)
+F 0xA3C6 2
+D 0xA3CE 0xA3E0 fichas_A3CE  3 fichas de 6 bytes: dos palabras que p03:A382 y p03:A389 dejan en la figura (la primera, en negativo si el bit 0 de ix+0x0F esta a cero) y los bytes de ix+0x11 e ix+0x12 (18 bytes)
+D 0xA481 0xA48D cuatro_tripletes_A481  4 tripletes (p03:A475: (A / 2) x 3) que p03:A47B lee: una palabra y un byte (12 bytes)
+F 0xA481 3
+D 0xA5D1 0xA611 cuatro_tandas_A5D1  cuatro tandas de 16 bytes; p03:A599 escoge por los bits 2-3 de 0xCD12 (64 bytes)
+D 0xA67B 0xA683 cuatro_parejas_A67B  4 parejas [dy][dx] que p03:A631 escoge por el primer bit puesto de (ix+0x1F) (8 bytes)
+F 0xA67B 2
+D 0xA800 0xA810 dos_tandas_A800  dos tandas de 8 bytes que p03:A7CE recorre con (ix+0x73): 0xA800 con el bit 0 de ix+0x0F a cero y 0xA808 si no (16 bytes)
+D 0xAA51 0xAAD5 fichas_AA51  33 fichas de 4 bytes, una por tipo de figura 1-0x21 (p03:AA0D): (ix+0x7E), el byte que pasa por p03:AA40 hacia (ix+0x0B), y (ix+0x7D) / (ix+0x1E) en los bits 0-4 y 6-7 del cuarto (132 bytes)
+F 0xAA51 4
+D 0xAC69 0xAC6D cuatro_bits  0x08, 0x04, 0x02 y 0x01, uno por valor de 0 a 3 (p03:AC3E) (4 bytes)
+D 0xAEF1 0xAEF9 ocho_AEF1  ocho bytes (0x67-0x6E) que p03:AEE2 escoge por 0xCD5F / 4 mas C (8 bytes)
+D 0xB010 0xB01A diez_B010  diez bytes que p03:AF81 escoge por 0xCD8C (10 bytes)
+D 0xB470 0xB49D quince_tripletes  15 tripletes que p03:B444 recorre de atras adelante (B de 15 a 1): dos bytes a los que resta C (nunca por debajo de 0) y un tercero (45 bytes)
+F 0xB470 3
+D 0xB535 0xB539 cuatro_B535  cuatro bytes que p03:B4B3 escoge por (ix+0x18) - 1 (4 bytes)
+D 0xB716 0xB71D siete_B716  siete bytes que p03:B6BA escoge por los bits 0-6 de (HL) mas B (7 bytes)
+D 0xB882 0xB8A2 ocho_B882  ocho fichas de 4 bytes [x][y][dibujo de dos bytes] que p03:B86C pinta con p00:4EF1 (32 bytes)
+F 0xB882 4
+D 0xBAD9 0xBAF1 tres_tablas_BAD9  tres tablas de 4 palabras que se escogen por 0xCDC4: 0xBAD9 (p03:B8FC, B968, B9B2, BA7F), 0xBAE1 (p03:BA4A) y 0xBAE9 (p03:BA65) (24 bytes)
+F 0xBAD9 2
+D 0xBC1B 0xBC27 seis_BC1B  6 palabras que p03:BB7C escoge por A - 1 y pasa a p00:4EF1 (12 bytes)
+F 0xBC1B 2
+D 0xBE44 0xBE4E dos_nombres  dos palabras de 5 caracteres que p03:BE19 y p03:BE2C comparan con lo tecleado en 0xC580 (p03:BDF6): si sale la primera, p03:BE3D pone el bit 0 de 0xEF80; si sale la segunda, el bit 1 (10 bytes)
+F 0xBE44 5
+D 0xBE8A 0xBEAE cuatro_claves  cuatro claves de 9 caracteres que p03:BE51 compara con 0xEBB0; cada una pone su bit (2-5) en 0xEF80 (36 bytes)
+F 0xBE8A 9
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
+F 0xA109 2
+D 0xA1AE 0xA1BA tabla_A1AE  6 destinos del despachador de 0x408D (call en p03:A1AB): 0xA1BA, 0xA1D7, 0xA1F6, 0xA20C, 0xA231, 0xA26B; lo leen p03:A1AB (12 bytes)
+F 0xA1AE 2
+D 0xA4F1 0xA4F5 tabla_A4F1  2 destinos del despachador de 0x408D (call en p03:A4EE): 0xA4F5, 0xA72A; lo leen p03:A4EE (4 bytes)
+F 0xA4F1 2
+D 0xA770 0xA778 tabla_A770  4 destinos del despachador de 0x408D (call en p03:A76D): 0xA810, 0xA814, 0xA988, 0xA99F; lo leen p03:A76D (8 bytes)
+F 0xA770 2
+D 0xA785 0xA78D tabla_A785  4 destinos del despachador de 0x408D (call en p03:A782): 0xA814, 0xA814, 0xA8EA, 0xA8FE; lo leen p03:A782 (8 bytes)
+F 0xA785 2
+D 0xAB1D 0xAB25 tabla_AB1D  4 destinos del despachador de 0x408D (call en p03:AB1A): 0xAB25, 0xAB53, 0xABB2, 0xABC3; lo leen p03:AB1A (8 bytes)
+F 0xAB1D 2
+D 0xAC0E 0xAC12 tabla_AC0E  2 destinos del despachador de 0x408D (call en p03:AC0B): 0xAC12, 0xACC5; lo leen p03:AC0B (4 bytes)
+F 0xAC0E 2
+D 0xAD7E 0xAD84 tabla_AD7E  3 destinos del despachador de 0x408D (call en p03:AD7B): 0xAD84, 0xAD97, 0xADD4; lo leen p03:AD7B (6 bytes)
+F 0xAD7E 2
+D 0xADEB 0xAE07 tabla_ADEB  14 destinos del despachador de 0x408D (call en p03:ADE8): 0xAE07, 0xAE98, 0xAEA3, 0xAEA3, 0xAEA3, 0xAEA3, 0xAEA3, 0xAE98 ...; lo leen p03:ADE8 (28 bytes)
+F 0xADEB 2
+D 0xAF3C 0xAF42 tabla_AF3C  3 destinos del despachador de 0x408D (call en p03:AF39): 0xAF42, 0xAF5A, 0xB02E; lo leen p03:AF39 (6 bytes)
+F 0xAF3C 2
+D 0xB0A5 0xB0AD tabla_B0A5  4 destinos del despachador de 0x408D (call en p03:B0A2): 0xB0AD, 0xB0C0, 0xB0D4, 0xB0E6; lo leen p03:B0A2 (8 bytes)
+F 0xB0A5 2
+D 0xB130 0xB136 tabla_B130  3 destinos del despachador de 0x408D (call en p03:B12D): 0xB136, 0xB15C, 0xB165; lo leen p03:B12D (6 bytes)
+F 0xB130 2
+D 0xB1C0 0xB1C8 tabla_B1C0  4 destinos del despachador de 0x408D (call en p03:B1BD): 0xB1C8, 0xB1FF, 0xB213, 0xB25E; lo leen p03:B1BD (8 bytes)
+F 0xB1C0 2
+D 0xB2D8 0xB2DE tabla_B2D8  3 destinos del despachador de 0x408D (call en p03:B2D5): 0xB2DE, 0xB2E7, 0xB31F; lo leen p03:B2D5 (6 bytes)
+F 0xB2D8 2
+D 0xB372 0xB37E tabla_B372  6 destinos del despachador de 0x408D (call en p03:B36F): 0xB37E, 0xB3E9, 0xB49D, 0xB534, 0xB4DF, 0xB508; lo leen p03:B36F (12 bytes)
+F 0xB372 2
+D 0xB579 0xB57F tabla_B579  3 destinos del despachador de 0x408D (call en p03:B576): 0xB57F, 0xB58E, 0xB5C8; lo leen p03:B576 (6 bytes)
+F 0xB579 2
+D 0xB698 0xB6A4 tabla_B698  6 destinos del despachador de 0x408D (call en p03:B695): 0xB6A4, 0xB72E, 0xB790, 0xB7B4, 0xB7B3, 0xB824; lo leen p03:B695 (12 bytes)
+F 0xB698 2
+D 0xBC74 0xBC7E tabla_BC74  5 destinos del despachador de 0x408D (call en p03:BC71): 0xBC7E, 0xBC97, 0xBCA0, 0xBCAD, 0xBCBE; lo leen p03:BC71 (10 bytes)
+F 0xBC74 2
+D 0xBD0C 0xBD12 tabla_BD0C  3 destinos del despachador de 0x408D (call en p03:BD09): 0xBD12, 0xBDB2, 0xBDD5; lo leen p03:BD09 (6 bytes)
+F 0xBD0C 2
+D 0xBEE5 0xBFF2 relleno_03  269 bytes 0xFF hasta el final del banco (o hasta la marca de Konami): relleno, no lo lee nadie; lo leen nadie (269 bytes)
+F 0xBEE5 16
+D 0xBFF2 0xC000 marca_de_konami  la marca que Konami escondio al final del banco: el titulo al reves en 11 caracteres del propio juego (35 63 5D 49 63 59 39 63 33 52 5D, o sea ka-dakuten-n-ha-dakuten-re-ko-dakuten-e-mo-n: GANBARE GOEMON), [11], [0x48] del RC-748 y [0xAA]; no la lee el cartucho (la destapo Manuel Pazos); lo leen nadie (14 bytes)
+F 0xBFF2 16
+# --- fin de los bloques de bloques.py ---

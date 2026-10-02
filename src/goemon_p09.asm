@@ -145,8 +145,11 @@ DATA_paleta_A3FF:
 	defb 030h,001h,00dh,010h,001h,00fh,031h,002h,0ffh	; a40f  0.....1..
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa418..0xa42b  (19 bytes)
-DATA_A418:
+; DATOS colores_A418: una lista de colores con el formato de 0x4666
+;   ([color][RB][G], 0xFF acaba) a la que no apunta nadie: ni 0xA37A ni 0xA4D1
+;   la nombran (19 bytes)
+;   0xa418..0xa42b  (19 bytes)
+DATA_colores_A418:
 	defb 005h,007h,003h,009h,063h,005h,00ah,051h,003h,00bh,052h,004h,00dh,032h,005h,00fh	; a418  ....c..Q..R..2..
 	defb 031h,002h,0ffh	; a428
 
@@ -191,8 +194,10 @@ DATA_paleta_A48F:
 	defb 077h,007h,006h,047h,003h,0ffh	; a49f
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa4a5..0xa4b8  (19 bytes)
-DATA_A4A5:
+; DATOS colores_A4A5: otra lista de colores a la que no apunta nadie; es igual
+;   que la de 0xA418 salvo el valor del color 0x0B (19 bytes)
+;   0xa4a5..0xa4b8  (19 bytes)
+DATA_colores_A4A5:
 	defb 005h,007h,003h,009h,063h,005h,00ah,051h,003h,00bh,052h,003h,00dh,032h,005h,00fh	; a4a5  ....c..Q..R..2..
 	defb 031h,002h,0ffh	; a4b5
 
@@ -237,8 +242,11 @@ DATA_colores_A4F5:
 	defb 009h,062h,004h,0ffh	; a4f5
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa4f9..0xa4fd  (4 bytes)
-DATA_A4F9:
+; DATOS colores_A4F9: una lista de un color ([0x09][0x31][0x02], 0xFF) entre
+;   las de 0xA4F5 y 0xA4FD; la ventana de 0xA4D1 salta de 0xA4F5 a 0xA4F4 y no
+;   la nombra (4 bytes)
+;   0xa4f9..0xa4fd  (4 bytes)
+DATA_colores_A4F9:
 	defb 009h,031h,003h,0ffh	; a4f9
 
 ; ----------------------------------------------------------------------

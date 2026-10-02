@@ -38,9 +38,12 @@
 0xA49E   # p02:8424 entrada 5 de la tabla de 0x8427 (call 0x408D en 0x8424)
 0xA4BC   # p02:8719 entrada 5 de la tabla de 0x871C (call 0x408D en 0x8719)
 0xA4D3   # p02:8424 entrada 7 de la tabla de 0x8427 (call 0x408D en 0x8424)
+0xA4E6   # a mano, codigo huerfano: call 0x85B1 / jr 0xA4D8; nadie salta a 0xA4E6
 0xA4EB   # p02:8719 entrada 6 de la tabla de 0x871C (call 0x408D en 0x8719)
 0xA4F5   # p03:A4EE entrada 0 de la tabla de 0xA4F1 (call 0x408D en 0xA4EE)
+0xA579   # a mano, codigo huerfano: da la vuelta a (ix+0x1A) con xor 0x0C y a (ix+0x19) con xor 3; nadie la llama
 0xA58A   # p02:8617 jp cc
+0xA5C8   # a mano, codigo huerfano: and 3 / ret z / and 1 / ld (ix+0x0F),a; nadie la llama
 0xA72A   # p03:A4EE entrada 1 de la tabla de 0xA4F1 (call 0x408D en 0xA4EE)
 0xA747   # p02:8424 entrada 8 de la tabla de 0x8427 (call 0x408D en 0x8424)
 0xA763   # p02:8719 entrada 20 de la tabla de 0x871C (call 0x408D en 0x8719)
@@ -73,6 +76,7 @@
 0xAD78   # p02:8719 entrada 36 de la tabla de 0x871C (call 0x408D en 0x8719)
 0xAD84   # p03:AD7B entrada 0 de la tabla de 0xAD7E (call 0x408D en 0xAD7B)
 0xAD97   # p03:AD7B entrada 1 de la tabla de 0xAD7E (call 0x408D en 0xAD7B)
+0xADCD   # a mano, codigo huerfano: cp 3 / ret nz / xor a / dec hl / dec hl; nadie la llama (los CD AD que salen en la ROM son trozos de `call 0x92AD`)
 0xADD4   # p03:AD7B entrada 2 de la tabla de 0xAD7E (call 0x408D en 0xAD7B)
 0xAE07   # p03:ADE8 entrada 0 de la tabla de 0xADEB (call 0x408D en 0xADE8)
 0xAE93   # p03:ADE8 entrada 8 de la tabla de 0xADEB (call 0x408D en 0xADE8)

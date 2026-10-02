@@ -1,3 +1,8 @@
+# --- A MANO: comentarios, nombres y bloques ---
+D 0xA418 0xA42B colores_A418  una lista de colores con el formato de 0x4666 ([color][RB][G], 0xFF acaba) a la que no apunta nadie: ni 0xA37A ni 0xA4D1 la nombran (19 bytes)
+D 0xA4A5 0xA4B8 colores_A4A5  otra lista de colores a la que no apunta nadie; es igual que la de 0xA418 salvo el valor del color 0x0B (19 bytes)
+D 0xA4F9 0xA4FD colores_A4F9  una lista de un color ([0x09][0x31][0x02], 0xFF) entre las de 0xA4F5 y 0xA4FD; la ventana de 0xA4D1 salta de 0xA4F5 a 0xA4F4 y no la nombra (4 bytes)
+
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA000 0xA10E rle_9FB0_cola  rle dado la vuelta a un bufer y de ahi a la VRAM (0x4562) (sigue del banco anterior, 0x9FB0); lo leen p00:4BF6, p00:4BFF (270 bytes)
