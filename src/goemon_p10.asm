@@ -688,16 +688,16 @@ L_64D5:
 	ld a,(hl)			;64df
 	dec a			;64e0
 L_64E1:
-	inc hl			;64e1
-	ld (ix+011h),a		;64e2
-	ld a,(hl)			;64e5
+	inc hl			;64e1   ; la primera vez: las veces del byte - 1
+	ld (ix+011h),a		;64e2   ; (ix+0x11)
+	ld a,(hl)			;64e5   ; la direccion: vuelta alli
 	inc hl			;64e6
 	ld h,(hl)			;64e7
 	ld l,a			;64e8
 	jp L_6466		;64e9
 L_64EC:
-	ld (ix+011h),a		;64ec
-	inc hl			;64ef
+	ld (ix+011h),a		;64ec   ; hechas todas
+	inc hl			;64ef   ; se saltan los 3 bytes
 	inc hl			;64f0
 	inc hl			;64f1
 	jp L_6466		;64f2

@@ -1495,11 +1495,11 @@ L_48DF:
 	xor a			;48e6
 L_48E7:
 	rld		;48e7
-	inc hl			;48e9
+	inc hl			;48e9   ; el byte siguiente de la fila de 4 bits
 	djnz L_48D9		;48ea
 	ex de,hl			;48ec
 	pop hl			;48ed
-	inc hl			;48ee
+	inc hl			;48ee   ; la fila siguiente de la letra
 	pop bc			;48ef
 	djnz L_48D2		;48f0
 	ret			;48f2
@@ -1825,13 +1825,13 @@ L_4ACA:
 L_4AFA:
 	push bc			;4afa
 	ld hl,092d9h		;4afb
-	ld a,b			;4afe
+	ld a,b			;4afe   ; los dos primeros (B = 4 y 3)...
 	cp 003h		;4aff
 	jr nc,L_4B06		;4b01
-	ld hl,092f9h		;4b03
+	ld hl,092f9h		;4b03   ; ... de 0x92D9, y los otros de 0x92F9
 L_4B06:
 	push de			;4b06
-	call sube_un_dibujo		;4b07   ; sube_un_dibujo: un dibujo de 8x8 a 4 bits (32 bytes) de HL a la VRAM de DE
+	call sube_un_dibujo		;4b07   ; sube el dibujo
 	pop de			;4b0a
 	inc de			;4b0b   ; el siguiente, 8 puntos a la derecha
 	inc de			;4b0c
@@ -1954,7 +1954,7 @@ vueltos_del_juego:		; de la tabla de 0x4C57: DE el sitio, B cuantos y HL de dond
 	ld h,(hl)			;4c23
 	ld l,a			;4c24
 	ret			;4c25
-L_4C26:
+dibujos_tras_perder_una_vida:		; los dibujos y los patrones de sprite de la pantalla del estado 4, paso 0
 	call bancos_4_5_6		;4c26   ; bancos_4_5_6: pone los bancos 4, 5 y 6
 	ld hl,0a7e0h		;4c29   ; 31 dibujos, del banco 6
 	ld de,08004h		;4c2c
@@ -2108,7 +2108,7 @@ paleta_del_titulo:		; pone la paleta de 0xA44E (banco 9)
 	ld hl,0a44eh		;4d4b   ; la paleta de 0xA44E
 	call pon_paleta		;4d4e   ; pon_paleta: pone una lista de colores en la paleta
 	jp bancos_1_2_3		;4d51   ; bancos_1_2_3: pone los bancos 1, 2 y 3
-L_4D54:
+paleta_tras_perder_una_vida:		; la paleta base y la de 0xA476
 	call paleta_base		;4d54   ; paleta_base: pone la paleta base
 	call bancos_7_8_9		;4d57   ; bancos_7_8_9: pone los bancos 7, 8 y 9
 	ld hl,0a476h		;4d5a   ; la base y la de 0xA476
@@ -2734,19 +2734,19 @@ L_5246:
 	push af			;5247
 	call cosas_de_la_pantalla		;5248   ; cosas_de_la_pantalla: llena la lista de 0xC500 con lo de esta pantalla (0x97D5) y esta casilla (0x981D)
 L_524B:
-	pop af			;524b
+	pop af			;524b   ; A = la pantalla
 	ld de,0d000h		;524c   ; 48 bytes por pantalla (8 x 6 bloques), desde 0xD000
-	add a,a			;524f
+	add a,a			;524f   ; * 4...
 	add a,a			;5250
 	ld h,000h		;5251
 	ld l,a			;5253
-	add hl,hl			;5254
+	add hl,hl			;5254   ; ... * 16
 	add hl,hl			;5255
 	ld b,h			;5256
 	ld c,l			;5257
-	add hl,hl			;5258
+	add hl,hl			;5258   ; * 32 + * 16: * 48
 	add hl,bc			;5259
-	add hl,de			;525a
+	add hl,de			;525a   ; desde 0xD000
 	jr L_5275		;525b
 L_525D:
 	ld hl,07239h		;525d
@@ -3049,17 +3049,17 @@ L_542E:
 	ld b,008h		;5439
 	ld d,a			;543b
 L_543C:
-	ld a,(hl)			;543c
+	ld a,(hl)			;543c   ; el tipo de la entrada
 	cp d			;543d
 	jr z,L_544B		;543e
-	ld a,005h		;5440
+	ld a,005h		;5440   ; 5 bytes por entrada
 	add a,l			;5442
 	ld l,a			;5443
 	jr nc,L_5447		;5444
 	inc h			;5446
 L_5447:
-	djnz L_543C		;5447
-	jr L_5457		;5449
+	djnz L_543C		;5447   ; las 8
+	jr L_5457		;5449   ; ninguna
 L_544B:
 	inc hl			;544b   ; el destino en la VRAM
 	ld e,(hl)			;544c
@@ -3157,17 +3157,17 @@ colores_de_la_figura:		; los 16 colores de cada sprite de la figura, con la list
 	inc a			;54f5
 L_54F6:
 	ex de,hl			;54f6
-	add a,a			;54f7
+	add a,a			;54f7   ; 2 bytes por entrada
 	add a,l			;54f8
 	ld l,a			;54f9
 	jr nc,L_54FD		;54fa
 	inc h			;54fc
 L_54FD:
-	ld a,(hl)			;54fd
+	ld a,(hl)			;54fd   ; la palabra
 	inc hl			;54fe
 	ld h,(hl)			;54ff
 	ld l,a			;5500
-	ex de,hl			;5501
+	ex de,hl			;5501   ; DE = la lista de color
 L_5502:
 	exx			;5502
 L_5503:
@@ -3203,13 +3203,13 @@ L_5524:
 	inc e			;5525
 	djnz L_5524		;5526
 	exx			;5528
-	call L_5532		;5529   ; y encima, la lista de colores de la pose
+	call colores_de_la_pose		;5529   ; y encima, la lista de colores de la pose
 	exx			;552c
 	pop bc			;552d
 	inc l			;552e
 	djnz L_550A		;552f
 	ret			;5531
-L_5532:
+colores_de_la_pose:		; sin pose, nada; con ella, la lista de tripletes de DE
 	ld a,(0cd37h)		;5532   ; sin pose (0xCD37 = 0), un color para todo el sprite
 	or a			;5535
 	ret z			;5536
@@ -3218,21 +3218,21 @@ L_5537:
 	inc de			;5538
 	or a			;5539
 	ret z			;553a
-	ld b,a			;553b
-	ld hl,(0cd34h)		;553c
-	ld a,(de)			;553f
+	ld b,a			;553b   ; B = cuantas lineas
+	ld hl,(0cd34h)		;553c   ; HL = el color del sprite
+	ld a,(de)			;553f   ; + desde
 	inc de			;5540
 	add a,l			;5541
 	ld l,a			;5542
 	jr nc,L_5546		;5543
 	inc h			;5545
 L_5546:
-	ld a,(de)			;5546
+	ld a,(de)			;5546   ; el color
 L_5547:
-	ld (hl),a			;5547
+	ld (hl),a			;5547   ; B lineas de ese color
 	inc hl			;5548
 	djnz L_5547		;5549
-	inc de			;554b
+	inc de			;554b   ; el triplete siguiente
 	jr L_5537		;554c
 
 ; ----------------------------------------------------------------------
@@ -3554,14 +3554,14 @@ entra_en_el_laberinto:		; pasa al laberinto de la zona, en primera persona
 	jp enciende_la_pantalla		;598a   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 pinta_el_laberinto:		; la vista del laberinto y el marcador
 	call 0b936h		;598d
-	call 0bc3ah		;5990
+	call 0bc3ah		;5990   ; borra_todo: borra la pantalla y los sprites
 	call pinta_las_cosas		;5993   ; pinta_las_cosas: pinta las cosas del marcador
 	call pinta_el_marcador		;5996   ; pinta_el_marcador: pinta el marcador entero
 	call pinta_la_vida		;5999   ; pinta_la_vida: pinta la barra de vida
-	call 098beh		;599c
+	call 098beh		;599c   ; pinta_la_vista: las paredes de la vista del laberinto
 	call 0b9cbh		;599f   ; flecha_de_direccion: los sprites de la flecha hacia donde se mira
 	call 0b843h		;59a2
-	call 098e3h		;59a5
+	call 098e3h		;59a5   ; sprites_de_la_vista: los sprites de lo que hay delante
 	ret			;59a8
 monta_el_laberinto:		; monta en 0xD800 el laberinto de la zona (tablas 0xA575 y 0xA86D, banco 9)
 	ld a,(0c288h)		;59a9   ; fase * 7 + zona
@@ -3600,20 +3600,20 @@ laberinto_de_bits:		; los bits del laberinto (A de ancho, B de alto), un byte po
 	ld hl,0d800h		;59e5
 L_59E8:
 	push bc			;59e8
-	ld a,(0ee81h)		;59e9
+	ld a,(0ee81h)		;59e9   ; B = los bytes de la fila
 	ld b,a			;59ec
-	ld a,(0ee80h)		;59ed
+	ld a,(0ee80h)		;59ed   ; C = el ancho
 	ld c,a			;59f0
 	push hl			;59f1
 L_59F2:
-	ld a,(de)			;59f2
+	ld a,(de)			;59f2   ; el byte de bits
 	inc de			;59f3
 	push bc			;59f4
 	push de			;59f5
 	call ocho_bits_a_bytes		;59f6   ; cada bit, un byte (1 o 0)
 	pop de			;59f9
 	pop bc			;59fa
-	ld c,a			;59fb
+	ld c,a			;59fb   ; lo que queda de fila
 	djnz L_59F2		;59fc
 	pop hl			;59fe
 	ld a,01ch		;59ff   ; 28 casillas por fila
@@ -3690,12 +3690,12 @@ L_5A5B:
 	jr c,L_5A62		;5a5e
 	ld d,000h		;5a60
 L_5A62:
-	ld (hl),d			;5a62
+	ld (hl),d			;5a62   ; el byte: 1 o 0
 	inc hl			;5a63
-	dec c			;5a64
+	dec c			;5a64   ; una casilla menos de la fila
 	ret z			;5a65
 	djnz L_5A5B		;5a66
-	ld a,c			;5a68
+	ld a,c			;5a68   ; A = las que quedan
 	ret			;5a69
 sitio_en_el_laberinto:		; HL = 0xD800 + H * 28 + L
 	ld b,h			;5a6a   ; HL = 0xD800 + H * 28 + L
@@ -4722,8 +4722,8 @@ L_5EFD:
 	sub 001h		;5f03
 	daa			;5f05
 	ld (0c260h),a		;5f06   ; guarda las vidas
-	call L_4C26		;5f09
-	call L_4D54		;5f0c   ; la paleta de la pantalla
+	call dibujos_tras_perder_una_vida		;5f09   ; dibujos_tras_perder_una_vida: los dibujos y los patrones de sprite de la pantalla del estado 4, paso 0
+	call paleta_tras_perder_una_vida		;5f0c   ; la paleta de la pantalla
 	call 080d9h		;5f0f
 	ld a,078h		;5f12   ; 120 cuadros
 	jp espera_y_sigue		;5f14   ; espera_y_sigue: A cuadros de espera y el paso siguiente

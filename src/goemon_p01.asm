@@ -158,7 +158,7 @@ estado_0b:		; la fase pasada
 	push af			;6111
 	ld a,(0c003h)		;6112   ; lee el contador de cuadros
 	and 007h		;6115
-	call z,0bd57h		;6117
+	call z,0bd57h		;6117   ; abre_la_puerta: un paso de la puerta que se abre
 	pop af			;611a
 	and a			;611b
 	ret nz			;611c
@@ -180,9 +180,9 @@ L_6120:
 L_6145:
 	djnz L_6168		;6145   ; paso 3: las figuras, hasta que acaba (0xCD11) y no suena nada
 	call 09b34h		;6147
-	call 0868eh		;614a
-	call 086fch		;614d
-	call 08861h		;6150
+	call 0868eh		;614a   ; las_figuras: un cuadro de todas las figuras
+	call 086fch		;614d   ; sprites_de_las_figuras: los sprites de las ocho de 0xC600
+	call 08861h		;6150   ; copia_las_figuras: sprites de las ocho de 0xC600 a la copia de 0xEE20
 	call 05b61h		;6153   ; sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 	ld a,(0cd11h)		;6156
 	or a			;6159
@@ -221,7 +221,7 @@ L_6192:
 	ld hl,01e28h		;6198
 	ld a,002h		;619b
 	ld c,00fh		;619d
-	call 0bd48h		;619f
+	call 0bd48h		;619f   ; prepara_la_puerta: los datos de la puerta que se abre
 	ld a,004h		;61a2   ; ... el efecto 4 y 80 cuadros
 	call 04fe4h		;61a4   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld a,050h		;61a7
@@ -1050,14 +1050,14 @@ borra_las_figuras:		; el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xC
 	ld hl,0c600h		;67b3   ; las ocho fichas de 0xC600 (de 0x80)...
 	ld de,00080h		;67b6
 	ld b,008h		;67b9
-	call L_67C6		;67bb   ; las de 0xC600
+	call tipo_a_cero		;67bb   ; las de 0xC600
 	ld hl,0ca00h		;67be   ; ... y las ocho de 0xCA00 (de 0x40): el tipo a 0
 	ld b,008h		;67c1
 	ld de,00040h		;67c3
-L_67C6:
+tipo_a_cero:		; el tipo a 0 en B fichas de DE en DE
 	ld (hl),000h		;67c6   ; el tipo a 0
 	add hl,de			;67c8   ; la siguiente
-	djnz L_67C6		;67c9
+	djnz tipo_a_cero		;67c9
 	ret			;67cb
 borra_al_jugador:		; los 0x60 bytes del jugador (0xC490) a cero
 	ld hl,0c490h		;67cc   ; los 0x60 bytes del jugador (0xC490-0xC4EF) a cero
@@ -1133,13 +1133,13 @@ L_682D:
 	call 04206h		;6853   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call lo_lanzado		;6856   ; y las figuras
 	call 08cb0h		;6859
-	jp 0868eh		;685c
+	jp 0868eh		;685c   ; las_figuras: un cuadro de todas las figuras
 L_685F:
 	call 086fch		;685f   ; los cuadros impares: las figuras, el tiempo y el orden de los sprites
-	call 08861h		;6862
+	call 08861h		;6862   ; copia_las_figuras: sprites de las ocho de 0xC600 a la copia de 0xEE20
 	call 088b0h		;6865
-	call 086f1h		;6868
-	call 08857h		;686b
+	call 086f1h		;6868   ; sprites_de_los_disparos: los sprites de las doce de 0xCA00
+	call 08857h		;686b   ; copia_los_disparos: sprites de las doce de 0xCA00 a la copia de 0xEE20
 	call choques		;686e   ; choques: los choques del jugador con las figuras, sus disparos, su golpe y lo lanzado
 	call 058c5h		;6871   ; cuenta_el_tiempo: cada 60 - fase * 5 cuadros, un segundo menos
 	jp 05b1dh		;6874   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
@@ -2004,7 +2004,7 @@ cae_al_hoyo:		; estado 2 y la musica 0x0B
 	call borra_lo_lanzado		;6de2   ; borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
 	ld hl,0c4e3h		;6de5
 	call borra_lo_lanzado		;6de8   ; borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
-	call L_6F64		;6deb
+	call sprites_en_la_y_del_jugador		;6deb   ; sprites_en_la_y_del_jugador: los 16 sprites de la copia en la y del jugador
 	ld a,002h		;6dee   ; ... estado 2, 15 cuadros de caida...
 	ld (0c490h),a		;6df0   ; guarda el estado del jugador
 	ld a,00fh		;6df3
@@ -2213,7 +2213,7 @@ L_6F58:
 sprites_en_la_y:		; los 16 sprites de la copia en la y del jugador + C
 	ld c,006h		;6f60   ; los 16 sprites de la copia, en la y del jugador + 6...
 	jr L_6F66		;6f62
-L_6F64:
+sprites_en_la_y_del_jugador:		; los 16 sprites de la copia en la y del jugador
 	ld c,000h		;6f64   ; ... o en su y
 L_6F66:
 	ld hl,0ee00h		;6f66   ; la copia de los atributos
@@ -2258,7 +2258,7 @@ jugador_despedido:		; estado 3: sin vida o sin tiempo, sale despedido
 	sub 0e0h		;6fb1
 	cp 040h		;6fb3
 	jp c,L_7064		;6fb5
-	call L_7069		;6fb8
+	call paso_siguiente_del_jugador		;6fb8   ; paso_siguiente_del_jugador: 0xC491 + 1
 	jr L_6FC1		;6fbb
 L_6FBD:
 	djnz L_6FD6		;6fbd   ; paso 2
@@ -2272,7 +2272,7 @@ L_6FC1:
 	ld (0c4abh),de		;6fcb   ; 0xC4AB: lo que frena
 	xor a			;6fcf
 	ld (0c4adh),a		;6fd0
-	jp L_7069		;6fd3
+	jp paso_siguiente_del_jugador		;6fd3   ; paso_siguiente_del_jugador: 0xC491 + 1
 L_6FD6:
 	djnz L_704E		;6fd6   ; paso 3: el vaiven
 	ld hl,(0c49dh)		;6fd8   ; la velocidad horizontal...
@@ -2360,7 +2360,7 @@ L_704E:
 L_7064:
 	ld a,010h		;7064   ; 16 cuadros
 	ld (0c4a8h),a		;7066
-L_7069:
+paso_siguiente_del_jugador:		; 0xC491 + 1
 	ld hl,0c491h		;7069   ; el paso siguiente
 	inc (hl)			;706c
 	ret			;706d
@@ -2467,7 +2467,7 @@ prisas:		; por debajo de 50 segundos, su musica
 	ld a,(0c490h)		;7116   ; la musica de las prisas
 	cp 003h		;7119   ; despedido: nada
 	ret z			;711b
-	call L_7132		;711c   ; la primera vez
+	call justo_en_50		;711c   ; la primera vez
 	ld de,(0c4b0h)		;711f   ; por debajo de 50 segundos...
 	ld a,d			;7123   ; cien o mas: nada
 	and a			;7124
@@ -2479,7 +2479,7 @@ prisas:		; por debajo de 50 segundos, su musica
 	and a			;712d
 	ret nz			;712e
 	jp 0416fh		;712f   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
-L_7132:
+justo_en_50:		; si el tiempo esta justo en 50 segundos, la musica de las prisas una vez
 	ld b,000h		;7132   ; justo en 50 segundos...
 	ld de,(0c4b0h)		;7134   ; lee el TIEMPO (BCD) y el byte siguiente (16 bits)
 	ld a,d			;7138   ; las centenas a 0...
@@ -2494,10 +2494,10 @@ L_7143:
 	ld a,(hl)			;7146
 	xor b			;7147   ; si antes no lo era...
 	and b			;7148
-	call nz,L_714E		;7149
+	call nz,musica_de_las_prisas		;7149   ; musica_de_las_prisas: 0xC0AF = 1 y la musica 0x12
 	ld (hl),b			;714c   ; se apunta como esta
 	ret			;714d
-L_714E:
+musica_de_las_prisas:		; 0xC0AF = 1 y la musica 0x12
 	ld a,001h		;714e   ; ... 0xC0AF = 1 y, fuera de los pasadizos, la musica 0x12
 	ld (0c0afh),a		;7150
 	ld a,(0c483h)		;7153   ; lee si esta en un pasadizo
@@ -2829,13 +2829,13 @@ donde_para_el_salto:		; 0xC4A6: los pasos del salto en los que hay pared
 	ld a,(0c4a5h)		;73a3   ; la direccion del salto: arriba, abajo, izquierda o derecha, de 8 en 8
 	ld c,a			;73a6
 	rr c		;73a7
-	call c,L_7477		;73a9
+	call c,e_8_arriba		;73a9   ; e_8_arriba: E -= 8
 	rr c		;73ac
-	call c,L_747C		;73ae
+	call c,e_8_abajo		;73ae   ; e_8_abajo: E += 8
 	rr c		;73b1
-	call c,L_7481		;73b3
+	call c,d_8_izquierda		;73b3   ; d_8_izquierda: D -= 8
 	rr c		;73b6
-	call c,L_7486		;73b8
+	call c,d_8_derecha		;73b8   ; d_8_derecha: D += 8
 	xor a			;73bb   ; 0xC4A6: un bit por paso en el que el salto se para
 	ld (0c4a6h),a		;73bc
 	ld (0ee80h),a		;73bf
@@ -2884,13 +2884,13 @@ L_73F6:
 	ld a,(0c4a5h)		;73fe   ; el paso siguiente, 16 puntos mas alla
 	ld c,a			;7401
 	rr c		;7402
-	call c,L_7490		;7404
+	call c,e_16_arriba		;7404   ; e_16_arriba: E -= 16
 	rr c		;7407
-	call c,L_748B		;7409
+	call c,e_16_abajo		;7409   ; e_16_abajo: E += 16
 	rr c		;740c
-	call c,L_749B		;740e
+	call c,d_16_izquierda		;740e   ; d_16_izquierda: D -= 16, y si se sale, 0xEE80 = 1
 	rr c		;7411
-	call c,L_7495		;7413
+	call c,d_16_derecha		;7413   ; d_16_derecha: D += 16, y si se sale, 0xEE80 = 1
 	pop bc			;7416
 	inc c			;7417   ; el paso siguiente
 	djnz L_73CA		;7418
@@ -2969,42 +2969,42 @@ L_7470:
 L_7475:
 	xor a			;7475   ; A = 0: sigue
 	ret			;7476
-L_7477:
+e_8_arriba:		; E -= 8
 	ld a,e			;7477   ; E 8 arriba
 	sub 008h		;7478   ; - 8
 	ld e,a			;747a
 	ret			;747b
-L_747C:
+e_8_abajo:		; E += 8
 	ld a,e			;747c   ; E 8 abajo
 	add a,008h		;747d   ; + 8
 	ld e,a			;747f
 	ret			;7480
-L_7481:
+d_8_izquierda:		; D -= 8
 	ld a,d			;7481   ; D 8 a la izquierda
 	sub 008h		;7482   ; - 8
 	ld d,a			;7484
 	ret			;7485
-L_7486:
+d_8_derecha:		; D += 8
 	ld a,d			;7486   ; D 8 a la derecha
 	add a,008h		;7487   ; + 8
 	ld d,a			;7489
 	ret			;748a
-L_748B:
+e_16_abajo:		; E += 16
 	ld a,e			;748b   ; E 16 abajo
 	add a,010h		;748c   ; + 16
 	ld e,a			;748e
 	ret			;748f
-L_7490:
+e_16_arriba:		; E -= 16
 	ld a,e			;7490   ; E 16 arriba
 	sub 010h		;7491   ; - 16
 	ld e,a			;7493
 	ret			;7494
-L_7495:
+d_16_derecha:		; D += 16, y si se sale, 0xEE80 = 1
 	ld a,d			;7495   ; D 16 a la derecha
 	add a,010h		;7496   ; + 16
 	ld d,a			;7498
 	jr L_749F		;7499
-L_749B:
+d_16_izquierda:		; D -= 16, y si se sale, 0xEE80 = 1
 	ld a,d			;749b   ; D 16 a la izquierda
 	sub 010h		;749c
 	ld d,a			;749e
@@ -3307,9 +3307,9 @@ hay_algo_lanzado:		; NZ si 0xC4D0 o 0xC4E0 estan en uso
 	ret			;7674
 mueve_lo_lanzado:		; posicion += velocidad de los dos
 	ld hl,0c4d0h		;7675   ; mueve los dos: y += [1], x += [2]
-	call L_767E		;7678
+	call mueve_un_lanzado		;7678   ; mueve_un_lanzado: posicion += velocidad del lanzado HL
 	ld hl,0c4e0h		;767b
-L_767E:
+mueve_un_lanzado:		; posicion += velocidad del lanzado HL
 	ld a,(hl)			;767e   ; si esta en uso...
 	and a			;767f
 	ret z			;7680
@@ -3328,9 +3328,9 @@ L_767E:
 	ret			;768d
 lanzado_fuera:		; borra los que se salen de la pantalla
 	ld hl,0c4d0h		;768e   ; fuera de la pantalla, se borra
-	call L_7697		;7691
+	call lanzado_que_se_sale		;7691   ; lanzado_que_se_sale: borra el lanzado HL si sale de la pantalla
 	ld hl,0c4e0h		;7694
-L_7697:
+lanzado_que_se_sale:		; borra el lanzado HL si sale de la pantalla
 	ld a,(hl)			;7697
 	and a			;7698
 	ret z			;7699
@@ -3379,10 +3379,10 @@ lo_lanzado:		; un cuadro de lo lanzado
 	ret z			;76da
 	ld de,0c4d0h		;76db
 	ld hl,0ee10h		;76de
-	call L_76EA		;76e1
+	call sprite_del_lanzado		;76e1   ; sprite_del_lanzado: el sprite y los colores del lanzado DE en HL
 	ld de,0c4e0h		;76e4
 	ld hl,0ee14h		;76e7
-L_76EA:
+sprite_del_lanzado:		; el sprite y los colores del lanzado DE en HL
 	ld a,(de)			;76ea   ; el sprite: y - 4, x - 4, patron 0x1C
 	and a			;76eb   ; sin uso: nada
 	ret z			;76ec
@@ -3400,9 +3400,9 @@ L_76EA:
 	inc hl			;76fa
 	ld (hl),01ch		;76fb
 	ld de,0ec40h		;76fd   ; y sus colores, de 0x770F
-	call L_7706		;7700   ; 16 lineas de cada sprite
+	call colores_del_lanzado		;7700   ; 16 lineas de cada sprite
 	ld de,0ec50h		;7703
-L_7706:
+colores_del_lanzado:		; los 16 colores de 0x770F en DE
 	ld hl,0770fh		;7706
 	ld bc,00010h		;7709
 	ldir		;770c
@@ -4185,16 +4185,16 @@ toca_al_lanzado:		; carry si la caja toca el lanzado IY
 L_7BC8:
 	cp l			;7bc8
 	ret nc			;7bc9
-	ld a,003h		;7bca
+	ld a,003h		;7bca   ; |y - 3 - C| < H + 3?
 	add a,h			;7bcc
 	ld h,a			;7bcd
-	ld a,(iy+003h)		;7bce
+	ld a,(iy+003h)		;7bce   ; la y del lanzado
 	sub 003h		;7bd1
 	sub c			;7bd3
 	jr nc,L_7BD8		;7bd4
 	neg		;7bd6
 L_7BD8:
-	cp h			;7bd8
+	cp h			;7bd8   ; carry si se tocan
 	ret			;7bd9
 lo_del_suelo:		; las cosas de 0xCC00: se cogen, o una boca de pasadizo
 	ld ix,0cc00h		;7bda   ; las cuatro cosas de 0xCC00 (de 0x40): lo que hay en el suelo
@@ -4491,21 +4491,21 @@ cosas_de_la_casilla:		; la lista de 0xC500 de la casilla (tabla 0x981D)
 	ld de,0c500h		;7e02
 L_7E05:
 	ld a,(0c281h)		;7e05   ; las de esta casilla: [casilla][tipo][dos nibbles][un byte]
-	cp (hl)			;7e08
+	cp (hl)			;7e08   ; la casilla de la entrada
 	jr nz,L_7E2C		;7e09
 	push hl			;7e0b
 	inc hl			;7e0c
-	ld a,(hl)			;7e0d
+	ld a,(hl)			;7e0d   ; [1] el tipo, a [0]
 	ld (de),a			;7e0e
 	ld c,000h		;7e0f
 	push de			;7e11
 	inc hl			;7e12
 	inc e			;7e13
-	ld a,(hl)			;7e14
+	ld a,(hl)			;7e14   ; [2] el nibble de arriba, a [1]
 	and 0f0h		;7e15
 	ld (de),a			;7e17
 	inc e			;7e18
-	ld a,(hl)			;7e19
+	ld a,(hl)			;7e19   ; el de abajo, a [2]
 	rla			;7e1a
 	rla			;7e1b
 	rla			;7e1c
@@ -4514,7 +4514,7 @@ L_7E05:
 	ld (de),a			;7e20
 	inc e			;7e21
 	inc hl			;7e22
-	ld a,(hl)			;7e23
+	ld a,(hl)			;7e23   ; [3] tal cual, a [3]
 	ld (de),a			;7e24
 	pop de			;7e25
 	ld hl,00010h		;7e26   ; la siguiente de 0xC500, 16 bytes mas alla
@@ -4522,16 +4522,16 @@ L_7E05:
 	ex de,hl			;7e2a
 	pop hl			;7e2b
 L_7E2C:
-	inc hl			;7e2c
+	inc hl			;7e2c   ; la entrada siguiente, 3 bytes mas alla
 	inc hl			;7e2d
 	inc hl			;7e2e
 	djnz L_7E05		;7e2f
 	jp 04206h		;7e31   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 vacia_0xc500:		; 0xC500-0xC52F a cero
 	ld hl,0c500h		;7e34
-	ld de,0c501h		;7e37
+	ld de,0c501h		;7e37   ; DE = HL + 1
 	ld (hl),000h		;7e3a
-	ld bc,0002fh		;7e3c
+	ld bc,0002fh		;7e3c   ; 48 bytes
 	ldir		;7e3f
 	ret			;7e41
 las_del_tipo_14:		; las cosas de tipo 0x14 de la zona a 0xC340; una al azar marcada
@@ -4561,7 +4561,7 @@ L_7E67:
 	ld a,(de)			;7e68
 	and 07fh		;7e69
 	cp 014h		;7e6b
-	call z,L_7E8C		;7e6d
+	call z,apunta_la_del_tipo_14		;7e6d   ; apunta_la_del_tipo_14: la casilla y la marca de una cosa de tipo 0x14
 	inc de			;7e70
 	djnz L_7E67		;7e71
 	ld a,c			;7e73   ; 0xC28D = cuantas hay
@@ -4577,7 +4577,7 @@ L_7E67:
 	ld a,080h		;7e86
 	ld (hl),a			;7e88
 	jp 04206h		;7e89   ; bancos_1_2_3: pone los bancos 1, 2 y 3
-L_7E8C:
+apunta_la_del_tipo_14:		; la casilla y la marca de una cosa de tipo 0x14
 	dec de			;7e8c   ; la casilla, y la marca 0x80 cada cuatro (segun la cuenta del bucle)
 	ld a,(de)			;7e8d
 	ld (hl),a			;7e8e
@@ -4598,9 +4598,9 @@ limpia_0xc340:		; deja solo el bit 7 de cada marca de 0xC340
 	ld b,010h		;7ea0
 L_7EA2:
 	ld a,(hl)			;7ea2
-	and 080h		;7ea3
+	and 080h		;7ea3   ; solo el bit 7
 	ld (hl),a			;7ea5
-	inc hl			;7ea6
+	inc hl			;7ea6   ; la siguiente, 2 bytes mas alla
 	inc hl			;7ea7
 	djnz L_7EA2		;7ea8
 	ret			;7eaa
@@ -4617,11 +4617,11 @@ L_7EB1:
 L_7EBB:
 	pop hl			;7ebb
 	pop bc			;7ebc
-	jr c,L_7EC6		;7ebd
-	inc hl			;7ebf
+	jr c,L_7EC6		;7ebd   ; encontrado
+	inc hl			;7ebf   ; la ranura siguiente
 	inc c			;7ec0
 	djnz L_7EB1		;7ec1
-	xor a			;7ec3
+	xor a			;7ec3   ; no: 0xEF00 = 0
 	jr L_7EC8		;7ec4
 L_7EC6:
 	ld a,0ffh		;7ec6   ; encontrado: 0xEF00 = 0xFF
@@ -4629,7 +4629,7 @@ L_7EC8:
 	ld (0ef00h),a		;7ec8   ; guarda el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
 	ret			;7ecb
 L_7ECC:
-	call busca_en_subranuras		;7ecc   ; busca_en_subranuras: las cuatro subranuras de la ranura C
+	call busca_en_subranuras		;7ecc   ; una ranura expandida: sus subranuras
 	jr L_7EBB		;7ecf
 busca_en_subranuras:		; las cuatro subranuras de la ranura C
 	and 080h		;7ed1
@@ -4787,14 +4787,14 @@ borra_las_opciones:		; borra (0x24, 0xA0), 0xB8 x 0x20
 	jp rellena_y_mide		;7fce   ; rellena_y_mide: rellena (H, L) B x C del color 0; DE = el tamano
 cifra_del_menu:		; la cifra tecleada en el menu del vecino
 	call 08006h		;7fd1   ; la tecla que se aprieta en el menu (p02:8006)
-	ret z			;7fd4
-	ld hl,(0ef08h)		;7fd5
+	ret z			;7fd4   ; ninguna: nada
+	ld hl,(0ef08h)		;7fd5   ; L = las teclas 0-7, H = 8 y 9
 	ld d,000h		;7fd8
-	ld b,008h		;7fda
+	ld b,008h		;7fda   ; D = la cifra de las 0-7
 	ld a,l			;7fdc
 	call 08000h		;7fdd
 	jr c,L_7FE9		;7fe0
-	ld a,h			;7fe2
+	ld a,h			;7fe2   ; o de las 8 y 9
 	ld b,002h		;7fe3
 	call 08000h		;7fe5
 	ret nc			;7fe8
@@ -4802,9 +4802,9 @@ L_7FE9:
 	ld hl,0ef15h		;7fe9   ; 0xEF15 = 0xFF y la cifra a 0xEF0F
 	ld (hl),0ffh		;7fec
 	ld hl,0ef0fh		;7fee
-	ld a,d			;7ff1
+	ld a,d			;7ff1   ; la cifra entra por abajo en 0xEF0F (rld)
 	rld		;7ff2
-	ld de,(0ef02h)		;7ff4
+	ld de,(0ef02h)		;7ff4   ; y se pinta donde dice 0xEF02
 	ld b,001h		;7ff8
 	call 04420h		;7ffa   ; pinta_bcd: pinta cifras en BCD
 	jp 08027h		;7ffd

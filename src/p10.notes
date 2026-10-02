@@ -203,6 +203,11 @@ C 0x642E HL = la vuelta
 C 0x643B rlca n + 1 veces: el bit de la ficha a 0
 C 0x6442 fuera de los que suenan
 C 0x6467 0xFF?
+C 0x64E1 la primera vez: las veces del byte - 1
+C 0x64E2 (ix+0x11)
+C 0x64E5 la direccion: vuelta alli
+C 0x64EC hechas todas
+C 0x64EF se saltan los 3 bytes
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6552 0x6592 efectos_de_sonido  32 punteros, los de los efectos 0x01-0x20 (p00:50DF suma el doble del numero a 0x6550: la palabra del 0 serian los bytes 37 C9 de `scf / ret` de p10:6550, y no se lee porque p00:5009 para el sonido con el 0): la lista de cuadros del canal de efectos que p00:50E7 deja en 0xC074; lo leen p00:50DF (64 bytes)

@@ -962,6 +962,9 @@ C 0x90BB uno mas
 C 0x90C1 el banco 15 en 0xA000
 C 0x90DC fase * 7
 C 0x90E4 + zona
+C 0x9AD1 D...
+C 0x9AD3 ... y E
+C 0x9AD5 B veces
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x8294 0x82F2 tabla_8294  47 destinos del despachador de 0x408D (call en p02:8291): 0x8334, 0x8334, 0xA14E, 0xA360, 0x8334, 0x8334, 0xB5C9, 0x8334 ...; lo leen p02:8291 (94 bytes)
@@ -993,17 +996,56 @@ F 0x9D38 2
 # --- fin de los bloques de bloques.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x8065 cambia_de_jugador los 256 bytes de un jugador por los del otro
+L 0x8071 aplica_el_menu la zona, la fase y las vidas del menu del vecino
+L 0x80BB marca_de_opcion_borrada C y B = 0: sin marca
+L 0x80EE plano_de_la_fase 3 filas de 28 caracteres de 0xA099
+L 0x8123 marcos_de_la_fase el rotulo 0x0C y los dos marcos
+L 0x813F sprites_de_la_fase los colores y los sprites de la pantalla de la fase
+L 0x8192 marca_de_la_zona los dos sprites que marcan la zona
+L 0x81D0 colores_de_la_fase los colores de los sprites de la pantalla de la fase
+L 0x81EB rellena_b B veces A desde HL
+L 0x81F0 zonas_de_la_fase los dibujos de las siete zonas
+L 0x822A dibujo_del_juego el dibujo del juego de graficos A en DE
+L 0x8233 copia_32x24 HMMM de 32 x 24 de la pagina 1 a la 0
+L 0x8255 figuras_que_salen las figuras que van saliendo
+L 0x828F crea_por_tipo crea la figura de tipo A segun su tabla
+L 0x82F2 espera_de_figura la espera hasta la figura siguiente
+L 0x8302 cuantas_figuras cuantas figuras hay y si hay que esperar
 L 0x8334 crea_figura crea una figura en el primer hueco libre de 0xC600
+L 0x83D2 figura_a_cero los 32 primeros bytes de la figura a cero
+L 0x8485 patrones_de_la_figura los patrones de sus sprites, de la lista de DE
+L 0x84A0 hueco_del_sprite el sprite E de la figura usa el hueco D
+L 0x85E8 cerca_del_jugador carry si el jugador esta a menos de 32; pasado 0xC0, se borra
+L 0x861F la_que_vuelve la primera de la lista sale otra vez cada tanto
+L 0x868E las_figuras un cuadro de todas las figuras
+L 0x86BC calcula_la_dificultad 0xCD12 = fase + zona + cosas / 4
+L 0x86F1 sprites_de_los_disparos los sprites de las doce de 0xCA00
+L 0x86FC sprites_de_las_figuras los sprites de las ocho de 0xC600
+L 0x8715 cuadro_del_tipo lo que hace cada tipo, por la tabla de 0x871C
+L 0x877A mueve_la_figura x += velocidad horizontal e y += la vertical
+L 0x8791 mueve_en_vertical y += la velocidad vertical
+L 0x87A5 fuera_por_los_lados se borra si x < 8 o x >= 0xF8
+L 0x87B1 fuera_por_abajo se borra si y >= 0xE4
 L 0x87B7 borra_la_figura borra la figura
 L 0x87E4 pon_velocidad_x velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 L 0x87EB pon_velocidad_y velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+L 0x87F2 sprites_segun_la_pose la y, la x y el patron de cada sprite segun la pose
+L 0x883C x_del_sprite x + dx con signo; si se sale, el sprite no se ve
+L 0x8857 copia_los_disparos sprites de las doce de 0xCA00 a la copia de 0xEE20
+L 0x8861 copia_las_figuras sprites de las ocho de 0xC600 a la copia de 0xEE20
+L 0x8879 se_ve NC si la figura existe, se ve y lleva sprites
+L 0x8893 copia_sus_sprites la y, la x y el patron de cada sprite a 0xEE20
+L 0x88D5 cuadro_del_disparo lo que hace cada disparo, por la tabla de 0x88DC
 L 0x88EA disparo_1 el disparo 1, un cuadro
+L 0x88FD se_para velocidad 0
 L 0x8918 disparo_2 el disparo 2, un cuadro
 L 0x8926 disparo_5 el disparo 5, un cuadro
 L 0x892A disparo_4 el disparo 4, un cuadro
 L 0x893D pon_la_pose pone la pose de la figura
 L 0x8981 disparo_7 el disparo 7, un cuadro
 L 0x89C2 dispara crea el disparo A (tabla de 0x8B6B)
+L 0x89E9 crea_el_disparo el disparo en el primer hueco de 0xCA00
 L 0x8AA2 disparo_1_sale el disparo 1: cae
 L 0x8AB9 disparo_2_sale el disparo 2: hacia el jugador
 L 0x8ACF disparo_3_sale el disparo 3: hacia el jugador
@@ -1011,46 +1053,110 @@ L 0x8AD8 disparo_4_sale el disparo 4: hacia el jugador
 L 0x8AE1 disparo_5_sale el disparo 5: en horizontal
 L 0x8B02 disparo_6_sale el disparo 6: en horizontal, por delante
 L 0x8B22 disparo_7_sale el disparo 7: sube y cae
+L 0x8B48 mas_dificultad DE += la dificultad * 16
+L 0x8B76 hacia_el_jugador la velocidad hacia el jugador, de modulo A + dificultad * 8
+L 0x8BC2 angulo_al_jugador el angulo hacia el jugador, de la tabla de 0x8C30
 L 0x8C0A niega_de DE = -DE
+L 0x8C12 componente DE = (0xCD1D * E) / 32
+L 0x8C24 multiplica HL = H * E
+L 0x8CD2 cuadro_de_lo_del_suelo lo que hace cada cosa del suelo, por la tabla de 0x8CE1
 L 0x8D32 bloque_de_dinero la cosa del suelo 4: el bloque que da dinero
+L 0x8D89 gravedad_de_la_moneda la velocidad vertical += 0x40
+L 0x8D8F salta_arriba la velocidad vertical = 0xFC00
+L 0x8D95 cuanto_da_el_bloque 5 ryo, o 50 si el tiempo acaba en dos cifras iguales e impares
 L 0x8DB3 bloque_que_suelta las cosas del suelo 1-3: el bloque que al romperse suelta algo que rebota
 L 0x8E4B boca_de_pasadizo la cosa del suelo 6: la boca de un pasadizo
+L 0x8E65 con_la_cosa_8 con la cosa 8, el paso 4
+L 0x8E76 pared_abierta dos piezas de pared
+L 0x8E86 pieza_a0 la pieza de (0xA0, 0x90) sin marca
+L 0x8E8F pieza_vacia la pieza de (0x70, 0x90) sin marca
+L 0x8E99 pieza_rota la pieza de (0x00, 0x80) con marca de pared
+L 0x8EB1 pieza_en_la_figura la pieza de BC donde esta la figura
 L 0x8EC0 bloque_200_ryo la cosa del suelo 8: 200 ryo
 L 0x8ED5 bloque_vida_maxima la cosa del suelo 15: 4 de vida maxima
 L 0x8EF4 bloque_vida_extra la cosa del suelo 10: una vida
 L 0x8F12 bloque_de_vida la cosa del suelo 9: 8 de vida
 L 0x8F25 bloque_cosa_0 la cosa del suelo 11: una cosa 0
 L 0x8F43 bloque_cosa_9 la cosa del suelo 12: una cosa 9
+L 0x8F57 apunta_lo_roto lo roto a la lista de 0xC2B0
 L 0x8F9A bloque_cosa_1 la cosa del suelo 13: la cosa 1
 L 0x8FA6 pared_que_se_rompe la cosa del suelo 14: la pared que se rompe
+L 0x8FD5 crea_lo_del_suelo una cosa del suelo en 0xCC00, de los dos bytes de HL
+L 0x9066 marca_de_pared 0xCD2A = 0xFF
+L 0x908C huecos_seguidos los huecos de sprite, seguidos desde 0xCD41
+L 0x90AF coge_un_hueco el hueco a la copia y a la figura
 L 0x90C0 cosas_fijas pinta las cosas fijas de la casilla
+L 0x911E busca_la_casilla carry si la casilla no tiene cosas fijas
+L 0x9132 pinta_dibujo_fijo el dibujo A de 0xA02B
+L 0x9155 pinta_dibujo_del_tramo el dibujo A de 0xB36D
+L 0x91CB a_dos A = 2
+L 0x91D8 esta_roto 0xCD4F = si esto ya se rompio
+L 0x9221 tramos_de_la_zona lo de los tramos de la zona a 0xCDE0
+L 0x924E tramos_que_faltan los tramos que faltan, a 0xFF
+L 0x92B2 lo_que_se_vende la lista y los precios de lo que se vende
+L 0x92DA precio_de_la_cosa el precio de la cosa B, doblado por cada compra
+L 0x932A tabla_de_precios DE = la tabla de precios del juego y del avance
+L 0x9364 suma_bcd_9999 HL += DE en BCD, hasta 9999
 L 0x960C texto_de_la_zona el texto de la zona
 L 0x9653 tipo_45_sale la figura de tipo 45 (0x2D): su arranque (tabla de p02:8427)
 L 0x9678 tipo_45 la figura de tipo 45 (0x2D), un cuadro (tabla de p02:871C)
+L 0x96A8 pose_del_2d las poses de la figura 0x2D
+L 0x96D3 trozo_del_dibujo un trozo mas del dibujo de la zona pasada
 L 0x9712 tipo_46_sale la figura de tipo 46 (0x2E): su arranque (tabla de p02:8427)
 L 0x9727 tipo_46 la figura de tipo 46 (0x2E), un cuadro (tabla de p02:871C)
+L 0x974C letra_cada_16 una letra del texto cada 16 cuadros
+L 0x9785 filas_de_los_bordes las filas libres de los bordes
+L 0x97B2 filas_libres las 8 filas en las que se puede estar desde (D, E)
+L 0x97E4 sale_por_la_derecha x 0xF7, mirando a la izquierda
+L 0x9833 fila_al_azar una fila libre al azar
+L 0x9858 lista_de_filas las y de las filas libres a 0xCD00
+L 0x9876 apunta_fila la y a la lista y una mas
+L 0x9881 cuadro_del_laberinto un cuadro del laberinto
+L 0x98AF sprites_fuera_desde_2 fuera los sprites desde el 2
+L 0x98BE pinta_la_vista las paredes de la vista del laberinto
+L 0x98E3 sprites_de_la_vista los sprites de lo que hay delante
+L 0x98F8 sprite_de_lo_de_delante el sprite de lo que hay en la casilla C
 L 0x99FB dibujo_de_caracteres pinta un dibujo hecho de caracteres
+L 0x9AAB timp_de_la_pagina_1 LMMM con TIMP de la pagina 1 a la 0
+L 0x9AB0 sprites_del_final_de_fase 8 sprites de 0x9AF4
+L 0x9ABF cuatro_sprites 4 sprites de 0x9B04
+L 0x9AC9 colores_del_final_de_fase los colores de 0xEC80
+L 0x9AD8 colores_de_0xec40 los colores de 0xEC40
+L 0x9ADF fuera_ocho fuera los 8 sprites desde el 8
+L 0x9AED fuera_cuatro fuera los 4 sprites desde el 4
+L 0x9BBF texto_de_la_fase HL = el texto del final de la fase
 L 0x9BE3 tipo_29_sale la figura de tipo 29 (0x1D): su arranque (tabla de p02:8427)
 L 0x9BFF tipo_29 la figura de tipo 29 (0x1D), un cuadro (tabla de p02:871C)
 L 0x9CE9 tipo_18_sale la figura de tipo 18 (0x12): su arranque (tabla de p02:8427)
 L 0x9D32 tipo_18 la figura de tipo 18 (0x12), un cuadro (tabla de p02:871C)
+L 0x9DF0 pose_de_la_7e la pose de (ix+0x7E), segun el lado
+L 0x9DFC pose_cada_8 la pose B o B + 1, cada 8 cuadros
+C 0x805D cambia_de_jugador: los 256 bytes de un jugador por los del otro
+C 0x8062 aplica_el_menu: la zona, la fase y las vidas del menu del vecino
 C 0x806E intercambia: intercambia los bytes de (HL) y (DE)
 C 0x807E guarda la ZONA (0-6)
 C 0x8092 guarda las vidas
+C 0x80B2 marca_de_opcion_borrada: C y B = 0: sin marca
 C 0x80C6 hl_mas_a: HL += A
 C 0x80CD letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 C 0x80D3 letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
+C 0x80DE plano_de_la_fase: 3 filas de 28 caracteres de 0xA099
+C 0x80E1 marcos_de_la_fase: el rotulo 0x0C y los dos marcos
+C 0x80E4 sprites_de_la_fase: los colores y los sprites de la pantalla de la fase
+C 0x80E7 zonas_de_la_fase: los dibujos de las siete zonas
 C 0x80EA sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x810F hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x8125 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0x8130 marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 C 0x813B marco: pinta un marco: (H, L), D de ancho, E de alto, color C
+C 0x8142 marca_de_la_zona: los dos sprites que marcan la zona
 C 0x814E de_mas_a: DE += A
 C 0x8199 hl_mas_a: HL += A
 C 0x81F3 el mapper: pone en 0xA000 el banco de A
 C 0x81F6 guarda la copia del banco de 0xA000
 C 0x81FA lee la FASE (0-6)
 C 0x8205 de_mas_a: DE += A
+C 0x8224 copia_32x24: HMMM de 32 x 24 de la pagina 1 a la 0
 C 0x8227 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x8238 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x8252 sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
@@ -1058,9 +1164,11 @@ C 0x8291 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8358 hl_mas_a: HL += A
 C 0x835C guarda cuantos sprites lleva la figura
 C 0x837A hl_mas_a: HL += A
+C 0x837F hueco_del_sprite: el sprite E de la figura usa el hueco D
 C 0x8386 hl_mas_a: HL += A
 C 0x83AB hl_mas_a: HL += A
 C 0x83B5 hl_mas_a: HL += A
+C 0x840B patrones_de_la_figura: los patrones de sus sprites, de la lista de DE
 C 0x8411 lee el tipo de la figura
 C 0x8417 colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0x8424 despacha: salta a la entrada A de la tabla que va detras del call
@@ -1071,8 +1179,14 @@ C 0x8585 figuras_de_la_casilla: DE = la lista de figuras de la casilla (conjunto
 C 0x85EB borra_la_figura: borra la figura
 C 0x860B guarda la x de la figura
 C 0x8611 lee la x de la figura
+C 0x861C pon_rumbo: la direccion A y su velocidad
 C 0x867F hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
+C 0x8691 figuras_que_salen: las figuras que van saliendo
 C 0x869A lee el tipo de la figura
+C 0x86A7 cuadro_del_tipo: lo que hace cada tipo, por la tabla de 0x871C
+C 0x86AA mueve_la_figura: x += velocidad horizontal e y += la vertical
+C 0x86AD fuera_por_los_lados: se borra si x < 8 o x >= 0xF8
+C 0x86B0 fuera_por_abajo: se borra si y >= 0xE4
 C 0x86D6 lee la ZONA (0-6)
 C 0x8706 lee el tipo de la figura
 C 0x8719 despacha: salta a la entrada A de la tabla que va detras del call
@@ -1101,9 +1215,15 @@ C 0x8823 le suma la y de la figura
 C 0x8839 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x8842 le suma la x de la figura
 C 0x884C lee la x de la figura
+C 0x886F copia_sus_sprites: la y, la x y el patron de cada sprite a 0xEE20
 C 0x88B6 lee el tipo de la figura
+C 0x88C0 mueve_la_figura: x += velocidad horizontal e y += la vertical
+C 0x88C3 sprites_segun_la_pose: la y, la x y el patron de cada sprite segun la pose
+C 0x88C6 fuera_por_los_lados: se borra si x < 8 o x >= 0xF8
+C 0x88C9 fuera_por_abajo: se borra si y >= 0xE4
 C 0x88D5 lee el tipo de la figura
 C 0x88D9 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x88F3 mas_vertical: la velocidad vertical += DE
 C 0x88F6 lee la y del jugador
 C 0x88F9 compara con la y de la figura
 C 0x8903 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -1122,16 +1242,22 @@ C 0x89A9 guarda la pose de la figura
 C 0x89BC guarda la pose de la figura
 C 0x89CB lee la y de la figura
 C 0x89D1 lee la x de la figura
+C 0x89E0 sprites_de_los_disparos: los sprites de las doce de 0xCA00
+C 0x89E3 copia_los_disparos: sprites de las doce de 0xCA00 a la copia de 0xEE20
 C 0x8A04 guarda cuantos sprites lleva la figura
+C 0x8A16 hueco_del_sprite: el sprite E de la figura usa el hueco D
 C 0x8A1D hl_mas_a: HL += A
+C 0x8A22 hueco_del_sprite: el sprite E de la figura usa el hueco D
 C 0x8A29 hl_mas_a: HL += A
 C 0x8A63 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x8A8A colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0x8A91 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8AAD pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
+C 0x8AB3 mas_dificultad: DE += la dificultad * 16
 C 0x8AB6 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8ABB sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8AC0 guarda la pose de la figura
+C 0x8AC5 hacia_el_jugador: la velocidad hacia el jugador, de modulo A + dificultad * 8
 C 0x8AC8 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8ACC pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8AD1 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -1139,6 +1265,7 @@ C 0x8ADA sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa,
 C 0x8AE3 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x8AE8 guarda la pose de la figura
 C 0x8AEE pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+C 0x8AF4 mas_dificultad: DE += la dificultad * 16
 C 0x8AFC niega_de: DE = -DE
 C 0x8AFF pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8B04 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -1146,6 +1273,7 @@ C 0x8B09 lee la x de la figura
 C 0x8B16 borra_la_figura: borra la figura
 C 0x8B19 guarda la x de la figura
 C 0x8B25 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+C 0x8B2B mas_dificultad: DE += la dificultad * 16
 C 0x8B33 niega_de: DE = -DE
 C 0x8B36 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8B39 lee la y de la figura
@@ -1155,6 +1283,9 @@ C 0x8BBB niega_de: DE = -DE
 C 0x8BC7 lee la y del jugador
 C 0x8BEC hl_mas_a: HL += A
 C 0x8CB6 lee el tipo de la figura
+C 0x8CC0 mueve_la_figura: x += velocidad horizontal e y += la vertical
+C 0x8CC3 sprites_segun_la_pose: la y, la x y el patron de cada sprite segun la pose
+C 0x8CC6 fuera_por_los_lados: se borra si x < 8 o x >= 0xF8
 C 0x8CD7 efecto_del_tipo: el efecto de sonido del tipo (0x7D98)
 C 0x8CDE despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8D04 sube el paso en que va la figura
@@ -1169,6 +1300,7 @@ C 0x8D57 sube el paso en que va la figura
 C 0x8D66 guarda la y de la figura
 C 0x8D69 lee la x de la figura
 C 0x8D76 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
+C 0x8D79 salta_arriba: la velocidad vertical = 0xFC00
 C 0x8D82 compara con la y de la figura
 C 0x8DB6 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8DCD lee la x de los sprites del jugador
@@ -1176,33 +1308,43 @@ C 0x8DDA guarda la x de la figura
 C 0x8DE8 guarda la y de la figura
 C 0x8DF6 sube el paso en que va la figura
 C 0x8DFD lee la x de la figura
+C 0x8E07 mas_vertical: la velocidad vertical += DE
 C 0x8E11 sube el paso en que va la figura
 C 0x8E24 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8E2A borra_la_figura: borra la figura
 C 0x8E45 compara con la y de la figura
 C 0x8E4F lee el paso en que va la figura
+C 0x8E53 con_la_cosa_8: con la cosa 8, el paso 4
 C 0x8E56 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8E6C guarda el paso en que va la figura
 C 0x8E71 guarda la marca que se pone en 0xD800
 C 0x8E7B guarda la marca que se pone en 0xD800
+C 0x8E7E pieza_en_la_figura: la pieza de BC donde esta la figura
 C 0x8E8A guarda la marca que se pone en 0xD800
 C 0x8E94 guarda la marca que se pone en 0xD800
 C 0x8E9E guarda la marca que se pone en 0xD800
 C 0x8EAE sube el paso en que va la figura
 C 0x8EB7 lee la x de la figura
 C 0x8ED2 borra_la_figura: borra la figura
+C 0x8EDD apunta_lo_roto: lo roto a la lista de 0xC2B0
 C 0x8EE0 lee la vida maxima
 C 0x8EEB guarda la vida maxima
 C 0x8EEE pinta_la_vida: pinta la barra de vida
 C 0x8EF1 borra_la_figura: borra la figura
 C 0x8EF9 lee las vidas
 C 0x8F03 guarda las vidas
+C 0x8F06 pieza_vacia: la pieza de (0x70, 0x90) sin marca
+C 0x8F09 apunta_lo_roto: lo roto a la lista de 0xC2B0
 C 0x8F0C pinta_el_marcador: pinta el marcador entero
 C 0x8F0F borra_la_figura: borra la figura
 C 0x8F19 suma_vida: suma A a la vida, hasta la maxima, y la pinta
+C 0x8F1C pieza_vacia: la pieza de (0x70, 0x90) sin marca
+C 0x8F1F apunta_lo_roto: lo roto a la lista de 0xC2B0
 C 0x8F22 borra_la_figura: borra la figura
 C 0x8F2A lee las 10 cosas del marcador
 C 0x8F34 guarda las 10 cosas del marcador
+C 0x8F37 apunta_lo_roto: lo roto a la lista de 0xC2B0
+C 0x8F3A pieza_vacia: la pieza de (0x70, 0x90) sin marca
 C 0x8F3D pinta_las_cosas: pinta las cosas del marcador
 C 0x8F40 borra_la_figura: borra la figura
 C 0x8F65 hl_mas_a: HL += A
@@ -1210,13 +1352,17 @@ C 0x8F92 laberinto_a_cero: lo cogido y el mapa, a cero
 C 0x8FA6 lee el paso en que va la figura
 C 0x8FA9 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8FB9 sube el paso en que va la figura
+C 0x8FC3 apunta_lo_roto: lo roto a la lista de 0xC2B0
 C 0x8FC8 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x8FCF pieza_a0: la pieza de (0xA0, 0x90) sin marca
 C 0x8FD2 borra_la_figura: borra la figura
 C 0x8FDC lee el tipo de la figura
 C 0x8FEC lee si esta en un pasadizo
+C 0x9008 marca_de_pared: 0xCD2A = 0xFF
 C 0x9019 hl_mas_a: HL += A
 C 0x901D guarda cuantos sprites lleva la figura
 C 0x904A lee cuantos sprites lleva la figura
+C 0x9055 patrones_de_la_figura: los patrones de sus sprites, de la lista de DE
 C 0x9069 guarda la marca que se pone en 0xD800
 C 0x90C3 el mapper: pone en 0xA000 el banco de A
 C 0x90C6 guarda la copia del banco de 0xA000
@@ -1225,6 +1371,7 @@ C 0x90E1 lee la ZONA (0-6)
 C 0x90E5 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x90EB bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x90F0 lee la CASILLA de la zona
+C 0x90FC crea_lo_del_suelo: una cosa del suelo en 0xCC00, de los dos bytes de HL
 C 0x9105 guarda lo que se baja la pieza
 C 0x910D guarda lo que se corre la pieza
 C 0x911B bancos_1_2_3: pone los bancos 1, 2 y 3
@@ -1233,18 +1380,25 @@ C 0x9135 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x914C guarda la marca que se pone en 0xD800
 C 0x9158 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9168 pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
+C 0x9173 tramos_de_la_zona: lo de los tramos de la zona a 0xCDE0
 C 0x917F de_mas_a: DE += A
 C 0x9185 guarda la marca que se pone en 0xD800
+C 0x919F crea_lo_del_suelo: una cosa del suelo en 0xCC00, de los dos bytes de HL
 C 0x91A9 guarda lo que se baja la pieza
 C 0x91B0 guarda lo que se corre la pieza
+C 0x91BC a_dos: A = 2
+C 0x91C1 pinta_dibujo_del_tramo: el dibujo A de 0xB36D
 C 0x922A lee la ZONA (0-6)
 C 0x9231 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x9244 tramos_que_faltan: los tramos que faltan, a 0xFF
 C 0x9266 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x928C palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x92A5 lo_que_se_vende: la lista y los precios de lo que se vende
 C 0x92AA rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0x92AF rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0x92F7 de_mas_a: DE += A
 C 0x9304 de_mas_a: DE += A
+C 0x930E suma_bcd_9999: HL += DE en BCD, hasta 9999
 C 0x9319 de_mas_a: DE += A
 C 0x9338 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9344 lee la ZONA (0-6)
@@ -1258,14 +1412,20 @@ C 0x9620 guarda la copia del banco de 0xA000
 C 0x9628 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x962F empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 C 0x9632 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x963C crea_por_tipo: crea la figura de tipo A segun su tabla
+C 0x9642 sprites_de_las_figuras: los sprites de las ocho de 0xC600
+C 0x9645 copia_las_figuras: sprites de las ocho de 0xC600 a la copia de 0xEE20
 C 0x9648 sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x964F crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0x965D guarda la pose de la figura
 C 0x9663 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x9669 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+C 0x967B trozo_del_dibujo: un trozo mas del dibujo de la zona pasada
 C 0x9681 lee la x de la figura
+C 0x968E pose_del_2d: las poses de la figura 0x2D
 C 0x9696 lee la x de la figura
 C 0x9699 lee la y de la figura
+C 0x96A0 crea_por_tipo: crea la figura de tipo A segun su tabla
 C 0x96A5 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x96B8 hl_mas_a: HL += A
 C 0x96F3 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
@@ -1279,12 +1439,15 @@ C 0x9755 el mapper: pone en 0xA000 el banco de A
 C 0x9758 guarda la copia del banco de 0xA000
 C 0x975C sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
 C 0x975F bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x9791 filas_libres: las 8 filas en las que se puede estar desde (D, E)
+C 0x97A7 filas_libres: las 8 filas en las que se puede estar desde (D, E)
 C 0x97B8 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0x97C3 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0x97D4 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0x97E7 la x de la figura = 0xF7
 C 0x97F2 la x de la figura = 0x08
 C 0x97FD guarda la y de la figura
+C 0x9801 pon_rumbo: la direccion A y su velocidad
 C 0x9810 lee la x del jugador
 C 0x9818 lee la x del jugador
 C 0x981E lee la y del jugador
@@ -1296,13 +1459,17 @@ C 0x9885 salida_del_laberinto: la puerta, el premio y fuera
 C 0x988C sale_del_mapa: el boton vuelve a la vista
 C 0x988F anda_por_el_laberinto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
 C 0x9892 coge_en_el_laberinto: lo que hay en la casilla, una vez
+C 0x989A sprites_fuera_desde_2: fuera los sprites desde el 2
 C 0x989D apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x98A0 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0x98A3 flecha_de_direccion: los sprites de la flecha hacia donde se mira
+C 0x98A6 pinta_la_vista: las paredes de la vista del laberinto
+C 0x98A9 sprites_de_la_vista: los sprites de lo que hay delante
 C 0x98AC enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0x98C7 dibujo_de_caracteres: pinta un dibujo hecho de caracteres
 C 0x98D1 dibujo_de_caracteres: pinta un dibujo hecho de caracteres
 C 0x98E0 dibujo_de_caracteres: pinta un dibujo hecho de caracteres
+C 0x98EE sprite_de_lo_de_delante: el sprite de lo que hay en la casilla C
 C 0x9901 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9905 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9919 hl_mas_a: HL += A
@@ -1311,19 +1478,29 @@ C 0x9A02 guarda la copia del banco de 0xA000
 C 0x9A0A palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9A42 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x9A49 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x9A68 colores_del_final_de_fase: los colores de 0xEC80
 C 0x9A6E lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x9A8B timp_de_la_pagina_1: LMMM con TIMP de la pagina 1 a la 0
+C 0x9A97 timp_de_la_pagina_1: LMMM con TIMP de la pagina 1 a la 0
+C 0x9AA3 timp_de_la_pagina_1: LMMM con TIMP de la pagina 1 a la 0
+C 0x9AA8 crea_por_tipo: crea la figura de tipo A segun su tabla
 C 0x9AAD lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
 C 0x9B37 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x9B5A fuera_ocho: fuera los 8 sprites desde el 8
+C 0x9B70 crea_por_tipo: crea la figura de tipo A segun su tabla
 C 0x9B83 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0x9B90 hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
+C 0x9B98 texto_de_la_fase: HL = el texto del final de la fase
 C 0x9B9E empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 C 0x9BA8 sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
 C 0x9BD5 hl_mas_a: HL += A
 C 0x9BE0 crea_figura: crea una figura en el primer hueco libre de 0xC600
+C 0x9BE6 colores_de_0xec40: los colores de 0xEC40
 C 0x9BF3 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x9BF9 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x9BFC pon_la_pose: pone la pose de la figura
 C 0x9C02 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x9C0F pose_cada_8: la pose B o B + 1, cada 8 cuadros
 C 0x9C12 lee la x de la figura
 C 0x9C18 sube el paso en que va la figura
 C 0x9C22 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -1331,6 +1508,7 @@ C 0x9C25 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x9C28 la pose de la figura = 0x74
 C 0x9C34 lee el tipo de la figura
 C 0x9C55 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x9C58 fuera_cuatro: fuera los 4 sprites desde el 4
 C 0x9C5B el paso en que va la figura = 0x03
 C 0x9C5F la pose de la figura = 0x95
 C 0x9C6F sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -1366,6 +1544,8 @@ C 0x9DD7 sube el paso en que va la figura
 C 0x9DE7 guarda la pose de la figura
 C 0x9DFC lee el contador de cuadros
 C 0x9E05 guarda la pose de la figura
+C 0x9FD2 guarda_la_velocidad: la velocidad a (ix+0x79)-(ix+0x7C)
+C 0x9FD8 lado_segun_rumbo: el lado segun hacia donde anda
 C 0x9FDB pon_la_pose: pone la pose de la figura
 C 0x9FEB de_mas_a: DE += A
 C 0x9FEF le suma la y de la figura
