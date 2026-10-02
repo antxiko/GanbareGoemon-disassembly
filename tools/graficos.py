@@ -448,6 +448,11 @@ def enlaces(cart, z):
         b0, b1 = cart.leer(a + 2 + 2 * k, S4), cart.leer(a + 3 + 2 * k, S4)
         lado = ((b0 >> 7) << 1) | (b1 >> 7)
         d = b1 & 0x7F
+        if (b0 & 0x7F) >= n:
+            # la zona 3-0 (y la 6-1, misma ficha) trae un enlace desde la
+            # casilla 38, que no existe (tiene 34): p00:41E3 lo escribe en
+            # 0xE780 y nadie lo lee
+            continue
         v[b0 & 0x7F][lado] = None if d == 0x7F else d
     return v
 
