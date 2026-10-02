@@ -23,7 +23,8 @@ blanco salvo con el bit 6 de 0xEF80 y la cosa 0x0A, que la ensenan con una
 flecha hacia el lado abierto. El jugador, la pieza (0x60, 0x98) en su sitio
 (p03:BBAA).
 
-Uso:  pasadizos.py           work/pasadizos/mapa_F_Z.png, el mapa de cada uno
+Uso:  pasadizos.py           work/pasadizos/pasadizo_F_Z.png, el mapa de cada uno
+      pasadizos.py web       lo mismo en docs/imagenes
       pasadizos.py coteja    contra work/v_pasadizos (tools/lanza_pasadizos.sh)
 """
 import glob
@@ -149,9 +150,11 @@ def main():
         sys.exit(1 if coteja() else 0)
     cart = G.Cartucho()
     salida = os.path.join(G.RAIZ, "work", "pasadizos")
+    if sys.argv[1:] == ["web"]:
+        salida = G.IMAGENES
     os.makedirs(salida, exist_ok=True)
     for z, casilla in sorted(zonas_con_pasadizo(cart).items()):
-        ruta = os.path.join(salida, "mapa_%d_%d.png" % (z // 7 + 1, z % 7))
+        ruta = os.path.join(salida, "pasadizo_%d_%d.png" % (z // 7 + 1, z % 7))
         imagen(cart, z).save(ruta)
         dib, alto, ancho, _r, marcas = pasadizo(cart, z)
         print("%s  interior 16 en la casilla %d, dibujo %d (%d x %d), marcas %s"
