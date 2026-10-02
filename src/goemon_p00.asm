@@ -3928,8 +3928,8 @@ DATA_conjuntos_juego_4:
 
 ; ----------------------------------------------------------------------
 ; DATOS conjunto_13_juego_4: un decimocuarto puntero de los conjuntos del
-;   juego 4 (0x5D81); ninguna casilla de las zonas de ese juego pide el 13; lo
-;   leen nadie (2 bytes)
+;   juego 4 (0x5D81); ninguna casilla de las zonas de ese juego pide el 13 (2
+;   bytes)
 ;   0x5c46..0x5c48  (2 bytes)
 DATA_conjunto_13_juego_4:
 	defb 081h,05dh	; 5c46
@@ -4420,7 +4420,7 @@ DATA_figuras_5D7D:
 
 ; ----------------------------------------------------------------------
 ; DATOS figuras_5D81: el conjunto al que apunta 0x5C46: [2] y los tipos 0,
-;   0x16 y 0x15; no lo pide nadie; lo leen nadie (4 bytes)
+;   0x16 y 0x15; no lo pide nadie (4 bytes)
 ;   0x5d81..0x5d85  (4 bytes)
 DATA_figuras_5D81:
 	defb 002h,000h,016h,015h	; 5d81

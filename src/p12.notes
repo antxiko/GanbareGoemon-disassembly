@@ -279,6 +279,6 @@ D 0xBE44 0xBE83 palabra_5  trozo de texto 5: [n] y n caracteres (p01:6573 los co
 F 0xBE44 16
 D 0xBE83 0xBEC0 palabra_6  trozo de texto 6: [n] y n caracteres (p01:6573 los copia con ldir); lo leen p01:6571 (61 bytes)
 F 0xBE83 16
-D 0xBEC0 0xC000 relleno_12  320 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (320 bytes)
+D 0xBEC0 0xC000 relleno_12  320 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie (320 bytes)
 F 0xBEC0 16
 # --- fin de los bloques de bloques.py ---

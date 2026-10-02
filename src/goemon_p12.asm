@@ -1400,7 +1400,7 @@ DATA_palabra_6:
 
 ; ----------------------------------------------------------------------
 ; DATOS relleno_12: 320 bytes 0xFF hasta el final del banco: relleno, no lo
-;   lee nadie; lo leen nadie (320 bytes)
+;   lee nadie (320 bytes)
 ;   0xbec0..0xc000  (320 bytes)
 DATA_relleno_12:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bec0  ................

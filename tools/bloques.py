@@ -832,6 +832,11 @@ def rellenos(rom, t, bl):
         if len(blq) - i >= 16:
             s = {0: S1, 1: S1, 2: S1, 3: S1}.get(b) or (
                 tuple(b if ORG[b] == r else x for r, x in zip((0x6000, 0x8000, 0xA000), S1)))
+            ini = ORG[b] + i
+            for (a, f) in bl.d.get(b, {}):
+                if a < ini < f:
+                    ini = f                     # el 0xFF que acaba el ultimo bloque es suyo
+            i = ini - ORG[b]
             bl.anota(s, ORG[b] + i, ORG[b] + len(blq), "relleno_%02d" % b,
                      "%d bytes 0xFF hasta el final del banco%s: relleno, no lo lee nadie"
                      % (len(blq) - i, " (o hasta la marca de Konami)" if b == 3 else ""),
@@ -1075,7 +1080,9 @@ def linea_d(a, f, partes):
         txt = "%s; se solapan %d bloques (%s)" % (
             e0["que"], len(partes),
             ", ".join("0x%04X-0x%04X" % (x, y) for x, y, _ in partes[:6]))
-    txt += "; lo leen %s" % ", ".join(desde[:8])
+    desde = [d for d in desde if d != "nadie"]
+    if desde:
+        txt += "; lo leen %s" % ", ".join(desde[:8])
     if len(desde) > 8:
         txt += " y %d mas" % (len(desde) - 8)
     txt += " (%d bytes)" % (f - a)

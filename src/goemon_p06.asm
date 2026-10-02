@@ -869,7 +869,7 @@ DATA_rle_BE32:
 
 ; ----------------------------------------------------------------------
 ; DATOS relleno_06: 39 bytes 0xFF hasta el final del banco: relleno, no lo lee
-;   nadie; lo leen nadie (39 bytes)
+;   nadie (39 bytes)
 ;   0xbfd9..0xc000  (39 bytes)
 DATA_relleno_06:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfd9  ................

@@ -2170,7 +2170,7 @@ DATA_dibujo_car_BF1B:
 
 ; ----------------------------------------------------------------------
 ; DATOS relleno_09: 198 bytes 0xFF hasta el final del banco: relleno, no lo
-;   lee nadie; lo leen nadie (198 bytes)
+;   lee nadie (198 bytes)
 ;   0xbf3a..0xc000  (198 bytes)
 DATA_relleno_09:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf3a  ................

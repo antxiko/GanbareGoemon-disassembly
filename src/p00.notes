@@ -41,7 +41,7 @@ D 0x5C14 0x5C2C conjuntos_juego_3  12 punteros, uno por conjunto de figuras del 
 F 0x5C14 16
 D 0x5C2C 0x5C46 conjuntos_juego_4  13 punteros, uno por conjunto de figuras del juego 4, a su lista (p00:5BAF); lo leen p00:5BAF (26 bytes)
 F 0x5C2C 16
-D 0x5C46 0x5C48 conjunto_13_juego_4  un decimocuarto puntero de los conjuntos del juego 4 (0x5D81); ninguna casilla de las zonas de ese juego pide el 13; lo leen nadie (2 bytes)
+D 0x5C46 0x5C48 conjunto_13_juego_4  un decimocuarto puntero de los conjuntos del juego 4 (0x5D81); ninguna casilla de las zonas de ese juego pide el 13 (2 bytes)
 F 0x5C46 16
 D 0x5C48 0x5C66 conjuntos_juego_5  15 punteros, uno por conjunto de figuras del juego 5, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
 F 0x5C48 16
@@ -181,7 +181,7 @@ D 0x5D79 0x5D7D figuras_5D79  un conjunto de figuras: [n] y n+1 tipos (0 es ning
 F 0x5D79 16
 D 0x5D7D 0x5D81 figuras_5D7D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
 F 0x5D7D 16
-D 0x5D81 0x5D85 figuras_5D81  el conjunto al que apunta 0x5C46: [2] y los tipos 0, 0x16 y 0x15; no lo pide nadie; lo leen nadie (4 bytes)
+D 0x5D81 0x5D85 figuras_5D81  el conjunto al que apunta 0x5C46: [2] y los tipos 0, 0x16 y 0x15; no lo pide nadie (4 bytes)
 F 0x5D81 16
 D 0x5D85 0x5D88 figuras_5D85  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
 F 0x5D85 16

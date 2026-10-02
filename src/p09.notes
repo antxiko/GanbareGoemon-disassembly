@@ -451,6 +451,6 @@ D 0xBEE0 0xBF1B dibujo_car_BEE0  [ancho][posicion] y 14 filas de 'ancho' caracte
 F 0xBEE0 16
 D 0xBF1B 0xBF3A dibujo_car_BF1B  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
 F 0xBF1B 16
-D 0xBF3A 0xC000 relleno_09  198 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (198 bytes)
+D 0xBF3A 0xC000 relleno_09  198 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie (198 bytes)
 F 0xBF3A 16
 # --- fin de los bloques de bloques.py ---

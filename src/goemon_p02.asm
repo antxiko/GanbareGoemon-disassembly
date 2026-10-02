@@ -1809,14 +1809,22 @@ DATA_dibujos_de_cada_cosa:
 	defb 064h,08bh	; 8b60
 
 ; ----------------------------------------------------------------------
-; DATOS listas_8B62: las listas de 0x8B54, un byte por sprite; cuantos son lo
-;   dice (ix+0x20) de cada cosa, asi que no esta medido hasta donde se leen:
-;   los dos ultimos bytes (3E 80) son ademas un `ld a,0x80` justo delante de
-;   p02:8B76 al que no salta nadie (20 bytes)
-;   0x8b62..0x8b76  (20 bytes)
+; DATOS listas_8B62: las listas de 0x8B54 (cosas 1-7, a 0x8B62, 0x8B64,
+;   0x8B66, 0x8B68 y 0x8B6A): un byte por sprite, tantos como diga (ix+0x20)
+;   de la cosa (10 bytes)
+;   0x8b62..0x8b6c  (10 bytes)
 DATA_listas_8B62:
-	defb 002h,045h,001h,042h,002h,00eh,002h,006h,002h,04ch,000h,008h,000h,000h,008h,008h	; 8b62  .E.B.....L......
-	defb 00ch,000h,03eh,080h	; 8b72
+	defb 002h,045h,001h,042h,002h,00eh,002h,006h,002h,04ch	; 8b62  .E.B.....L
+
+; ----------------------------------------------------------------------
+; DATOS y_de_cada_disparo: la y que p02:89CB resta a (ix+3) para el disparo A
+;   (p02:89C3 suma A a 0x8B6B): se piden el 2, el 4 y el 5 (p03:A291,
+;   p03:ABA1, p03:ACB2) y los de (ix+0x7D), que da la ficha de 0xAA51: 2, 10 y
+;   16; el 16 cae en 0x8B7B, el byte 0x05 de `ld d,(ix+5)` de p02:8B79, que se
+;   lee como dato (10 bytes)
+;   0x8b6c..0x8b76  (10 bytes)
+DATA_y_de_cada_disparo:
+	defb 000h,008h,000h,000h,008h,008h,00ch,000h,03eh,080h	; 8b6c  ........>.
 
 ; ======================================================================
 ; CODIGO 0x8b76..0x8c30  (186 bytes)

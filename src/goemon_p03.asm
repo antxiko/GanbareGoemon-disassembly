@@ -4444,7 +4444,7 @@ L_BEDD:
 
 ; ----------------------------------------------------------------------
 ; DATOS relleno_03: 269 bytes 0xFF hasta el final del banco (o hasta la marca
-;   de Konami): relleno, no lo lee nadie; lo leen nadie (269 bytes)
+;   de Konami): relleno, no lo lee nadie (269 bytes)
 ;   0xbee5..0xbff2  (269 bytes)
 DATA_relleno_03:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bee5  ................
@@ -4470,7 +4470,7 @@ DATA_relleno_03:
 ;   titulo al reves en 11 caracteres del propio juego (35 63 5D 49 63 59 39 63
 ;   33 52 5D, o sea ka-dakuten-n-ha-dakuten-re-ko-dakuten-e-mo-n: GANBARE
 ;   GOEMON), [11], [0x48] del RC-748 y [0xAA]; no la lee el cartucho (la
-;   destapo Manuel Pazos); lo leen nadie (14 bytes)
+;   destapo Manuel Pazos) (14 bytes)
 ;   0xbff2..0xc000  (14 bytes)
 DATA_marca_de_konami:
 	defb 05dh,052h,033h,063h,039h,059h,063h,049h,05dh,063h,035h,00bh,048h,0aah	; bff2  ]R3c9YcI]c5.H.

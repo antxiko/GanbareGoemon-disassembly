@@ -315,6 +315,8 @@ D 0xBEB9 0xBECC texto_BEB9  texto que p00:42F1 escribe letra a letra (0xFF o 0xE
 F 0xBEB9 16
 D 0xBECC 0xBEE0 texto_BECC  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (20 bytes)
 F 0xBECC 16
-D 0xBEE0 0xC000 texto_BEE0  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); se solapan 2 bloques (0xBEE0-0xBEF9, 0xBEF8-0xC000); lo leen nadie, p02:962F (288 bytes)
+D 0xBEE0 0xBEF9 texto_BEE0  texto que p00:42F1 escribe letra a letra (0xFF o 0xE0 acaba, 0xFE baja una fila, 0xE1-0xFD dejan hueco); lo leen p02:962F (25 bytes)
 F 0xBEE0 16
+D 0xBEF9 0xC000 relleno_15  263 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie (263 bytes)
+F 0xBEF9 16
 # --- fin de los bloques de bloques.py ---

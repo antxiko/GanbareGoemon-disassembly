@@ -94,6 +94,6 @@ D 0xBD62 0xBE32 letras_BD62  caracteres de 8x8 a 1 bit, 8 bytes cada uno (0x484F
 F 0xBD62 16
 D 0xBE32 0xBFD9 rle_BE32  rle a la VRAM (0x4539); lo leen p00:4CDD (423 bytes)
 F 0xBE32 16
-D 0xBFD9 0xC000 relleno_06  39 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (39 bytes)
+D 0xBFD9 0xC000 relleno_06  39 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie (39 bytes)
 F 0xBFD9 16
 # --- fin de los bloques de bloques.py ---

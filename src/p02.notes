@@ -14,7 +14,8 @@ F 0x84DF 2
 D 0x853D 0x8573 listas_853D  las listas de 0x84DF: tantos bytes como sprites tiene la figura (0x84B0); unas figuras comparten la suya (54 bytes)
 D 0x8B54 0x8B62 dibujos_de_cada_cosa  7 punteros, uno por cosa 1-7 (p02:8A60 suma el doble a 0x8B52), a la lista que p02:8A70 reparte por sus sprites (14 bytes)
 F 0x8B54 2
-D 0x8B62 0x8B76 listas_8B62  las listas de 0x8B54, un byte por sprite; cuantos son lo dice (ix+0x20) de cada cosa, asi que no esta medido hasta donde se leen: los dos ultimos bytes (3E 80) son ademas un `ld a,0x80` justo delante de p02:8B76 al que no salta nadie (20 bytes)
+D 0x8B62 0x8B6C listas_8B62  las listas de 0x8B54 (cosas 1-7, a 0x8B62, 0x8B64, 0x8B66, 0x8B68 y 0x8B6A): un byte por sprite, tantos como diga (ix+0x20) de la cosa (10 bytes)
+D 0x8B6C 0x8B76 y_de_cada_disparo  la y que p02:89CB resta a (ix+3) para el disparo A (p02:89C3 suma A a 0x8B6B): se piden el 2, el 4 y el 5 (p03:A291, p03:ABA1, p03:ACB2) y los de (ix+0x7D), que da la ficha de 0xAA51: 2, 10 y 16; el 16 cae en 0x8B7B, el byte 0x05 de `ld d,(ix+5)` de p02:8B79, que se lee como dato (10 bytes)
 D 0x8C30 0x8C70 arcotangente  8 x 8 bytes: el angulo (0x20 son 45 grados) segun la distancia en y y en x al jugador, que p02:8BE9 lee para apuntarle (64 bytes)
 D 0x8C70 0x8CB0 seno  el cuarto de onda del seno en 64 pasos (0 a 0xFF) que p02:8B94 lee para sacar el paso en x y en y de lo que se dispara (64 bytes)
 D 0x8D2C 0x8D32 pose_de_cada_cosa  la pose (ix+0x0A) de cada cosa 1-6 (p02:8D21) (6 bytes)

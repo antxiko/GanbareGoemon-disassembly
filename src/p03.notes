@@ -72,8 +72,8 @@ D 0xBC74 0xBC7E tabla_BC74  5 destinos del despachador de 0x408D (call en p03:BC
 F 0xBC74 2
 D 0xBD0C 0xBD12 tabla_BD0C  3 destinos del despachador de 0x408D (call en p03:BD09): 0xBD12, 0xBDB2, 0xBDD5; lo leen p03:BD09 (6 bytes)
 F 0xBD0C 2
-D 0xBEE5 0xBFF2 relleno_03  269 bytes 0xFF hasta el final del banco (o hasta la marca de Konami): relleno, no lo lee nadie; lo leen nadie (269 bytes)
+D 0xBEE5 0xBFF2 relleno_03  269 bytes 0xFF hasta el final del banco (o hasta la marca de Konami): relleno, no lo lee nadie (269 bytes)
 F 0xBEE5 16
-D 0xBFF2 0xC000 marca_de_konami  la marca que Konami escondio al final del banco: el titulo al reves en 11 caracteres del propio juego (35 63 5D 49 63 59 39 63 33 52 5D, o sea ka-dakuten-n-ha-dakuten-re-ko-dakuten-e-mo-n: GANBARE GOEMON), [11], [0x48] del RC-748 y [0xAA]; no la lee el cartucho (la destapo Manuel Pazos); lo leen nadie (14 bytes)
+D 0xBFF2 0xC000 marca_de_konami  la marca que Konami escondio al final del banco: el titulo al reves en 11 caracteres del propio juego (35 63 5D 49 63 59 39 63 33 52 5D, o sea ka-dakuten-n-ha-dakuten-re-ko-dakuten-e-mo-n: GANBARE GOEMON), [11], [0x48] del RC-748 y [0xAA]; no la lee el cartucho (la destapo Manuel Pazos) (14 bytes)
 F 0xBFF2 16
 # --- fin de los bloques de bloques.py ---
