@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Anota lo que ya esta identificado: rutinas con nombre, RAM y cambios de banco.
 
-Una vez se sabe que 0xC425 es la x de Simon no tiene merito -ni fiabilidad-
-escribir a mano "la x de Simon" las cincuenta veces que aparece. Esto lo hace
+Una vez se sabe que 0xC281 es la casilla no tiene merito -ni fiabilidad-
+escribir a mano "la casilla" las cincuenta veces que aparece. Esto lo hace
 de una vez y sin equivocarse, en una seccion delimitada de src/pNN.notes que
 reescribe entera cada vez.
 
@@ -28,206 +28,250 @@ sys.path.insert(0, AQUI)
 
 from paginas import ORG                                    # noqa: E402
 
-BANCOS = (0, 1, 2, 3, 13, 14)
+BANCOS = (0, 1, 2, 3, 10)
 INI = "# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---"
 FIN = "# --- fin de las anotaciones de anota.py ---"
 
-# (banco, direccion) -> (nombre, lo que hace; de donde se sabe va en el texto)
+# (banco, direccion) -> (nombre, lo que hace). Cada una leida en el listado.
 RUTINAS = {
-    (0, 0x4028): ("interrupcion", "cada cuadro: sonido, y el juego entero corre desde aqui"),
-    (0, 0x4030): ("sonido_del_cuadro", "pone los bancos 14 y 15, llama al reproductor y los devuelve"),
-    (0, 0x4061): ("hl_mas_a", "HL += A"),
-    (0, 0x4066): ("de_mas_a", "DE += A"),
-    (0, 0x406B): ("despacha", "salta a la entrada A de la tabla que va detras del call"),
-    (0, 0x4075): ("init", "arranque del cartucho: RAM a cero, VDP, sonido, y engancha H.TIMI"),
-    (0, 0x414D): ("maquina_de_estados", "sube el contador de cuadros y despacha por el estado de 0xC000"),
-    (0, 0x41B6): ("cambia_de_estado", "estado nuevo en 0xC000 (A) y 0x20 cuadros de espera en 0xC004"),
-    (0, 0x4675): ("copia_a_la_vram", "BC bytes de HL a la VRAM de DE"),
-    (0, 0x46AF): ("vram_para_escribir", "prepara el V9938 para escribir en la direccion HL"),
-    (0, 0x46CE): ("vram_para_leer", "prepara el V9938 para leer de la direccion HL"),
-    (0, 0x46EB): ("rle_con_destino", "descomprime a la VRAM un rle que lleva el destino delante"),
-    (0, 0x46F1): ("rle_a_la_vram", "descomprime a la VRAM (HL) el rle de DE"),
-    (0, 0x4714): ("guion_de_carga", "interpreta un guion de carga de la VRAM (0xFF acaba)"),
-    (0, 0x473E): ("voltea_dibujos", "da la vuelta a dibujos que ya estan en la VRAM"),
-    (0, 0x47C7): ("enciende_la_pantalla", "bit 6 del registro 1 del VDP a uno"),
-    (0, 0x47D4): ("apaga_la_pantalla", "bit 6 del registro 1 del VDP a cero"),
-    (0, 0x4814): ("pon_un_color", "color A de la paleta = DE (y su copia en la VRAM, en 0xF680)"),
-    (0, 0x483E): ("pon_paleta", "lista de [color][RB][G] hasta 0xFF"),
-    (0, 0x484C): ("espera_al_vdp", "espera a que el V9938 acabe la orden (bit 0 de S#2)"),
-    (0, 0x4855): ("lee_estado_del_vdp", "lee el registro de estado A del V9938"),
-    (0, 0x490A): ("rellena_rectangulo", "orden del V9938 que rellena un rectangulo (desde R#36)"),
-    (0, 0x4946): ("copia_rectangulo", "orden del V9938 que copia un rectangulo de VRAM a VRAM (desde R#32)"),
-    (0, 0x498A): ("hmmc", "orden HMMC del V9938: puntos de HL a la VRAM"),
-    (0, 0x4A27): ("sube_letras", "B caracteres de 1 bit de HL, pintados de color"),
-    (0, 0x4A30): ("sube_una_letra", "un caracter de 1 bit de HL"),
-    (0, 0x4A51): ("sube_un_dibujo", "un dibujo de 8x8 a 4 bits (32 bytes) de HL a la VRAM de DE"),
-    (0, 0x4A66): ("sube_dibujos", "B dibujos de 8x8 a 4 bits de HL a la VRAM de DE"),
-    (0, 0x4A90): ("sube_dibujos_de_16", "B dibujos de 16x16 a 4 bits de HL"),
-    (0, 0x4ACB): ("rotulo", "pinta un rotulo ([x][y] y texto; 0xFE otra posicion, 0xFF acaba)"),
-    (0, 0x4ACF): ("borra_rotulo", "lo mismo que 0x4ACB pero borrando"),
-    (0, 0x4FB6): ("monta_la_habitacion", "construye la habitacion en RAM con los bancos 11-12-13"),
-    (0, 0x509F): ("sonido", "arranca la musica o el efecto A (bit 7 = musica)"),
-    (0, 0x5336): ("bancos_1_2_3", "vuelve a poner los bancos 1, 2 y 3"),
-    (0, 0x5350): ("bancos_14_15", "pone el sonido (14 y 15) en 0x8000 y 0xA000"),
-    (0, 0x5362): ("bancos_11_12_13", "pone los bancos del mapa (11, 12 y 13)"),
-    (0, 0x537A): ("bancos_9_10", "pone los bancos 9 y 10 en 0x8000 y 0xA000"),
-    (0, 0x538C): ("bancos_7_8", "pone los bancos 7 y 8 en 0x8000 y 0xA000"),
-    (0, 0x539E): ("bancos_4_5_6", "pone los bancos 4, 5 y 6"),
-    (0, 0x564C): ("sube_los_dibujos_de_la_fase", "los 191 dibujos del decorado de la fase de 0xD000"),
-    (0, 0x582D): ("dibujo_de_32_filas", "desempaqueta un dibujo de 32 filas a 0xE800"),
-    (0, 0x5F1D): ("crea_una_cosa", "crea una cosa del tipo C en la posicion DE"),
-    (1, 0x6542): ("palabra_de_la_tabla", "DE = la palabra A de la tabla de DE"),
-    (1, 0x6D4D): ("aplica_la_curva", "sube la cuenta de (HL) hasta D y suma a la y de Simon el paso de la curva de BC"),
-    (1, 0x765F): ("pose_segun_el_lado", "ajusta las poses de 0xC42E/0xC42F al lado al que mira Simon"),
-    (1, 0x7B32): ("rotulo_por_filas", "pinta caracteres; 0xFE [dx] baja una fila, 0xFF acaba"),
-    (1, 0x7B88): ("mira_el_suelo", "mira el decorado bajo los pies de Simon (y de 0xC425, x de 0xC427)"),
-    (1, 0x7B98): ("choca_con_el_decorado", "mira las dos celdas del decorado en (E, D) y (E, D-10)"),
-    (1, 0x7C5E): ("es_pared", "carry si el bloque de la celda es de los que paran (tope por fase de 0x7C78)"),
-    (1, 0x7D2F): ("celda_del_mapa", "de una posicion en puntos (E, D) a su celda en el mapa de la habitacion"),
-    (2, 0x847A): ("toca_a_simon", "carry si la caja (HL tamano, DE centro) toca a Simon"),
-    (2, 0x84A7): ("le_alcanza_el_latigo", "carry si la caja (HL tamano, DE centro) la alcanza el latigo"),
-    (2, 0x84D9): ("punta_del_latigo", "A = la x de la punta del latigo"),
-    (2, 0x84F0): ("le_da_un_arma", "carry si le da alguna de las dos armas de 0xC450 y 0xC460"),
-    (2, 0x864B): ("delante_de_simon", "carry si la caja esta justo delante de Simon"),
-    (2, 0x99F6): ("borra_la_cosa", "tipo a cero y sus sprites libres"),
-    (2, 0x9F6D): ("crea_con_parametros", "guarda el tipo (A) y los parametros en 0xCFF1-0xCFF9 y crea la cosa"),
-    (3, 0xA17C): ("niega_de", "DE = -DE"),
-    (3, 0xA549): ("suma_a_la_velocidad_y", "la gravedad: DE a la velocidad vertical, con tope 0x07FF"),
-    (3, 0xA55D): ("pon_velocidad_y", "velocidad vertical de la cosa ((ix+7), (ix+8)) = DE"),
-    (3, 0xA56C): ("pon_velocidad_x", "velocidad horizontal de la cosa ((ix+9), (ix+10)) = DE"),
-    (3, 0xA62F): ("dibujo_de_la_tabla", "(ix+0x0B) = el dibujo C de la tabla de HL"),
-    (3, 0xAD37): ("dibujo_segun_simon", "como 0xA62F, dos mas adelante si Simon esta a su derecha"),
-    (3, 0xAF40): ("distancia_horizontal", "A = |x de Simon - x de la cosa|"),
-    (3, 0xBE3D): ("siguiente_paso", "sube el paso de la escena (0xCE01)"),
-    (13, 0xB963): ("sale_de_la_habitacion", "la habitacion a la que se sale por el lado de 0xC41B"),
-    (13, 0xB99A): ("salidas_de_la_habitacion", "copia las cuatro salidas a 0xC41C-0xC41F"),
-    (14, 0x8964): ("reproductor", "un cuadro de sonido: los tres canales y los efectos"),
-    (14, 0x89CE): ("canal_en_reposo", "el canal que no suena"),
-    (14, 0x8A0B): ("volumen_del_canal", "escribe el volumen E en el registro 8+canal del PSG"),
+    (0, 0x4045): ("interrupcion", "cada cuadro, por H.TIMI: el sonido (banco 10 en 0x6000) y el juego"),
+    (0, 0x4083): ("hl_mas_a", "HL += A"),
+    (0, 0x4088): ("de_mas_a", "DE += A"),
+    (0, 0x408D): ("despacha", "salta a la entrada A de la tabla que va detras del call"),
+    (0, 0x4097): ("init", "arranque del cartucho"),
+    (0, 0x4129): ("calla_y_guarda", "guarda los volumenes del PSG (registros 8-10) en 0xEF11-0xEF13 y los pone a cero"),
+    (0, 0x4141): ("calla_el_psg", "los tres volumenes del PSG a cero"),
+    (0, 0x4154): ("devuelve_volumen", "vuelve a poner los volumenes guardados en 0xEF11-0xEF13"),
+    (0, 0x416F): ("musica_de_la_zona", "la musica del juego de graficos de la zona (tabla 0x4182)"),
+    (0, 0x4188): ("enlaces_de_la_zona", "copia los enlaces entre casillas de la zona a 0xE780"),
+    (0, 0x41F6): ("indice_de_la_zona", "A = (fase * 7 + zona) * 2"),
+    (0, 0x4206): ("bancos_1_2_3", "pone los bancos 1, 2 y 3"),
+    (0, 0x4220): ("bancos_4_5_6", "pone los bancos 4, 5 y 6"),
+    (0, 0x4238): ("bancos_7_8_9", "pone los bancos 7, 8 y 9"),
+    (0, 0x4250): ("bancos_10_11_12", "pone los bancos 10, 11 y 12"),
+    (0, 0x4268): ("bancos_13_14_15", "pone los bancos 13, 14 y 15"),
+    (0, 0x4280): ("rotulo_numero", "pinta el rotulo A de la tabla de 0xA9C0 (banco 12)"),
+    (0, 0x4295): ("pantallas_de_la_zona", "descomprime las pantallas de la zona a 0xD000"),
+    (0, 0x42AC): ("bloques_de_la_zona", "descomprime los bloques de la zona a 0xE100"),
+    (0, 0x42C3): ("rle_a_la_ram", "descomprime un rle a la RAM"),
+    (0, 0x42E1): ("empieza_texto", "empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)"),
+    (0, 0x42F1): ("sigue_texto", "saca la letra siguiente del texto de 0xCD65 (0xFF acaba)"),
+    (0, 0x4351): ("empieza_la_partida", "la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B"),
+    (0, 0x437E): ("suma_puntos", "suma puntos en BCD al jugador que juega"),
+    (0, 0x43E2): ("pinta_el_marcador", "pinta el marcador entero"),
+    (0, 0x4406): ("pinta_los_puntos", "pinta los puntos"),
+    (0, 0x4418): ("pinta_las_vidas", "pinta las vidas"),
+    (0, 0x4420): ("pinta_bcd", "pinta cifras en BCD"),
+    (0, 0x4449): ("intercambia", "intercambia los bytes de (HL) y (DE)"),
+    (0, 0x447C): ("palabra_de_tabla_de", "DE = la palabra A de la tabla de DE"),
+    (0, 0x44B1): ("copia_a_la_vram", "copia bytes de la RAM a la VRAM"),
+    (0, 0x44C4): ("rellena_la_vram", "llena un tramo de la VRAM con un byte"),
+    (0, 0x44F7): ("vram_para_escribir", "prepara el V9938 para escribir en la VRAM"),
+    (0, 0x4533): ("rle_con_destino", "descomprime a la VRAM un rle que lleva el destino delante"),
+    (0, 0x4539): ("rle_a_la_vram", "descomprime un rle a la VRAM"),
+    (0, 0x455C): ("rle_vuelto_con_destino", "como 0x4562, con el destino delante del rle"),
+    (0, 0x4562): ("rle_vuelto", "descomprime un rle a la VRAM de HL pasando por 0xDD10"),
+    (0, 0x45C0): ("bits_al_reves", "da la vuelta a los bits de A"),
+    (0, 0x45D3): ("borra_la_pantalla", "borra la pantalla"),
+    (0, 0x45E1): ("enciende_la_pantalla", "bit 6 del registro 1 del VDP a uno"),
+    (0, 0x45EE): ("apaga_la_pantalla", "bit 6 del registro 1 del VDP a cero"),
+    (0, 0x460A): ("esconde_los_sprites", "y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM"),
+    (0, 0x4626): ("sprites_fuera", "apaga los sprites (bit 1 del registro 8 del VDP)"),
+    (0, 0x4631): ("sprites_dentro", "enciende los sprites (bit 1 del registro 8 del VDP a cero)"),
+    (0, 0x463C): ("pon_un_color", "color A de la paleta = DE"),
+    (0, 0x4666): ("pon_paleta", "pone una lista de colores en la paleta"),
+    (0, 0x4674): ("espera_al_vdp", "espera a que el V9938 acabe la orden"),
+    (0, 0x467D): ("lee_estado_del_vdp", "lee un registro de estado del V9938"),
+    (0, 0x469D): ("linea_horizontal", "pinta una linea horizontal"),
+    (0, 0x46D0): ("linea_vertical", "pinta una linea vertical"),
+    (0, 0x4704): ("marco", "pinta un marco"),
+    (0, 0x4732): ("hmmv", "orden HMMV del V9938: rellena un rectangulo"),
+    (0, 0x476E): ("hmmm", "orden HMMM del V9938: copia un rectangulo de VRAM a VRAM"),
+    (0, 0x47B2): ("hmmc", "orden HMMC del V9938: puntos de la RAM a la VRAM"),
+    (0, 0x4803): ("lmmm", "orden LMMM del V9938: copia un rectangulo con operacion logica"),
+    (0, 0x484F): ("sube_letras", "sube B letras a la VRAM"),
+    (0, 0x4858): ("sube_una_letra", "sube una letra a la VRAM"),
+    (0, 0x4879): ("sube_un_dibujo", "sube un dibujo de 8x8 a la VRAM"),
+    (0, 0x488E): ("sube_dibujos", "sube B dibujos de 8x8 a la VRAM"),
+    (0, 0x48A3): ("sube_dibujos_de_16", "sube dibujos de 16x16 a la VRAM"),
+    (0, 0x48B8): ("sube_dibujos_de_16_vueltos", "sube dibujos de 16x16 a la VRAM, vueltos"),
+    (0, 0x48CD): ("letra_a_4_bits", "pasa una letra de 1 bit a 4 bits por punto"),
+    (0, 0x48F3): ("rotulo", "pinta un rotulo"),
+    (0, 0x48F7): ("borra_rotulo", "borra un rotulo"),
+    (0, 0x48FD): ("rotulo_sin_posicion", "pinta un rotulo donde se quedo el anterior"),
+    (0, 0x491C): ("letra", "pinta una letra"),
+    (0, 0x4940): ("caracter", "pinta un caracter"),
+    (0, 0x4964): ("caracter_en_la_pagina_1", "pinta un caracter en la pagina 1 de la VRAM"),
+    (0, 0x4976): ("sitio_del_caracter", "la direccion en la VRAM de un caracter"),
+    (0, 0x4984): ("siguiente_sitio", "pasa al sitio del caracter siguiente"),
+    (0, 0x498E): ("prepara_el_vdp", "pasa a SCREEN 5 y pone los registros del V9938"),
+    (0, 0x49D2): ("lee_los_mandos", "teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo"),
+    (0, 0x4A43): ("dibujos_de_konami", "sube los dibujos del logotipo de Konami"),
+    (0, 0x4A6D): ("letras_del_texto", "sube las letras de los textos"),
+    (0, 0x4A96): ("caracteres_del_juego", "sube los caracteres del juego de graficos de la zona"),
+    (0, 0x4B91): ("caracteres_del_titulo", "sube los caracteres del titulo"),
+    (0, 0x4C75): ("sube_dibujos_vueltos", "sube dibujos dados la vuelta"),
+    (0, 0x4CAB): ("sprites_del_jugador", "sube los sprites del jugador"),
+    (0, 0x4CE3): ("paleta_de_la_zona", "pone la paleta del juego de graficos de la zona"),
+    (0, 0x4CFC): ("paleta_base", "pone la paleta base"),
+    (0, 0x4D2C): ("colores_del_sitio", "cambia los colores del sitio (0xC267)"),
+    (0, 0x4D81): ("palabra_de_tabla", "HL = la palabra A de la tabla de HL"),
+    (0, 0x4DA4): ("dibujos_de_siempre", "sube los dibujos que estan en todas las zonas"),
+    (0, 0x4E7F): ("hmmc_a_la_pagina_1", "HMMC a la pagina 1 de la VRAM"),
+    (0, 0x4E84): ("pinta_bloque", "pinta un bloque de 4x4 caracteres"),
+    (0, 0x4EB9): ("pinta_icono", "copia un icono del marcador desde la pagina 1 (HMMM)"),
+    (0, 0x4F26): ("marca_casilla", "marca una casilla en el plano"),
+    (0, 0x4F47): ("pinta_pasadizo", "pinta un pasadizo"),
+    (0, 0x4FB5): ("sonido_a_cero", "para la musica y los efectos"),
+    (0, 0x4FE4): ("sonido", "arranca la musica o el efecto A"),
+    (0, 0x51D6): ("suena_algo", "lo que esta sonando (0xC0A9-0xC0AD)"),
+    (0, 0x51ED): ("monta_la_pantalla", "monta la pantalla de 8x6 bloques de la casilla"),
+    (0, 0x5306): ("pantalla_de_la_casilla", "A = la pantalla de la casilla de 0xC281 (tabla de 0xE700)"),
+    (0, 0x5311): ("rejilla_de_la_zona", "la rejilla de casillas de la zona"),
+    (0, 0x534E): ("pinta_la_pantalla", "pinta la pantalla montada"),
+    (0, 0x53E3): ("figura_del_interior", "la figura de un interior (tipos 0x22-0x24)"),
+    (0, 0x5413): ("dibujos_de_las_figuras", "sube los dibujos de las figuras (fichas de 0xA830, banco 12)"),
+    (0, 0x54E6): ("colores_de_la_figura", "pinta los colores de los sprites de la figura"),
+    (0, 0x57FA): ("pinta_cosa_del_marcador", "pinta una de las 10 cosas del marcador"),
+    (0, 0x5856): ("pinta_las_cosas", "pinta las cosas del marcador"),
+    (0, 0x5884): ("suma_vida", "suma vida al jugador"),
+    (0, 0x5890): ("pinta_la_vida", "pinta la barra de vida"),
+    (0, 0x58F5): ("pinta_el_tiempo", "pinta el tiempo"),
+    (0, 0x5915): ("resta_bcd", "resta en BCD"),
+    (0, 0x591F): ("suma_bcd", "suma en BCD"),
+    (0, 0x5929): ("suma_dinero", "suma ryo al dinero"),
+    (0, 0x593A): ("pinta_el_dinero", "pinta el dinero"),
+    (0, 0x5958): ("resta_dinero", "resta ryo al dinero"),
+    (0, 0x5969): ("ensena_el_plano", "ensena el plano de la zona"),
+    (0, 0x59A9): ("dibuja_el_plano", "dibuja el plano de la zona"),
+    (0, 0x5A93): ("pantalla_del_titulo", "monta la pantalla del titulo"),
+    (0, 0x5B61): ("sube_colores_de_sprite", "sube los colores de los sprites"),
+    (0, 0x5B6D): ("figuras_de_la_casilla", "crea las figuras de la casilla"),
+    (0, 0x5DBB): ("maquina_de_estados", "despacha por el estado de 0xC000"),
+    (0, 0x5E2D): ("cambia_de_estado", "pasa al estado A"),
+    (0, 0x5E40): ("espera_y_sigue", "espera y pasa al paso siguiente"),
+    (0, 0x5E43): ("siguiente_paso", "pasa al paso siguiente (0xC001)"),
+    (0, 0x5EEF): ("siguiente_estado", "pasa al estado siguiente"),
+    (1, 0x65F7): ("sale_de_la_casilla", "pasa a la casilla vecina por el lado de salida"),
+    (1, 0x663A): ("carga_la_zona", "carga la zona de 0xC280"),
+    (1, 0x67B3): ("borra_las_figuras", "borra todas las figuras"),
+    (1, 0x67CC): ("borra_al_jugador", "borra al jugador"),
+    (1, 0x67DA): ("esconde_los_sprites_de_ram", "saca de la pantalla los sprites de la copia en RAM"),
+    (1, 0x6C03): ("teclea_la_contrasena", "la pantalla de la contrasena"),
+    (1, 0x6C7A): ("aplica_la_contrasena", "saca de la contrasena la fase, el jugador, la zona y la casilla"),
+    (1, 0x6CAB): ("junta_nibbles", "junta dos nibbles en un byte"),
+    (1, 0x6CD8): ("lee_el_teclado", "lee una tecla"),
+    (1, 0x7804): ("caracter_bajo", "el caracter que hay bajo un punto"),
+    (1, 0x781F): ("se_puede_pisar", "carry si el caracter se puede pisar"),
+    (1, 0x7EAB): ("busca_al_vecino", "busca el Game Master o Q*bert en otra ranura (0xEF00)"),
+    (2, 0x8334): ("crea_figura", "crea una figura en el primer hueco libre de 0xC600"),
+    (2, 0x87B7): ("borra_la_figura", "borra la figura"),
+    (2, 0x87E4): ("pon_velocidad_x", "velocidad horizontal de la figura ((ix+8), (ix+9)) = DE"),
+    (2, 0x87EB): ("pon_velocidad_y", "velocidad vertical de la figura ((ix+6), (ix+7)) = DE"),
+    (2, 0x893D): ("pon_la_pose", "pone la pose de la figura"),
+    (2, 0x89C2): ("dispara", "crea el disparo A (tabla de 0x8B6B)"),
+    (2, 0x8C0A): ("niega_de", "DE = -DE"),
+    (2, 0x90C0): ("cosas_fijas", "pinta las cosas fijas de la casilla"),
+    (2, 0x960C): ("texto_de_la_zona", "el texto de la zona"),
+    (2, 0x99FB): ("dibujo_de_caracteres", "pinta un dibujo hecho de caracteres"),
+    (3, 0xBAD2): ("hl_mas_de", "HL += DE"),
+    (3, 0xBDF6): ("teclea_palabra", "lo que se teclea en la pausa"),
+    (3, 0xBE4E): ("claves_secretas", "compara lo tecleado con las claves secretas (0xBE8A)"),
+    (10, 0x6000): ("sonido_del_cuadro", "un cuadro de sonido: musica y efectos"),
+    (10, 0x6067): ("canal_en_reposo", "el canal que no suena"),
+    (10, 0x608F): ("pon_el_tono", "escribe el tono del canal en el PSG"),
+    (10, 0x609B): ("pon_el_volumen", "escribe el volumen del canal en el PSG"),
+    (10, 0x61F1): ("lee_la_partitura", "lee la nota siguiente de la partitura"),
+    (10, 0x6454): ("cuadro_del_efecto", "un cuadro del efecto de sonido"),
 }
 
 # direccion -> (que es, de donde se sabe)
 RAM = {
-    0xC000: ("el ESTADO del juego", "p00:4151 despacha por el"),
-    0xC001: ("el subestado", "p00:4151 lo carga en B con el estado"),
-    0xC003: ("el contador de cuadros", "p00:414D lo sube cada cuadro"),
-    0xC004: ("la espera del estado, en cuadros", "p00:41B6 la pone a 0x20"),
-    0xC002: ("las banderas de la partida (bit 7: de verdad, no la demostracion)", "p00:44EE no cuenta puntos con el bit 7 a cero"),
-    0xC405: ("el MARCADOR, tres bytes en BCD", "p00:44F3 le suma los puntos con `daa`"),
-    0xC43A: ("la cuenta de la INVENCIBILIDAD", "p02:8DD8 la pone al recoger su objeto y p02:85B1 no hace dano mientras no sea cero"),
-    0xC419: ("el ultimo objeto recogido", "p02:8D30"),
-    0xC500: ("los objetos que salen (ocho de 16 bytes)", "p02:89A2 los crea y p02:8A4A los mueve"),
-    0xC701: ("lo que lleva Simon (un bit por objeto)", "p02:8E6D pone el bit y p02:8EE6 repinta los cinco de arriba"),
-    0xC702: ("mas cosas que lleva (bit 0: se ven los bloques que se rompen)", "p02:8E72 las pone y p02:8707 pinta los marcos con el bit 0"),
-    0xC441: ("los usos que le quedan a lo que para golpes", "p02:8198 gasta uno por golpe"),
-    0xC005: ("el semaforo de la interrupcion", "p00:404E: no se entra dos veces"),
-    0xC010: ("el manejador del canal A del sonido", "p14:89A7 salta por el"),
-    0xC012: ("el manejador del canal B", "p14:89B0"),
-    0xC014: ("el manejador del canal C", "p14:89B9"),
-    0xC016: ("el manejador del efecto de sonido", "p14:89C3"),
-    0xC018: ("el manejador del segundo efecto", "p14:89F9"),
-    0xC01A: ("el manejador de la musica de la pausa", "p14:89F2"),
-    0xC094: ("el canal del PSG que se esta tocando", "p14:89C6"),
-    0xC095: ("el numero de canal", "p14:89CA"),
-    0xC096: ("la prioridad del efecto que suena", "p00:5172 no deja pisarlo con uno menor"),
-    0xC097: ("la copia del registro 7 del PSG (el mezclador)", "p14:8964 la escribe cada cuadro"),
-    0xC098: ("las banderas del sonido (bit 0 pausa, bit 1 ...)", "p00:51C4 y p00:5276"),
-    0xC0A5: ("la cuenta del fundido de la musica", "p14:897A"),
-    0xC0A6: ("el volumen que se le resta a la musica", "p14:8984 lo baja al fundir"),
-    0xC410: ("las vidas", "p00:44D3 empieza con 3 y el Game Master las da en 0xE607"),
-    0xC411: ("la fase en BCD, la del marcador", "p00:4357 la sube con la de 0xD000"),
-    0xC413: ("la VIDA en marcha", "p00:4240 la pone al empezar cada vida y p00:4E01 al empezar la demostracion; p01:70D9 la quita al morir y p00:4E42 al acabar la demostracion"),
-    0xCF3A: ("la cuenta de la pulsacion de la demostracion", "p00:4E2E"),
-    0xCF3B: ("las teclas de la demostracion", "p00:4E34"),
-    0xC415: ("la vida de Simon", "p00:44DE la llena (0x20) al empezar y al pasar de fase"),
-    0xC416: ("el arma que lleva Simon (0, ninguna)", "p00:5596 elige sus dibujos por ella"),
-    0xC417: ("los corazones, en BCD", "p01:7170 le resta 5 con `daa`"),
-    0xC418: ("la vida del enemigo (barra ENEMY)", "p00:44E3 la llena (0x80)"),
-    0xC41A: ("la habitacion especial", "p00:4FCD: con ella puesta el mapa sale de 0x614B"),
-    0xC41B: ("el lado por el que se sale de la habitacion", "p13:B963 lo usa de nibble"),
-    0xC424: ("la fraccion de la y de Simon", "p01:6E14 suma en 16 bits a 0xC424"),
-    0xC425: ("la Y de Simon", "p01:7B88 la compara con 0xD0, el suelo; y en las cosas la y es (ix+3), que p02:99E5 borra pasado 0xE4"),
-    0xC426: ("la fraccion de la x de Simon", "p01:6C94 suma en 16 bits a 0xC426"),
-    0xC427: ("la X de Simon", "p03:AF40 la resta de (ix+5), la x de las cosas, que p02:99EC borra fuera de 7..0xF0"),
-    0xC42C: ("el lado al que mira Simon (0 derecha)", "p02:8186: con la cosa a su derecha, 0 es mirarla; p01:6402 lo saca del bit 0 de la tabla de salida"),
-    0xC42E: ("la pose de las piernas de Simon", "p01:785C elige por ella en 0x7985"),
-    0xC42F: ("la pose del cuerpo de Simon", "p01:787E elige por ella en 0x79D5"),
-    0xC470: ("los bloques que se rompen (ocho de 16 bytes)", "p02:868C los rompe y los borra del mapa; los pone p00:5B1E"),
-    0xC5A6: ("los dos cascotes (tres bytes cada uno)", "p02:88C7 los lanza al romperse un bloque"),
-    0xC5AC: ("el estado de la puerta de la fase", "p13:BB5D lo pone a 4 o a 0xFF"),
-    0xC5AD: ("donde esta la puerta de la fase", "p13:BB52"),
-    0xC5B2: ("el paso a otra habitacion", "p13:BBBA"),
-    0xC5B4: ("la habitacion a la que lleva el paso", "p13:BBC9"),
-    0xC5D5: ("el destino del montaje de la habitacion", "p00:4FF0"),
-    0xC5D7: ("la habitacion que se monta", "p00:4FE0"),
-    0xC5D8: ("la fase de la habitacion que se monta", "p00:4FD6"),
-    0xCE01: ("el paso de la escena", "p03:BE3D lo sube"),
-    0xCE31: ("el renglon del final que toca", "p01:6757"),
-    0xCE33: ("la cuenta del texto del final", "p01:6761 la compara con cada renglon"),
-    0xCE39: ("la cuenta del destello", "p01:67E4 la hace volver a cero a los 19"),
-    0xCF00: ("los plazos de las siete cosas de la habitacion", "p02:9CA9 los pone"),
-    0xCF10: ("el reloj de los plazos", "p02:9CC4 lo baja"),
-    0xCFF0: ("el tipo de la cosa que se crea", "p00:5F2B"),
-    0xCFF1: ("la posicion de la cosa que se crea", "p00:5F2E"),
-    0xCFF3: ("la ficha de la cosa que se crea", "p00:5F45"),
-    0xD012: ("el NIVEL DE DIFICULTAD (0 a 3)", "p01:6701 lo sube al acabar el juego, hasta 2; los vendedores de clase 1 hasta 3 y los de clase 2 lo bajan (p02:9333, 933C); p02:9CD8 acorta con el los plazos de las cosas"),
-    0xC00F: ("el giro del orden de los sprites", "p01:6560 le suma 0x68 cada cuadro"),
-    0xD000: ("la FASE (0 el patio, 1-18)", "p00:4357 la sube y 0x5742 tiene una entrada por fase"),
-    0xD001: ("la HABITACION dentro de la fase", "p00:5797 elige por ella en la tabla de habitaciones"),
-    0xD002: ("el bloque de tres fases (0-5)", "p00:5E4B lo saca de 0x5E6A"),
-    0xE600: ("si hay un GAME MASTER en otra ranura", "p00:5C92 busca su firma (0x5CE9) en 0x7FFA de cada ranura; con el, la interrupcion mira STOP (p00:4029), el titulo lleva a su menu (p00:43AF) y el GAME OVER deja continuar (p00:42B4)"),
-    0xE601: ("la pausa puesta", "p00:40EB la pone al pulsar STOP y p00:40FB la quita"),
-    0xE610: ("las teclas de pausa del cuadro anterior", "p00:40D7"),
-    0xE605: ("la fase del marcador que da el Game Master", "p00:5E40"),
-    0xE606: ("la fase que da el Game Master", "p00:5E35"),
-    0xE607: ("las vidas que da el Game Master", "p00:5E63"),
+    0xC000: ("el ESTADO del juego", "p00:5DBF despacha por el"),
+    0xC001: ("el paso del estado", "p00:5E43 lo sube"),
+    0xC002: ("las banderas de la partida (bit 7 jugador 2, bit 6 en juego)", "p00:416F"),
+    0xC003: ("el contador de cuadros", "p00:5DBB"),
+    0xC004: ("la espera del estado, en cuadros", "p00:5E40"),
+    0xC005: ("el semaforo de la interrupcion", "p00:4045"),
+    0xC00A: ("el mando de la demostracion", "p00:49D2"),
+    0xC00B: ("lo que se acaba de apretar", "p00:49D2"),
+    0xC00C: ("lo que esta apretado", "p00:49D2"),
+    0xC010: ("el manejador del canal A del sonido", "p10:6000"),
+    0xC012: ("el manejador del canal B del sonido", "p10:6000"),
+    0xC014: ("el manejador del canal C del sonido", "p10:6000"),
+    0xC016: ("el manejador del efecto de sonido", "p10:6000"),
+    0xC018: ("el manejador del segundo efecto", "p10:6000"),
+    0xC09F: ("la copia del registro 7 del PSG (el mezclador)", "p10"),
+    0xC0AB: ("los canales que suenan", "p00:51D6"),
+    0xC0AD: ("la musica que suena", "p00:4FE4"),
+    0xC257: ("los puntos del jugador 1 (BCD)", "p00:437E"),
+    0xC25A: ("los puntos del jugador 2 (BCD)", "p00:437E"),
+    0xC260: ("las vidas", "p00:435E las pone a 3"),
+    0xC262: ("los puntos de la proxima vida", "p00:43AA"),
+    0xC265: ("el DINERO (ryo, BCD)", "p00:5929 y p00:5958"),
+    0xC267: ("los colores del sitio", "p00:4D2C; 0 al entrar en la zona"),
+    0xC268: ("si ya entro en la zona", "p01:663A"),
+    0xC270: ("las 10 cosas del marcador", "p00:57FE"),
+    0xC27F: ("si se puede continuar", "p01:6C7A"),
+    0xC280: ("la ZONA (0-6)", "p00:41F6"),
+    0xC281: ("la CASILLA de la zona", "p00:5306"),
+    0xC283: ("el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)", "p01:65F7"),
+    0xC288: ("la FASE (0-6)", "p00:41F6"),
+    0xC289: ("el juego de graficos de la zona", "p00:4A96 y p00:416F"),
+    0xC480: ("la vida maxima", "p00:5890"),
+    0xC481: ("la VIDA del jugador", "p00:5884 y p00:5890"),
+    0xC482: ("la pantalla especial", "p00"),
+    0xC483: ("si esta en un pasadizo", "p00:4F47"),
+    0xC490: ("el estado del jugador", "p01"),
+    0xC494: ("la y del jugador", "p01:7804"),
+    0xC496: ("la x del jugador", "p01:7804"),
+    0xC498: ("la y de los sprites del jugador", "p00:4CAB"),
+    0xC49A: ("la x de los sprites del jugador", "p00:4CAB"),
+    0xC49F: ("la accion del jugador", "p01"),
+    0xC4A2: ("el lado al que mira el jugador", "p01"),
+    0xC4AE: ("el parpadeo del jugador", "p01"),
+    0xC4B0: ("el TIEMPO (BCD)", "p00:58F5"),
+    0xC580: ("lo tecleado en la pausa", "p03:BDF6"),
+    0xCD27: ("la y de la pieza", "p00:4E84"),
+    0xCD28: ("la x de la pieza", "p00:4E84"),
+    0xCD2A: ("la marca de 0xD800", "p00:51ED"),
+    0xCDB1: ("si se esta viendo el plano", "p00:5969"),
+    0xEB81: ("la tecla", "p01:6CD8"),
+    0xEB83: ("los caracteres de la contrasena", "p01:6C03"),
+    0xEF00: ("el VECINO: 0xFF con el Game Master o Q*bert en otra ranura", "p01:7EAB"),
+    0xEF80: ("los SECRETOS que ponen las claves", "p03:BE4E"),
     0xF0F1: ("la copia del banco de 0x6000", "se escribe con el registro del mapper"),
-    0xF0F2: ("la copia del banco de 0x8000", "p00:403F la devuelve al mapper"),
-    0xF0F3: ("la copia del banco de 0xA000", "p00:4045 la devuelve al mapper"),
+    0xF0F2: ("la copia del banco de 0x8000", "se escribe con el registro del mapper"),
+    0xF0F3: ("la copia del banco de 0xA000", "se escribe con el registro del mapper"),
 }
 
 # Lo que es la PALABRA que empieza en esa direccion, para `ld hl,(nn)`,
 # `ld (nn),de`... cuando no es lo mismo que el byte.
 RAM16 = {
-    0xC000: "el estado (0xC000) y el subestado (0xC001) de un tiron",
-    0xC424: "la y de Simon con su fraccion (0xC424 la fraccion, 0xC425 la y)",
-    0xC426: "la x de Simon con su fraccion (0xC426 la fraccion, 0xC427 la x)",
-    0xC42E: "las dos poses de Simon (0xC42E las piernas, 0xC42F el cuerpo)",
-    0xD000: "la fase (0xD000) y la habitacion (0xD001) de un tiron",
+    0xC000: "el estado (0xC000) y el paso (0xC001) de un tiron",
 }
 
-# Los campos de la ficha de cada cosa (IX apunta a ella: 0xC800 + 0x80 * n y
-# 0xD700 + 0x80 * n, p02:999F y p01:7806). De donde sale cada uno:
-#   0      p00:5F82 escribe el tipo de 0xCFF0; p02:99F6 lo pone a cero al borrarla
-#   1      se despacha por el (`ld a,(ix+1) / call 0x406B`) y `inc (ix+1)` pasa al
-#          siguiente paso
-#   2-5    p02:99B9 les suma las velocidades: (ix+2,3) + (ix+7,8), (ix+4,5) + (ix+9,10);
-#          p02:99E5 borra la cosa por (ix+3) > 0xE4 (se sale por abajo) y por (ix+5)
-#          fuera de 7..0xF0 (por los lados)
-#   6      p02:99B9 no la mueve si vale cero
-#   7-8    la gravedad de 0xA549 se suma aqui, con tope 0x07FF
-#   11     p01:6458 lo usa para elegir la composicion de sprites de 0xB473
-#   12     `dec (ix+0x0C) / ret nz` en todos los pasos que esperan
-#   13     p00:5FB8 la pone de la tabla de 0x60E2; p02:8069 le resta el golpe y a cero muere
-#   32     p00:5F52: cuantos sprites lleva (tabla de 0x6058)
-#   33-37  cinco bytes por sprite: p00:6048 pone el hueco de sprite en 33 + 5k,
-#          p01:6476 la y, la x y el patron en 34, 35 y 36, y 0x6029 el color en 37
+# Los campos de la ficha de cada figura (IX apunta a ella: 0xC600 + 0x80 * n,
+# ocho, p02:8334). De donde sale cada uno:
+#   0      p02:8334 busca el primer hueco con 0 aqui; p01:7ACA elige por el la caja
+#   1      se despacha por el y se sube para pasar al paso siguiente
+#   2-3    p02:8791 les suma (ix+6, ix+7); la y es (ix+3) (p03:A008, p01:7AE1)
+#   4-5    p02:877D les suma (ix+8, ix+9); la x es (ix+5)
+#   0x0A   la pose (p02:8D21, p02:96B4)
+#   0x20   cuantos sprites lleva (p02:835C)
 CAMPOS = {
-    0x00: "el tipo de la cosa",
-    0x01: "el paso en que va la cosa",
-    0x02: "la fraccion de la y de la cosa",
-    0x03: "la y de la cosa",
-    0x04: "la fraccion de la x de la cosa",
-    0x05: "la x de la cosa",
-    0x06: "si la cosa se mueve",
-    0x07: "la velocidad vertical (parte baja)",
-    0x08: "la velocidad vertical",
-    0x09: "la velocidad horizontal (parte baja)",
-    0x0A: "la velocidad horizontal (el bit 7, hacia la izquierda)",
-    0x0B: "el dibujo de la cosa",
-    0x0C: "la cuenta de cuadros del paso",
-    0x0D: "la vida de la cosa",
-    0x20: "cuantos sprites lleva la cosa",
+    0x00: "el tipo de la figura",
+    0x01: "el paso en que va la figura",
+    0x02: "la fraccion de la y de la figura",
+    0x03: "la y de la figura",
+    0x04: "la fraccion de la x de la figura",
+    0x05: "la x de la figura",
+    0x06: "la velocidad vertical (parte baja)",
+    0x07: "la velocidad vertical",
+    0x08: "la velocidad horizontal (parte baja)",
+    0x09: "la velocidad horizontal",
+    0x0A: "la pose de la figura",
+    0x20: "cuantos sprites lleva la figura",
 }
 
 REGISTROS_MAPPER = {0x6000: "0x6000", 0x8000: "0x8000", 0xA000: "0xA000"}
@@ -273,41 +317,28 @@ def por_nombre():
     return {}
 
 
-# Tramos en los que IX apunta a OTRA lista y no a una ficha, porque se carga
-# con `push hl / pop ix` o lo trae quien llama (medido leyendo cada bucle):
-#   p00:5B96  la lista de cosas de la habitacion (p00:5BB8 `push hl / pop ix`)
-#   p01:71C0  las dos armas de 0xC450 y 0xC460 y todo su movimiento, hasta sus
-#             sprites (p01:7535-75BF): otros campos (+2/+3 las velocidades, +4 y, +5 x)
-#   p02:8460  lo llama el bucle de las cosas fijas de 0xC470 (p02:80B3)
-#   p02:8671  otra vuelta a 0xC470 (`push hl / pop ix`) y 0x868C
-#   p02:8A30  las ocho de 0xC500 (p02:8A53) y lo que despacha 0x8A80, hasta 0x8D40
-#   p02:8FD8  las tres de 0xC580 (p02:8FDB)
-#   p02:9112  la tabla de 0x913F
-#   p02:91B0  las de 0xC5B5 (p02:91C7 y p02:9275)
-#   p02:9620  0xEB00 y otra vuelta a 0xC470 (p02:962A y p02:9634)
+# En el banco 0 IX solo se carga con `push hl / pop ix` en p00:546A, y es la
+# ficha de 0xA830 del banco 12, no una figura: el banco entero queda fuera.
 NO_FICHAS = {
-    0: [(0x5B96, 0x5C04)],
-    1: [(0x71C0, 0x75C0)],
-    2: [(0x8460, 0x847A), (0x8671, 0x8710), (0x8A30, 0x8D40), (0x8FD8, 0x9010),
-        (0x9112, 0x9130), (0x91B0, 0x92A0), (0x9620, 0x9660)],
+    0: [(0x4000, 0x6000)],
 }
 
 
 def fichas_de(filas):
-    """Para cada instruccion, si IX apunta ahi a la ficha de una cosa.
+    """Para cada instruccion, si IX apunta ahi a una figura.
 
-    Se da por buena salvo en los tramos (hasta un `ret` o un `jp`) en los que
-    IX se carga con una direccion que no es la de una ficha: las fichas son
-    0xC800-0xCB7F (siete) y 0xD700-0xDAFF (ocho), de 0x80 en 0x80. Con
-    `ld ix,0x558E` es una tabla del cartucho, y con `ld ix,0xC470` otra lista
-    de la RAM, de 16 en 16 (p02:80A6), con otros campos.
+    Hay tres listas con los mismos campos 0-0x0A y 0x20: 0xC600 (ocho de
+    0x80, p02:8334), 0xCA00 (de 0x40, p02:86F1 y p02:88B0) y 0xCC00 (cuatro de
+    0x40, p02:8CB0); las tres pasan por p02:877A (posicion) y p02:87F2 (pose).
+    Se da por buena salvo en un tramo (hasta un `ret` o un `jp`) en el que IX
+    se carga con otra direccion.
     """
     fuera, malo = {}, False
     for k, (a, t) in enumerate(filas):
         m = re.match(r"ld ix,0([0-9a-f]{4})h$", t)
         if m:
             v = int(m.group(1), 16)
-            malo = not (0xC800 <= v < 0xCB80 or 0xD700 <= v < 0xDB00)
+            malo = not (0xC600 <= v < 0xCD00)
         fuera[k] = not malo
         if t.startswith(("ret", "jp ")) and not re.match(r"ret [a-z]", t):
             malo = False
@@ -327,12 +358,12 @@ def comentario(b, filas, k, fichas):
     if m:
         dest = int(m.group(2) or m.group(3), 16)
         for (bb, aa), (nom, que) in RUTINAS.items():
-            if bb in (13, 14) and b != bb:
-                continue            # esos bancos solo estan puestos cuando llaman ellos mismos
+            if bb == 10 and b != bb:
+                continue            # el sonido solo esta en 0x6000 cuando lo llama la interrupcion
             if aa == dest and (bb == b or ORG[bb] == 0x4000 or not (ORG[b] <= dest < ORG[b] + 0x2000)):
                 if bb == 0 or ORG[bb] <= dest < ORG[bb] + 0x2000:
                     return "%s: %s" % (nom, que)
-    # los campos de la ficha de la cosa
+    # los campos de la figura
     if b in (0, 1, 2, 3) and fichas.get(k, False) and \
             not any(i <= a < f for i, f in NO_FICHAS.get(b, [])):
         mm = re.search(r"\(ix\+0?([0-9a-f]+)h?\)", t)
@@ -341,15 +372,11 @@ def comentario(b, filas, k, fichas):
             que = CAMPOS.get(n)
             if que:
                 op = t.split()[0]
-                if n == 0x0A and op == "bit" and t.startswith("bit 7"):
-                    return "va hacia la izquierda? (bit 7 de la velocidad horizontal)"
                 if op == "ld" and t.startswith("ld (ix"):
                     v = t.split(",", 1)[1]
                     if re.match(r"^[a-z]$", v):
                         return "guarda %s" % que
                     v = "0x%02X" % num(v) if re.match(r"^[0-9a-f]+h$", v) else v
-                    if n == 0x06:
-                        return "la cosa se mueve" if v != "0x00" else "la cosa se queda quieta"
                     return "%s = %s" % (que, v)
                 if op == "ld":
                     return "lee %s" % que
@@ -398,7 +425,7 @@ def main(argv):
         lineas = []
         for (bb, aa), (nom, que) in sorted(RUTINAS.items()):
             if bb == b and aa not in ls:
-                lineas.append("L 0x%04X %s" % (aa, nom))
+                lineas.append("L 0x%04X %s %s" % (aa, nom, que))
         n = 0
         for k, (a, t) in enumerate(filas):
             if a in cs:

@@ -216,3 +216,659 @@ F 0x5DB7 16
 D 0x5DCF 0x5DEF tabla_5DCF  16 destinos del despachador de 0x408D (call en p00:5DCC): 0x5DEF, 0x5E15, 0x5E1F, 0x5E48, 0x5EA3, 0x5F17, 0x5F57, 0x5F86 ...; lo leen p00:5DCC (32 bytes)
 F 0x5DCF 2
 # --- fin de los bloques de bloques.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x4045 interrupcion cada cuadro, por H.TIMI: el sonido (banco 10 en 0x6000) y el juego
+L 0x4083 hl_mas_a HL += A
+L 0x4088 de_mas_a DE += A
+L 0x408D despacha salta a la entrada A de la tabla que va detras del call
+L 0x4097 init arranque del cartucho
+L 0x4129 calla_y_guarda guarda los volumenes del PSG (registros 8-10) en 0xEF11-0xEF13 y los pone a cero
+L 0x4141 calla_el_psg los tres volumenes del PSG a cero
+L 0x4154 devuelve_volumen vuelve a poner los volumenes guardados en 0xEF11-0xEF13
+L 0x416F musica_de_la_zona la musica del juego de graficos de la zona (tabla 0x4182)
+L 0x4188 enlaces_de_la_zona copia los enlaces entre casillas de la zona a 0xE780
+L 0x41F6 indice_de_la_zona A = (fase * 7 + zona) * 2
+L 0x4206 bancos_1_2_3 pone los bancos 1, 2 y 3
+L 0x4220 bancos_4_5_6 pone los bancos 4, 5 y 6
+L 0x4238 bancos_7_8_9 pone los bancos 7, 8 y 9
+L 0x4250 bancos_10_11_12 pone los bancos 10, 11 y 12
+L 0x4268 bancos_13_14_15 pone los bancos 13, 14 y 15
+L 0x4280 rotulo_numero pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
+L 0x4295 pantallas_de_la_zona descomprime las pantallas de la zona a 0xD000
+L 0x42AC bloques_de_la_zona descomprime los bloques de la zona a 0xE100
+L 0x42C3 rle_a_la_ram descomprime un rle a la RAM
+L 0x42E1 empieza_texto empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
+L 0x42F1 sigue_texto saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
+L 0x4351 empieza_la_partida la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
+L 0x437E suma_puntos suma puntos en BCD al jugador que juega
+L 0x43E2 pinta_el_marcador pinta el marcador entero
+L 0x4406 pinta_los_puntos pinta los puntos
+L 0x4418 pinta_las_vidas pinta las vidas
+L 0x4420 pinta_bcd pinta cifras en BCD
+L 0x4449 intercambia intercambia los bytes de (HL) y (DE)
+L 0x447C palabra_de_tabla_de DE = la palabra A de la tabla de DE
+L 0x44B1 copia_a_la_vram copia bytes de la RAM a la VRAM
+L 0x44C4 rellena_la_vram llena un tramo de la VRAM con un byte
+L 0x44F7 vram_para_escribir prepara el V9938 para escribir en la VRAM
+L 0x4533 rle_con_destino descomprime a la VRAM un rle que lleva el destino delante
+L 0x4539 rle_a_la_vram descomprime un rle a la VRAM
+L 0x455C rle_vuelto_con_destino como 0x4562, con el destino delante del rle
+L 0x4562 rle_vuelto descomprime un rle a la VRAM de HL pasando por 0xDD10
+L 0x45C0 bits_al_reves da la vuelta a los bits de A
+L 0x45D3 borra_la_pantalla borra la pantalla
+L 0x45E1 enciende_la_pantalla bit 6 del registro 1 del VDP a uno
+L 0x45EE apaga_la_pantalla bit 6 del registro 1 del VDP a cero
+L 0x460A esconde_los_sprites y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+L 0x4626 sprites_fuera apaga los sprites (bit 1 del registro 8 del VDP)
+L 0x4631 sprites_dentro enciende los sprites (bit 1 del registro 8 del VDP a cero)
+L 0x463C pon_un_color color A de la paleta = DE
+L 0x4666 pon_paleta pone una lista de colores en la paleta
+L 0x4674 espera_al_vdp espera a que el V9938 acabe la orden
+L 0x467D lee_estado_del_vdp lee un registro de estado del V9938
+L 0x469D linea_horizontal pinta una linea horizontal
+L 0x46D0 linea_vertical pinta una linea vertical
+L 0x4704 marco pinta un marco
+L 0x4732 hmmv orden HMMV del V9938: rellena un rectangulo
+L 0x476E hmmm orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+L 0x47B2 hmmc orden HMMC del V9938: puntos de la RAM a la VRAM
+L 0x4803 lmmm orden LMMM del V9938: copia un rectangulo con operacion logica
+L 0x484F sube_letras sube B letras a la VRAM
+L 0x4858 sube_una_letra sube una letra a la VRAM
+L 0x4879 sube_un_dibujo sube un dibujo de 8x8 a la VRAM
+L 0x488E sube_dibujos sube B dibujos de 8x8 a la VRAM
+L 0x48A3 sube_dibujos_de_16 sube dibujos de 16x16 a la VRAM
+L 0x48B8 sube_dibujos_de_16_vueltos sube dibujos de 16x16 a la VRAM, vueltos
+L 0x48CD letra_a_4_bits pasa una letra de 1 bit a 4 bits por punto
+L 0x48F3 rotulo pinta un rotulo
+L 0x48F7 borra_rotulo borra un rotulo
+L 0x48FD rotulo_sin_posicion pinta un rotulo donde se quedo el anterior
+L 0x491C letra pinta una letra
+L 0x4940 caracter pinta un caracter
+L 0x4964 caracter_en_la_pagina_1 pinta un caracter en la pagina 1 de la VRAM
+L 0x4976 sitio_del_caracter la direccion en la VRAM de un caracter
+L 0x4984 siguiente_sitio pasa al sitio del caracter siguiente
+L 0x498E prepara_el_vdp pasa a SCREEN 5 y pone los registros del V9938
+L 0x49D2 lee_los_mandos teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+L 0x4A43 dibujos_de_konami sube los dibujos del logotipo de Konami
+L 0x4A6D letras_del_texto sube las letras de los textos
+L 0x4A96 caracteres_del_juego sube los caracteres del juego de graficos de la zona
+L 0x4B91 caracteres_del_titulo sube los caracteres del titulo
+L 0x4C75 sube_dibujos_vueltos sube dibujos dados la vuelta
+L 0x4CAB sprites_del_jugador sube los sprites del jugador
+L 0x4CE3 paleta_de_la_zona pone la paleta del juego de graficos de la zona
+L 0x4CFC paleta_base pone la paleta base
+L 0x4D2C colores_del_sitio cambia los colores del sitio (0xC267)
+L 0x4D81 palabra_de_tabla HL = la palabra A de la tabla de HL
+L 0x4DA4 dibujos_de_siempre sube los dibujos que estan en todas las zonas
+L 0x4E7F hmmc_a_la_pagina_1 HMMC a la pagina 1 de la VRAM
+L 0x4E84 pinta_bloque pinta un bloque de 4x4 caracteres
+L 0x4EB9 pinta_icono copia un icono del marcador desde la pagina 1 (HMMM)
+L 0x4F26 marca_casilla marca una casilla en el plano
+L 0x4F47 pinta_pasadizo pinta un pasadizo
+L 0x4FB5 sonido_a_cero para la musica y los efectos
+L 0x4FE4 sonido arranca la musica o el efecto A
+L 0x51D6 suena_algo lo que esta sonando (0xC0A9-0xC0AD)
+L 0x51ED monta_la_pantalla monta la pantalla de 8x6 bloques de la casilla
+L 0x5306 pantalla_de_la_casilla A = la pantalla de la casilla de 0xC281 (tabla de 0xE700)
+L 0x5311 rejilla_de_la_zona la rejilla de casillas de la zona
+L 0x534E pinta_la_pantalla pinta la pantalla montada
+L 0x53E3 figura_del_interior la figura de un interior (tipos 0x22-0x24)
+L 0x5413 dibujos_de_las_figuras sube los dibujos de las figuras (fichas de 0xA830, banco 12)
+L 0x54E6 colores_de_la_figura pinta los colores de los sprites de la figura
+L 0x57FA pinta_cosa_del_marcador pinta una de las 10 cosas del marcador
+L 0x5856 pinta_las_cosas pinta las cosas del marcador
+L 0x5884 suma_vida suma vida al jugador
+L 0x5890 pinta_la_vida pinta la barra de vida
+L 0x58F5 pinta_el_tiempo pinta el tiempo
+L 0x5915 resta_bcd resta en BCD
+L 0x591F suma_bcd suma en BCD
+L 0x5929 suma_dinero suma ryo al dinero
+L 0x593A pinta_el_dinero pinta el dinero
+L 0x5958 resta_dinero resta ryo al dinero
+L 0x5969 ensena_el_plano ensena el plano de la zona
+L 0x59A9 dibuja_el_plano dibuja el plano de la zona
+L 0x5A93 pantalla_del_titulo monta la pantalla del titulo
+L 0x5B61 sube_colores_de_sprite sube los colores de los sprites
+L 0x5B6D figuras_de_la_casilla crea las figuras de la casilla
+L 0x5DBB maquina_de_estados despacha por el estado de 0xC000
+L 0x5E2D cambia_de_estado pasa al estado A
+L 0x5E40 espera_y_sigue espera y pasa al paso siguiente
+L 0x5E43 siguiente_paso pasa al paso siguiente (0xC001)
+L 0x5EEF siguiente_estado pasa al estado siguiente
+C 0x4046 lee el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
+C 0x404F el mapper: pone en 0x6000 el banco de A
+C 0x4053 el mapper: pone en 0x8000 el banco de A
+C 0x4057 el mapper: pone en 0xA000 el banco de A
+C 0x405E lee la copia del banco de 0x6000
+C 0x4061 el mapper: pone en 0x6000 el banco de A
+C 0x4064 lee la copia del banco de 0x8000
+C 0x4067 el mapper: pone en 0x8000 el banco de A
+C 0x406A lee la copia del banco de 0xA000
+C 0x406D el mapper: pone en 0xA000 el banco de A
+C 0x4070 apunta a el semaforo de la interrupcion
+C 0x407A maquina_de_estados: despacha por el estado de 0xC000
+C 0x407E guarda el semaforo de la interrupcion
+C 0x408F hl_mas_a: HL += A
+C 0x40BB apunta a el ESTADO del juego
+C 0x40BE apunta a el paso del estado
+C 0x40C8 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x40CB busca_al_vecino: busca el Game Master o Q*bert en otra ranura (0xEF00)
+C 0x40CE bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x40D1 prepara_el_vdp: pasa a SCREEN 5 y pone los registros del V9938
+C 0x410E calla_y_guarda: guarda los volumenes del PSG (registros 8-10) en 0xEF11-0xEF13 y los pone a cero
+C 0x411E devuelve_volumen: vuelve a poner los volumenes guardados en 0xEF11-0xEF13
+C 0x4124 calla_el_psg: los tres volumenes del PSG a cero
+C 0x416F lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x4178 lee el juego de graficos de la zona
+C 0x417B hl_mas_a: HL += A
+C 0x417F sonido: arranca la musica o el efecto A
+C 0x4188 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x418B indice_de_la_zona: A = (fase * 7 + zona) * 2
+C 0x4191 palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x41C3 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x41E3 de_mas_a: DE += A
+C 0x41F3 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x41F6 lee la FASE (0-6)
+C 0x4200 lee la ZONA (0-6)
+C 0x4208 apunta a la copia del banco de 0x6000
+C 0x420D el mapper: pone en 0x6000 el banco de A
+C 0x4212 el mapper: pone en 0x8000 el banco de A
+C 0x4218 el mapper: pone en 0xA000 el banco de A
+C 0x4221 apunta a la copia del banco de 0x6000
+C 0x4226 el mapper: pone en 0x6000 el banco de A
+C 0x422C el mapper: pone en 0x8000 el banco de A
+C 0x4232 el mapper: pone en 0xA000 el banco de A
+C 0x4239 apunta a la copia del banco de 0x6000
+C 0x423E el mapper: pone en 0x6000 el banco de A
+C 0x4244 el mapper: pone en 0x8000 el banco de A
+C 0x424A el mapper: pone en 0xA000 el banco de A
+C 0x4251 apunta a la copia del banco de 0x6000
+C 0x4256 el mapper: pone en 0x6000 el banco de A
+C 0x425C el mapper: pone en 0x8000 el banco de A
+C 0x4262 el mapper: pone en 0xA000 el banco de A
+C 0x4269 apunta a la copia del banco de 0x6000
+C 0x426E el mapper: pone en 0x6000 el banco de A
+C 0x4274 el mapper: pone en 0x8000 el banco de A
+C 0x427A el mapper: pone en 0xA000 el banco de A
+C 0x4284 bancos_10_11_12: pone los bancos 10, 11 y 12
+C 0x428B palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x428F rotulo: pinta un rotulo
+C 0x4292 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4295 bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x4298 lee el juego de graficos de la zona
+C 0x429F palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x42A6 rle_a_la_ram: descomprime un rle a la RAM
+C 0x42A9 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x42AC bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x42AF lee el juego de graficos de la zona
+C 0x42B6 palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x42BD rle_a_la_ram: descomprime un rle a la RAM
+C 0x42C0 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x430F letra: pinta una letra
+C 0x4351 apunta a los puntos del jugador 2 (BCD)
+C 0x4361 apunta a las vidas
+C 0x4369 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x436F apunta a las vidas
+C 0x4380 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x4384 apunta a los puntos del jugador 1 (BCD)
+C 0x4389 apunta a los puntos del jugador 2 (BCD)
+C 0x43AA apunta a los puntos de la proxima vida
+C 0x43BA apunta a las vidas
+C 0x43C0 sonido: arranca la musica o el efecto A
+C 0x43C3 pinta_las_vidas: pinta las vidas
+C 0x43E2 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x43EE rotulo: pinta un rotulo
+C 0x43F4 rotulo: pinta un rotulo
+C 0x43F7 pinta_las_cosas: pinta las cosas del marcador
+C 0x43FA pinta_el_dinero: pinta el dinero
+C 0x43FD pinta_el_tiempo: pinta el tiempo
+C 0x4400 pinta_la_vida: pinta la barra de vida
+C 0x4403 pinta_las_vidas: pinta las vidas
+C 0x4406 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x4418 apunta a las vidas
+C 0x4441 letra: pinta una letra
+C 0x4458 apunta a la espera del estado, en cuadros
+C 0x4479 rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
+C 0x448A lee la vida maxima
+C 0x4493 marco: pinta un marco
+C 0x44B2 vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x44C6 vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x44EB vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x4539 vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x457D bits_al_reves: da la vuelta a los bits de A
+C 0x458B bits_al_reves: da la vuelta a los bits de A
+C 0x45BD copia_a_la_vram: copia bytes de la RAM a la VRAM
+C 0x45CB esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+C 0x45D3 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+C 0x45DA apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x4600 hmmv: orden HMMV del V9938: rellena un rectangulo
+C 0x4612 rellena_la_vram: llena un tramo de la VRAM con un byte
+C 0x4615 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x4620 rellena_la_vram: llena un tramo de la VRAM con un byte
+C 0x4623 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x465A vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x466F pon_un_color: color A de la paleta = DE
+C 0x4676 lee_estado_del_vdp: lee un registro de estado del V9938
+C 0x469D espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x46D0 espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x4721 linea_vertical: pinta una linea vertical
+C 0x472B linea_horizontal: pinta una linea horizontal
+C 0x4733 espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x476F espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x47B3 espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x47F4 lee_estado_del_vdp: lee un registro de estado del V9938
+C 0x4804 espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x484F sube_una_letra: sube una letra a la VRAM
+C 0x4852 siguiente_sitio: pasa al sitio del caracter siguiente
+C 0x485C letra_a_4_bits: pasa una letra de 1 bit a 4 bits por punto
+C 0x486E sube_un_dibujo: sube un dibujo de 8x8 a la VRAM
+C 0x4880 copia_a_la_vram: copia bytes de la RAM a la VRAM
+C 0x488F sube_un_dibujo: sube un dibujo de 8x8 a la VRAM
+C 0x48AA copia_a_la_vram: copia bytes de la RAM a la VRAM
+C 0x48B9 sube_dibujos_de_16: sube dibujos de 16x16 a la VRAM
+C 0x4907 letra: pinta una letra
+C 0x4923 sitio_del_caracter: la direccion en la VRAM de un caracter
+C 0x492E hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x4936 letra: pinta una letra
+C 0x4939 siguiente_sitio: pasa al sitio del caracter siguiente
+C 0x4943 sitio_del_caracter: la direccion en la VRAM de un caracter
+C 0x494B hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x4955 sitio_del_caracter: la direccion en la VRAM de un caracter
+C 0x495D lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
+C 0x4967 sitio_del_caracter: la direccion en la VRAM de un caracter
+C 0x496F hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x498E sonido_a_cero: para la musica y los efectos
+C 0x4991 sprites_fuera: apaga los sprites (bit 1 del registro 8 del VDP)
+C 0x4999 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x49A2 hmmv: orden HMMV del V9938: rellena un rectangulo
+C 0x49AC hmmv: orden HMMV del V9938: rellena un rectangulo
+C 0x49AF espera_al_vdp: espera a que el V9938 acabe la orden
+C 0x49C4 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+C 0x49C7 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
+C 0x49D2 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x49DB apunta a lo que esta apretado
+C 0x4A43 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x4A4F sube_letras: sube B letras a la VRAM
+C 0x4A5B sube_letras: sube B letras a la VRAM
+C 0x4A67 sube_letras: sube B letras a la VRAM
+C 0x4A6A bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4A6D bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x4A79 sube_letras: sube B letras a la VRAM
+C 0x4A85 sube_letras: sube B letras a la VRAM
+C 0x4A90 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4A93 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4A96 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x4A99 lee el juego de graficos de la zona
+C 0x4AA0 palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x4AA7 rle_a_la_ram: descomprime un rle a la RAM
+C 0x4AAA lee el juego de graficos de la zona
+C 0x4ABA sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4AC0 lee el juego de graficos de la zona
+C 0x4AC7 sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4ACA bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4AD5 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4AE0 sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4AEB sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4AEE lee el juego de graficos de la zona
+C 0x4B07 sube_un_dibujo: sube un dibujo de 8x8 a la VRAM
+C 0x4B12 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4B1D sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4B28 sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4B33 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4B3E sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4B49 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4B54 sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4B57 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4B5D bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4B68 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4B73 sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4B76 paleta_base: pone la paleta base
+C 0x4B79 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4B7F pon_paleta: pone una lista de colores en la paleta
+C 0x4B82 bancos_10_11_12: pone los bancos 10, 11 y 12
+C 0x4B8B rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4B8E bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4B91 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x4B9C sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4BA5 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4BA8 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4BAB bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4BB6 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4BBF rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4BC2 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4BC5 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4BD0 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4BDB sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4BE4 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x4BED rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4BF6 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4BFF rle_vuelto: descomprime un rle a la VRAM de HL pasando por 0xDD10
+C 0x4C08 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4C0B bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4C0E lee el juego de graficos de la zona
+C 0x4C18 hl_mas_a: HL += A
+C 0x4C26 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x4C31 sube_dibujos: sube B dibujos de 8x8 a la VRAM
+C 0x4C3C sube_dibujos_vueltos: sube dibujos dados la vuelta
+C 0x4C45 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4C48 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4C8A de_mas_a: DE += A
+C 0x4C95 sube_un_dibujo: sube un dibujo de 8x8 a la VRAM
+C 0x4CAB bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4CAE lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x4CBA lee la accion del jugador
+C 0x4CC0 lee el lado al que mira el jugador
+C 0x4CC5 hl_mas_a: HL += A
+C 0x4CCE rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4CD1 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4CD4 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x4CDD rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4CE0 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4CE3 paleta_base: pone la paleta base
+C 0x4CE6 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4CEC lee el juego de graficos de la zona
+C 0x4CF0 palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x4CF3 pon_paleta: pone una lista de colores en la paleta
+C 0x4CF6 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4CF9 colores_del_sitio: cambia los colores del sitio (0xC267)
+C 0x4CFC bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D02 pon_paleta: pone una lista de colores en la paleta
+C 0x4D05 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D08 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D0E pon_paleta: pone una lista de colores en la paleta
+C 0x4D11 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D14 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D17 pantalla_de_la_casilla: A = la pantalla de la casilla de 0xC281 (tabla de 0xE700)
+C 0x4D1B bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D20 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D26 pon_paleta: pone una lista de colores en la paleta
+C 0x4D29 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D2C bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D2F lee el juego de graficos de la zona
+C 0x4D36 palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x4D39 lee los colores del sitio
+C 0x4D3D palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x4D42 pon_paleta: pone una lista de colores en la paleta
+C 0x4D45 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D48 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D4E pon_paleta: pone una lista de colores en la paleta
+C 0x4D51 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D54 paleta_base: pone la paleta base
+C 0x4D57 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D5D pon_paleta: pone una lista de colores en la paleta
+C 0x4D60 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D63 paleta_base: pone la paleta base
+C 0x4D66 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D6C pon_paleta: pone una lista de colores en la paleta
+C 0x4D6F bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D72 paleta_base: pone la paleta base
+C 0x4D75 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D7B pon_paleta: pone una lista de colores en la paleta
+C 0x4D7E bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4D81 hl_mas_a: HL += A
+C 0x4D89 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4D92 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4D95 bancos_10_11_12: pone los bancos 10, 11 y 12
+C 0x4D9E rle_a_la_vram: descomprime un rle a la VRAM
+C 0x4DA1 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4DA4 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4DAA apunta a el ESTADO del juego
+C 0x4DAF sube_dibujos_de_16_vueltos: sube dibujos de 16x16 a la VRAM, vueltos
+C 0x4DBA sube_dibujos_de_16_vueltos: sube dibujos de 16x16 a la VRAM, vueltos
+C 0x4DC5 sube_dibujos_de_16_vueltos: sube dibujos de 16x16 a la VRAM, vueltos
+C 0x4DD1 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4DDD hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4DE9 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4DF5 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E01 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E0D hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E19 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E25 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E31 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E3D hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E49 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E55 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E61 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E6D hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E79 hmmc_a_la_pagina_1: HMMC a la pagina 1 de la VRAM
+C 0x4E7C bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4E81 hmmc: orden HMMC del V9938: puntos de la RAM a la VRAM
+C 0x4E84 lee la y de la pieza
+C 0x4E89 lee la x de la pieza
+C 0x4E97 lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
+C 0x4E9C marca_casilla: marca una casilla en el plano
+C 0x4EA3 marca_casilla: marca una casilla en el plano
+C 0x4EAE marca_casilla: marca una casilla en el plano
+C 0x4EB5 marca_casilla: marca una casilla en el plano
+C 0x4EC2 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x4ED4 hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x4EF7 lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
+C 0x4F40 lee la marca de 0xD800
+C 0x4F48 bancos_7_8_9: pone los bancos 7, 8 y 9
+C 0x4F4C guarda la y de la pieza
+C 0x4F4F guarda la x de la pieza
+C 0x4F91 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x4FA3 guarda la marca de 0xD800
+C 0x4FA6 pinta_bloque: pinta un bloque de 4x4 caracteres
+C 0x4FB7 guarda la copia del registro 7 del PSG (el mezclador)
+C 0x4FC1 guarda los canales que suenan
+C 0x4FCB guarda la musica que suena
+C 0x4FD7 guarda el manejador del canal A del sonido
+C 0x4FDA guarda el manejador del canal B del sonido
+C 0x4FDD guarda el manejador del canal C del sonido
+C 0x4FE0 guarda el manejador del efecto de sonido
+C 0x4FEB el mapper: pone en 0x6000 el banco de A
+C 0x4FEE guarda la copia del banco de 0x6000
+C 0x4FF5 el mapper: pone en 0x8000 el banco de A
+C 0x4FF8 guarda la copia del banco de 0x8000
+C 0x4FFF el mapper: pone en 0xA000 el banco de A
+C 0x5002 guarda la copia del banco de 0xA000
+C 0x5015 guarda la musica que suena
+C 0x501E lee la musica que suena
+C 0x5038 lee la musica que suena
+C 0x507E guarda el manejador del canal A del sonido
+C 0x5084 guarda el manejador del canal B del sonido
+C 0x508A guarda el manejador del canal C del sonido
+C 0x5099 guarda los canales que suenan
+C 0x509C bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x50F1 guarda el manejador del efecto de sonido
+C 0x511E lee la copia del registro 7 del PSG (el mezclador)
+C 0x5124 lee los canales que suenan
+C 0x512B guarda los canales que suenan
+C 0x5130 guarda la copia del registro 7 del PSG (el mezclador)
+C 0x5174 guarda el manejador del segundo efecto
+C 0x519E guarda la copia del registro 7 del PSG (el mezclador)
+C 0x51A4 guarda los canales que suenan
+C 0x51DC lee los canales que suenan
+C 0x51E0 lee la musica que suena
+C 0x51E9 lee la musica que suena
+C 0x51ED bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x51F0 lee el ESTADO del juego
+C 0x51FD lee la pantalla especial
+C 0x5213 pantalla_de_la_casilla: A = la pantalla de la casilla de 0xC281 (tabla de 0xE700)
+C 0x5224 lee el juego de graficos de la zona
+C 0x5238 lee el juego de graficos de la zona
+C 0x5278 lee el ESTADO del juego
+C 0x528A lee el ESTADO del juego
+C 0x5295 lee la pantalla especial
+C 0x5303 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5309 lee la CASILLA de la zona
+C 0x530C hl_mas_a: HL += A
+C 0x5311 bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x5314 indice_de_la_zona: A = (fase * 7 + zona) * 2
+C 0x531A palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x5320 lee el juego de graficos de la zona
+C 0x534B bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5351 lee el ESTADO del juego
+C 0x5361 lee el ESTADO del juego
+C 0x5370 caracter: pinta un caracter
+C 0x5386 lee el juego de graficos de la zona
+C 0x538A palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x53B7 indice_de_la_zona: A = (fase * 7 + zona) * 2
+C 0x53BD palabra_de_tabla: HL = la palabra A de la tabla de HL
+C 0x53C5 lee la CASILLA de la zona
+C 0x53E4 bancos_10_11_12: pone los bancos 10, 11 y 12
+C 0x53E7 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x53F6 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x53F9 bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x5402 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x5405 bancos_10_11_12: pone los bancos 10, 11 y 12
+C 0x540C palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x5413 figuras_de_la_casilla: crea las figuras de la casilla
+C 0x541D el mapper: pone en 0x8000 el banco de A
+C 0x5420 guarda la copia del banco de 0x8000
+C 0x5427 el mapper: pone en 0xA000 el banco de A
+C 0x542A guarda la copia del banco de 0xA000
+C 0x5454 rle_a_la_vram: descomprime un rle a la VRAM
+C 0x547C rle_a_la_vram: descomprime un rle a la VRAM
+C 0x548E pon_un_color: color A de la paleta = DE
+C 0x5499 pon_un_color: color A de la paleta = DE
+C 0x54AB rle_vuelto: descomprime un rle a la VRAM de HL pasando por 0xDD10
+C 0x54B5 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5801 apunta a las 10 cosas del marcador
+C 0x5805 hl_mas_a: HL += A
+C 0x5809 de_mas_a: DE += A
+C 0x581D pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+C 0x5822 pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+C 0x5845 pinta_icono: copia un icono del marcador desde la pagina 1 (HMMM)
+C 0x585B pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+C 0x5875 hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x5878 apunta a la VIDA del jugador
+C 0x5884 apunta a la VIDA del jugador
+C 0x5890 apunta a la vida maxima
+C 0x5893 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x589D apunta a la VIDA del jugador
+C 0x58B2 lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
+C 0x58CA apunta a la pantalla especial
+C 0x58D1 lee el estado del jugador
+C 0x58DD lee la FASE (0-6)
+C 0x58E9 apunta a el TIEMPO (BCD)
+C 0x58EF resta_bcd: resta en BCD
+C 0x58FD pinta_bcd: pinta cifras en BCD
+C 0x5912 pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+C 0x592B apunta a el DINERO (ryo, BCD)
+C 0x592E suma_bcd: suma en BCD
+C 0x5936 guarda el DINERO (ryo, BCD)
+C 0x5942 pinta_bcd: pinta cifras en BCD
+C 0x5945 apunta a el TIEMPO (BCD)
+C 0x5948 suma_bcd: suma en BCD
+C 0x5952 guarda el TIEMPO (BCD)
+C 0x5958 apunta a el DINERO (ryo, BCD)
+C 0x595B resta_bcd: resta en BCD
+C 0x5963 guarda el DINERO (ryo, BCD)
+C 0x596B guarda si se esta viendo el plano
+C 0x596E esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x5974 el mapper: pone en 0xA000 el banco de A
+C 0x5977 guarda la copia del banco de 0xA000
+C 0x597B dibuja_el_plano: dibuja el plano de la zona
+C 0x597E bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5981 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x598A enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
+C 0x5993 pinta_las_cosas: pinta las cosas del marcador
+C 0x5996 pinta_el_marcador: pinta el marcador entero
+C 0x5999 pinta_la_vida: pinta la barra de vida
+C 0x59A9 lee la FASE (0-6)
+C 0x59B2 lee la ZONA (0-6)
+C 0x59B9 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x59C2 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x5A01 hl_mas_a: HL += A
+C 0x5A79 hl_mas_a: HL += A
+C 0x5A81 borra_la_pantalla: borra la pantalla
+C 0x5A8A letras_del_texto: sube las letras de los textos
+C 0x5A8D caracteres_del_titulo: sube los caracteres del titulo
+C 0x5A96 bancos_4_5_6: pone los bancos 4, 5 y 6
+C 0x5A99 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x5AA9 caracter: pinta un caracter
+C 0x5AEF sube_colores_de_sprite: sube los colores de los sprites
+C 0x5AF2 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
+C 0x5AF5 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5B00 marco: pinta un marco
+C 0x5B06 rotulo: pinta un rotulo
+C 0x5B09 lee el estado del jugador
+C 0x5B1A hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
+C 0x5B30 vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x5B4A vram_para_escribir: prepara el V9938 para escribir en la VRAM
+C 0x5B6A copia_a_la_vram: copia bytes de la RAM a la VRAM
+C 0x5B6D bancos_13_14_15: pone los bancos 13, 14 y 15
+C 0x5B73 lee la FASE (0-6)
+C 0x5B82 lee la ZONA (0-6)
+C 0x5B85 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x5B88 lee la CASILLA de la zona
+C 0x5B8D de_mas_a: DE += A
+C 0x5B90 lee la CASILLA de la zona
+C 0x5BA2 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5BA5 lee el juego de graficos de la zona
+C 0x5BAB palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x5BAF palabra_de_tabla_de: DE = la palabra A de la tabla de DE
+C 0x5DBB apunta a el contador de cuadros
+C 0x5DBF lee el estado (0xC000) y el paso (0xC001) de un tiron
+C 0x5DCC despacha: salta a la entrada A de la tabla que va detras del call
+C 0x5DF4 lee la pantalla especial
+C 0x5DF9 letras_del_texto: sube las letras de los textos
+C 0x5E01 apunta a la espera del estado, en cuadros
+C 0x5E06 pantalla_del_titulo: monta la pantalla del titulo
+C 0x5E0D borra_la_pantalla: borra la pantalla
+C 0x5E15 apunta a la espera del estado, en cuadros
+C 0x5E1C siguiente_estado: pasa al estado siguiente
+C 0x5E2D guarda el ESTADO del juego
+C 0x5E32 guarda la espera del estado, en cuadros
+C 0x5E38 borra_la_pantalla: borra la pantalla
+C 0x5E40 guarda la espera del estado, en cuadros
+C 0x5E43 apunta a el paso del estado
+C 0x5E4A lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x5E57 lee la espera del estado, en cuadros
+C 0x5E5E borra_rotulo: borra un rotulo
+C 0x5E63 rotulo: pinta un rotulo
+C 0x5E66 apunta a la espera del estado, en cuadros
+C 0x5E6B lee el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
+C 0x5E75 empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
+C 0x5EA0 cambia_de_estado: pasa al estado A
+C 0x5EA8 apunta a la espera del estado, en cuadros
+C 0x5EAD borra_la_pantalla: borra la pantalla
+C 0x5EB0 carga_la_zona: carga la zona de 0xC280
+C 0x5EB3 pinta_el_marcador: pinta el marcador entero
+C 0x5EC7 sonido: arranca la musica o el efecto A
+C 0x5ECA sprites_del_jugador: sube los sprites del jugador
+C 0x5ED0 el mapper: pone en 0xA000 el banco de A
+C 0x5ED3 guarda la copia del banco de 0xA000
+C 0x5EDA bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x5EE3 siguiente_paso: pasa al paso siguiente (0xC001)
+C 0x5EE8 suena_algo: lo que esta sonando (0xC0A9-0xC0AD)
+C 0x5EEC musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
+C 0x5EF1 guarda la espera del estado, en cuadros
+C 0x5EF4 apunta a el ESTADO del juego
+C 0x5EF9 guarda el paso del estado
+C 0x5EFD borra_la_pantalla: borra la pantalla
+C 0x5F00 lee las vidas
+C 0x5F06 guarda las vidas
+C 0x5F14 espera_y_sigue: espera y pasa al paso siguiente
+C 0x5F20 cambia_de_estado: pasa al estado A
+C 0x5F23 lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x5F29 cambia_de_estado: pasa al estado A
+C 0x5F38 cambia_de_estado: pasa al estado A
+C 0x5F42 apunta a lo tecleado en la pausa
+C 0x5F54 cambia_de_estado: pasa al estado A
+C 0x5F5A lee las vidas
+C 0x5F66 apunta a las vidas
+C 0x5F6F intercambia: intercambia los bytes de (HL) y (DE)
+C 0x5F72 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x5F7B cambia_de_estado: pasa al estado A
+C 0x5F80 sonido: arranca la musica o el efecto A
+C 0x5F83 siguiente_estado: pasa al estado siguiente
+C 0x5F88 lee si se puede continuar
+C 0x5F9B borra_rotulo: borra un rotulo
+C 0x5F9E lee los canales que suenan
+C 0x5FA3 lee si se puede continuar
+C 0x5FB5 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x5FC0 guarda los SECRETOS que ponen las claves
+C 0x5FCC borra_la_pantalla: borra la pantalla
+C 0x5FD2 rotulo: pinta un rotulo
+C 0x5FD5 lee si se puede continuar
+C 0x5FDE rotulo: pinta un rotulo
+C 0x5FE1 pinta_el_marcador: pinta el marcador entero
+C 0x5FE6 espera_y_sigue: espera y pasa al paso siguiente
+C 0x5FF3 guarda las vidas
+C 0x5FF6 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+C 0x5FF9 apunta a los puntos del jugador 1 (BCD)
+# --- fin de las anotaciones de anota.py ---

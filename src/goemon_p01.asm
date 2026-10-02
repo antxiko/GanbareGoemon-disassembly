@@ -17,7 +17,7 @@
 L_6000:
 	rla			;6000
 	jr nc,L_6006		;6001
-	ld hl,0c25ah		;6003
+	ld hl,0c25ah		;6003   ; apunta a los puntos del jugador 2 (BCD)
 L_6006:
 	xor a			;6006
 	ld (hl),a			;6007
@@ -26,11 +26,11 @@ L_6006:
 	inc l			;600a
 	ld (hl),a			;600b
 	ld (0c486h),a		;600c
-	ld (0c281h),a		;600f
-	ld (0c265h),a		;6012
+	ld (0c281h),a		;600f   ; guarda la CASILLA de la zona
+	ld (0c265h),a		;6012   ; guarda el DINERO (ryo, BCD)
 	ld (0c266h),a		;6015
-	ld (0c268h),a		;6018
-	ld hl,0c270h		;601b
+	ld (0c268h),a		;6018   ; guarda si ya entro en la zona
+	ld hl,0c270h		;601b   ; apunta a las 10 cosas del marcador
 	ld b,00bh		;601e
 L_6020:
 	ld (hl),a			;6020
@@ -40,43 +40,43 @@ L_6020:
 	ld (hl),a			;6025
 	call 08f7bh		;6026
 	ld a,010h		;6029
-	ld (0c480h),a		;602b
-	ld (0c481h),a		;602e
+	ld (0c480h),a		;602b   ; guarda la vida maxima
+	ld (0c481h),a		;602e   ; guarda la VIDA del jugador
 	jp 05f60h		;6031
 L_6034:
 	djnz L_605D		;6034
-	ld a,(0c289h)		;6036
+	ld a,(0c289h)		;6036   ; lee el juego de graficos de la zona
 	cp 004h		;6039
 	jr z,L_606B		;603b
-	call 045d3h		;603d
-	call 045eeh		;6040
+	call 045d3h		;603d   ; borra_la_pantalla: borra la pantalla
+	call 045eeh		;6040   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 04babh		;6043
 	call 04d63h		;6046
-	call 051edh		;6049
-	call 0534eh		;604c
-	call 045e1h		;604f
-	call 0960ch		;6052
+	call 051edh		;6049   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
+	call 0534eh		;604c   ; pinta_la_pantalla: pinta la pantalla montada
+	call 045e1h		;604f   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
+	call 0960ch		;6052   ; texto_de_la_zona: el texto de la zona
 	ld a,08ch		;6055
-	call 04fe4h		;6057
-	jp 05e43h		;605a
+	call 04fe4h		;6057   ; sonido: arranca la musica o el efecto A
+	jp 05e43h		;605a   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_605D:
 	djnz L_6073		;605d
 	call 0963fh		;605f
 	ld a,(0cd11h)		;6062
 	ld b,a			;6065
-	ld a,(0c0abh)		;6066
+	ld a,(0c0abh)		;6066   ; lee los canales que suenan
 	or b			;6069
 	ret nz			;606a
 L_606B:
 	call 08f7bh		;606b
 	ld a,004h		;606e
-	jp 05e2dh		;6070
+	jp 05e2dh		;6070   ; cambia_de_estado: pasa al estado A
 L_6073:
-	ld hl,(0c4b0h)		;6073
+	ld hl,(0c4b0h)		;6073   ; lee el TIEMPO (BCD)
 	ld a,h			;6076
 	or l			;6077
 	jp nz,L_650A		;6078
-	ld hl,0c260h		;607b
+	ld hl,0c260h		;607b   ; apunta a las vidas
 	ld a,(hl)			;607e
 	add a,001h		;607f
 	daa			;6081
@@ -86,7 +86,7 @@ L_6073:
 	add a,001h		;6087
 	daa			;6089
 	ld (hl),a			;608a
-	ld hl,0c280h		;608b
+	ld hl,0c280h		;608b   ; apunta a la ZONA (0-6)
 	inc (hl)			;608e
 	inc hl			;608f
 	xor a			;6090
@@ -94,32 +94,32 @@ L_6073:
 	ld (hl),a			;6092
 	ld (0c28ah),a		;6093
 	ld (0c28ch),a		;6096
-	jp 05e43h		;6099
+	jp 05e43h		;6099   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_609C:
-	ld a,(0c483h)		;609c
+	ld a,(0c483h)		;609c   ; lee si esta en un pasadizo
 	and a			;609f
 	jr nz,L_60CF		;60a0
-	ld a,(0c283h)		;60a2
+	ld a,(0c283h)		;60a2   ; lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	cp 005h		;60a5
 	jr z,L_60B5		;60a7
 	cp 006h		;60a9
 	jr z,L_60BA		;60ab
-	call L_65F7		;60ad
+	call sale_de_la_casilla		;60ad   ; sale_de_la_casilla: pasa a la casilla vecina por el lado de salida
 	call L_66F6		;60b0
 	jr L_60C6		;60b3
 L_60B5:
 	call L_672F		;60b5
 	jr L_60C6		;60b8
 L_60BA:
-	call 04ce3h		;60ba
-	call 04295h		;60bd
+	call 04ce3h		;60ba   ; paleta_de_la_zona: pone la paleta del juego de graficos de la zona
+	call 04295h		;60bd   ; pantallas_de_la_zona: descomprime las pantallas de la zona a 0xD000
 	call L_66F6		;60c0
-	call 0416fh		;60c3
+	call 0416fh		;60c3   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
 L_60C6:
 	xor a			;60c6
-	ld (0c283h),a		;60c7
+	ld (0c283h),a		;60c7   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ld a,005h		;60ca
-	jp 05e2dh		;60cc
+	jp 05e2dh		;60cc   ; cambia_de_estado: pasa al estado A
 L_60CF:
 	call L_6A06		;60cf
 	jr L_60C6		;60d2
@@ -131,105 +131,105 @@ L_60D4:
 	xor a			;60dc
 L_60DD:
 	ld (0c00eh),a		;60dd
-	call 049d2h		;60e0
-	ld a,(0c00bh)		;60e3
+	call 049d2h		;60e0   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	ld a,(0c00bh)		;60e3   ; lee lo que se acaba de apretar
 	rra			;60e6
 	jr c,L_60F9		;60e7
 	rra			;60e9
-	jp nc,0bdf6h		;60ea
+	jp nc,0bdf6h		;60ea   ; teclea_palabra: lo que se teclea en la pausa
 	ld a,(0c28ch)		;60ed
 	and a			;60f0
-	jp nz,0bdf6h		;60f1
+	jp nz,0bdf6h		;60f1   ; teclea_palabra: lo que se teclea en la pausa
 	ld a,00dh		;60f4
-	jp 05e2dh		;60f6
+	jp 05e2dh		;60f6   ; cambia_de_estado: pasa al estado A
 L_60F9:
 	xor a			;60f9
 	ld (0c008h),a		;60fa
 	call L_6374		;60fd
 	ld a,0feh		;6100
-	call 04fe4h		;6102
+	call 04fe4h		;6102   ; sonido: arranca la musica o el efecto A
 	ld a,005h		;6105
-	jp 05e2dh		;6107
+	jp 05e2dh		;6107   ; cambia_de_estado: pasa al estado A
 L_610A:
 	djnz L_6120		;610a
-	ld hl,0c004h		;610c
+	ld hl,0c004h		;610c   ; apunta a la espera del estado, en cuadros
 	dec (hl)			;610f
 	ld a,(hl)			;6110
 	push af			;6111
-	ld a,(0c003h)		;6112
+	ld a,(0c003h)		;6112   ; lee el contador de cuadros
 	and 007h		;6115
 	call z,0bd57h		;6117
 	pop af			;611a
 	and a			;611b
 	ret nz			;611c
-	jp 05e43h		;611d
+	jp 05e43h		;611d   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6120:
 	djnz L_6145		;6120
-	call 045d3h		;6122
-	call 045eeh		;6125
+	call 045d3h		;6122   ; borra_la_pantalla: borra la pantalla
+	call 045eeh		;6125   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 08f7bh		;6128
 	call 04bc5h		;612b
 	call 04d72h		;612e
-	call 051edh		;6131
-	call 0534eh		;6134
+	call 051edh		;6131   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
+	call 0534eh		;6134   ; pinta_la_pantalla: pinta la pantalla montada
 	call 09a46h		;6137
-	call 045e1h		;613a
+	call 045e1h		;613a   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	ld a,08ah		;613d
-	call 04fe4h		;613f
-	jp 05e43h		;6142
+	call 04fe4h		;613f   ; sonido: arranca la musica o el efecto A
+	jp 05e43h		;6142   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6145:
 	djnz L_6168		;6145
 	call 09b34h		;6147
 	call 0868eh		;614a
 	call 086fch		;614d
 	call 08861h		;6150
-	call 05b61h		;6153
+	call 05b61h		;6153   ; sube_colores_de_sprite: sube los colores de los sprites
 	ld a,(0cd11h)		;6156
 	or a			;6159
 	ret nz			;615a
-	ld a,(0c0abh)		;615b
+	ld a,(0c0abh)		;615b   ; lee los canales que suenan
 	and a			;615e
 	ret nz			;615f
 	ld a,0b4h		;6160
-	ld (0c004h),a		;6162
-	jp 05e43h		;6165
+	ld (0c004h),a		;6162   ; guarda la espera del estado, en cuadros
+	jp 05e43h		;6165   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6168:
 	djnz L_6192		;6168
 	ld hl,0c26ah		;616a
 	inc (hl)			;616d
-	ld hl,0c288h		;616e
+	ld hl,0c288h		;616e   ; apunta a la FASE (0-6)
 	inc (hl)			;6171
 	xor a			;6172
-	ld (0c280h),a		;6173
+	ld (0c280h),a		;6173   ; guarda la ZONA (0-6)
 	ld (0c28bh),a		;6176
 	ld (0c28ch),a		;6179
 	ld a,(hl)			;617c
 	cp 007h		;617d
 	jr nc,L_6186		;617f
 	ld a,004h		;6181
-	jp 05e2dh		;6183
+	jp 05e2dh		;6183   ; cambia_de_estado: pasa al estado A
 L_6186:
-	ld hl,0c002h		;6186
+	ld hl,0c002h		;6186   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	ld a,(hl)			;6189
 	and 0bfh		;618a
 	ld (hl),a			;618c
 	ld a,00fh		;618d
-	jp 05e2dh		;618f
+	jp 05e2dh		;618f   ; cambia_de_estado: pasa al estado A
 L_6192:
-	call 05b61h		;6192
+	call 05b61h		;6192   ; sube_colores_de_sprite: sube los colores de los sprites
 	ld de,08038h		;6195
 	ld hl,01e28h		;6198
 	ld a,002h		;619b
 	ld c,00fh		;619d
 	call 0bd48h		;619f
 	ld a,004h		;61a2
-	call 04fe4h		;61a4
+	call 04fe4h		;61a4   ; sonido: arranca la musica o el efecto A
 	ld a,050h		;61a7
-	ld (0c004h),a		;61a9
-	jp 05e43h		;61ac
+	ld (0c004h),a		;61a9   ; guarda la espera del estado, en cuadros
+	jp 05e43h		;61ac   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_61AF:
 	push bc			;61af
-	call 049d2h		;61b0
+	call 049d2h		;61b0   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
 	pop bc			;61b3
 	djnz L_61E9		;61b4
 	ld a,(0c006h)		;61b6
@@ -241,7 +241,7 @@ L_61AF:
 	or a			;61c4
 	jp nz,L_61CF		;61c5
 	ld hl,00203h		;61c8
-	ld (0c000h),hl		;61cb
+	ld (0c000h),hl		;61cb   ; guarda el estado (0xC000) y el paso (0xC001) de un tiron
 	ret			;61ce
 L_61CF:
 	dec a			;61cf
@@ -255,7 +255,7 @@ L_61DD:
 	ld (0ef02h),hl		;61e0
 	call L_7F83		;61e3
 L_61E6:
-	jp 05e43h		;61e6
+	jp 05e43h		;61e6   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_61E9:
 	djnz L_621E		;61e9
 	call 08040h		;61eb
@@ -280,7 +280,7 @@ L_61F3:
 	ld (0ef06h),a		;6211
 L_6214:
 	xor a			;6214
-	ld (0c001h),a		;6215
+	ld (0c001h),a		;6215   ; guarda el paso del estado
 	ret			;6218
 L_6219:
 	ld (0ef07h),a		;6219
@@ -293,46 +293,46 @@ L_621E:
 	ld bc,0000eh		;6228
 	ld (hl),000h		;622b
 	ldir		;622d
-	jp 05e43h		;622f
+	jp 05e43h		;622f   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6232:
 	djnz L_6248		;6232
-	call 049d2h		;6234
-	ld a,(0c00bh)		;6237
+	call 049d2h		;6234   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	ld a,(0c00bh)		;6237   ; lee lo que se acaba de apretar
 	rra			;623a
 	rra			;623b
 	ret nc			;623c
 	call L_6BE7		;623d
-	call 04631h		;6240
+	call 04631h		;6240   ; sprites_dentro: enciende los sprites (bit 1 del registro 8 del VDP a cero)
 	ld a,00ah		;6243
-	jp 05e2dh		;6245
+	jp 05e2dh		;6245   ; cambia_de_estado: pasa al estado A
 L_6248:
-	call 04626h		;6248
+	call 04626h		;6248   ; sprites_fuera: apaga los sprites (bit 1 del registro 8 del VDP)
 	call L_6B5F		;624b
 	ld a,001h		;624e
 	ld (0c28ch),a		;6250
-	jp 05e43h		;6253
+	jp 05e43h		;6253   ; siguiente_paso: pasa al paso siguiente (0xC001)
 L_6256:
 	djnz L_6276		;6256
-	call L_6C03		;6258
+	call teclea_la_contrasena		;6258   ; teclea_la_contrasena: la pantalla de la contrasena
 	ret nc			;625b
 	ld a,(0eb82h)		;625c
 	and a			;625f
-	jp z,0be4eh		;6260
+	jp z,0be4eh		;6260   ; claves_secretas: compara lo tecleado con las claves secretas (0xBE8A)
 	ld a,040h		;6263
-	ld (0c002h),a		;6265
-	call 04351h		;6268
+	ld (0c002h),a		;6265   ; guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+	call 04351h		;6268   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
 	call L_662C		;626b
-	call L_6C7A		;626e
+	call aplica_la_contrasena		;626e   ; aplica_la_contrasena: saca de la contrasena la fase, el jugador, la zona y la casilla
 	ld a,004h		;6271
-	jp 05e2dh		;6273
+	jp 05e2dh		;6273   ; cambia_de_estado: pasa al estado A
 L_6276:
 	call L_6CB8		;6276
-	call 045d3h		;6279
+	call 045d3h		;6279   ; borra_la_pantalla: borra la pantalla
 	ld c,0ffh		;627c
 	ld hl,0628ah		;627e
 	ld de,06060h		;6281
-	call 048fdh		;6284
-	jp 05e43h		;6287
+	call 048fdh		;6284   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
+	jp 05e43h		;6287   ; siguiente_paso: pasa al paso siguiente (0xC001)
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_628A: rotulo sin posicion delante (0x48FD); lo leen p01:6284 (8
@@ -350,57 +350,57 @@ L_6292:
 	djnz L_62CA		;6292
 	di			;6294
 	ld a,00ch		;6295
-	ld (0a000h),a		;6297
-	ld (0f0f3h),a		;629a
+	ld (0a000h),a		;6297   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;629a   ; guarda la copia del banco de 0xA000
 	ei			;629d
-	ld a,(0c003h)		;629e
+	ld a,(0c003h)		;629e   ; lee el contador de cuadros
 	and 003h		;62a1
-	call z,042f1h		;62a3
-	call 04206h		;62a6
-	ld a,(0c0abh)		;62a9
+	call z,042f1h		;62a3   ; sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
+	call 04206h		;62a6   ; bancos_1_2_3: pone los bancos 1, 2 y 3
+	ld a,(0c0abh)		;62a9   ; lee los canales que suenan
 	and a			;62ac
 	ret nz			;62ad
-	call 045eeh		;62ae
-	call 045d3h		;62b1
+	call 045eeh		;62ae   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+	call 045d3h		;62b1   ; borra_la_pantalla: borra la pantalla
 	call 04cd4h		;62b4
 	call L_65A2		;62b7
-	call 05b61h		;62ba
-	call 045e1h		;62bd
+	call 05b61h		;62ba   ; sube_colores_de_sprite: sube los colores de los sprites
+	call 045e1h		;62bd   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	ld a,08fh		;62c0
-	call 04fe4h		;62c2
+	call 04fe4h		;62c2   ; sonido: arranca la musica o el efecto A
 	ld a,03ch		;62c5
-	jp 05e40h		;62c7
+	jp 05e40h		;62c7   ; espera_y_sigue: espera y pasa al paso siguiente
 L_62CA:
 	djnz L_62E5		;62ca
-	ld a,(0c0abh)		;62cc
+	ld a,(0c0abh)		;62cc   ; lee los canales que suenan
 	and a			;62cf
 	ret nz			;62d0
-	ld hl,0c004h		;62d1
+	ld hl,0c004h		;62d1   ; apunta a la espera del estado, en cuadros
 	dec (hl)			;62d4
 	ret nz			;62d5
-	call 045d3h		;62d6
-	ld hl,0c002h		;62d9
+	call 045d3h		;62d6   ; borra_la_pantalla: borra la pantalla
+	ld hl,0c002h		;62d9   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	res 6,(hl)		;62dc
 	ld hl,00000h		;62de
-	ld (0c000h),hl		;62e1
+	ld (0c000h),hl		;62e1   ; guarda el estado (0xC000) y el paso (0xC001) de un tiron
 	ret			;62e4
 L_62E5:
 	call L_653C		;62e5
-	call 045d3h		;62e8
+	call 045d3h		;62e8   ; borra_la_pantalla: borra la pantalla
 	ld de,02010h		;62eb
 	ld hl,0d800h		;62ee
-	call 042e1h		;62f1
+	call 042e1h		;62f1   ; empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 	ld a,08dh		;62f4
-	call 04fe4h		;62f6
+	call 04fe4h		;62f6   ; sonido: arranca la musica o el efecto A
 	ld a,0f0h		;62f9
-	jp 05e40h		;62fb
+	jp 05e40h		;62fb   ; espera_y_sigue: espera y pasa al paso siguiente
 L_62FE:
 	call 049eeh		;62fe
 	ld hl,0c251h		;6301
 	call 049e7h		;6304
 	or a			;6307
 	ret z			;6308
-	ld hl,0c004h		;6309
+	ld hl,0c004h		;6309   ; apunta a la espera del estado, en cuadros
 	ld (hl),000h		;630c
 	ld l,(hl)			;630e
 	ld de,0c252h		;630f
@@ -416,9 +416,9 @@ L_62FE:
 	jr z,L_6325		;6321
 	ld a,060h		;6323
 L_6325:
-	ld (0c002h),a		;6325
+	ld (0c002h),a		;6325   ; guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	push hl			;6328
-	ld hl,0c257h		;6329
+	ld hl,0c257h		;6329   ; apunta a los puntos del jugador 1 (BCD)
 	ld de,0c258h		;632c
 	ld bc,00005h		;632f
 	ld (hl),000h		;6332
@@ -433,8 +433,8 @@ L_6325:
 L_6341:
 	ld (hl),001h		;6341
 	ld a,000h		;6343
-	call 04fe4h		;6345
-	jp 05a93h		;6348
+	call 04fe4h		;6345   ; sonido: arranca la musica o el efecto A
+	jp 05a93h		;6348   ; pantalla_del_titulo: monta la pantalla del titulo
 L_634B:
 	ld a,(de)			;634b
 	xor 001h		;634c
@@ -445,14 +445,14 @@ L_634B:
 	ret			;6354
 L_6355:
 	ld a,00eh		;6355
-	jp 05e2dh		;6357
+	jp 05e2dh		;6357   ; cambia_de_estado: pasa al estado A
 L_635A:
 	ld hl,06a54h		;635a
 	ld bc,02c10h		;635d
 	ld de,0d070h		;6360
 	call L_6382		;6363
 	ld hl,0636ch		;6366
-	jp 048f3h		;6369
+	jp 048f3h		;6369   ; rotulo: pinta un rotulo
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_636C: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -471,25 +471,25 @@ L_6374:
 	ld bc,02c10h		;6377
 	ld hl,0d070h		;637a
 	ld a,001h		;637d
-	jp 0476eh		;637f
+	jp 0476eh		;637f   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
 L_6382:
 	ld a,004h		;6382
 	push hl			;6384
 	push bc			;6385
-	call 0476eh		;6386
+	call 0476eh		;6386   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
 	pop bc			;6389
 	pop hl			;638a
 	push hl			;638b
 	push bc			;638c
 	xor a			;638d
 	ld d,a			;638e
-	call 04732h		;638f
+	call 04732h		;638f   ; hmmv: orden HMMV del V9938: rellena un rectangulo
 	pop bc			;6392
 	pop hl			;6393
 	ld d,b			;6394
 	ld e,c			;6395
 	ld c,00eh		;6396
-	jp 04704h		;6398
+	jp 04704h		;6398   ; marco: pinta un marco
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_639B: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -566,9 +566,9 @@ DATA_rotulo_6435:
 
 
 L_643F:
-	call 045eeh		;643f
+	call 045eeh		;643f   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	ld hl,06476h		;6442
-	call 04666h		;6445
+	call 04666h		;6445   ; pon_paleta: pone una lista de colores en la paleta
 	ld b,00fh		;6448
 	ld c,007h		;644a
 	call 00047h		;644c   ; BIOS WRTVDP - Writes data in the VDP-register
@@ -576,13 +576,13 @@ L_643F:
 	ld bc,0a848h		;6452
 	xor a			;6455
 	ld d,001h		;6456
-	call 04732h		;6458
-	call 04a43h		;645b
+	call 04732h		;6458   ; hmmv: orden HMMV del V9938: rellena un rectangulo
+	call 04a43h		;645b   ; dibujos_de_konami: sube los dibujos del logotipo de Konami
 	ld de,04040h		;645e
 	ld hl,064c9h		;6461
 	call L_64A9		;6464
-	call 045e1h		;6467
-	ld hl,0c480h		;646a
+	call 045e1h		;6467   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
+	ld hl,0c480h		;646a   ; apunta a la vida maxima
 	ld (hl),03ch		;646d
 	inc hl			;646f
 	ld (hl),031h		;6470
@@ -603,7 +603,7 @@ DATA_paleta_6476:
 
 
 L_6486:
-	ld hl,0c480h		;6486
+	ld hl,0c480h		;6486   ; apunta a la vida maxima
 	dec (hl)			;6489
 	ld a,(hl)			;648a
 	and 001h		;648b
@@ -612,7 +612,7 @@ L_6486:
 	dec (hl)			;648f
 	jr nz,L_6498		;6490
 	ld a,001h		;6492
-	ld (0c482h),a		;6494
+	ld (0c482h),a		;6494   ; guarda la pantalla especial
 	ret			;6497
 L_6498:
 	ld a,031h		;6498
@@ -622,7 +622,7 @@ L_6498:
 	ld hl,02840h		;649e
 	ld de,02840h		;64a1
 	ld a,001h		;64a4
-	jp 0476eh		;64a6
+	jp 0476eh		;64a6   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
 L_64A9:
 	push de			;64a9
 L_64AA:
@@ -644,8 +644,8 @@ L_64AA:
 	jr L_64A9		;64bc
 L_64BE:
 	ld a,c			;64be
-	call 04964h		;64bf
-	call 04984h		;64c2
+	call 04964h		;64bf   ; caracter_en_la_pagina_1: pinta un caracter en la pagina 1 de la VRAM
+	call 04984h		;64c2   ; siguiente_sitio: pasa al sitio del caracter siguiente
 	jr L_64AA		;64c5
 L_64C7:
 	pop de			;64c7
@@ -672,14 +672,14 @@ L_650A:
 	ld a,(hl)			;650d
 	and a			;650e
 	jr z,L_651E		;650f
-	ld a,(0c003h)		;6511
+	ld a,(0c003h)		;6511   ; lee el contador de cuadros
 	and 00fh		;6514
 	ret nz			;6516
 	ld de,01000h		;6517
 	ld b,01dh		;651a
 	jr L_652A		;651c
 L_651E:
-	ld a,(0c003h)		;651e
+	ld a,(0c003h)		;651e   ; lee el contador de cuadros
 	and 001h		;6521
 	ret nz			;6523
 	dec hl			;6524
@@ -692,19 +692,19 @@ L_652A:
 	ld (hl),a			;652d
 	push bc			;652e
 	push de			;652f
-	call 058f5h		;6530
+	call 058f5h		;6530   ; pinta_el_tiempo: pinta el tiempo
 	pop de			;6533
-	call 0437eh		;6534
+	call 0437eh		;6534   ; suma_puntos: suma puntos en BCD al jugador que juega
 	pop bc			;6537
 	ld a,b			;6538
-	jp 04fe4h		;6539
+	jp 04fe4h		;6539   ; sonido: arranca la musica o el efecto A
 L_653C:
 	di			;653c
 	ld a,00ch		;653d
-	ld (0a000h),a		;653f
-	ld (0f0f3h),a		;6542
+	ld (0a000h),a		;653f   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6542   ; guarda la copia del banco de 0xA000
 	ei			;6545
-	ld a,(0ef00h)		;6546
+	ld a,(0ef00h)		;6546   ; lee el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
 	and a			;6549
 	ld b,000h		;654a
 	jr z,L_6550		;654c
@@ -719,7 +719,7 @@ L_655A:
 	or b			;655a
 	add a,a			;655b
 	ld hl,06589h		;655c
-	call 04d81h		;655f
+	call 04d81h		;655f   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld b,(hl)			;6562
 	ld de,0d800h		;6563
 	inc hl			;6566
@@ -729,7 +729,7 @@ L_6567:
 	push bc			;6569
 	push hl			;656a
 	ld hl,0bcd3h		;656b
-	call 04d81h		;656e
+	call 04d81h		;656e   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld b,000h		;6571
 	ld c,(hl)			;6573
 	inc hl			;6574
@@ -746,7 +746,7 @@ L_6567:
 	ld a,0ffh		;6582
 	dec de			;6584
 	ld (de),a			;6585
-	jp 04206h		;6586
+	jp 04206h		;6586   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 
 ; ----------------------------------------------------------------------
 ; DATOS frases: 4 punteros (0xC26A = 7 y el bit de B, p01:655A) a las frases
@@ -841,30 +841,30 @@ DATA_sprites_65C7:
 ; ======================================================================
 
 
-L_65F7:
+sale_de_la_casilla:		; pasa a la casilla vecina por el lado de salida
 	ld de,0e780h		;65f7
-	ld a,(0c281h)		;65fa
+	ld a,(0c281h)		;65fa   ; lee la CASILLA de la zona
 	add a,a			;65fd
 	ld h,000h		;65fe
 	ld l,a			;6600
 	add hl,hl			;6601
 	add hl,de			;6602
-	ld de,0c283h		;6603
+	ld de,0c283h		;6603   ; apunta a el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ld a,(de)			;6606
 	ld b,a			;6607
 	xor a			;6608
 	ld (de),a			;6609
 	dec b			;660a
 	ld a,b			;660b
-	call 04083h		;660c
+	call 04083h		;660c   ; hl_mas_a: HL += A
 	ld a,(hl)			;660f
 	cp 0ffh		;6610
 	ret z			;6612
-	ld (0c281h),a		;6613
+	ld (0c281h),a		;6613   ; guarda la CASILLA de la zona
 	ret			;6616
 L_6617:
 	ld de,0e780h		;6617
-	ld a,(0c281h)		;661a
+	ld a,(0c281h)		;661a   ; lee la CASILLA de la zona
 	add a,a			;661d
 	ld h,000h		;661e
 	ld l,a			;6620
@@ -875,178 +875,178 @@ L_6617:
 	ldir		;6629
 	ret			;662b
 L_662C:
-	call 04a6dh		;662c
-	call 04da4h		;662f
+	call 04a6dh		;662c   ; letras_del_texto: sube las letras de los textos
+	call 04da4h		;662f   ; dibujos_de_siempre: sube los dibujos que estan en todas las zonas
 	ld de,01010h		;6632
-	ld (0c480h),de		;6635
+	ld (0c480h),de		;6635   ; guarda la vida maxima
 	ret			;6639
-L_663A:
+carga_la_zona:		; carga la zona de 0xC280
 	di			;663a
 	ld a,009h		;663b
-	ld (0a000h),a		;663d
-	ld (0f0f3h),a		;6640
+	ld (0a000h),a		;663d   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6640   ; guarda la copia del banco de 0xA000
 	ei			;6643
-	call 041f6h		;6644
+	call 041f6h		;6644   ; indice_de_la_zona: A = (fase * 7 + zona) * 2
 	srl a		;6647
 	ld hl,0b8ech		;6649
-	call 04083h		;664c
+	call 04083h		;664c   ; hl_mas_a: HL += A
 	ld a,(hl)			;664f
-	ld (0c289h),a		;6650
-	call 04206h		;6653
-	call 04da4h		;6656
-	call 04a96h		;6659
+	ld (0c289h),a		;6650   ; guarda el juego de graficos de la zona
+	call 04206h		;6653   ; bancos_1_2_3: pone los bancos 1, 2 y 3
+	call 04da4h		;6656   ; dibujos_de_siempre: sube los dibujos que estan en todas las zonas
+	call 04a96h		;6659   ; caracteres_del_juego: sube los caracteres del juego de graficos de la zona
 	ld hl,0d000h		;665c
 	ld de,0d001h		;665f
 	ld bc,017ffh		;6662
 	ld (hl),000h		;6665
 	ldir		;6667
 	call 04d89h		;6669
-	call 04295h		;666c
-	call 042ach		;666f
+	call 04295h		;666c   ; pantallas_de_la_zona: descomprime las pantallas de la zona a 0xD000
+	call 042ach		;666f   ; bloques_de_la_zona: descomprime los bloques de la zona a 0xE100
 	di			;6672
 	ld a,009h		;6673
-	ld (0a000h),a		;6675
-	ld (0f0f3h),a		;6678
+	ld (0a000h),a		;6675   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6678   ; guarda la copia del banco de 0xA000
 	ei			;667b
 	call L_6AFC		;667c
-	call 04206h		;667f
-	call L_67DA		;6682
-	call L_67CC		;6685
-	call L_67B3		;6688
-	ld hl,0c268h		;668b
+	call 04206h		;667f   ; bancos_1_2_3: pone los bancos 1, 2 y 3
+	call esconde_los_sprites_de_ram		;6682   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call borra_al_jugador		;6685   ; borra_al_jugador: borra al jugador
+	call borra_las_figuras		;6688   ; borra_las_figuras: borra todas las figuras
+	ld hl,0c268h		;668b   ; apunta a si ya entro en la zona
 	ld a,(hl)			;668e
 	and a			;668f
 	jr nz,L_66BC		;6690
 	inc (hl)			;6692
 	di			;6693
 	ld a,009h		;6694
-	ld (0a000h),a		;6696
-	ld (0f0f3h),a		;6699
+	ld (0a000h),a		;6696   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6699   ; guarda la copia del banco de 0xA000
 	ei			;669c
-	call 041f6h		;669d
+	call 041f6h		;669d   ; indice_de_la_zona: A = (fase * 7 + zona) * 2
 	srl a		;66a0
 	ld hl,0b8afh		;66a2
-	call 04083h		;66a5
+	call 04083h		;66a5   ; hl_mas_a: HL += A
 	ld a,(hl)			;66a8
 	exx			;66a9
-	ld hl,0c002h		;66aa
+	ld hl,0c002h		;66aa   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	bit 6,(hl)		;66ad
 	exx			;66af
 	jr z,L_66B9		;66b0
-	ld (0c281h),a		;66b2
+	ld (0c281h),a		;66b2   ; guarda la CASILLA de la zona
 	xor a			;66b5
-	ld (0c267h),a		;66b6
+	ld (0c267h),a		;66b6   ; guarda los colores del sitio
 L_66B9:
-	call 04206h		;66b9
+	call 04206h		;66b9   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_66BC:
 	call L_77AA		;66bc
-	ld a,(0c480h)		;66bf
-	ld (0c481h),a		;66c2
+	ld a,(0c480h)		;66bf   ; lee la vida maxima
+	ld (0c481h),a		;66c2   ; guarda la VIDA del jugador
 	ld de,00700h		;66c5
-	ld (0c4b0h),de		;66c8
+	ld (0c4b0h),de		;66c8   ; guarda el TIEMPO (BCD)
 	ld a,001h		;66cc
 	ld (0c4b2h),a		;66ce
-	ld a,(0c280h)		;66d1
+	ld a,(0c280h)		;66d1   ; lee la ZONA (0-6)
 	cp 006h		;66d4
 	jr nz,L_66E6		;66d6
 	ld de,03080h		;66d8
 	ld hl,00080h		;66db
 	ld bc,01010h		;66de
 	ld a,005h		;66e1
-	call 0476eh		;66e3
+	call 0476eh		;66e3   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
 L_66E6:
 	xor a			;66e6
 	ld (0c0afh),a		;66e7
-	call 05311h		;66ea
-	call 04188h		;66ed
+	call 05311h		;66ea   ; rejilla_de_la_zona: la rejilla de casillas de la zona
+	call 04188h		;66ed   ; enlaces_de_la_zona: copia los enlaces entre casillas de la zona a 0xE780
 	call 0955ch		;66f0
 	call L_7E42		;66f3
 L_66F6:
 	call L_6617		;66f6
 	call L_7D9E		;66f9
-	call L_67DA		;66fc
-	call L_67B3		;66ff
+	call esconde_los_sprites_de_ram		;66fc   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call borra_las_figuras		;66ff   ; borra_las_figuras: borra todas las figuras
 	call L_67F4		;6702
 	call L_67E8		;6705
-	call 045eeh		;6708
-	call 0460ah		;670b
-	call 051edh		;670e
-	call 0534eh		;6711
-	call 090c0h		;6714
+	call 045eeh		;6708   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+	call 0460ah		;670b   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+	call 051edh		;670e   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
+	call 0534eh		;6711   ; pinta_la_pantalla: pinta la pantalla montada
+	call 090c0h		;6714   ; cosas_fijas: pinta las cosas fijas de la casilla
 	call L_6756		;6717
-	call 05413h		;671a
-	call 05856h		;671d
-	call 04ce3h		;6720
+	call 05413h		;671a   ; dibujos_de_las_figuras: sube los dibujos de las figuras (fichas de 0xA830, banco 12)
+	call 05856h		;671d   ; pinta_las_cosas: pinta las cosas del marcador
+	call 04ce3h		;6720   ; paleta_de_la_zona: pone la paleta del juego de graficos de la zona
 	call 04d14h		;6723
 	call 08656h		;6726
 	call 08573h		;6729
-	jp 045e1h		;672c
+	jp 045e1h		;672c   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 L_672F:
-	call L_67DA		;672f
-	call L_67B3		;6732
+	call esconde_los_sprites_de_ram		;672f   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call borra_las_figuras		;6732   ; borra_las_figuras: borra todas las figuras
 	call L_67F4		;6735
 	call L_67E8		;6738
-	call 045eeh		;673b
-	call 0460ah		;673e
-	call 051edh		;6741
-	call 0534eh		;6744
+	call 045eeh		;673b   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+	call 0460ah		;673e   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+	call 051edh		;6741   ; monta_la_pantalla: monta la pantalla de 8x6 bloques de la casilla
+	call 0534eh		;6744   ; pinta_la_pantalla: pinta la pantalla montada
 	call L_6798		;6747
 	call 04d08h		;674a
 	call 0925dh		;674d
-	call 045e1h		;6750
+	call 045e1h		;6750   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 	jp 094f7h		;6753
 L_6756:
-	ld a,(0c268h)		;6756
+	ld a,(0c268h)		;6756   ; lee si ya entro en la zona
 	and a			;6759
 	ret z			;675a
 	di			;675b
 	ld a,009h		;675c
-	ld (0a000h),a		;675e
-	ld (0f0f3h),a		;6761
+	ld (0a000h),a		;675e   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6761   ; guarda la copia del banco de 0xA000
 	ei			;6764
 	ld a,003h		;6765
-	ld (0c4a2h),a		;6767
+	ld (0c4a2h),a		;6767   ; guarda el lado al que mira el jugador
 	ld b,006h		;676a
 L_676C:
 	ld hl,0b8e0h		;676c
 	ld a,b			;676f
 	dec a			;6770
 	add a,a			;6771
-	call 04083h		;6772
+	call 04083h		;6772   ; hl_mas_a: HL += A
 	ld e,(hl)			;6775
 	inc hl			;6776
 	ld d,(hl)			;6777
 	push bc			;6778
 	push de			;6779
-	call L_781F		;677a
+	call se_puede_pisar		;677a   ; se_puede_pisar: carry si el caracter se puede pisar
 	pop de			;677d
 	pop bc			;677e
 	jr nc,L_6783		;677f
 	djnz L_676C		;6781
 L_6783:
 	ld a,e			;6783
-	ld (0c498h),a		;6784
-	ld (0c494h),a		;6787
+	ld (0c498h),a		;6784   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;6787   ; guarda la y del jugador
 	ld a,d			;678a
-	ld (0c49ah),a		;678b
-	ld (0c496h),a		;678e
+	ld (0c49ah),a		;678b   ; guarda la x de los sprites del jugador
+	ld (0c496h),a		;678e   ; guarda la x del jugador
 	xor a			;6791
-	ld (0c268h),a		;6792
-	jp 04206h		;6795
+	ld (0c268h),a		;6792   ; guarda si ya entro en la zona
+	jp 04206h		;6795   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_6798:
-	ld a,(0c283h)		;6798
+	ld a,(0c283h)		;6798   ; lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	cp 006h		;679b
 	jr z,L_67B0		;679d
 	ld a,0b0h		;679f
-	ld (0c498h),a		;67a1
-	ld (0c494h),a		;67a4
+	ld (0c498h),a		;67a1   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;67a4   ; guarda la y del jugador
 	ld a,080h		;67a7
-	ld (0c49ah),a		;67a9
-	ld (0c496h),a		;67ac
+	ld (0c49ah),a		;67a9   ; guarda la x de los sprites del jugador
+	ld (0c496h),a		;67ac   ; guarda la x del jugador
 	ret			;67af
 L_67B0:
-	jp 0416fh		;67b0
-L_67B3:
+	jp 0416fh		;67b0   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
+borra_las_figuras:		; borra todas las figuras
 	ld hl,0c600h		;67b3
 	ld de,00080h		;67b6
 	ld b,008h		;67b9
@@ -1059,8 +1059,8 @@ L_67C6:
 	add hl,de			;67c8
 	djnz L_67C6		;67c9
 	ret			;67cb
-L_67CC:
-	ld hl,0c490h		;67cc
+borra_al_jugador:		; borra al jugador
+	ld hl,0c490h		;67cc   ; apunta a el estado del jugador
 	ld d,h			;67cf
 	ld e,l			;67d0
 	inc de			;67d1
@@ -1068,7 +1068,7 @@ L_67CC:
 	ld bc,0005fh		;67d4
 	ldir		;67d7
 	ret			;67d9
-L_67DA:
+esconde_los_sprites_de_ram:		; saca de la pantalla los sprites de la copia en RAM
 	ld hl,0ee00h		;67da
 	ld b,020h		;67dd
 L_67DF:
@@ -1093,44 +1093,44 @@ L_67F4:
 	ret			;6801
 L_6802:
 	call 05b09h		;6802
-	ld a,(0cdb1h)		;6805
+	ld a,(0cdb1h)		;6805   ; lee si se esta viendo el plano
 	or a			;6808
 	jr z,L_6815		;6809
-	call 049d2h		;680b
+	call 049d2h		;680b   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
 	call L_6877		;680e
 	ret c			;6811
 	jp 0987ah		;6812
 L_6815:
-	ld a,(0c003h)		;6815
+	ld a,(0c003h)		;6815   ; lee el contador de cuadros
 	rra			;6818
 	jr c,L_685F		;6819
 	ld hl,0c00dh		;681b
 	inc (hl)			;681e
-	call 049d2h		;681f
-	ld a,(0c490h)		;6822
+	call 049d2h		;681f   ; lee_los_mandos: teclado y mandos: 0xC00C lo apretado, 0xC00B lo nuevo
+	ld a,(0c490h)		;6822   ; lee el estado del jugador
 	cp 003h		;6825
 	jr z,L_682D		;6827
 	call L_6877		;6829
 	ret c			;682c
 L_682D:
-	call 04cabh		;682d
+	call 04cabh		;682d   ; sprites_del_jugador: sube los sprites del jugador
 	call L_6D38		;6830
 	call L_71BB		;6833
-	ld a,(0cdb1h)		;6836
+	ld a,(0cdb1h)		;6836   ; lee si se esta viendo el plano
 	or a			;6839
 	ret nz			;683a
-	ld a,(0c283h)		;683b
+	ld a,(0c283h)		;683b   ; lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	and a			;683e
 	ret nz			;683f
 	call L_75E4		;6840
 	call L_7370		;6843
 	di			;6846
 	ld a,009h		;6847
-	ld (0a000h),a		;6849
-	ld (0f0f3h),a		;684c
+	ld (0a000h),a		;6849   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;684c   ; guarda la copia del banco de 0xA000
 	ei			;684f
 	call L_74A6		;6850
-	call 04206h		;6853
+	call 04206h		;6853   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call L_76D1		;6856
 	call 08cb0h		;6859
 	jp 0868eh		;685c
@@ -1144,18 +1144,18 @@ L_685F:
 	call 058c5h		;6871
 	jp 05b1dh		;6874
 L_6877:
-	ld a,(0c00bh)		;6877
+	ld a,(0c00bh)		;6877   ; lee lo que se acaba de apretar
 	rra			;687a
 	ret nc			;687b
 	ld a,001h		;687c
 	ld (0c008h),a		;687e
-	call 04cabh		;6881
+	call 04cabh		;6881   ; sprites_del_jugador: sube los sprites del jugador
 	ld a,0fdh		;6884
-	call 04fe4h		;6886
+	call 04fe4h		;6886   ; sonido: arranca la musica o el efecto A
 	scf			;6889
 	ret			;688a
 L_688B:
-	ld hl,0c002h		;688b
+	ld hl,0c002h		;688b   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	ld a,(hl)			;688e
 	ld b,a			;688f
 	ld a,(0cd2fh)		;6890
@@ -1172,31 +1172,31 @@ L_689E:
 	ld (hl),a			;68a1
 	ld a,(0cd2fh)		;68a2
 	ex af,af'			;68a5
-	call 04351h		;68a6
+	call 04351h		;68a6   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
 	ex af,af'			;68a9
 	ld (0cd2fh),a		;68aa
 	call L_662C		;68ad
 	xor a			;68b0
-	ld (0c280h),a		;68b1
-	ld (0c288h),a		;68b4
+	ld (0c280h),a		;68b1   ; guarda la ZONA (0-6)
+	ld (0c288h),a		;68b4   ; guarda la FASE (0-6)
 	ld (0c009h),a		;68b7
 	ld (0c007h),a		;68ba
 	inc a			;68bd
 	ld (0c263h),a		;68be
-	ld (0c00ah),a		;68c1
-	ld (0c267h),a		;68c4
+	ld (0c00ah),a		;68c1   ; guarda el mando de la demostracion
+	ld (0c267h),a		;68c4   ; guarda los colores del sitio
 	ld a,00ch		;68c7
-	ld (0c281h),a		;68c9
-	call L_663A		;68cc
+	ld (0c281h),a		;68c9   ; guarda la CASILLA de la zona
+	call carga_la_zona		;68cc   ; carga_la_zona: carga la zona de 0xC280
 	ld a,099h		;68cf
-	ld (0c260h),a		;68d1
+	ld (0c260h),a		;68d1   ; guarda las vidas
 	ld de,00999h		;68d4
-	ld (0c265h),de		;68d7
+	ld (0c265h),de		;68d7   ; guarda el DINERO (ryo, BCD)
 	ld hl,068e9h		;68db
-	ld de,0c270h		;68de
+	ld de,0c270h		;68de   ; apunta a las 10 cosas del marcador
 	ld bc,0000ah		;68e1
 	ldir		;68e4
-	jp 043e2h		;68e6
+	jp 043e2h		;68e6   ; pinta_el_marcador: pinta el marcador entero
 
 ; ----------------------------------------------------------------------
 ; DATOS cosas_de_la_demo: las diez cosas con las que empieza la demo, que
@@ -1213,22 +1213,22 @@ DATA_cosas_de_la_demo:
 
 L_68F3:
 	call L_6802		;68f3
-	ld a,(0c283h)		;68f6
+	ld a,(0c283h)		;68f6   ; lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	and a			;68f9
 	ret z			;68fa
 	cp 005h		;68fb
 	jr z,L_6919		;68fd
 	cp 006h		;68ff
 	jr z,L_691E		;6901
-	ld a,(0c483h)		;6903
+	ld a,(0c483h)		;6903   ; lee si esta en un pasadizo
 	and a			;6906
 	jr nz,L_6914		;6907
-	call L_65F7		;6909
+	call sale_de_la_casilla		;6909   ; sale_de_la_casilla: pasa a la casilla vecina por el lado de salida
 L_690C:
 	call L_66F6		;690c
 L_690F:
 	xor a			;690f
-	ld (0c283h),a		;6910
+	ld (0c283h),a		;6910   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ret			;6913
 L_6914:
 	call L_6A06		;6914
@@ -1237,13 +1237,13 @@ L_6919:
 	call L_672F		;6919
 	jr L_690F		;691c
 L_691E:
-	call 04ce3h		;691e
+	call 04ce3h		;691e   ; paleta_de_la_zona: pone la paleta del juego de graficos de la zona
 	jr L_690C		;6921
 L_6923:
-	ld a,(0c003h)		;6923
+	ld a,(0c003h)		;6923   ; lee el contador de cuadros
 	rra			;6926
 	ret c			;6927
-	ld hl,0c00ah		;6928
+	ld hl,0c00ah		;6928   ; apunta a el mando de la demostracion
 	dec (hl)			;692b
 	jr z,L_693F		;692c
 L_692E:
@@ -1265,7 +1265,7 @@ L_693F:
 	add hl,hl			;6948
 	add hl,de			;6949
 	ld a,(hl)			;694a
-	ld (0c00ah),a		;694b
+	ld (0c00ah),a		;694b   ; guarda el mando de la demostracion
 	inc hl			;694e
 	ld a,(hl)			;694f
 	ld (0cd54h),a		;6950
@@ -1348,30 +1348,30 @@ DATA_guion_de_la_demo:
 L_69D1:
 	di			;69d1
 	ld a,009h		;69d2
-	ld (0a000h),a		;69d4
-	ld (0f0f3h),a		;69d7
+	ld (0a000h),a		;69d4   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;69d7   ; guarda la copia del banco de 0xA000
 	ei			;69da
 	call L_6A59		;69db
-	call 04206h		;69de
+	call 04206h		;69de   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	ld a,001h		;69e1
 	ld (0c4afh),a		;69e3
-	ld a,(0c483h)		;69e6
+	ld a,(0c483h)		;69e6   ; lee si esta en un pasadizo
 	and a			;69e9
 	jr z,L_69FD		;69ea
-	call L_67DA		;69ec
+	call esconde_los_sprites_de_ram		;69ec   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	call L_6A14		;69ef
-	ld a,(0c002h)		;69f2
+	ld a,(0c002h)		;69f2   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	and 040h		;69f5
 	ret z			;69f7
 	ld a,088h		;69f8
-	jp 04fe4h		;69fa
+	jp 04fe4h		;69fa   ; sonido: arranca la musica o el efecto A
 L_69FD:
 	call L_66F6		;69fd
 	call L_6A9C		;6a00
-	jp 0416fh		;6a03
+	jp 0416fh		;6a03   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
 L_6A06:
 	ld hl,0c484h		;6a06
-	ld a,(0c283h)		;6a09
+	ld a,(0c283h)		;6a09   ; lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	cp 004h		;6a0c
 	jr nz,L_6A13		;6a0e
 	inc (hl)			;6a10
@@ -1379,43 +1379,43 @@ L_6A06:
 L_6A13:
 	dec (hl)			;6a13
 L_6A14:
-	call 045eeh		;6a14
-	call 0460ah		;6a17
+	call 045eeh		;6a14   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+	call 0460ah		;6a17   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 	call L_67E8		;6a1a
 	xor a			;6a1d
-	ld (0c267h),a		;6a1e
+	ld (0c267h),a		;6a1e   ; guarda los colores del sitio
 	ld hl,0c500h		;6a21
 	ld de,0c501h		;6a24
 	ld (hl),a			;6a27
 	ld bc,0002fh		;6a28
 	ldir		;6a2b
-	call 04d2ch		;6a2d
+	call 04d2ch		;6a2d   ; colores_del_sitio: cambia los colores del sitio (0xC267)
 	ld hl,0d800h		;6a30
 	ld de,0d801h		;6a33
 	ld (hl),001h		;6a36
 	ld bc,002ffh		;6a38
 	ldir		;6a3b
-	call 0534eh		;6a3d
+	call 0534eh		;6a3d   ; pinta_la_pantalla: pinta la pantalla montada
 	ld a,(0c484h)		;6a40
 	ld hl,0ea00h		;6a43
-	call 04083h		;6a46
+	call 04083h		;6a46   ; hl_mas_a: HL += A
 	ld a,(hl)			;6a49
-	call 04f47h		;6a4a
+	call 04f47h		;6a4a   ; pinta_pasadizo: pinta un pasadizo
 	call L_67F4		;6a4d
-	call 090c0h		;6a50
+	call 090c0h		;6a50   ; cosas_fijas: pinta las cosas fijas de la casilla
 	call L_6A9C		;6a53
-	jp 045e1h		;6a56
+	jp 045e1h		;6a56   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 L_6A59:
-	ld a,(0c483h)		;6a59
+	ld a,(0c483h)		;6a59   ; lee si esta en un pasadizo
 	and a			;6a5c
 	ld hl,0ea80h		;6a5d
 	jr nz,L_6A65		;6a60
 	ld hl,0eb00h		;6a62
 L_6A65:
 	ld b,(hl)			;6a65
-	ld a,(0c483h)		;6a66
+	ld a,(0c483h)		;6a66   ; lee si esta en un pasadizo
 	and a			;6a69
-	ld a,(0c281h)		;6a6a
+	ld a,(0c281h)		;6a6a   ; lee la CASILLA de la zona
 	jr nz,L_6A72		;6a6d
 	ld a,(0c484h)		;6a6f
 L_6A72:
@@ -1426,11 +1426,11 @@ L_6A74:
 	cp c			;6a75
 	jr nz,L_6A90		;6a76
 	inc hl			;6a78
-	ld a,(0c483h)		;6a79
+	ld a,(0c483h)		;6a79   ; lee si esta en un pasadizo
 	and a			;6a7c
 	push af			;6a7d
 	ld a,(hl)			;6a7e
-	ld de,0c281h		;6a7f
+	ld de,0c281h		;6a7f   ; apunta a la CASILLA de la zona
 	jr z,L_6A87		;6a82
 	ld de,0c484h		;6a84
 L_6A87:
@@ -1439,10 +1439,10 @@ L_6A87:
 	ret nz			;6a89
 	inc hl			;6a8a
 	ld a,(hl)			;6a8b
-	ld (0c267h),a		;6a8c
+	ld (0c267h),a		;6a8c   ; guarda los colores del sitio
 	ret			;6a8f
 L_6A90:
-	ld a,(0c483h)		;6a90
+	ld a,(0c483h)		;6a90   ; lee si esta en un pasadizo
 	and a			;6a93
 	jr nz,L_6A97		;6a94
 	inc hl			;6a96
@@ -1457,7 +1457,7 @@ L_6A9C:
 	and a			;6aa0
 	ret z			;6aa1
 	ld (hl),000h		;6aa2
-	ld a,(0c483h)		;6aa4
+	ld a,(0c483h)		;6aa4   ; lee si esta en un pasadizo
 	and a			;6aa7
 	ld c,006h		;6aa8
 	jr z,L_6AAD		;6aaa
@@ -1497,7 +1497,7 @@ L_6ACB:
 	add a,h			;6ad3
 	ld d,a			;6ad4
 	push hl			;6ad5
-	call L_781F		;6ad6
+	call se_puede_pisar		;6ad6   ; se_puede_pisar: carry si el caracter se puede pisar
 	pop hl			;6ad9
 	jr nc,L_6AE0		;6ada
 	exx			;6adc
@@ -1505,13 +1505,13 @@ L_6ACB:
 	djnz L_6ACB		;6ade
 L_6AE0:
 	ld a,e			;6ae0
-	ld (0c498h),a		;6ae1
-	ld (0c494h),a		;6ae4
+	ld (0c498h),a		;6ae1   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;6ae4   ; guarda la y del jugador
 	ld a,d			;6ae7
-	ld (0c49ah),a		;6ae8
-	ld (0c496h),a		;6aeb
+	ld (0c49ah),a		;6ae8   ; guarda la x de los sprites del jugador
+	ld (0c496h),a		;6aeb   ; guarda la x del jugador
 	ld a,003h		;6aee
-	ld (0c4a2h),a		;6af0
+	ld (0c4a2h),a		;6af0   ; guarda el lado al que mira el jugador
 	ret			;6af3
 
 ; ----------------------------------------------------------------------
@@ -1530,9 +1530,9 @@ DATA_cuatro_puntos:
 
 
 L_6AFC:
-	call 041f6h		;6afc
+	call 041f6h		;6afc   ; indice_de_la_zona: A = (fase * 7 + zona) * 2
 	ld hl,0af08h		;6aff
-	call 04d81h		;6b02
+	call 04d81h		;6b02   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld de,0ea00h		;6b05
 	ld b,00fh		;6b08
 L_6B0A:
@@ -1555,9 +1555,9 @@ L_6B0A:
 	pop bc			;6b1d
 	inc hl			;6b1e
 	djnz L_6B0A		;6b1f
-	call 041f6h		;6b21
+	call 041f6h		;6b21   ; indice_de_la_zona: A = (fase * 7 + zona) * 2
 	ld hl,0b21bh		;6b24
-	call 04d81h		;6b27
+	call 04d81h		;6b27   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	push hl			;6b2a
 	ld de,0ea80h		;6b2b
 	ld a,(hl)			;6b2e
@@ -1606,23 +1606,23 @@ L_6B48:
 	ret			;6b5e
 L_6B5F:
 	ld hl,0eb90h		;6b5f
-	ld a,(0c002h)		;6b62
+	ld a,(0c002h)		;6b62   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rrca			;6b65
 	rrca			;6b66
 	rrca			;6b67
 	and 010h		;6b68
 	ld b,a			;6b6a
-	ld a,(0c288h)		;6b6b
+	ld a,(0c288h)		;6b6b   ; lee la FASE (0-6)
 	or b			;6b6e
 	ld (hl),a			;6b6f
 	inc hl			;6b70
-	ld a,(0c280h)		;6b71
+	ld a,(0c280h)		;6b71   ; lee la ZONA (0-6)
 	call L_6BF5		;6b74
 	inc hl			;6b77
-	ld a,(0c281h)		;6b78
+	ld a,(0c281h)		;6b78   ; lee la CASILLA de la zona
 	call L_6BF5		;6b7b
 	inc hl			;6b7e
-	ld a,(0c267h)		;6b7f
+	ld a,(0c267h)		;6b7f   ; lee los colores del sitio
 	ld (hl),a			;6b82
 	inc hl			;6b83
 	ld a,(0c00eh)		;6b84
@@ -1681,16 +1681,16 @@ L_6BC1:
 	ld de,0a0c0h		;6bd2
 	call L_6382		;6bd5
 	ld hl,06ccch		;6bd8
-	call 048f3h		;6bdb
+	call 048f3h		;6bdb   ; rotulo: pinta un rotulo
 	ld hl,0eba0h		;6bde
 	ld de,06080h		;6be1
-	jp 048fdh		;6be4
+	jp 048fdh		;6be4   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
 L_6BE7:
 	ld de,05070h		;6be7
 	ld bc,0601ch		;6bea
 	ld hl,0a0c0h		;6bed
 	ld a,001h		;6bf0
-	jp 0476eh		;6bf2
+	jp 0476eh		;6bf2   ; hmmm: orden HMMM del V9938: copia un rectangulo de VRAM a VRAM
 L_6BF5:
 	ld b,a			;6bf5
 	rra			;6bf6
@@ -1704,16 +1704,16 @@ L_6BF5:
 	and 00fh		;6bff
 	ld (hl),a			;6c01
 	ret			;6c02
-L_6C03:
-	call L_6CD8		;6c03
+teclea_la_contrasena:		; la pantalla de la contrasena
+	call lee_el_teclado		;6c03   ; lee_el_teclado: lee una tecla
 	xor a			;6c06
 	ld (0eb82h),a		;6c07
 	ld de,0ebb0h		;6c0a
-	ld hl,0eb83h		;6c0d
+	ld hl,0eb83h		;6c0d   ; apunta a los caracteres de la contrasena
 	ld a,(hl)			;6c10
 	cp 009h		;6c11
 	jr nc,L_6C31		;6c13
-	ld a,(0eb81h)		;6c15
+	ld a,(0eb81h)		;6c15   ; lee la tecla
 	and a			;6c18
 	ret z			;6c19
 	push af			;6c1a
@@ -1726,7 +1726,7 @@ L_6C03:
 	ld c,0ffh		;6c21
 	ld hl,0ebb0h		;6c23
 	ld de,06080h		;6c26
-	call 048fdh		;6c29
+	call 048fdh		;6c29   ; rotulo_sin_posicion: pinta un rotulo donde se quedo el anterior
 	exx			;6c2c
 	inc de			;6c2d
 	inc (hl)			;6c2e
@@ -1777,36 +1777,36 @@ L_6C66:
 	djnz L_6C66		;6c68
 	ld d,a			;6c6a
 	ld hl,(0ebc7h)		;6c6b
-	call L_6CAB		;6c6e
+	call junta_nibbles		;6c6e   ; junta_nibbles: junta dos nibbles en un byte
 	cp d			;6c71
 	scf			;6c72
 	ret nz			;6c73
 	ld a,001h		;6c74
 	ld (0eb82h),a		;6c76
 	ret			;6c79
-L_6C7A:
+aplica_la_contrasena:		; saca de la contrasena la fase, el jugador, la zona y la casilla
 	ld a,(0ebc0h)		;6c7a
 	ld b,a			;6c7d
 	and 00fh		;6c7e
-	ld (0c288h),a		;6c80
+	ld (0c288h),a		;6c80   ; guarda la FASE (0-6)
 	ld a,b			;6c83
 	and 010h		;6c84
-	ld hl,0c002h		;6c86
+	ld hl,0c002h		;6c86   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	jr z,L_6C8D		;6c89
 	set 7,(hl)		;6c8b
 L_6C8D:
 	ld hl,(0ebc1h)		;6c8d
-	call L_6CAB		;6c90
-	ld (0c280h),a		;6c93
+	call junta_nibbles		;6c90   ; junta_nibbles: junta dos nibbles en un byte
+	ld (0c280h),a		;6c93   ; guarda la ZONA (0-6)
 	ld hl,(0ebc3h)		;6c96
-	call L_6CAB		;6c99
-	ld (0c281h),a		;6c9c
+	call junta_nibbles		;6c99   ; junta_nibbles: junta dos nibbles en un byte
+	ld (0c281h),a		;6c9c   ; guarda la CASILLA de la zona
 	ld a,(0ebc5h)		;6c9f
-	ld (0c267h),a		;6ca2
+	ld (0c267h),a		;6ca2   ; guarda los colores del sitio
 	ld a,001h		;6ca5
-	ld (0c268h),a		;6ca7
+	ld (0c268h),a		;6ca7   ; guarda si ya entro en la zona
 	ret			;6caa
-L_6CAB:
+junta_nibbles:		; junta dos nibbles en un byte
 	rl l		;6cab
 	rl l		;6cad
 	rl l		;6caf
@@ -1817,7 +1817,7 @@ L_6CAB:
 	ret			;6cb7
 L_6CB8:
 	xor a			;6cb8
-	ld (0eb83h),a		;6cb9
+	ld (0eb83h),a		;6cb9   ; guarda los caracteres de la contrasena
 	ld hl,0ebb0h		;6cbc
 	ld de,0ebb1h		;6cbf
 	ld bc,00008h		;6cc2
@@ -1839,11 +1839,11 @@ DATA_rotulo_6CCC:
 ; ======================================================================
 
 
-L_6CD8:
+lee_el_teclado:		; lee una tecla
 	di			;6cd8
 	ld a,006h		;6cd9
-	ld (0a000h),a		;6cdb
-	ld (0f0f3h),a		;6cde
+	ld (0a000h),a		;6cdb   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;6cde   ; guarda la copia del banco de 0xA000
 	ei			;6ce1
 	ld b,009h		;6ce2
 	ld e,000h		;6ce4
@@ -1860,7 +1860,7 @@ L_6CE6:
 	ld (hl),a			;6cf5
 	inc hl			;6cf6
 	ld (hl),a			;6cf7
-	jp 04206h		;6cf8
+	jp 04206h		;6cf8   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_6CFB:
 	ld b,a			;6cfb
 	ld a,(0fcadh)		;6cfc
@@ -1873,7 +1873,7 @@ L_6D08:
 	add a,a			;6d09
 	add a,a			;6d0a
 	add a,a			;6d0b
-	call 04083h		;6d0c
+	call 04083h		;6d0c   ; hl_mas_a: HL += A
 	ld a,b			;6d0f
 L_6D10:
 	rra			;6d10
@@ -1901,7 +1901,7 @@ L_6D2C:
 	and (hl)			;6d32
 	inc hl			;6d33
 	ld (hl),a			;6d34
-	jp 04206h		;6d35
+	jp 04206h		;6d35   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_6D38:
 	ld a,(0cd32h)		;6d38
 	and a			;6d3b
@@ -1909,8 +1909,8 @@ L_6D38:
 	call L_710E		;6d3d
 	call L_71A2		;6d40
 	call L_7116		;6d43
-	ld a,(0c490h)		;6d46
-	call 0408dh		;6d49
+	ld a,(0c490h)		;6d46   ; lee el estado del jugador
+	call 0408dh		;6d49   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_6D4C: 6 destinos del despachador de 0x408D (call en p01:6D49):
@@ -1941,11 +1941,11 @@ L_6D58:
 	call L_7763		;6d67
 	jr c,L_6DD6		;6d6a
 	call L_715D		;6d6c
-	ld a,(0c490h)		;6d6f
+	ld a,(0c490h)		;6d6f   ; lee el estado del jugador
 	cp 003h		;6d72
 	ret z			;6d74
 	call L_72E6		;6d75
-	ld a,(0c482h)		;6d78
+	ld a,(0c482h)		;6d78   ; lee la pantalla especial
 	and a			;6d7b
 	jr nz,L_6D89		;6d7c
 	ld a,(0c006h)		;6d7e
@@ -1961,7 +1961,7 @@ L_6D89:
 	ld a,(0c00dh)		;6d90
 	and 003h		;6d93
 	jr nz,L_6D9E		;6d95
-	ld hl,0c49fh		;6d97
+	ld hl,0c49fh		;6d97   ; apunta a la accion del jugador
 	ld a,(hl)			;6d9a
 	xor 001h		;6d9b
 	ld (hl),a			;6d9d
@@ -1976,11 +1976,11 @@ L_6D9F:
 	jp c,L_6E30		;6da8
 	rra			;6dab
 	jp c,L_6E57		;6dac
-	ld a,(0c490h)		;6daf
+	ld a,(0c490h)		;6daf   ; lee el estado del jugador
 	dec a			;6db2
 	ret z			;6db3
 	xor a			;6db4
-	ld (0c49fh),a		;6db5
+	ld (0c49fh),a		;6db5   ; guarda la accion del jugador
 	ret			;6db8
 L_6DB9:
 	ld a,001h		;6db9
@@ -1990,15 +1990,15 @@ L_6DBF:
 	ld a,(0c485h)		;6dbf
 	ld (0c4a5h),a		;6dc2
 	ld a,001h		;6dc5
-	ld (0c490h),a		;6dc7
+	ld (0c490h),a		;6dc7   ; guarda el estado del jugador
 	inc a			;6dca
-	ld (0c49fh),a		;6dcb
+	ld (0c49fh),a		;6dcb   ; guarda la accion del jugador
 	call L_7395		;6dce
 	ld a,001h		;6dd1
-	jp 04fe4h		;6dd3
+	jp 04fe4h		;6dd3   ; sonido: arranca la musica o el efecto A
 L_6DD6:
-	call L_67B3		;6dd6
-	call L_67DA		;6dd9
+	call borra_las_figuras		;6dd6   ; borra_las_figuras: borra todas las figuras
+	call esconde_los_sprites_de_ram		;6dd9   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	call L_67F4		;6ddc
 	ld hl,0c4d3h		;6ddf
 	call L_76AC		;6de2
@@ -2006,27 +2006,27 @@ L_6DD6:
 	call L_76AC		;6de8
 	call L_6F64		;6deb
 	ld a,002h		;6dee
-	ld (0c490h),a		;6df0
+	ld (0c490h),a		;6df0   ; guarda el estado del jugador
 	ld a,00fh		;6df3
 	ld (0c4a8h),a		;6df5
 	xor a			;6df8
-	ld (0c49fh),a		;6df9
+	ld (0c49fh),a		;6df9   ; guarda la accion del jugador
 	ld (0c4a9h),a		;6dfc
 	ld a,08bh		;6dff
-	jp 04fe4h		;6e01
+	jp 04fe4h		;6e01   ; sonido: arranca la musica o el efecto A
 L_6E04:
 	xor a			;6e04
-	ld (0c4a2h),a		;6e05
+	ld (0c4a2h),a		;6e05   ; guarda el lado al que mira el jugador
 	call L_771F		;6e08
 	ret c			;6e0b
 	ld de,(0c4a3h)		;6e0c
-	call 08c0ah		;6e10
+	call 08c0ah		;6e10   ; niega_de: DE = -DE
 	ld (0c49bh),de		;6e13
 	ret			;6e17
 L_6E18:
 	ld a,001h		;6e18
-	ld (0c4a2h),a		;6e1a
-	ld a,(0c494h)		;6e1d
+	ld (0c4a2h),a		;6e1a   ; guarda el lado al que mira el jugador
+	ld a,(0c494h)		;6e1d   ; lee la y del jugador
 	cp 0c9h		;6e20
 	ret nc			;6e22
 	call L_7741		;6e23
@@ -2036,33 +2036,33 @@ L_6E18:
 	ret			;6e2f
 L_6E30:
 	ld a,002h		;6e30
-	ld (0c4a2h),a		;6e32
-	ld a,(0c483h)		;6e35
+	ld (0c4a2h),a		;6e32   ; guarda el lado al que mira el jugador
+	ld a,(0c483h)		;6e35   ; lee si esta en un pasadizo
 	and a			;6e38
 	jr nz,L_6E47		;6e39
 	ld a,(0c286h)		;6e3b
 	inc a			;6e3e
 	jr nz,L_6E47		;6e3f
-	ld a,(0c496h)		;6e41
+	ld a,(0c496h)		;6e41   ; lee la x del jugador
 	cp 010h		;6e44
 	ret c			;6e46
 L_6E47:
 	call L_7794		;6e47
 	ret c			;6e4a
 	ld de,(0c4a3h)		;6e4b
-	call 08c0ah		;6e4f
+	call 08c0ah		;6e4f   ; niega_de: DE = -DE
 	ld (0c49dh),de		;6e52
 	ret			;6e56
 L_6E57:
 	ld a,003h		;6e57
-	ld (0c4a2h),a		;6e59
-	ld a,(0c483h)		;6e5c
+	ld (0c4a2h),a		;6e59   ; guarda el lado al que mira el jugador
+	ld a,(0c483h)		;6e5c   ; lee si esta en un pasadizo
 	and a			;6e5f
 	jr nz,L_6E6E		;6e60
 	ld a,(0c287h)		;6e62
 	inc a			;6e65
 	jr nz,L_6E6E		;6e66
-	ld a,(0c496h)		;6e68
+	ld a,(0c496h)		;6e68   ; lee la x del jugador
 	cp 0f1h		;6e6b
 	ret nc			;6e6d
 L_6E6E:
@@ -2072,10 +2072,10 @@ L_6E6E:
 	ld (0c49dh),de		;6e76
 	ret			;6e7a
 L_6E7B:
-	ld a,(0c270h)		;6e7b
+	ld a,(0c270h)		;6e7b   ; lee las 10 cosas del marcador
 	add a,a			;6e7e
 	ld hl,06e92h		;6e7f
-	call 04d81h		;6e82
+	call 04d81h		;6e82   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld (0c4a3h),hl		;6e85
 	ld hl,00000h		;6e88
 	ld (0c49bh),hl		;6e8b
@@ -2113,20 +2113,20 @@ L_6EA8:
 	jr z,L_6EB9		;6eb4
 	ld bc,0060ch		;6eb6
 L_6EB9:
-	ld a,(0c496h)		;6eb9
+	ld a,(0c496h)		;6eb9   ; lee la x del jugador
 	sub b			;6ebc
 	ld d,a			;6ebd
 	ld b,h			;6ebe
-	ld a,(0c494h)		;6ebf
+	ld a,(0c494h)		;6ebf   ; lee la y del jugador
 	ld e,a			;6ec2
-	call L_7804		;6ec3
+	call caracter_bajo		;6ec3   ; caracter_bajo: el caracter que hay bajo un punto
 	inc a			;6ec6
 	ld a,b			;6ec7
 	jr z,L_6EEF		;6ec8
 	ld a,d			;6eca
 	add a,c			;6ecb
 	ld d,a			;6ecc
-	call L_7804		;6ecd
+	call caracter_bajo		;6ecd   ; caracter_bajo: el caracter que hay bajo un punto
 	inc a			;6ed0
 	ld a,b			;6ed1
 	jr z,L_6EEF		;6ed2
@@ -2153,17 +2153,17 @@ L_6EF2:
 	inc (hl)			;6ef9
 	cp 01eh		;6efa
 	jr nc,L_6F08		;6efc
-	call 04088h		;6efe
+	call 04088h		;6efe   ; de_mas_a: DE += A
 	ld a,(de)			;6f01
-	ld hl,0c498h		;6f02
+	ld hl,0c498h		;6f02   ; apunta a la y de los sprites del jugador
 	add a,(hl)			;6f05
 	ld (hl),a			;6f06
 	ret			;6f07
 L_6F08:
 	xor a			;6f08
-	ld (0c490h),a		;6f09
+	ld (0c490h),a		;6f09   ; guarda el estado del jugador
 	ld (0c4a0h),a		;6f0c
-	ld (0c49fh),a		;6f0f
+	ld (0c49fh),a		;6f0f   ; guarda la accion del jugador
 	ld (0c4aah),a		;6f12
 	ld (0c4a5h),a		;6f15
 	ret			;6f18
@@ -2199,14 +2199,14 @@ L_6F48:
 	and a			;6f4c
 	jr z,L_6F58		;6f4d
 	ex de,hl			;6f4f
-	ld hl,0c498h		;6f50
+	ld hl,0c498h		;6f50   ; apunta a la y de los sprites del jugador
 	inc (hl)			;6f53
 	inc (hl)			;6f54
 	ex de,hl			;6f55
 	dec (hl)			;6f56
 	ret			;6f57
 L_6F58:
-	ld a,(0c0abh)		;6f58
+	ld a,(0c0abh)		;6f58   ; lee los canales que suenan
 	and a			;6f5b
 	ret nz			;6f5c
 	jp L_700A		;6f5d
@@ -2221,7 +2221,7 @@ L_6F66:
 L_6F6B:
 	ld a,b			;6f6b
 	cp 009h		;6f6c
-	ld a,(0c494h)		;6f6e
+	ld a,(0c494h)		;6f6e   ; lee la y del jugador
 	jr nc,L_6F75		;6f71
 	add a,010h		;6f73
 L_6F75:
@@ -2249,12 +2249,12 @@ L_6F8F:
 	ret nz			;6f99
 	ld hl,0fe80h		;6f9a
 	ld (0c49bh),hl		;6f9d
-	ld a,(0c49ah)		;6fa0
+	ld a,(0c49ah)		;6fa0   ; lee la x de los sprites del jugador
 	rla			;6fa3
 	ld de,00200h		;6fa4
-	call c,08c0ah		;6fa7
+	call c,08c0ah		;6fa7   ; niega_de: DE = -DE
 	ld (0c49dh),de		;6faa
-	ld a,(0c49ah)		;6fae
+	ld a,(0c49ah)		;6fae   ; lee la x de los sprites del jugador
 	sub 0e0h		;6fb1
 	cp 040h		;6fb3
 	jp c,L_7064		;6fb5
@@ -2265,10 +2265,10 @@ L_6FBD:
 	dec (hl)			;6fbf
 	ret nz			;6fc0
 L_6FC1:
-	ld a,(0c49ah)		;6fc1
+	ld a,(0c49ah)		;6fc1   ; lee la x de los sprites del jugador
 	rla			;6fc4
 	ld de,00040h		;6fc5
-	call nc,08c0ah		;6fc8
+	call nc,08c0ah		;6fc8   ; niega_de: DE = -DE
 	ld (0c4abh),de		;6fcb
 	xor a			;6fcf
 	ld (0c4adh),a		;6fd0
@@ -2279,7 +2279,7 @@ L_6FD6:
 	ld de,(0c4abh)		;6fdb
 	ld a,(0c4adh)		;6fdf
 	and a			;6fe2
-	call nz,08c0ah		;6fe3
+	call nz,08c0ah		;6fe3   ; niega_de: DE = -DE
 	add hl,de			;6fe6
 	ld (0c49dh),hl		;6fe7
 	ld a,h			;6fea
@@ -2292,7 +2292,7 @@ L_6FD6:
 	xor 001h		;6ff5
 	ld (hl),a			;6ff7
 L_6FF8:
-	ld hl,0c498h		;6ff8
+	ld hl,0c498h		;6ff8   ; apunta a la y de los sprites del jugador
 	ld a,(hl)			;6ffb
 	cp 0f0h		;6ffc
 	ld b,001h		;6ffe
@@ -2300,20 +2300,20 @@ L_6FF8:
 	dec b			;7002
 	ld (hl),0f8h		;7003
 L_7005:
-	ld a,(0c0abh)		;7005
+	ld a,(0c0abh)		;7005   ; lee los canales que suenan
 	or b			;7008
 	ret nz			;7009
 L_700A:
 	xor a			;700a
 	ld (0c263h),a		;700b
 	ld (0c27eh),a		;700e
-	ld hl,0c270h		;7011
+	ld hl,0c270h		;7011   ; apunta a las 10 cosas del marcador
 	ld (hl),a			;7014
 	inc hl			;7015
 	ld (hl),a			;7016
-	ld (0c483h),a		;7017
+	ld (0c483h),a		;7017   ; guarda si esta en un pasadizo
 	inc a			;701a
-	ld (0c268h),a		;701b
+	ld (0c268h),a		;701b   ; guarda si ya entro en la zona
 L_701E:
 	ld hl,0c266h		;701e
 	xor a			;7021
@@ -2355,8 +2355,8 @@ L_704E:
 	and a			;705a
 	ret nz			;705b
 	ld a,004h		;705c
-	ld (0c49fh),a		;705e
-	ld (0c4aeh),a		;7061
+	ld (0c49fh),a		;705e   ; guarda la accion del jugador
+	ld (0c4aeh),a		;7061   ; guarda el parpadeo del jugador
 L_7064:
 	ld a,010h		;7064
 	ld (0c4a8h),a		;7066
@@ -2378,9 +2378,9 @@ L_706E:
 	ld b,001h		;7081
 L_7083:
 	ld a,b			;7083
-	ld (0c4a2h),a		;7084
+	ld (0c4a2h),a		;7084   ; guarda el lado al que mira el jugador
 	ex de,hl			;7087
-	ld hl,0c498h		;7088
+	ld hl,0c498h		;7088   ; apunta a la y de los sprites del jugador
 	inc (hl)			;708b
 	ex de,hl			;708c
 	ld hl,0c4a8h		;708d
@@ -2388,9 +2388,9 @@ L_7083:
 	ret nz			;7091
 	xor a			;7092
 	ld hl,00000h		;7093
-	ld (0c490h),a		;7096
+	ld (0c490h),a		;7096   ; guarda el estado del jugador
 	ld (0c4a3h),hl		;7099
-	ld hl,0c483h		;709c
+	ld hl,0c483h		;709c   ; apunta a si esta en un pasadizo
 	ld a,(hl)			;709f
 	xor 001h		;70a0
 	ld (hl),a			;70a2
@@ -2420,7 +2420,7 @@ L_70A9:
 	push af			;70c7
 	and 003h		;70c8
 	jr nz,L_70D3		;70ca
-	ld hl,0c49fh		;70cc
+	ld hl,0c49fh		;70cc   ; apunta a la accion del jugador
 	ld a,(hl)			;70cf
 	xor 001h		;70d0
 	ld (hl),a			;70d2
@@ -2428,24 +2428,24 @@ L_70D3:
 	pop af			;70d3
 	and 007h		;70d4
 	ret nz			;70d6
-	ld hl,0c494h		;70d7
+	ld hl,0c494h		;70d7   ; apunta a la y del jugador
 	dec (hl)			;70da
-	ld hl,0c498h		;70db
+	ld hl,0c498h		;70db   ; apunta a la y de los sprites del jugador
 	dec (hl)			;70de
 	ret			;70df
 L_70E0:
 	ld a,0e0h		;70e0
-	ld (0c494h),a		;70e2
+	ld (0c494h),a		;70e2   ; guarda la y del jugador
 	ld a,0f0h		;70e5
-	ld (0c498h),a		;70e7
-	ld a,(0c0abh)		;70ea
+	ld (0c498h),a		;70e7   ; guarda la y de los sprites del jugador
+	ld a,(0c0abh)		;70ea   ; lee los canales que suenan
 	and a			;70ed
 	ret nz			;70ee
 	ld a,001h		;70ef
 	ld (0c282h),a		;70f1
 	ret			;70f4
 L_70F5:
-	ld a,(0c289h)		;70f5
+	ld a,(0c289h)		;70f5   ; lee el juego de graficos de la zona
 	cp 004h		;70f8
 	ld hl,000a0h		;70fa
 	ld de,07040h		;70fd
@@ -2455,7 +2455,7 @@ L_70F5:
 L_7106:
 	ld bc,02020h		;7106
 	ld a,040h		;7109
-	jp 04803h		;710b
+	jp 04803h		;710b   ; lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
 L_710E:
 	ld hl,0c4a7h		;710e
 	ld a,(hl)			;7111
@@ -2464,24 +2464,24 @@ L_710E:
 	dec (hl)			;7114
 	ret			;7115
 L_7116:
-	ld a,(0c490h)		;7116
+	ld a,(0c490h)		;7116   ; lee el estado del jugador
 	cp 003h		;7119
 	ret z			;711b
 	call L_7132		;711c
-	ld de,(0c4b0h)		;711f
+	ld de,(0c4b0h)		;711f   ; lee el TIEMPO (BCD)
 	ld a,d			;7123
 	and a			;7124
 	ret nz			;7125
 	ld a,e			;7126
 	cp 050h		;7127
 	ret nc			;7129
-	ld a,(0c0abh)		;712a
+	ld a,(0c0abh)		;712a   ; lee los canales que suenan
 	and a			;712d
 	ret nz			;712e
-	jp 0416fh		;712f
+	jp 0416fh		;712f   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
 L_7132:
 	ld b,000h		;7132
-	ld de,(0c4b0h)		;7134
+	ld de,(0c4b0h)		;7134   ; lee el TIEMPO (BCD)
 	ld a,d			;7138
 	and a			;7139
 	jr nz,L_7143		;713a
@@ -2500,16 +2500,16 @@ L_7143:
 L_714E:
 	ld a,001h		;714e
 	ld (0c0afh),a		;7150
-	ld a,(0c483h)		;7153
+	ld a,(0c483h)		;7153   ; lee si esta en un pasadizo
 	and a			;7156
 	ret nz			;7157
 	ld a,092h		;7158
-	jp 04fe4h		;715a
+	jp 04fe4h		;715a   ; sonido: arranca la musica o el efecto A
 L_715D:
-	ld a,(0c481h)		;715d
+	ld a,(0c481h)		;715d   ; lee la VIDA del jugador
 	and a			;7160
 	jr z,L_716C		;7161
-	ld bc,(0c4b0h)		;7163
+	ld bc,(0c4b0h)		;7163   ; lee el TIEMPO (BCD)
 	ld a,b			;7167
 	or c			;7168
 	ret nz			;7169
@@ -2520,24 +2520,24 @@ L_716C:
 	and a			;7170
 	jr z,L_7183		;7171
 	ld (hl),000h		;7173
-	ld a,(0c480h)		;7175
-	ld (0c481h),a		;7178
-	call 05890h		;717b
+	ld a,(0c480h)		;7175   ; lee la vida maxima
+	ld (0c481h),a		;7178   ; guarda la VIDA del jugador
+	call 05890h		;717b   ; pinta_la_vida: pinta la barra de vida
 	ld a,007h		;717e
-	jp 057fah		;7180
+	jp 057fah		;7180   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 L_7183:
-	call L_67B3		;7183
-	call L_67DA		;7186
+	call borra_las_figuras		;7183   ; borra_las_figuras: borra todas las figuras
+	call esconde_los_sprites_de_ram		;7186   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	xor a			;7189
 	ld (0c492h),a		;718a
 	ld (0c4d0h),a		;718d
 	ld (0c4e0h),a		;7190
 	ld a,003h		;7193
-	ld (0c490h),a		;7195
+	ld (0c490h),a		;7195   ; guarda el estado del jugador
 	ld a,020h		;7198
 	ld (0c4a7h),a		;719a
 	ld a,08bh		;719d
-	jp 04fe4h		;719f
+	jp 04fe4h		;719f   ; sonido: arranca la musica o el efecto A
 L_71A2:
 	ld hl,0c485h		;71a2
 	ld a,(0c007h)		;71a5
@@ -2555,19 +2555,19 @@ L_71B9:
 	ld (hl),a			;71b9
 	ret			;71ba
 L_71BB:
-	ld a,(0c490h)		;71bb
+	ld a,(0c490h)		;71bb   ; lee el estado del jugador
 	cp 003h		;71be
 	ret z			;71c0
-	ld a,(0c483h)		;71c1
+	ld a,(0c483h)		;71c1   ; lee si esta en un pasadizo
 	and a			;71c4
 	jr nz,L_71D1		;71c5
-	ld a,(0c482h)		;71c7
+	ld a,(0c482h)		;71c7   ; lee la pantalla especial
 	and a			;71ca
 	jp nz,L_729D		;71cb
 	call L_7258		;71ce
 L_71D1:
-	ld hl,0c283h		;71d1
-	ld de,0c496h		;71d4
+	ld hl,0c283h		;71d1   ; apunta a el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+	ld de,0c496h		;71d4   ; apunta a la x del jugador
 	ld a,(de)			;71d7
 	cp 0f7h		;71d8
 	jr nc,L_71E7		;71da
@@ -2599,11 +2599,11 @@ L_71F2:
 	jr z,L_7200		;71fc
 	ld d,0c8h		;71fe
 L_7200:
-	ld a,(0c494h)		;7200
+	ld a,(0c494h)		;7200   ; lee la y del jugador
 	sub d			;7203
 	cp 008h		;7204
 	ret nc			;7206
-	ld a,(0c496h)		;7207
+	ld a,(0c496h)		;7207   ; lee la x del jugador
 	sub 040h		;720a
 	cp 020h		;720c
 	ret nc			;720e
@@ -2626,31 +2626,31 @@ L_7221:
 L_7224:
 	inc hl			;7224
 	ld a,(hl)			;7225
-	ld (0c267h),a		;7226
+	ld (0c267h),a		;7226   ; guarda los colores del sitio
 	xor a			;7229
-	ld (0c490h),a		;722a
+	ld (0c490h),a		;722a   ; guarda el estado del jugador
 	ld (0c4a0h),a		;722d
-	ld (0c49fh),a		;7230
+	ld (0c49fh),a		;7230   ; guarda la accion del jugador
 	ld (0c4a5h),a		;7233
 	ld a,050h		;7236
-	ld (0c49ah),a		;7238
-	ld (0c496h),a		;723b
+	ld (0c49ah),a		;7238   ; guarda la x de los sprites del jugador
+	ld (0c496h),a		;723b   ; guarda la x del jugador
 	dec hl			;723e
 	ld a,(hl)			;723f
-	ld (0c283h),a		;7240
+	ld (0c283h),a		;7240   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	dec a			;7243
 	jr z,L_724F		;7244
 	ld a,054h		;7246
-	ld (0c498h),a		;7248
-	ld (0c494h),a		;724b
+	ld (0c498h),a		;7248   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;724b   ; guarda la y del jugador
 	ret			;724e
 L_724F:
 	ld a,0c4h		;724f
-	ld (0c498h),a		;7251
-	ld (0c494h),a		;7254
+	ld (0c498h),a		;7251   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;7254   ; guarda la y del jugador
 	ret			;7257
 L_7258:
-	ld a,(0c490h)		;7258
+	ld a,(0c490h)		;7258   ; lee el estado del jugador
 	and a			;725b
 	ret nz			;725c
 	ld hl,0c500h		;725d
@@ -2661,7 +2661,7 @@ L_7262:
 	ld a,(hl)			;7264
 	and a			;7265
 	jr z,L_7295		;7266
-	ld a,(0c494h)		;7268
+	ld a,(0c494h)		;7268   ; lee la y del jugador
 	sub (hl)			;726b
 	cp 006h		;726c
 	jr nc,L_7295		;726e
@@ -2669,7 +2669,7 @@ L_7262:
 	ld a,(hl)			;7271
 	sub 008h		;7272
 	ld c,a			;7274
-	ld a,(0c496h)		;7275
+	ld a,(0c496h)		;7275   ; lee la x del jugador
 	sub c			;7278
 	cp 010h		;7279
 	jr nc,L_7295		;727b
@@ -2681,9 +2681,9 @@ L_7262:
 	xor a			;7286
 	ld (0c4a7h),a		;7287
 	ld a,001h		;728a
-	ld (0c482h),a		;728c
+	ld (0c482h),a		;728c   ; guarda la pantalla especial
 	ld a,005h		;728f
-	ld (0c283h),a		;7291
+	ld (0c283h),a		;7291   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ret			;7294
 L_7295:
 	pop hl			;7295
@@ -2695,11 +2695,11 @@ L_729D:
 	ld a,(0cd2eh)		;729d
 	and a			;72a0
 	ret nz			;72a1
-	ld a,(0c494h)		;72a2
+	ld a,(0c494h)		;72a2   ; lee la y del jugador
 	sub 0bch		;72a5
 	cp 010h		;72a7
 	ret nc			;72a9
-	ld a,(0c496h)		;72aa
+	ld a,(0c496h)		;72aa   ; lee la x del jugador
 	sub 078h		;72ad
 	cp 010h		;72af
 	ret nc			;72b1
@@ -2709,9 +2709,9 @@ L_729D:
 	ret nc			;72b7
 L_72B8:
 	xor a			;72b8
-	ld (0c482h),a		;72b9
+	ld (0c482h),a		;72b9   ; guarda la pantalla especial
 	ld a,006h		;72bc
-	ld (0c283h),a		;72be
+	ld (0c283h),a		;72be   ; guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 	ld hl,0c500h		;72c1
 	ld b,003h		;72c4
 L_72C6:
@@ -2722,12 +2722,12 @@ L_72C6:
 	inc hl			;72cc
 	ld a,(hl)			;72cd
 	add a,008h		;72ce
-	ld (0c498h),a		;72d0
-	ld (0c494h),a		;72d3
+	ld (0c498h),a		;72d0   ; guarda la y de los sprites del jugador
+	ld (0c494h),a		;72d3   ; guarda la y del jugador
 	inc hl			;72d6
 	ld a,(hl)			;72d7
-	ld (0c49ah),a		;72d8
-	ld (0c496h),a		;72db
+	ld (0c49ah),a		;72d8   ; guarda la x de los sprites del jugador
+	ld (0c496h),a		;72db   ; guarda la x del jugador
 	ret			;72de
 L_72DF:
 	ld de,00010h		;72df
@@ -2746,58 +2746,58 @@ L_72E6:
 	ld a,(0c279h)		;72f2
 	cp 003h		;72f5
 	ret c			;72f7
-	ld a,(0c496h)		;72f8
+	ld a,(0c496h)		;72f8   ; lee la x del jugador
 	sub 070h		;72fb
 	cp 020h		;72fd
 	ret nc			;72ff
 L_7300:
-	ld a,(0c494h)		;7300
+	ld a,(0c494h)		;7300   ; lee la y del jugador
 	sub 060h		;7303
 	cp 008h		;7305
 	ret nc			;7307
 	ld a,(0c007h)		;7308
 	rra			;730b
 	ret nc			;730c
-	call L_67B3		;730d
-	call L_67DA		;7310
+	call borra_las_figuras		;730d   ; borra_las_figuras: borra todas las figuras
+	call esconde_los_sprites_de_ram		;7310   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	call L_67E8		;7313
 	ld a,05ah		;7316
 	ld (0c4a8h),a		;7318
 	ld a,005h		;731b
-	ld (0c490h),a		;731d
+	ld (0c490h),a		;731d   ; guarda el estado del jugador
 	xor a			;7320
-	ld (0c4a2h),a		;7321
-	ld (0c49fh),a		;7324
+	ld (0c4a2h),a		;7321   ; guarda el lado al que mira el jugador
+	ld (0c49fh),a		;7324   ; guarda la accion del jugador
 	ld (0c4a7h),a		;7327
 	ld (0c279h),a		;732a
 	ld a,08fh		;732d
-	jp 04fe4h		;732f
+	jp 04fe4h		;732f   ; sonido: arranca la musica o el efecto A
 L_7332:
-	ld a,(0c496h)		;7332
+	ld a,(0c496h)		;7332   ; lee la x del jugador
 	sub 098h		;7335
 	cp 010h		;7337
 	ret nc			;7339
-	ld a,(0c494h)		;733a
+	ld a,(0c494h)		;733a   ; lee la y del jugador
 	sub 060h		;733d
 	cp 008h		;733f
 	ret nc			;7341
 	ld a,(0c007h)		;7342
 	rra			;7345
 	ret nc			;7346
-	call L_67B3		;7347
-	call L_67DA		;734a
+	call borra_las_figuras		;7347   ; borra_las_figuras: borra todas las figuras
+	call esconde_los_sprites_de_ram		;734a   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	call L_67E8		;734d
 	xor a			;7350
-	ld (0c4a2h),a		;7351
-	ld (0c49fh),a		;7354
+	ld (0c4a2h),a		;7351   ; guarda el lado al que mira el jugador
+	ld (0c49fh),a		;7354   ; guarda la accion del jugador
 	ld (0c4a7h),a		;7357
 	inc a			;735a
 	ld (0c28bh),a		;735b
-	call 04cabh		;735e
+	call 04cabh		;735e   ; sprites_del_jugador: sube los sprites del jugador
 	ld a,000h		;7361
-	jp 04fe4h		;7363
+	jp 04fe4h		;7363   ; sonido: arranca la musica o el efecto A
 L_7366:
-	ld a,(0c496h)		;7366
+	ld a,(0c496h)		;7366   ; lee la x del jugador
 	sub 080h		;7369
 	cp 020h		;736b
 	ret nc			;736d
@@ -2819,11 +2819,11 @@ L_7370:
 	ld (0c499h),hl		;7391
 	ret			;7394
 L_7395:
-	ld a,(0c494h)		;7395
+	ld a,(0c494h)		;7395   ; lee la y del jugador
 	sub 002h		;7398
 	and 0f8h		;739a
 	ld e,a			;739c
-	ld a,(0c496h)		;739d
+	ld a,(0c496h)		;739d   ; lee la x del jugador
 	and 0f8h		;73a0
 	ld d,a			;73a2
 	ld a,(0c4a5h)		;73a3
@@ -2839,14 +2839,14 @@ L_7395:
 	xor a			;73bb
 	ld (0c4a6h),a		;73bc
 	ld (0ee80h),a		;73bf
-	ld a,(0c270h)		;73c2
+	ld a,(0c270h)		;73c2   ; lee las 10 cosas del marcador
 	inc a			;73c5
 	inc a			;73c6
 	ld b,a			;73c7
 	ld c,001h		;73c8
 L_73CA:
 	push bc			;73ca
-	call L_7804		;73cb
+	call caracter_bajo		;73cb   ; caracter_bajo: el caracter que hay bajo un punto
 	ld a,h			;73ce
 	sub 0d8h		;73cf
 	cp 003h		;73d1
@@ -2898,8 +2898,8 @@ L_73F6:
 L_741B:
 	ld a,(0c4a6h)		;741b
 	ld c,a			;741e
-	ld a,(0c270h)		;741f
-	call 0408dh		;7422
+	ld a,(0c270h)		;741f   ; lee las 10 cosas del marcador
+	call 0408dh		;7422   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7425: 4 destinos del despachador de 0x408D (call en p01:7422):
@@ -3014,21 +3014,21 @@ L_749F:
 	ld (0ee80h),a		;74a2
 	ret			;74a5
 L_74A6:
-	ld a,(0c002h)		;74a6
+	ld a,(0c002h)		;74a6   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;74a9
 	ld hl,0aa56h		;74aa
 	jr nc,L_74B2		;74ad
 	ld hl,0aa7eh		;74af
 L_74B2:
-	ld a,(0c49fh)		;74b2
+	ld a,(0c49fh)		;74b2   ; lee la accion del jugador
 	add a,a			;74b5
 	add a,a			;74b6
 	ld b,a			;74b7
-	ld a,(0c4a2h)		;74b8
+	ld a,(0c4a2h)		;74b8   ; lee el lado al que mira el jugador
 	add a,b			;74bb
 	add a,a			;74bc
-	call 04d81h		;74bd
-	ld a,(0c490h)		;74c0
+	call 04d81h		;74bd   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
+	ld a,(0c490h)		;74c0   ; lee el estado del jugador
 	cp 002h		;74c3
 	ld de,0ee00h		;74c5
 	jr c,L_74CD		;74c8
@@ -3039,7 +3039,7 @@ L_74CD:
 	inc hl			;74d0
 L_74D1:
 	push bc			;74d1
-	ld a,(0c498h)		;74d2
+	ld a,(0c498h)		;74d2   ; lee la y de los sprites del jugador
 	add a,(hl)			;74d5
 	ld c,a			;74d6
 	ld a,(0c4a7h)		;74d7
@@ -3063,10 +3063,10 @@ L_74E2:
 	ld a,b			;74f3
 	cp 003h		;74f4
 	jr nc,L_750C		;74f6
-	ld a,(0c4a2h)		;74f8
+	ld a,(0c4a2h)		;74f8   ; lee el lado al que mira el jugador
 	cp 002h		;74fb
 	jr nz,L_750C		;74fd
-	ld a,(0c49ah)		;74ff
+	ld a,(0c49ah)		;74ff   ; lee la x de los sprites del jugador
 	add a,(hl)			;7502
 	jr c,L_7510		;7503
 	dec e			;7505
@@ -3075,7 +3075,7 @@ L_74E2:
 	inc e			;7509
 	jr L_7511		;750a
 L_750C:
-	ld a,(0c49ah)		;750c
+	ld a,(0c49ah)		;750c   ; lee la x de los sprites del jugador
 	add a,(hl)			;750f
 L_7510:
 	ld (de),a			;7510
@@ -3091,15 +3091,15 @@ L_7511:
 	inc e			;7519
 	inc e			;751a
 	djnz L_74D1		;751b
-	ld a,(0c490h)		;751d
+	ld a,(0c490h)		;751d   ; lee el estado del jugador
 	sub 002h		;7520
 	cp 003h		;7522
 	jr c,L_7538		;7524
 	ld de,0ee18h		;7526
-	ld a,(0c494h)		;7529
+	ld a,(0c494h)		;7529   ; lee la y del jugador
 	ld (de),a			;752c
 	inc e			;752d
-	ld a,(0c496h)		;752e
+	ld a,(0c496h)		;752e   ; lee la x del jugador
 	sub 008h		;7531
 	ld (de),a			;7533
 	inc e			;7534
@@ -3107,13 +3107,13 @@ L_7511:
 	ld (de),a			;7537
 L_7538:
 	ld b,040h		;7538
-	ld a,(0c490h)		;753a
+	ld a,(0c490h)		;753a   ; lee el estado del jugador
 	cp 002h		;753d
 	ld hl,0ec00h		;753f
 	jr c,L_7547		;7542
 	ld hl,0ed00h		;7544
 L_7547:
-	ld a,(0c4aeh)		;7547
+	ld a,(0c4aeh)		;7547   ; lee el parpadeo del jugador
 	and a			;754a
 	jr nz,L_7575		;754b
 	ld a,b			;754d
@@ -3123,7 +3123,7 @@ L_7547:
 	cp 011h		;7554
 	ld c,001h		;7556
 	jr nc,L_7580		;7558
-	ld a,(0c002h)		;755a
+	ld a,(0c002h)		;755a   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;755d
 	ld a,(0c271h)		;755e
 	jr c,L_756C		;7561
@@ -3148,7 +3148,7 @@ L_7580:
 	ld (hl),c			;7580
 	inc l			;7581
 	djnz L_7547		;7582
-	ld a,(0c490h)		;7584
+	ld a,(0c490h)		;7584   ; lee el estado del jugador
 	cp 002h		;7587
 	ret nc			;7589
 	ld a,(0c492h)		;758a
@@ -3168,7 +3168,7 @@ L_75A0:
 	ld c,002h		;75a4
 	jr nz,L_75B2		;75a6
 	ld c,008h		;75a8
-	ld a,(0c002h)		;75aa
+	ld a,(0c002h)		;75aa   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;75ad
 	jr nc,L_75B2		;75ae
 	ld c,00eh		;75b0
@@ -3176,17 +3176,17 @@ L_75B2:
 	ld (hl),c			;75b2
 	inc l			;75b3
 	djnz L_75A0		;75b4
-	ld a,(0c002h)		;75b6
+	ld a,(0c002h)		;75b6   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;75b9
 	jr c,L_75D4		;75ba
-	ld a,(0c4a2h)		;75bc
+	ld a,(0c4a2h)		;75bc   ; lee el lado al que mira el jugador
 	ld hl,075e0h		;75bf
-	call 04083h		;75c2
+	call 04083h		;75c2   ; hl_mas_a: HL += A
 	ld a,(hl)			;75c5
 	and a			;75c6
 	jr z,L_75D4		;75c7
 	ld hl,0ec50h		;75c9
-	call 04083h		;75cc
+	call 04083h		;75cc   ; hl_mas_a: HL += A
 	ld a,007h		;75cf
 	ld (hl),a			;75d1
 	inc l			;75d2
@@ -3225,13 +3225,13 @@ L_75E4:
 	call L_766C		;75f2
 	ret nz			;75f5
 	ld a,003h		;75f6
-	ld (0c49fh),a		;75f8
+	ld (0c49fh),a		;75f8   ; guarda la accion del jugador
 	xor a			;75fb
 	ld (0c4a1h),a		;75fc
 	ld hl,0c492h		;75ff
 	inc (hl)			;7602
 	ld a,008h		;7603
-	jp 04fe4h		;7605
+	jp 04fe4h		;7605   ; sonido: arranca la musica o el efecto A
 L_7608:
 	ld hl,0c4a1h		;7608
 	inc (hl)			;760b
@@ -3246,13 +3246,13 @@ L_7608:
 L_761A:
 	xor a			;761a
 	ld (0c492h),a		;761b
-	ld a,(0c490h)		;761e
+	ld a,(0c490h)		;761e   ; lee el estado del jugador
 	dec a			;7621
 	ld a,002h		;7622
 	jr z,L_7627		;7624
 	xor a			;7626
 L_7627:
-	ld (0c49fh),a		;7627
+	ld (0c49fh),a		;7627   ; guarda la accion del jugador
 	ret			;762a
 L_762B:
 	ld hl,0c4d0h		;762b
@@ -3271,19 +3271,19 @@ L_763C:
 	inc hl			;7640
 	inc hl			;7641
 	inc hl			;7642
-	ld a,(0c498h)		;7643
+	ld a,(0c498h)		;7643   ; lee la y de los sprites del jugador
 	sub 00ch		;7646
 	ld (hl),a			;7648
 	inc hl			;7649
-	ld a,(0c49ah)		;764a
+	ld a,(0c49ah)		;764a   ; lee la x de los sprites del jugador
 	ld (hl),a			;764d
 	ld a,009h		;764e
-	call 04fe4h		;7650
+	call 04fe4h		;7650   ; sonido: arranca la musica o el efecto A
 	jr L_761A		;7653
 L_7655:
 	push hl			;7655
 	inc hl			;7656
-	ld a,(0c4a2h)		;7657
+	ld a,(0c4a2h)		;7657   ; lee el lado al que mira el jugador
 	ld c,a			;765a
 	rra			;765b
 	ld a,004h		;765c
@@ -3421,16 +3421,16 @@ DATA_color_08:
 
 
 L_771F:
-	ld a,(0c494h)		;771f
+	ld a,(0c494h)		;771f   ; lee la y del jugador
 	sub 005h		;7722
 	ld e,a			;7724
-	ld a,(0c496h)		;7725
+	ld a,(0c496h)		;7725   ; lee la x del jugador
 	ld d,a			;7728
 	ld b,002h		;7729
 	ld a,d			;772b
 	add a,b			;772c
 	ld d,a			;772d
-	call L_7804		;772e
+	call caracter_bajo		;772e   ; caracter_bajo: el caracter que hay bajo un punto
 	call L_77D1		;7731
 	ret c			;7734
 	ld a,b			;7735
@@ -3439,19 +3439,19 @@ L_771F:
 	ld a,d			;7738
 	sub b			;7739
 	ld d,a			;773a
-	call L_7804		;773b
+	call caracter_bajo		;773b   ; caracter_bajo: el caracter que hay bajo un punto
 	jp L_77D1		;773e
 L_7741:
-	ld a,(0c494h)		;7741
+	ld a,(0c494h)		;7741   ; lee la y del jugador
 	add a,003h		;7744
 	ld e,a			;7746
-	ld a,(0c496h)		;7747
+	ld a,(0c496h)		;7747   ; lee la x del jugador
 	ld d,a			;774a
 	ld b,002h		;774b
 	ld a,d			;774d
 	add a,b			;774e
 	ld d,a			;774f
-	call L_7804		;7750
+	call caracter_bajo		;7750   ; caracter_bajo: el caracter que hay bajo un punto
 	call L_77D1		;7753
 	ret c			;7756
 	ld a,b			;7757
@@ -3460,26 +3460,26 @@ L_7741:
 	ld a,d			;775a
 	sub b			;775b
 	ld d,a			;775c
-	call L_7804		;775d
+	call caracter_bajo		;775d   ; caracter_bajo: el caracter que hay bajo un punto
 	jp L_77D1		;7760
 L_7763:
-	ld a,(0c494h)		;7763
+	ld a,(0c494h)		;7763   ; lee la y del jugador
 	ld e,a			;7766
-	ld a,(0c496h)		;7767
+	ld a,(0c496h)		;7767   ; lee la x del jugador
 	sub 005h		;776a
 	ld d,a			;776c
-	call L_7804		;776d
+	call caracter_bajo		;776d   ; caracter_bajo: el caracter que hay bajo un punto
 	call L_77FD		;7770
 	ret nc			;7773
 	ld a,d			;7774
 	add a,00ah		;7775
 	ld d,a			;7777
-	call L_7804		;7778
+	call caracter_bajo		;7778   ; caracter_bajo: el caracter que hay bajo un punto
 	jp L_77FD		;777b
 L_777E:
-	ld a,(0c494h)		;777e
+	ld a,(0c494h)		;777e   ; lee la y del jugador
 	ld e,a			;7781
-	ld a,(0c496h)		;7782
+	ld a,(0c496h)		;7782   ; lee la x del jugador
 	ld d,a			;7785
 	ld b,008h		;7786
 	ld a,e			;7788
@@ -3488,12 +3488,12 @@ L_777E:
 	ld a,d			;778c
 	add a,b			;778d
 	ld d,a			;778e
-	call L_7804		;778f
+	call caracter_bajo		;778f   ; caracter_bajo: el caracter que hay bajo un punto
 	jr $+63		;7792
 L_7794:
-	ld a,(0c494h)		;7794
+	ld a,(0c494h)		;7794   ; lee la y del jugador
 	ld e,a			;7797
-	ld a,(0c496h)		;7798
+	ld a,(0c496h)		;7798   ; lee la x del jugador
 	ld d,a			;779b
 	ld b,008h		;779c
 	ld a,e			;779e
@@ -3502,15 +3502,15 @@ L_7794:
 	ld a,d			;77a2
 	sub b			;77a3
 	ld d,a			;77a4
-	call L_7804		;77a5
+	call caracter_bajo		;77a5   ; caracter_bajo: el caracter que hay bajo un punto
 	jr $+41		;77a8
 L_77AA:
-	ld a,(0c289h)		;77aa
+	ld a,(0c289h)		;77aa   ; lee el juego de graficos de la zona
 	ld b,a			;77ad
 	add a,a			;77ae
 	add a,b			;77af
 	ld hl,077bfh		;77b0
-	call 04083h		;77b3
+	call 04083h		;77b3   ; hl_mas_a: HL += A
 	ld de,0c4f0h		;77b6
 	ld bc,00003h		;77b9
 	ldir		;77bc
@@ -3535,7 +3535,7 @@ DATA_tres_por_juego:
 
 L_77D1:
 	push af			;77d1
-	ld a,(0c490h)		;77d2
+	ld a,(0c490h)		;77d2   ; lee el estado del jugador
 	dec a			;77d5
 	jr nz,L_77E5		;77d6
 	push de			;77d8
@@ -3550,7 +3550,7 @@ L_77E5:
 	pop af			;77e5
 L_77E6:
 	ld c,a			;77e6
-	ld a,(0c289h)		;77e7
+	ld a,(0c289h)		;77e7   ; lee el juego de graficos de la zona
 	and a			;77ea
 	jr z,L_77F2		;77eb
 L_77ED:
@@ -3572,7 +3572,7 @@ L_77FD:
 	inc hl			;7801
 	cp (hl)			;7802
 	ret			;7803
-L_7804:
+caracter_bajo:		; el caracter que hay bajo un punto
 	push de			;7804
 	ld a,e			;7805
 	sub 020h		;7806
@@ -3586,14 +3586,14 @@ L_7804:
 	rrca			;7812
 	rrca			;7813
 	rrca			;7814
-	call 04083h		;7815
+	call 04083h		;7815   ; hl_mas_a: HL += A
 	ld de,0d800h		;7818
 	add hl,de			;781b
 	ld a,(hl)			;781c
 	pop de			;781d
 	ret			;781e
-L_781F:
-	call L_7804		;781f
+se_puede_pisar:		; carry si el caracter se puede pisar
+	call caracter_bajo		;781f   ; caracter_bajo: el caracter que hay bajo un punto
 	ld b,a			;7822
 	ld hl,0c4f1h		;7823
 	ld a,(hl)			;7826
@@ -3608,10 +3608,10 @@ L_7830:
 	cp b			;7831
 	ret			;7832
 L_7833:
-	ld a,(0c490h)		;7833
+	ld a,(0c490h)		;7833   ; lee el estado del jugador
 	cp 002h		;7836
 	ret nc			;7838
-	ld a,(0c482h)		;7839
+	ld a,(0c482h)		;7839   ; lee la pantalla especial
 	and a			;783c
 	ret nz			;783d
 	call L_7BDA		;783e
@@ -3633,7 +3633,7 @@ L_785B:
 	ld a,(ix+01dh)		;7861
 	and a			;7864
 	jr nz,L_78BC		;7865
-	ld a,(ix+000h)		;7867
+	ld a,(ix+000h)		;7867   ; lee el tipo de la figura
 	dec a			;786a
 	cp 021h		;786b
 	jr nc,L_78BC		;786d
@@ -3649,7 +3649,7 @@ L_787D:
 	call L_7A4E		;787e
 	pop bc			;7881
 	jr nc,L_78BC		;7882
-	ld a,(ix+000h)		;7884
+	ld a,(ix+000h)		;7884   ; lee el tipo de la figura
 	cp 008h		;7887
 	jp z,L_79C8		;7889
 	cp 021h		;788c
@@ -3661,14 +3661,14 @@ L_787D:
 	ld a,03ch		;7898
 	ld (hl),a			;789a
 	ld a,00bh		;789b
-	call 04fe4h		;789d
+	call 04fe4h		;789d   ; sonido: arranca la musica o el efecto A
 	call L_7A08		;78a0
 	ret c			;78a3
 	xor a			;78a4
 	ld (0c271h),a		;78a5
 	inc a			;78a8
-	call 057fah		;78a9
-	ld a,(ix+000h)		;78ac
+	call 057fah		;78a9   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
+	ld a,(ix+000h)		;78ac   ; lee el tipo de la figura
 	cp 005h		;78af
 	jp z,L_79E2		;78b1
 	cp 009h		;78b4
@@ -3683,7 +3683,7 @@ L_78C4:
 	ld ix,0ca00h		;78c4
 	ld b,008h		;78c8
 L_78CA:
-	ld a,(ix+000h)		;78ca
+	ld a,(ix+000h)		;78ca   ; lee el tipo de la figura
 	dec a			;78cd
 	cp 021h		;78ce
 	jr nc,L_78F2		;78d0
@@ -3694,13 +3694,13 @@ L_78CA:
 	ld a,03ch		;78d9
 	ld (0c4a7h),a		;78db
 	ld a,00bh		;78de
-	call 04fe4h		;78e0
+	call 04fe4h		;78e0   ; sonido: arranca la musica o el efecto A
 	call L_7A2F		;78e3
 	ret c			;78e6
 	xor a			;78e7
 	ld (0c271h),a		;78e8
 	inc a			;78eb
-	call 057fah		;78ec
+	call 057fah		;78ec   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 	jp L_7A04		;78ef
 L_78F2:
 	ld de,00040h		;78f2
@@ -3714,7 +3714,7 @@ L_78FA:
 	ld ix,0c600h		;78ff
 	ld b,008h		;7903
 L_7905:
-	ld a,(ix+000h)		;7905
+	ld a,(ix+000h)		;7905   ; lee el tipo de la figura
 	dec a			;7908
 	cp 021h		;7909
 	jr nc,L_7934		;790b
@@ -3731,13 +3731,13 @@ L_7905:
 	ld a,001h		;7921
 	ld (ix+00dh),a		;7923
 L_7926:
-	ld a,(ix+000h)		;7926
+	ld a,(ix+000h)		;7926   ; lee el tipo de la figura
 	cp 003h		;7929
 	ld a,00dh		;792b
 	jr nz,L_7931		;792d
 	ld a,00ch		;792f
 L_7931:
-	jp 04fe4h		;7931
+	jp 04fe4h		;7931   ; sonido: arranca la musica o el efecto A
 L_7934:
 	ld de,00080h		;7934
 	add ix,de		;7937
@@ -3752,7 +3752,7 @@ L_793C:
 	ld ix,0c600h		;7945
 	ld b,008h		;7949
 L_794B:
-	ld a,(ix+000h)		;794b
+	ld a,(ix+000h)		;794b   ; lee el tipo de la figura
 	dec a			;794e
 	cp 021h		;794f
 	jr nc,L_7978		;7951
@@ -3783,51 +3783,51 @@ L_7978:
 L_7980:
 	di			;7980
 	ld a,009h		;7981
-	ld (0a000h),a		;7983
-	ld (0f0f3h),a		;7986
+	ld (0a000h),a		;7983   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;7986   ; guarda la copia del banco de 0xA000
 	ei			;7989
-	ld a,(ix+000h)		;798a
+	ld a,(ix+000h)		;798a   ; lee el tipo de la figura
 	dec a			;798d
 	ld hl,0b84ch		;798e
-	call 04083h		;7991
+	call 04083h		;7991   ; hl_mas_a: HL += A
 	ld e,000h		;7994
 	ld d,(hl)			;7996
-	call 0437eh		;7997
-	jp 04206h		;799a
+	call 0437eh		;7997   ; suma_puntos: suma puntos en BCD al jugador que juega
+	jp 04206h		;799a   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_799D:
 	di			;799d
 	ld a,009h		;799e
-	ld (0a000h),a		;79a0
-	ld (0f0f3h),a		;79a3
+	ld (0a000h),a		;79a0   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;79a3   ; guarda la copia del banco de 0xA000
 	ei			;79a6
-	ld a,(ix+000h)		;79a7
+	ld a,(ix+000h)		;79a7   ; lee el tipo de la figura
 	cp 008h		;79aa
 	jr z,L_79BF		;79ac
 	cp 021h		;79ae
 	jr z,L_79BF		;79b0
 	dec a			;79b2
 	ld hl,0b86dh		;79b3
-	call 04083h		;79b6
+	call 04083h		;79b6   ; hl_mas_a: HL += A
 	ld e,(hl)			;79b9
-	call 05929h		;79ba
+	call 05929h		;79ba   ; suma_dinero: suma ryo al dinero
 	jr L_79C5		;79bd
 L_79BF:
 	ld de,00050h		;79bf
-	call 05958h		;79c2
+	call 05958h		;79c2   ; resta_dinero: resta ryo al dinero
 L_79C5:
-	jp 04206h		;79c5
+	jp 04206h		;79c5   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_79C8:
-	call 087b7h		;79c8
+	call 087b7h		;79c8   ; borra_la_figura: borra la figura
 	ld de,01000h		;79cb
-	call 0437eh		;79ce
-	ld a,(0ef80h)		;79d1
+	call 0437eh		;79ce   ; suma_puntos: suma puntos en BCD al jugador que juega
+	ld a,(0ef80h)		;79d1   ; lee los SECRETOS que ponen las claves
 	and 002h		;79d4
 	jr z,L_79DD		;79d6
 	ld e,010h		;79d8
-	call 05929h		;79da
+	call 05929h		;79da   ; suma_dinero: suma ryo al dinero
 L_79DD:
 	ld a,012h		;79dd
-	jp 04fe4h		;79df
+	jp 04fe4h		;79df   ; sonido: arranca la musica o el efecto A
 L_79E2:
 	ld hl,0c27eh		;79e2
 	ld a,(hl)			;79e5
@@ -3836,26 +3836,26 @@ L_79E2:
 	xor a			;79e9
 	ld (hl),a			;79ea
 	ld a,00ah		;79eb
-	jp 057fah		;79ed
+	jp 057fah		;79ed   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 L_79F0:
 	ld de,00020h		;79f0
-	jp 05958h		;79f3
+	jp 05958h		;79f3   ; resta_dinero: resta ryo al dinero
 L_79F6:
 	ld b,004h		;79f6
 L_79F8:
-	ld hl,0c481h		;79f8
+	ld hl,0c481h		;79f8   ; apunta a la VIDA del jugador
 	ld a,(hl)			;79fb
 	sub b			;79fc
 	jr nc,L_7A00		;79fd
 	xor a			;79ff
 L_7A00:
 	ld (hl),a			;7a00
-	jp 05890h		;7a01
+	jp 05890h		;7a01   ; pinta_la_vida: pinta la barra de vida
 L_7A04:
 	ld b,002h		;7a04
 	jr L_79F8		;7a06
 L_7A08:
-	ld a,(ix+000h)		;7a08
+	ld a,(ix+000h)		;7a08   ; lee el tipo de la figura
 	ld hl,0c276h		;7a0b
 	cp 001h		;7a0e
 	jr z,L_7A20		;7a10
@@ -3876,9 +3876,9 @@ L_7A20:
 L_7A29:
 	ld a,l			;7a29
 	sub 070h		;7a2a
-	jp 057fah		;7a2c
+	jp 057fah		;7a2c   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 L_7A2F:
-	ld a,(ix+000h)		;7a2f
+	ld a,(ix+000h)		;7a2f   ; lee el tipo de la figura
 	ld hl,0c275h		;7a32
 	cp 003h		;7a35
 	jr c,L_7A20		;7a37
@@ -3886,7 +3886,7 @@ L_7A2F:
 	jr L_7A20		;7a3c
 L_7A3E:
 	call L_7ACA		;7a3e
-	call 0408dh		;7a41
+	call 0408dh		;7a41   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7A44: 5 destinos del despachador de 0x408D (call en p01:7A41):
@@ -3908,7 +3908,7 @@ L_7A4E:
 	ld a,001h		;7a4e
 	ld (0ee80h),a		;7a50
 	call L_7A85		;7a53
-	call 0408dh		;7a56
+	call 0408dh		;7a56   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7A59: 4 destinos del despachador de 0x408D (call en p01:7A56):
@@ -3929,7 +3929,7 @@ L_7A61:
 	xor a			;7a61
 	ld (0ee80h),a		;7a62
 	call L_7A85		;7a65
-	call 0408dh		;7a68
+	call 0408dh		;7a68   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7A6B: 4 destinos del despachador de 0x408D (call en p01:7A68):
@@ -3950,7 +3950,7 @@ L_7A73:
 	xor a			;7a73
 	ld (0ee80h),a		;7a74
 	call L_7A85		;7a77
-	call 0408dh		;7a7a
+	call 0408dh		;7a7a   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7A7D: 4 destinos del despachador de 0x408D (call en p01:7A7A):
@@ -3970,13 +3970,13 @@ DATA_tabla_7A7D:
 L_7A85:
 	di			;7a85
 	ld a,009h		;7a86
-	ld (0a000h),a		;7a88
-	ld (0f0f3h),a		;7a8b
+	ld (0a000h),a		;7a88   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;7a8b   ; guarda la copia del banco de 0xA000
 	ei			;7a8e
-	ld a,(ix+000h)		;7a8f
+	ld a,(ix+000h)		;7a8f   ; lee el tipo de la figura
 	dec a			;7a92
 	ld hl,0b88eh		;7a93
-	call 04083h		;7a96
+	call 04083h		;7a96   ; hl_mas_a: HL += A
 	ld a,(hl)			;7a99
 	ld h,a			;7a9a
 	cp 003h		;7a9b
@@ -3995,28 +3995,28 @@ L_7A85:
 	jr z,L_7ABB		;7ab7
 	ld e,0f8h		;7ab9
 L_7ABB:
-	ld a,(ix+005h)		;7abb
+	ld a,(ix+005h)		;7abb   ; lee la x de la figura
 	sub e			;7abe
 	ld b,a			;7abf
-	ld a,(ix+003h)		;7ac0
+	ld a,(ix+003h)		;7ac0   ; lee la y de la figura
 	sub d			;7ac3
 	ld c,a			;7ac4
 	ld a,h			;7ac5
 	dec a			;7ac6
-	jp 04206h		;7ac7
+	jp 04206h		;7ac7   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_7ACA:
-	ld a,(ix+000h)		;7aca
+	ld a,(ix+000h)		;7aca   ; lee el tipo de la figura
 	dec a			;7acd
 	ld hl,07ae8h		;7ace
-	call 04083h		;7ad1
+	call 04083h		;7ad1   ; hl_mas_a: HL += A
 	ld a,(hl)			;7ad4
 	dec a			;7ad5
 	ld d,a			;7ad6
-	ld b,(ix+005h)		;7ad7
+	ld b,(ix+005h)		;7ad7   ; lee la x de la figura
 	ld hl,07af0h		;7ada
-	call 04083h		;7add
+	call 04083h		;7add   ; hl_mas_a: HL += A
 	ld c,(hl)			;7ae0
-	ld a,(ix+003h)		;7ae1
+	ld a,(ix+003h)		;7ae1   ; lee la y de la figura
 	sub c			;7ae4
 	ld c,a			;7ae5
 	ld a,d			;7ae6
@@ -4088,7 +4088,7 @@ L_7B49:
 	ld a,004h		;7b49
 	add a,l			;7b4b
 	ld l,a			;7b4c
-	ld a,(0c49ah)		;7b4d
+	ld a,(0c49ah)		;7b4d   ; lee la x de los sprites del jugador
 	sub b			;7b50
 	jr nc,L_7B55		;7b51
 	neg		;7b53
@@ -4098,7 +4098,7 @@ L_7B55:
 	ld a,004h		;7b57
 	add a,h			;7b59
 	ld h,a			;7b5a
-	ld a,(0c498h)		;7b5b
+	ld a,(0c498h)		;7b5b   ; lee la y de los sprites del jugador
 	sub 00ch		;7b5e
 	sub c			;7b60
 	jr nc,L_7B65		;7b61
@@ -4108,10 +4108,10 @@ L_7B65:
 	ret			;7b66
 L_7B67:
 	push hl			;7b67
-	ld a,(0c4a2h)		;7b68
+	ld a,(0c4a2h)		;7b68   ; lee el lado al que mira el jugador
 	add a,a			;7b6b
 	ld hl,07ba2h		;7b6c
-	call 04083h		;7b6f
+	call 04083h		;7b6f   ; hl_mas_a: HL += A
 	ld e,(hl)			;7b72
 	inc hl			;7b73
 	ld d,(hl)			;7b74
@@ -4119,9 +4119,9 @@ L_7B67:
 	ld a,004h		;7b76
 	add a,l			;7b78
 	ld l,a			;7b79
-	ld a,(0c4a2h)		;7b7a
+	ld a,(0c4a2h)		;7b7a   ; lee el lado al que mira el jugador
 	cp 002h		;7b7d
-	ld a,(0c49ah)		;7b7f
+	ld a,(0c49ah)		;7b7f   ; lee la x de los sprites del jugador
 	jr z,L_7B87		;7b82
 	add a,e			;7b84
 	jr L_7B88		;7b85
@@ -4141,7 +4141,7 @@ L_7B91:
 	ld a,004h		;7b93
 	add a,h			;7b95
 	ld h,a			;7b96
-	ld a,(0c498h)		;7b97
+	ld a,(0c498h)		;7b97   ; lee la y de los sprites del jugador
 	add a,d			;7b9a
 	sub c			;7b9b
 	jr nc,L_7BA0		;7b9c
@@ -4200,7 +4200,7 @@ L_7BDA:
 	ld ix,0cc00h		;7bda
 	ld b,004h		;7bde
 L_7BE0:
-	ld a,(ix+000h)		;7be0
+	ld a,(ix+000h)		;7be0   ; lee el tipo de la figura
 	and a			;7be3
 	jr z,L_7C1D		;7be4
 	cp 008h		;7be6
@@ -4208,7 +4208,7 @@ L_7BE0:
 	ld a,(ix+00ch)		;7beb
 	rra			;7bee
 	jr c,L_7C02		;7bef
-	ld a,(0c490h)		;7bf1
+	ld a,(0c490h)		;7bf1   ; lee el estado del jugador
 	dec a			;7bf4
 	jr nz,L_7C1D		;7bf5
 	call L_7D30		;7bf7
@@ -4216,7 +4216,7 @@ L_7BE0:
 	ld (ix+00dh),001h		;7bfc
 	jr L_7C1D		;7c00
 L_7C02:
-	ld a,(ix+000h)		;7c02
+	ld a,(ix+000h)		;7c02   ; lee el tipo de la figura
 	sub 006h		;7c05
 	cp 002h		;7c07
 	jr c,L_7C25		;7c09
@@ -4225,56 +4225,56 @@ L_7C02:
 	pop bc			;7c0f
 	jr nc,L_7C1D		;7c10
 	call L_7D56		;7c12
-	call 087b7h		;7c15
+	call 087b7h		;7c15   ; borra_la_figura: borra la figura
 	ld a,012h		;7c18
-	jp 04fe4h		;7c1a
+	jp 04fe4h		;7c1a   ; sonido: arranca la musica o el efecto A
 L_7C1D:
 	ld de,00040h		;7c1d
 	add ix,de		;7c20
 	djnz L_7BE0		;7c22
 	ret			;7c24
 L_7C25:
-	ld a,(0c490h)		;7c25
+	ld a,(0c490h)		;7c25   ; lee el estado del jugador
 	and a			;7c28
 	jr nz,L_7C1D		;7c29
-	ld a,(ix+003h)		;7c2b
+	ld a,(ix+003h)		;7c2b   ; lee la y de la figura
 	sub 00ch		;7c2e
 	ld c,a			;7c30
-	ld a,(0c494h)		;7c31
+	ld a,(0c494h)		;7c31   ; lee la y del jugador
 	sub c			;7c34
 	cp 008h		;7c35
 	jr nc,L_7C1D		;7c37
-	ld a,(ix+005h)		;7c39
+	ld a,(ix+005h)		;7c39   ; lee la x de la figura
 	sub 004h		;7c3c
 	ld c,a			;7c3e
-	ld a,(0c496h)		;7c3f
+	ld a,(0c496h)		;7c3f   ; lee la x del jugador
 	sub c			;7c42
 	cp 008h		;7c43
 	jr nc,L_7C1D		;7c45
 	xor a			;7c47
 	ld (0c492h),a		;7c48
-	ld (0c49fh),a		;7c4b
-	call L_67B3		;7c4e
+	ld (0c49fh),a		;7c4b   ; guarda la accion del jugador
+	call borra_las_figuras		;7c4e   ; borra_las_figuras: borra todas las figuras
 	call L_67F4		;7c51
 	ld hl,0c4d3h		;7c54
 	call L_76AC		;7c57
 	ld hl,0c4e3h		;7c5a
 	call L_76AC		;7c5d
-	call L_67DA		;7c60
+	call esconde_los_sprites_de_ram		;7c60   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	ld a,004h		;7c63
-	ld (0c490h),a		;7c65
+	ld (0c490h),a		;7c65   ; guarda el estado del jugador
 	ld a,020h		;7c68
 	ld (0c4a8h),a		;7c6a
-	ld a,(0c494h)		;7c6d
+	ld a,(0c494h)		;7c6d   ; lee la y del jugador
 	and 0f0h		;7c70
 	add a,008h		;7c72
-	ld (0c494h),a		;7c74
-	ld (0c498h),a		;7c77
-	ld a,(0c496h)		;7c7a
+	ld (0c494h),a		;7c74   ; guarda la y del jugador
+	ld (0c498h),a		;7c77   ; guarda la y de los sprites del jugador
+	ld a,(0c496h)		;7c7a   ; lee la x del jugador
 	and 0f0h		;7c7d
 	add a,008h		;7c7f
-	ld (0c496h),a		;7c81
-	ld (0c49ah),a		;7c84
+	ld (0c496h),a		;7c81   ; guarda la x del jugador
+	ld (0c49ah),a		;7c84   ; guarda la x de los sprites del jugador
 	ld hl,00000h		;7c87
 	ld (0c49bh),hl		;7c8a
 	ld (0c49dh),hl		;7c8d
@@ -4282,35 +4282,35 @@ L_7C25:
 	ld (0c4a7h),a		;7c91
 	call L_6F60		;7c94
 	ld a,090h		;7c97
-	jp 04fe4h		;7c99
+	jp 04fe4h		;7c99   ; sonido: arranca la musica o el efecto A
 L_7C9C:
 	ld a,(ix+00ch)		;7c9c
 	rra			;7c9f
 	jp nc,L_7C1D		;7ca0
-	ld a,(0c490h)		;7ca3
+	ld a,(0c490h)		;7ca3   ; lee el estado del jugador
 	and a			;7ca6
 	jp nz,L_7C1D		;7ca7
-	ld a,(0c494h)		;7caa
+	ld a,(0c494h)		;7caa   ; lee la y del jugador
 	ld c,a			;7cad
-	ld a,(ix+003h)		;7cae
+	ld a,(ix+003h)		;7cae   ; lee la y de la figura
 	sub 002h		;7cb1
 	sub c			;7cb3
 	cp 00ch		;7cb4
 	jp nc,L_7C1D		;7cb6
-	ld a,(ix+005h)		;7cb9
+	ld a,(ix+005h)		;7cb9   ; lee la x de la figura
 	sub 006h		;7cbc
 	ld c,a			;7cbe
-	ld a,(0c496h)		;7cbf
+	ld a,(0c496h)		;7cbf   ; lee la x del jugador
 	sub c			;7cc2
 	cp 00ch		;7cc3
 	jp nc,L_7C1D		;7cc5
 	ld (ix+00dh),001h		;7cc8
-	ld a,(ix+000h)		;7ccc
+	ld a,(ix+000h)		;7ccc   ; lee el tipo de la figura
 	cp 00ah		;7ccf
 	ld a,01eh		;7cd1
-	jp nz,04fe4h		;7cd3
+	jp nz,04fe4h		;7cd3   ; sonido: arranca la musica o el efecto A
 	ld a,014h		;7cd6
-	jp 04fe4h		;7cd8
+	jp 04fe4h		;7cd8   ; sonido: arranca la musica o el efecto A
 L_7CDB:
 	ld a,(0c492h)		;7cdb
 	and a			;7cde
@@ -4318,13 +4318,13 @@ L_7CDB:
 	ld ix,0cc00h		;7ce0
 	ld b,004h		;7ce4
 L_7CE6:
-	ld a,(ix+000h)		;7ce6
+	ld a,(ix+000h)		;7ce6   ; lee el tipo de la figura
 	cp 00eh		;7ce9
 	jr nz,L_7D00		;7ceb
 	push bc			;7ced
 	ld hl,00a0ah		;7cee
-	ld b,(ix+005h)		;7cf1
-	ld a,(ix+003h)		;7cf4
+	ld b,(ix+005h)		;7cf1   ; lee la x de la figura
+	ld a,(ix+003h)		;7cf4   ; lee la y de la figura
 	sub 008h		;7cf7
 	ld c,a			;7cf9
 	call L_7B67		;7cfa
@@ -4339,60 +4339,60 @@ L_7D08:
 	ld (ix+00dh),001h		;7d08
 	ret			;7d0c
 L_7D0D:
-	ld a,(0c494h)		;7d0d
+	ld a,(0c494h)		;7d0d   ; lee la y del jugador
 	sub 040h		;7d10
 	cp 006h		;7d12
 	ret nc			;7d14
-	ld a,(0c496h)		;7d15
+	ld a,(0c496h)		;7d15   ; lee la x del jugador
 	sub 030h		;7d18
 	cp 020h		;7d1a
 	ret nc			;7d1c
 	ld a,(0c007h)		;7d1d
 	rra			;7d20
 	ret nc			;7d21
-	call L_67DA		;7d22
+	call esconde_los_sprites_de_ram		;7d22   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
 	call 05b1dh		;7d25
-	call 05969h		;7d28
+	call 05969h		;7d28   ; ensena_el_plano: ensena el plano de la zona
 	ld a,088h		;7d2b
-	jp 04fe4h		;7d2d
+	jp 04fe4h		;7d2d   ; sonido: arranca la musica o el efecto A
 L_7D30:
-	ld a,(ix+005h)		;7d30
+	ld a,(ix+005h)		;7d30   ; lee la x de la figura
 	sub 010h		;7d33
 	ld c,a			;7d35
-	ld a,(0c496h)		;7d36
+	ld a,(0c496h)		;7d36   ; lee la x del jugador
 	sub c			;7d39
 	cp 020h		;7d3a
 	ret nc			;7d3c
-	ld a,(ix+003h)		;7d3d
+	ld a,(ix+003h)		;7d3d   ; lee la y de la figura
 	sub 018h		;7d40
 	ld c,a			;7d42
-	ld a,(0c494h)		;7d43
+	ld a,(0c494h)		;7d43   ; lee la y del jugador
 	sub c			;7d46
 	cp 020h		;7d47
 	ret			;7d49
 L_7D4A:
-	ld b,(ix+005h)		;7d4a
-	ld c,(ix+003h)		;7d4d
+	ld b,(ix+005h)		;7d4a   ; lee la x de la figura
+	ld c,(ix+003h)		;7d4d   ; lee la y de la figura
 	ld hl,00808h		;7d50
 	jp L_7B49		;7d53
 L_7D56:
-	ld a,(ix+000h)		;7d56
+	ld a,(ix+000h)		;7d56   ; lee el tipo de la figura
 	dec a			;7d59
 	jr z,L_7D71		;7d5a
 	dec a			;7d5c
 	ret nz			;7d5d
-	ld hl,0c270h		;7d5e
+	ld hl,0c270h		;7d5e   ; apunta a las 10 cosas del marcador
 	inc (hl)			;7d61
 	ld a,(hl)			;7d62
 	cp 004h		;7d63
 	jr nc,L_7D6B		;7d65
 	xor a			;7d67
-	jp 057fah		;7d68
+	jp 057fah		;7d68   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 L_7D6B:
 	dec (hl)			;7d6b
 L_7D6C:
 	ld e,010h		;7d6c
-	jp 05929h		;7d6e
+	jp 05929h		;7d6e   ; suma_dinero: suma ryo al dinero
 L_7D71:
 	ld hl,0c271h		;7d71
 	ld a,(hl)			;7d74
@@ -4400,9 +4400,9 @@ L_7D71:
 	jr nz,L_7D6C		;7d76
 	inc (hl)			;7d78
 	ld a,001h		;7d79
-	jp 057fah		;7d7b
+	jp 057fah		;7d7b   ; pinta_cosa_del_marcador: pinta una de las 10 cosas del marcador
 L_7D7E:
-	ld a,(ix+000h)		;7d7e
+	ld a,(ix+000h)		;7d7e   ; lee el tipo de la figura
 	ld b,a			;7d81
 	cp 006h		;7d82
 	jr nz,L_7D8C		;7d84
@@ -4413,9 +4413,9 @@ L_7D8C:
 	ld a,b			;7d8c
 	dec a			;7d8d
 	ld hl,07d98h		;7d8e
-	call 04083h		;7d91
+	call 04083h		;7d91   ; hl_mas_a: HL += A
 	ld a,(hl)			;7d94
-	jp 04fe4h		;7d95
+	jp 04fe4h		;7d95   ; sonido: arranca la musica o el efecto A
 
 ; ----------------------------------------------------------------------
 ; DATOS sonido_por_tipo: el efecto de sonido de cada tipo de figura 1-6
@@ -4432,12 +4432,12 @@ DATA_sonido_por_tipo:
 L_7D9E:
 	di			;7d9e
 	ld a,009h		;7d9f
-	ld (0a000h),a		;7da1
-	ld (0f0f3h),a		;7da4
+	ld (0a000h),a		;7da1   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;7da4   ; guarda la copia del banco de 0xA000
 	ei			;7da7
-	call 041f6h		;7da8
+	call 041f6h		;7da8   ; indice_de_la_zona: A = (fase * 7 + zona) * 2
 	ld hl,0b5d6h		;7dab
-	call 04d81h		;7dae
+	call 04d81h		;7dae   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld a,(hl)			;7db1
 	and a			;7db2
 	ret z			;7db3
@@ -4450,7 +4450,7 @@ L_7DB9:
 	exx			;7dbb
 	and 07fh		;7dbc
 	ld b,a			;7dbe
-	ld a,(0c281h)		;7dbf
+	ld a,(0c281h)		;7dbf   ; lee la CASILLA de la zona
 	cp b			;7dc2
 	exx			;7dc3
 	jr z,L_7DDA		;7dc4
@@ -4462,7 +4462,7 @@ L_7DB9:
 	ld (hl),000h		;7dd0
 	ld bc,0000fh		;7dd2
 	ldir		;7dd5
-	jp 04206h		;7dd7
+	jp 04206h		;7dd7   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_7DDA:
 	rl c		;7dda
 	ld a,001h		;7ddc
@@ -4474,23 +4474,23 @@ L_7DE1:
 	inc hl			;7de3
 	ld a,(hl)			;7de4
 	ld (de),a			;7de5
-	jp 04206h		;7de6
+	jp 04206h		;7de6   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_7DE9:
 	di			;7de9
 	ld a,00eh		;7dea
-	ld (0a000h),a		;7dec
-	ld (0f0f3h),a		;7def
+	ld (0a000h),a		;7dec   ; el mapper: pone en 0xA000 el banco de A
+	ld (0f0f3h),a		;7def   ; guarda la copia del banco de 0xA000
 	ei			;7df2
 	call L_7E34		;7df3
-	ld a,(0c280h)		;7df6
+	ld a,(0c280h)		;7df6   ; lee la ZONA (0-6)
 	add a,a			;7df9
 	ld hl,0981dh		;7dfa
-	call 04d81h		;7dfd
+	call 04d81h		;7dfd   ; palabra_de_tabla: HL = la palabra A de la tabla de HL
 	ld b,(hl)			;7e00
 	inc hl			;7e01
 	ld de,0c500h		;7e02
 L_7E05:
-	ld a,(0c281h)		;7e05
+	ld a,(0c281h)		;7e05   ; lee la CASILLA de la zona
 	cp (hl)			;7e08
 	jr nz,L_7E2C		;7e09
 	push hl			;7e0b
@@ -4526,7 +4526,7 @@ L_7E2C:
 	inc hl			;7e2d
 	inc hl			;7e2e
 	djnz L_7E05		;7e2f
-	jp 04206h		;7e31
+	jp 04206h		;7e31   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_7E34:
 	ld hl,0c500h		;7e34
 	ld de,0c501h		;7e37
@@ -4537,20 +4537,20 @@ L_7E34:
 L_7E42:
 	di			;7e42
 	ld a,00eh		;7e43
-	ld (08000h),a		;7e45
-	ld (0f0f2h),a		;7e48
+	ld (08000h),a		;7e45   ; el mapper: pone en 0x8000 el banco de A
+	ld (0f0f2h),a		;7e48   ; guarda la copia del banco de 0x8000
 	ei			;7e4b
-	ld a,(0c288h)		;7e4c
+	ld a,(0c288h)		;7e4c   ; lee la FASE (0-6)
 	ld b,a			;7e4f
 	add a,a			;7e50
 	add a,a			;7e51
 	add a,a			;7e52
 	sub b			;7e53
 	ld b,a			;7e54
-	ld a,(0c280h)		;7e55
+	ld a,(0c280h)		;7e55   ; lee la ZONA (0-6)
 	add a,b			;7e58
 	ld de,0981dh		;7e59
-	call 0447ch		;7e5c
+	call 0447ch		;7e5c   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,0c340h		;7e5f
 	ld a,(de)			;7e62
 	inc de			;7e63
@@ -4567,16 +4567,16 @@ L_7E67:
 	ld a,c			;7e73
 	ld (0c28dh),a		;7e74
 	or a			;7e77
-	jp z,04206h		;7e78
+	jp z,04206h		;7e78   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	ld a,r		;7e7b
 	dec c			;7e7d
 	and c			;7e7e
 	add a,a			;7e7f
 	ld hl,0c341h		;7e80
-	call 04083h		;7e83
+	call 04083h		;7e83   ; hl_mas_a: HL += A
 	ld a,080h		;7e86
 	ld (hl),a			;7e88
-	jp 04206h		;7e89
+	jp 04206h		;7e89   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 L_7E8C:
 	dec de			;7e8c
 	ld a,(de)			;7e8d
@@ -4604,7 +4604,7 @@ L_7EA2:
 	inc hl			;7ea7
 	djnz L_7EA2		;7ea8
 	ret			;7eaa
-L_7EAB:
+busca_al_vecino:		; busca el Game Master o Q*bert en otra ranura (0xEF00)
 	ld bc,00400h		;7eab
 	ld hl,0fcc1h		;7eae
 L_7EB1:
@@ -4626,7 +4626,7 @@ L_7EBB:
 L_7EC6:
 	ld a,0ffh		;7ec6
 L_7EC8:
-	ld (0ef00h),a		;7ec8
+	ld (0ef00h),a		;7ec8   ; guarda el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
 	ret			;7ecb
 L_7ECC:
 	call L_7ED1		;7ecc
@@ -4700,9 +4700,9 @@ DATA_marca_de_qbert:
 L_7F1A:
 	call L_7F28		;7f1a
 	ld c,00eh		;7f1d
-	call 04704h		;7f1f
+	call 04704h		;7f1f   ; marco: pinta un marco
 	ld hl,07f41h		;7f22
-	jp 048f3h		;7f25
+	jp 048f3h		;7f25   ; rotulo: pinta un rotulo
 L_7F28:
 	ld hl,02090h		;7f28
 	ld bc,0c038h		;7f2b
@@ -4711,14 +4711,14 @@ L_7F2E:
 	ld d,000h		;7f2f
 	push bc			;7f31
 	push hl			;7f32
-	call 04732h		;7f33
+	call 04732h		;7f33   ; hmmv: orden HMMV del V9938: rellena un rectangulo
 	pop hl			;7f36
 	pop de			;7f37
 	ret			;7f38
 L_7F39:
 	call L_7F2E		;7f39
 	ld c,00eh		;7f3c
-	jp 04704h		;7f3e
+	jp 04704h		;7f3e   ; marco: pinta un marco
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7F41: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -4743,7 +4743,7 @@ L_7F83:
 	ld de,0b0a8h		;7f8c
 L_7F8F:
 	ld b,001h		;7f8f
-	jp 04420h		;7f91
+	jp 04420h		;7f91   ; pinta_bcd: pinta cifras en BCD
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7F94: rotulo en (0x48, 0xA8) que p01:7F83 escribe con 0x48F3
@@ -4767,7 +4767,7 @@ L_7FB1:
 	push hl			;7fb1
 	call L_7FC8		;7fb2
 	pop hl			;7fb5
-	jp 048f3h		;7fb6
+	jp 048f3h		;7fb6   ; rotulo: pinta un rotulo
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_7FB9: rotulo en (0x48, 0xA8) que p01:7FA3 escribe con 0x48F3
@@ -4806,5 +4806,5 @@ L_7FE9:
 	rld		;7ff2
 	ld de,(0ef02h)		;7ff4
 	ld b,001h		;7ff8
-	call 04420h		;7ffa
+	call 04420h		;7ffa   ; pinta_bcd: pinta cifras en BCD
 	jp 08027h		;7ffd

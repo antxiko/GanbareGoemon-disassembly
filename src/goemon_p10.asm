@@ -14,8 +14,8 @@
 ; ======================================================================
 
 
-L_6000:
-	ld a,(0c09fh)		;6000
+sonido_del_cuadro:		; un cuadro de sonido: musica y efectos
+	ld a,(0c09fh)		;6000   ; lee la copia del registro 7 del PSG (el mezclador)
 	ld e,a			;6003
 	ld a,007h		;6004
 	call 00093h		;6006   ; BIOS WRTPSG - Writes data to PSG-register
@@ -31,12 +31,12 @@ L_6000:
 	ld (0c0aah),a		;601e
 	cp 0f0h		;6021
 	jp nz,L_6039		;6023
-	ld hl,L_6067		;6026
-	ld (0c010h),hl		;6029
-	ld (0c012h),hl		;602c
-	ld (0c014h),hl		;602f
+	ld hl,canal_en_reposo		;6026
+	ld (0c010h),hl		;6029   ; guarda el manejador del canal A del sonido
+	ld (0c012h),hl		;602c   ; guarda el manejador del canal B del sonido
+	ld (0c014h),hl		;602f   ; guarda el manejador del canal C del sonido
 	xor a			;6032
-	ld (0c0abh),a		;6033
+	ld (0c0abh),a		;6033   ; guarda los canales que suenan
 	jp L_603B		;6036
 L_6039:
 	ld a,03ah		;6039
@@ -45,25 +45,25 @@ L_603B:
 L_603E:
 	xor a			;603e
 	ld b,a			;603f
-	ld hl,(0c010h)		;6040
+	ld hl,(0c010h)		;6040   ; lee el manejador del canal A del sonido
 	call L_605F		;6043
 	ld a,001h		;6046
 	ld b,a			;6048
-	ld hl,(0c012h)		;6049
+	ld hl,(0c012h)		;6049   ; lee el manejador del canal B del sonido
 	call L_605F		;604c
 	ld a,002h		;604f
 	ld b,a			;6051
-	ld hl,(0c014h)		;6052
+	ld hl,(0c014h)		;6052   ; lee el manejador del canal C del sonido
 	call L_605F		;6055
 	ld a,002h		;6058
 	ld b,003h		;605a
-	ld hl,(0c016h)		;605c
+	ld hl,(0c016h)		;605c   ; lee el manejador del efecto de sonido
 L_605F:
 	ld (0c09ch),a		;605f
 	ld a,b			;6062
 	ld (0c09dh),a		;6063
 	jp (hl)			;6066
-L_6067:
+canal_en_reposo:		; el canal que no suena
 	ld a,(0c09dh)		;6067
 	cp 003h		;606a
 	jp nz,L_6076		;606c
@@ -72,7 +72,7 @@ L_6067:
 	ld a,(0c09dh)		;6073
 L_6076:
 	rlca			;6076
-	ld hl,0c010h		;6077
+	ld hl,0c010h		;6077   ; apunta a el manejador del canal A del sonido
 	add a,l			;607a
 	ld l,a			;607b
 	jr nc,L_607F		;607c
@@ -83,20 +83,20 @@ L_607F:
 	inc hl			;6083
 	ld (hl),d			;6084
 	ld e,000h		;6085
-	jp L_609B		;6087
+	jp pon_el_volumen		;6087   ; pon_el_volumen: escribe el volumen del canal en el PSG
 L_608A:
 	ret			;608a
 L_608B:
-	ld hl,(0c018h)		;608b
+	ld hl,(0c018h)		;608b   ; lee el manejador del segundo efecto
 	jp (hl)			;608e
-L_608F:
+pon_el_tono:		; escribe el tono del canal en el PSG
 	ld a,(0c09ch)		;608f
 	rlca			;6092
 	call 00093h		;6093   ; BIOS WRTPSG - Writes data to PSG-register
 	inc a			;6096
 	ld e,d			;6097
 	jp 00093h		;6098   ; BIOS WRTPSG - Writes data to PSG-register
-L_609B:
+pon_el_volumen:		; escribe el volumen del canal en el PSG
 	ld a,(0c09ch)		;609b
 	add a,008h		;609e
 	jp 00093h		;60a0   ; BIOS WRTPSG - Writes data to PSG-register
@@ -123,11 +123,11 @@ L_60BC:
 	jr nc,L_60C5		;60c2
 	inc h			;60c4
 L_60C5:
-	ld a,(0c09fh)		;60c5
+	ld a,(0c09fh)		;60c5   ; lee la copia del registro 7 del PSG (el mezclador)
 	and (hl)			;60c8
 	inc hl			;60c9
 	or (hl)			;60ca
-	ld (0c09fh),a		;60cb
+	ld (0c09fh),a		;60cb   ; guarda la copia del registro 7 del PSG (el mezclador)
 	pop hl			;60ce
 	ld e,a			;60cf
 	ld a,007h		;60d0
@@ -181,10 +181,10 @@ L_6119:
 	xor a			;612a
 	ld (0c0b1h),a		;612b
 	dec (ix+009h)		;612e
-	call z,L_61F1		;6131
+	call z,lee_la_partitura		;6131   ; lee_la_partitura: lee la nota siguiente de la partitura
 L_6134:
 	dec (ix+009h)		;6134
-	jp z,L_61F1		;6137
+	jp z,lee_la_partitura		;6137   ; lee_la_partitura: lee la nota siguiente de la partitura
 	bit 0,(ix+002h)		;613a
 	jp z,L_61DA		;613e
 	bit 2,(ix+014h)		;6141
@@ -201,7 +201,7 @@ L_6155:
 	ld (ix+00ah),e		;615a
 	bit 5,(ix+002h)		;615d
 	ret nz			;6161
-	jp L_609B		;6162
+	jp pon_el_volumen		;6162   ; pon_el_volumen: escribe el volumen del canal en el PSG
 L_6165:
 	bit 0,(ix+014h)		;6165
 	jr nz,L_617B		;6169
@@ -248,7 +248,7 @@ L_61AB:
 L_61B0:
 	ld (ix+017h),e		;61b0
 	ld (ix+018h),d		;61b3
-	call L_608F		;61b6
+	call pon_el_tono		;61b6   ; pon_el_tono: escribe el tono del canal en el PSG
 	xor a			;61b9
 L_61BA:
 	ld (ix+015h),a		;61ba
@@ -264,18 +264,18 @@ L_61BE:
 L_61D1:
 	ld (ix+017h),e		;61d1
 	ld (ix+018h),d		;61d4
-	jp L_608F		;61d7
+	jp pon_el_tono		;61d7   ; pon_el_tono: escribe el tono del canal en el PSG
 L_61DA:
 	bit 5,(ix+002h)		;61da
 	ret nz			;61de
 	bit 7,(ix+002h)		;61df
 	ret nz			;61e3
-	call L_6454		;61e4
+	call cuadro_del_efecto		;61e4   ; cuadro_del_efecto: un cuadro del efecto de sonido
 	ret nc			;61e7
 	set 7,(ix+002h)		;61e8
 	ld e,000h		;61ec
-	jp L_609B		;61ee
-L_61F1:
+	jp pon_el_volumen		;61ee   ; pon_el_volumen: escribe el volumen del canal en el PSG
+lee_la_partitura:		; lee la nota siguiente de la partitura
 	ld l,(ix+000h)		;61f1
 	ld h,(ix+001h)		;61f4
 L_61F7:
@@ -342,7 +342,7 @@ L_625E:
 L_6272:
 	ld (ix+017h),e		;6272
 	ld (ix+018h),d		;6275
-	call L_608F		;6278
+	call pon_el_tono		;6278   ; pon_el_tono: escribe el tono del canal en el PSG
 	ld a,(0c0aah)		;627b
 	add a,(ix+004h)		;627e
 	jp p,L_6285		;6281
@@ -350,7 +350,7 @@ L_6272:
 L_6285:
 	ld (ix+00ah),a		;6285
 	ld e,a			;6288
-	call L_609B		;6289
+	call pon_el_volumen		;6289   ; pon_el_volumen: escribe el volumen del canal en el PSG
 	jp L_60B8		;628c
 L_628F:
 	ld a,(ix+008h)		;628f
@@ -459,7 +459,7 @@ L_6323:
 	ret nz			;6338
 	ld e,000h		;6339
 	ld (ix+00ah),e		;633b
-	jp L_609B		;633e
+	jp pon_el_volumen		;633e   ; pon_el_volumen: escribe el volumen del canal en el PSG
 L_6341:
 	and 0f0h		;6341
 	cp 0d0h		;6343
@@ -601,16 +601,16 @@ L_643B:
 	rlca			;643b
 	djnz L_643B		;643c
 	ld b,a			;643e
-	ld a,(0c0abh)		;643f
+	ld a,(0c0abh)		;643f   ; lee los canales que suenan
 	and b			;6442
-	ld (0c0abh),a		;6443
-	jp L_6067		;6446
+	ld (0c0abh),a		;6443   ; guarda los canales que suenan
+	jp canal_en_reposo		;6446   ; canal_en_reposo: el canal que no suena
 L_6449:
 	ld ix,0c068h		;6449
-	call L_6454		;644d
+	call cuadro_del_efecto		;644d   ; cuadro_del_efecto: un cuadro del efecto de sonido
 	ret nc			;6450
-	jp L_6067		;6451
-L_6454:
+	jp canal_en_reposo		;6451   ; canal_en_reposo: el canal que no suena
+cuadro_del_efecto:		; un cuadro del efecto de sonido
 	dec (ix+00eh)		;6454
 	jp nz,L_654E		;6457
 	ld a,(ix+00fh)		;645a
@@ -670,7 +670,7 @@ L_64B2:
 L_64C2:
 	ld e,a			;64c2
 L_64C3:
-	call L_609B		;64c3
+	call pon_el_volumen		;64c3   ; pon_el_volumen: escribe el volumen del canal en el PSG
 L_64C6:
 	ld a,c			;64c6
 	and 00fh		;64c7
@@ -679,7 +679,7 @@ L_64C6:
 	inc hl			;64cb
 	ld (ix+00ch),l		;64cc
 	ld (ix+00dh),h		;64cf
-	jp L_608F		;64d2
+	jp pon_el_tono		;64d2   ; pon_el_tono: escribe el tono del canal en el PSG
 L_64D5:
 	ld a,(ix+011h)		;64d5
 	dec a			;64d8
@@ -724,7 +724,7 @@ L_6519:
 	and 010h		;651b
 	ld (ix+00ah),a		;651d
 	ld e,a			;6520
-	call L_609B		;6521
+	call pon_el_volumen		;6521   ; pon_el_volumen: escribe el volumen del canal en el PSG
 	ld a,(hl)			;6524
 	inc hl			;6525
 	ld (ix+00eh),a		;6526

@@ -33,3 +33,44 @@ F 0x6B29 16
 D 0x6B82 0x8000 partitura_6B82  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); lo leen p10:61F1 (5246 bytes)
 F 0x6B82 16
 # --- fin de los bloques de bloques.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x6000 sonido_del_cuadro un cuadro de sonido: musica y efectos
+L 0x6067 canal_en_reposo el canal que no suena
+L 0x608F pon_el_tono escribe el tono del canal en el PSG
+L 0x609B pon_el_volumen escribe el volumen del canal en el PSG
+L 0x61F1 lee_la_partitura lee la nota siguiente de la partitura
+L 0x6454 cuadro_del_efecto un cuadro del efecto de sonido
+C 0x6000 lee la copia del registro 7 del PSG (el mezclador)
+C 0x6029 guarda el manejador del canal A del sonido
+C 0x602C guarda el manejador del canal B del sonido
+C 0x602F guarda el manejador del canal C del sonido
+C 0x6033 guarda los canales que suenan
+C 0x6040 lee el manejador del canal A del sonido
+C 0x6049 lee el manejador del canal B del sonido
+C 0x6052 lee el manejador del canal C del sonido
+C 0x605C lee el manejador del efecto de sonido
+C 0x6077 apunta a el manejador del canal A del sonido
+C 0x6087 pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x608B lee el manejador del segundo efecto
+C 0x60C5 lee la copia del registro 7 del PSG (el mezclador)
+C 0x60CB guarda la copia del registro 7 del PSG (el mezclador)
+C 0x6131 lee_la_partitura: lee la nota siguiente de la partitura
+C 0x6137 lee_la_partitura: lee la nota siguiente de la partitura
+C 0x6162 pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x61B6 pon_el_tono: escribe el tono del canal en el PSG
+C 0x61D7 pon_el_tono: escribe el tono del canal en el PSG
+C 0x61E4 cuadro_del_efecto: un cuadro del efecto de sonido
+C 0x61EE pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x6278 pon_el_tono: escribe el tono del canal en el PSG
+C 0x6289 pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x633E pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x643F lee los canales que suenan
+C 0x6443 guarda los canales que suenan
+C 0x6446 canal_en_reposo: el canal que no suena
+C 0x644D cuadro_del_efecto: un cuadro del efecto de sonido
+C 0x6451 canal_en_reposo: el canal que no suena
+C 0x64C3 pon_el_volumen: escribe el volumen del canal en el PSG
+C 0x64D2 pon_el_tono: escribe el tono del canal en el PSG
+C 0x6521 pon_el_volumen: escribe el volumen del canal en el PSG
+# --- fin de las anotaciones de anota.py ---
