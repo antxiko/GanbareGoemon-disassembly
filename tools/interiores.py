@@ -12,7 +12,7 @@ Cada figura pone sus textos al nacer:
   0x25, la tienda (p03:AD39): si esta abierta (la cosa 0x0A, o la cifra de
         las decenas del tiempo impar en los interiores 0-7 y par en los 8-15)
         el texto 0xAEF1[n / 4]; si no, el rotulo 0x6F (0-7) o 0x70 (8-15)
-  0x2B, la entrada al laberinto (p03:B551): rotulos 0 y 0x71, y el precio
+  0x2B, la entrada al pasadizo secreto (p03:B551): rotulos 0 y 0x71, y el precio
         de la cosa 15 en (0x88, 0x38) (p03:B57F)
   0x24, los dados, y 0x28, la casa de cambio (p03:B16C, p03:B0FA): sin la
         cosa 0x0A, rotulos 0x18 y 0x1C (0x1D en la zona 6)

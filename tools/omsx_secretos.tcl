@@ -9,7 +9,7 @@
 #  D. dinero a 4800 ryo, una vida, continuar puesto (0xC27F) y vida 0:
 #     al morir el dinero a la mitad (p01:701E); en el estado 7, F5 (p00:5F8E)
 #     y la partida sigue con 3 vidas (p00:5FF1).
-#  E. dentro del "laberinto" forzado (0xCDB1 = 1) y en la pausa, お や ぶ ん:
+#  E. dentro del "pasadizo secreto" forzado (0xCDB1 = 1) y en la pausa, お や ぶ ん:
 #     bit 0 de 0xEF80 y 0xC27A = 1 (p03:BE13).
 #   GO_OUT=<dir> openmsx -machine C-BIOS_MSX2_JP -cart goemon.rom -script este.tcl
 set OUT $::env(GO_OUT)
@@ -94,7 +94,7 @@ proc tras_D {} {
     tecla 6 5
     espera_estado 10 { after time 0.6 E }
 }
-# --- E: oyabun en el laberinto (forzado)
+# --- E: oyabun en el pasadizo secreto (forzado)
 proc E {} {
     set ::CDB1 [h 0xCDB1]
     debug write memory 0xCDB1 1

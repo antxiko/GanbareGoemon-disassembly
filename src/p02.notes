@@ -321,7 +321,7 @@ C 0x97F9 una fila libre al azar
 C 0x9809 si el jugador esta a menos de 32 de ese borde y de 64 en vertical, no sale (0xCD14 = 1)
 C 0x9833 una de las filas libres al azar (registro R y 0xC00D)
 C 0x9858 las filas libres de (HL), sus y (desde 0x58, de 16 en 16) a 0xCD00; D = cuantas
-C 0x987A dentro del laberinto, un cuadro
+C 0x987A dentro del pasadizo secreto, un cuadro
 C 0x9881 segun 0xCDCD, 0xCDC8 o lo normal (p03:B8C3 y p03:BC5C)
 C 0x9895 con 0xCDC5, se repinta todo
 C 0x98AF los sprites desde el 2 (0xEE08), fuera
@@ -525,7 +525,7 @@ C 0x8636 la espera hasta la siguiente vez, segun el tipo
 C 0x864A la espera hasta la siguiente
 C 0x8657 la lista desde el principio...
 C 0x865A ... sin tandas...
-C 0x8660 ... sin entrada al laberinto...
+C 0x8660 ... sin entrada al pasadizo secreto...
 C 0x8663 ... 16 para la tanda del tipo 7...
 C 0x8668 ... 8 para la siguiente...
 C 0x866D ... y 16 para la de la lista
@@ -1111,9 +1111,9 @@ L 0x97E4 sale_por_la_derecha x 0xF7, mirando a la izquierda
 L 0x9833 fila_al_azar una fila libre al azar
 L 0x9858 lista_de_filas las y de las filas libres a 0xCD00
 L 0x9876 apunta_fila la y a la lista y una mas
-L 0x9881 cuadro_del_laberinto un cuadro del laberinto
+L 0x9881 cuadro_del_pasadizo_secreto un cuadro del pasadizo secreto
 L 0x98AF sprites_fuera_desde_2 fuera los sprites desde el 2
-L 0x98BE pinta_la_vista las paredes de la vista del laberinto
+L 0x98BE pinta_la_vista las paredes de la vista del pasadizo secreto
 L 0x98E3 sprites_de_la_vista los sprites de lo que hay delante
 L 0x98F8 sprite_de_lo_de_delante el sprite de lo que hay en la casilla C
 L 0x99FB dibujo_de_caracteres pinta un dibujo hecho de caracteres
@@ -1348,7 +1348,7 @@ C 0x8F3A pieza_vacia: la pieza de (0x70, 0x90) sin marca
 C 0x8F3D pinta_las_cosas: pinta las cosas del marcador
 C 0x8F40 borra_la_figura: borra la figura
 C 0x8F65 hl_mas_a: HL += A
-C 0x8F92 laberinto_a_cero: lo cogido y el mapa, a cero
+C 0x8F92 pasadizo_secreto_a_cero: lo cogido y el mapa, a cero
 C 0x8FA6 lee el paso en que va la figura
 C 0x8FA9 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8FB9 sube el paso en que va la figura
@@ -1455,15 +1455,15 @@ C 0x9824 lee la y de la figura
 C 0x9830 borra_la_figura: borra la figura
 C 0x9853 hl_mas_a: HL += A
 C 0x987D gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
-C 0x9885 salida_del_laberinto: la puerta, el premio y fuera
+C 0x9885 salida_del_pasadizo_secreto: la puerta, el premio y fuera
 C 0x988C sale_del_mapa: el boton vuelve a la vista
-C 0x988F anda_por_el_laberinto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
-C 0x9892 coge_en_el_laberinto: lo que hay en la casilla, una vez
+C 0x988F anda_por_el_pasadizo_secreto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+C 0x9892 coge_en_el_pasadizo_secreto: lo que hay en la casilla, una vez
 C 0x989A sprites_fuera_desde_2: fuera los sprites desde el 2
 C 0x989D apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x98A0 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0x98A3 flecha_de_direccion: los sprites de la flecha hacia donde se mira
-C 0x98A6 pinta_la_vista: las paredes de la vista del laberinto
+C 0x98A6 pinta_la_vista: las paredes de la vista del pasadizo secreto
 C 0x98A9 sprites_de_la_vista: los sprites de lo que hay delante
 C 0x98AC enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0x98C7 dibujo_de_caracteres: pinta un dibujo hecho de caracteres

@@ -2982,7 +2982,7 @@ L_B549:
 	ld a,02bh		;b54c
 	jp 08334h		;b54e   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
 tipo_43_sale:		; la figura de tipo 43 (0x2B): su arranque (tabla de p02:8427)
-	ld (ix+00ah),00eh		;b551   ; el tipo 43, el que cobra la entrada al LABERINTO: pose 0x0E, los rotulos 0 y 0x71
+	ld (ix+00ah),00eh		;b551   ; el tipo 43, el que cobra la entrada al PASADIZO SECRETO: pose 0x0E, los rotulos 0 y 0x71
 	xor a			;b555
 	ld (ix+00ch),a		;b556
 	ld (ix+006h),a		;b559   ; guarda la velocidad vertical (parte baja)
@@ -3036,7 +3036,7 @@ L_B58E:
 	ld de,03020h		;b5a8
 	ld a,00eh		;b5ab
 	call 04eb9h		;b5ad   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
-	ld a,001h		;b5b0   ; ... 0xCDB0 = 1 (ya se puede entrar en el laberinto, p01:7D0D) y la musica 0x11
+	ld a,001h		;b5b0   ; ... 0xCDB0 = 1 (ya se puede entrar en el pasadizo secreto, p01:7D0D) y la musica 0x11
 	ld (0cdb0h),a		;b5b2
 	ld a,091h		;b5b5
 	call 04fe4h		;b5b7   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -3394,7 +3394,7 @@ caja_y_texto:		; la caja del texto y el texto A
 	pop af			;b83f
 	jp 04280h		;b840   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 L_B843:
-	ld de,04030h		;b843   ; el laberinto: el marco de alrededor, con los caracteres de la pagina 1
+	ld de,04030h		;b843   ; el pasadizo secreto: el marco de alrededor, con los caracteres de la pagina 1
 	ld hl,0a008h		;b846   ; el caracter de (0xA0, 0x08), hacia abajo desde (0x30, 0x40)
 	call caracter_hacia_abajo		;b849   ; caracter_hacia_abajo: el caracter de HL 14 veces hacia abajo
 	ld de,0c830h		;b84c
@@ -3425,7 +3425,7 @@ L_B86C:
 	pop hl			;b87b
 	pop bc			;b87c
 	djnz L_B86C		;b87d
-	jp iconos_del_laberinto		;b87f   ; y los iconos
+	jp iconos_del_pasadizo_secreto		;b87f   ; y los iconos
 
 ; ----------------------------------------------------------------------
 ; DATOS ocho_B882: ocho fichas de 4 bytes [x][y][dibujo de dos bytes] que
@@ -3471,8 +3471,8 @@ L_B8B5:
 	ld d,a			;b8bf
 	djnz L_B8B5		;b8c0
 	ret			;b8c2
-anda_por_el_laberinto:		; arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
-	ld a,001h		;b8c3   ; el laberinto, un cuadro: 0xCDC5 = 1 si hay que repintar
+anda_por_el_pasadizo_secreto:		; arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+	ld a,001h		;b8c3   ; el pasadizo secreto, un cuadro: 0xCDC5 = 1 si hay que repintar
 	ld (0cdc5h),a		;b8c5
 	ld a,(0c006h)		;b8c8   ; arriba: un paso adelante
 	ld b,a			;b8cb
@@ -3487,9 +3487,9 @@ anda_por_el_laberinto:		; arriba avanza, izquierda y derecha giran, abajo da med
 	ld a,b			;b8da   ; abajo: media vuelta
 	and 002h		;b8db
 	jr nz,L_B920		;b8dd
-	ld a,b			;b8df   ; el primer boton: el mapa del laberinto (p03:BAF1)
+	ld a,b			;b8df   ; el primer boton: el mapa del pasadizo secreto (p03:BAF1)
 	and 010h		;b8e0
-	jp nz,mapa_del_laberinto		;b8e2   ; mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
+	jp nz,mapa_del_pasadizo_secreto		;b8e2   ; mapa_del_pasadizo_secreto: el mapa entero, si se tiene (0xC27A)
 L_B8E5:
 	xor a			;b8e5   ; nada que repintar
 	ld (0cdc5h),a		;b8e6
@@ -3562,7 +3562,7 @@ lo_de_delante:		; hasta 4 casillas hacia delante: la pared y lo que hay
 	xor a			;b955   ; lo de delante: si se esta sobre una salida (6) y detras no hay pared, 0xCDCC = 1
 	ld (0cdcch),a		;b956
 	ld hl,(0cdc6h)		;b959
-	call 05a6ah		;b95c   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b95c   ; sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b95f
 	cp 006h		;b960
 	call z,lo_de_detras		;b962   ; lo_de_detras: si detras no hay pared, 0xCDCC = 1
@@ -3577,7 +3577,7 @@ L_B975:
 	push hl			;b978   ; la casilla siguiente hacia delante
 	exx			;b979
 	pop hl			;b97a
-	call 05a6ah		;b97b   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b97b   ; sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b97e
 	exx			;b97f
 	cp 001h		;b980   ; ... hasta una pared (1)...
@@ -3617,7 +3617,7 @@ lo_de_detras:		; si detras no hay pared, 0xCDCC = 1
 	call 0447ch		;b9b5   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;b9b8
 	call hl_mas_de		;b9bb   ; hl_mas_de: HL += DE
-	call 05a6ah		;b9be   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b9be   ; sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b9c1
 	cp 001h		;b9c2   ; ... si es pared, nada
 	ret z			;b9c4
@@ -3741,7 +3741,7 @@ L_BA8F:
 	push bc			;ba8f   ; la casilla
 	push de			;ba90
 	push hl			;ba91
-	call 05a6ah		;ba92   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;ba92   ; sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;ba95   ; lo que hay
 	pop hl			;ba96
 	pop de			;ba97
@@ -3823,8 +3823,8 @@ DATA_tres_tablas_BAD9:
 ; ======================================================================
 
 
-mapa_del_laberinto:		; el mapa entero, si se tiene (0xC27A)
-	xor a			;baf1   ; el mapa del laberinto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
+mapa_del_pasadizo_secreto:		; el mapa entero, si se tiene (0xC27A)
+	xor a			;baf1   ; el mapa del pasadizo secreto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
 	ld (0cdc5h),a		;baf2
 	ld a,(0c27ah)		;baf5
 	or a			;baf8
@@ -3838,10 +3838,10 @@ mapa_del_laberinto:		; el mapa entero, si se tiene (0xC27A)
 	call 05856h		;bb09   ; pinta_las_cosas: pinta las cosas del marcador
 	call 043e2h		;bb0c   ; pinta_el_marcador: pinta el marcador entero
 	call 05890h		;bb0f   ; pinta_la_vida: pinta la barra de vida
-	call pinta_el_mapa		;bb12   ; pinta_el_mapa: el laberinto en piezas de 8 x 8, centrado
+	call pinta_el_mapa		;bb12   ; pinta_el_mapa: el pasadizo secreto en piezas de 8 x 8, centrado
 	call donde_se_esta		;bb15   ; donde_se_esta: la marca del jugador en el mapa
 	jp 045e1h		;bb18   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-pinta_el_mapa:		; el laberinto en piezas de 8 x 8, centrado
+pinta_el_mapa:		; el pasadizo secreto en piezas de 8 x 8, centrado
 	ld a,(0cdd3h)		;bb1b   ; el mapa, centrado: y = (20 - alto) / 2 * 8 + 0x20 (0xCDD3, el alto)...
 	ld b,a			;bb1e
 	ld a,014h		;bb1f
@@ -3920,7 +3920,7 @@ L_BB8E:
 	djnz L_BB6F		;bb95
 	pop hl			;bb97
 	pop de			;bb98
-	ld a,01ch		;bb99   ; la fila siguiente del laberinto (28)
+	ld a,01ch		;bb99   ; la fila siguiente del pasadizo secreto (28)
 	call 04088h		;bb9b   ; de_mas_a: DE += A
 	push de			;bb9e
 	ld de,00008h		;bb9f   ; 8 mas abajo
@@ -4016,16 +4016,16 @@ sale_del_mapa:		; el boton vuelve a la vista
 	xor a			;bc2d
 	ld (0cdc8h),a		;bc2e
 	call 045eeh		;bc31   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call 0598dh		;bc34   ; pinta_el_laberinto: la vista del laberinto y el marcador
+	call 0598dh		;bc34   ; pinta_el_pasadizo_secreto: la vista del pasadizo secreto y el marcador
 	jp 045e1h		;bc37   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 borra_todo:		; borra la pantalla y los sprites
 	ld bc,000d4h		;bc3a   ; borra la pantalla y los sprites
 	call 045fbh		;bc3d   ; pinta_de_color_0: rellena del color 0 B x C puntos desde (0, 0) y pone el scroll a 0
 	jp 0460ah		;bc40   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-iconos_del_laberinto:		; los iconos de lo cogido en el laberinto
-	ld a,(0c27ah)		;bc43   ; los iconos de lo cogido en el laberinto: el mapa (0xC27A)...
+iconos_del_pasadizo_secreto:		; los iconos de lo cogido en el pasadizo secreto
+	ld a,(0c27ah)		;bc43   ; los iconos de lo cogido en el pasadizo secreto: el mapa (0xC27A)...
 	or a			;bc46
-	call nz,icono_del_mapa		;bc47   ; icono_del_mapa: el icono del mapa del laberinto
+	call nz,icono_del_mapa		;bc47   ; icono_del_mapa: el icono del mapa del pasadizo secreto
 	ld a,(0c27bh)		;bc4a   ; ... y uno por cada moneda (0xC27B)
 	or a			;bc4d
 	ret z			;bc4e
@@ -4040,9 +4040,9 @@ L_BC51:
 	inc a			;bc58
 	djnz L_BC51		;bc59
 	ret			;bc5b
-coge_en_el_laberinto:		; lo que hay en la casilla, una vez
+coge_en_el_pasadizo_secreto:		; lo que hay en la casilla, una vez
 	ld hl,(0cdc6h)		;bc5c   ; al pisar una casilla con algo (2-5): se coge una vez (0xC290) y la casilla queda vacia
-	call 05a6ah		;bc5f   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;bc5f   ; sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;bc62
 	or a			;bc63
 	ret z			;bc64
@@ -4095,9 +4095,9 @@ L_BC97:
 	ld a,009h		;bc9b
 	jp 057fah		;bc9d   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_BCA0:
-	ld a,001h		;bca0   ; 4: el MAPA del laberinto (0xC27A = 1), y su icono
+	ld a,001h		;bca0   ; 4: el MAPA del pasadizo secreto (0xC27A = 1), y su icono
 	ld (0c27ah),a		;bca2
-icono_del_mapa:		; el icono del mapa del laberinto
+icono_del_mapa:		; el icono del mapa del pasadizo secreto
 	ld a,011h		;bca5
 	ld de,02830h		;bca7
 	jp 04eb9h		;bcaa   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
@@ -4148,8 +4148,8 @@ L_BCE3:
 	call 04fe4h		;bced   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	pop hl			;bcf0
 	ret			;bcf1
-laberinto_a_cero:		; lo cogido y el mapa, a cero
-	ld hl,0c290h		;bcf2   ; al entrar en la zona: lo cogido en el laberinto, el mapa y 0xC28E a cero
+pasadizo_secreto_a_cero:		; lo cogido y el mapa, a cero
+	ld hl,0c290h		;bcf2   ; al entrar en la zona: lo cogido en el pasadizo secreto, el mapa y 0xC28E a cero
 	xor a			;bcf5
 	ld b,016h		;bcf6
 L_BCF8:
@@ -4160,8 +4160,8 @@ L_BCF8:
 	ld (0c27ah),hl		;bcff   ; 0xC27A y 0xC27B a 0
 	ld (0c28eh),a		;bd02   ; y 0xC28E
 	ret			;bd05
-salida_del_laberinto:		; la puerta, el premio y fuera
-	ld a,(0cdd2h)		;bd06   ; la salida del laberinto, paso a paso (0xCDD2)
+salida_del_pasadizo_secreto:		; la puerta, el premio y fuera
+	ld a,(0cdd2h)		;bd06   ; la salida del pasadizo secreto, paso a paso (0xCDD2)
 	call 0408dh		;bd09   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -4280,14 +4280,14 @@ L_BDB2:
 	ld a,093h		;bdd0
 	jp 04fe4h		;bdd2   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_BDD5:
-	ld hl,0cdceh		;bdd5   ; paso 2: fuera del laberinto, la entrada se gasta (0xCDB0 = 0) y sube de precio
+	ld hl,0cdceh		;bdd5   ; paso 2: fuera del pasadizo secreto, la entrada se gasta (0xCDB0 = 0) y sube de precio
 	dec (hl)			;bdd8
 	ret nz			;bdd9
 	call 045eeh		;bdda   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 072b8h		;bddd
 	xor a			;bde0
 	ld (0cdb0h),a		;bde1
-	ld (0cdb1h),a		;bde4   ; guarda si se esta en el laberinto
+	ld (0cdb1h),a		;bde4   ; guarda si se esta en el pasadizo secreto
 	ld (0cdcdh),a		;bde7
 	inc a			;bdea
 	ld (0c4a2h),a		;bdeb   ; guarda el lado al que mira el jugador
@@ -4312,7 +4312,7 @@ teclea_palabra:		; las palabras de la pausa: 5 letras, comparadas con las de 0xB
 	ld a,(hl)			;be0f
 	cp 005h		;be10
 	ret nz			;be12
-	ld a,(0cdb1h)		;be13   ; con 5 tecleadas: dentro del laberinto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
+	ld a,(0cdb1h)		;be13   ; con 5 tecleadas: dentro del pasadizo secreto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
 	and a			;be16
 	jr z,L_BE2C		;be17
 	ld de,0be44h		;be19

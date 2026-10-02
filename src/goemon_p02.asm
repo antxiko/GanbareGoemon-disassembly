@@ -1034,7 +1034,7 @@ L_8656:
 	ld (0cd17h),a		;8657   ; la lista desde el principio...
 	ld (0cd31h),a		;865a   ; ... sin tandas...
 	ld (0cd14h),a		;865d
-	ld (0cdb0h),a		;8660   ; ... sin entrada al laberinto...
+	ld (0cdb0h),a		;8660   ; ... sin entrada al pasadizo secreto...
 	ld a,010h		;8663   ; ... 16 para la tanda del tipo 7...
 	ld (0cd30h),a		;8665
 	ld a,008h		;8668   ; ... 8 para la siguiente...
@@ -2404,7 +2404,7 @@ L_8F8E:
 	ld (hl),a			;8f8e   ; las 16 compras
 	inc hl			;8f8f
 	djnz L_8F8E		;8f90
-	call 0bcf2h		;8f92   ; laberinto_a_cero: lo cogido y el mapa, a cero
+	call 0bcf2h		;8f92   ; pasadizo_secreto_a_cero: lo cogido y el mapa, a cero
 	xor a			;8f95   ; 0xCD4E = 0, ninguna rota
 	ld (0cd4eh),a		;8f96
 	ret			;8f99
@@ -3761,18 +3761,18 @@ apunta_fila:		; la y a la lista y una mas
 	inc d			;9878
 	ret			;9879
 L_987A:
-	call cuadro_del_laberinto		;987a   ; dentro del laberinto, un cuadro
+	call cuadro_del_pasadizo_secreto		;987a   ; dentro del pasadizo secreto, un cuadro
 	call 05b1dh		;987d   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 	ret			;9880
-cuadro_del_laberinto:		; un cuadro del laberinto
+cuadro_del_pasadizo_secreto:		; un cuadro del pasadizo secreto
 	ld a,(0cdcdh)		;9881   ; segun 0xCDCD, 0xCDC8 o lo normal (p03:B8C3 y p03:BC5C)
 	or a			;9884
-	jp nz,0bd06h		;9885   ; salida_del_laberinto: la puerta, el premio y fuera
+	jp nz,0bd06h		;9885   ; salida_del_pasadizo_secreto: la puerta, el premio y fuera
 	ld a,(0cdc8h)		;9888
 	or a			;988b
 	jp nz,0bc27h		;988c   ; sale_del_mapa: el boton vuelve a la vista
-	call 0b8c3h		;988f   ; anda_por_el_laberinto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
-	call 0bc5ch		;9892   ; coge_en_el_laberinto: lo que hay en la casilla, una vez
+	call 0b8c3h		;988f   ; anda_por_el_pasadizo_secreto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+	call 0bc5ch		;9892   ; coge_en_el_pasadizo_secreto: lo que hay en la casilla, una vez
 	ld a,(0cdc5h)		;9895   ; con 0xCDC5, se repinta todo
 	or a			;9898
 	ret z			;9899
@@ -3780,7 +3780,7 @@ cuadro_del_laberinto:		; un cuadro del laberinto
 	call 045eeh		;989d   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 0460ah		;98a0   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 	call 0b9cbh		;98a3   ; flecha_de_direccion: los sprites de la flecha hacia donde se mira
-	call pinta_la_vista		;98a6   ; pinta_la_vista: las paredes de la vista del laberinto
+	call pinta_la_vista		;98a6   ; pinta_la_vista: las paredes de la vista del pasadizo secreto
 	call sprites_de_la_vista		;98a9   ; sprites_de_la_vista: los sprites de lo que hay delante
 	jp 045e1h		;98ac   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 sprites_fuera_desde_2:		; fuera los sprites desde el 2
@@ -3791,7 +3791,7 @@ sprites_fuera_desde_2:		; fuera los sprites desde el 2
 	ld (hl),a			;98ba
 	ldir		;98bb
 	ret			;98bd
-pinta_la_vista:		; las paredes de la vista del laberinto
+pinta_la_vista:		; las paredes de la vista del pasadizo secreto
 	ld hl,0cdbbh		;98be   ; los ocho dibujos de 0xCDBB y el de 0xCDB2 (0x1C mas con 0xCDCC)
 	ld b,008h		;98c1
 L_98C3:

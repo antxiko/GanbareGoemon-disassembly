@@ -307,10 +307,10 @@ C 0xB527 ... la posada sube de precio (la cosa 15 de 0xCDA0)...
 C 0xB52C ... y el rotulo 3
 C 0xB539 paga DE ryo: si no llega, el efecto 0x1B y carry
 C 0xB549 crea la 0x2B en (0x70, 0x80)
-C 0xB551 el tipo 43, el que cobra la entrada al LABERINTO: pose 0x0E, los rotulos 0 y 0x71
+C 0xB551 el tipo 43, el que cobra la entrada al PASADIZO SECRETO: pose 0x0E, los rotulos 0 y 0x71
 C 0xB57F su precio, en (0x88, 0x38)
 C 0xB58E elegido si y pagado: el icono 0x0E (32 x 32) en (0x30, 0x20)...
-C 0xB5B0 ... 0xCDB0 = 1 (ya se puede entrar en el laberinto, p01:7D0D) y la musica 0x11
+C 0xB5B0 ... 0xCDB0 = 1 (ya se puede entrar en el pasadizo secreto, p01:7D0D) y la musica 0x11
 C 0xB5BC sin dinero, el texto 0x6E; si no, el 7
 C 0xB5C9 los tipos 7 y 13 salen de tres en tres, en fila
 C 0xB5EC cada uno 24 - (los bits 2-3 de la dificultad) cuadros despues del anterior
@@ -344,12 +344,12 @@ C 0xB812 y se cobra: carry si no llegaba
 C 0xB828 se sale del interior (p01:72B8)
 C 0xB836 el texto A: la caja del texto y el rotulo 0x16 delante
 C 0xB867 y ocho trozos mas (0xB882): [x][y][x][y]
-C 0xB8C3 el laberinto, un cuadro: 0xCDC5 = 1 si hay que repintar
+C 0xB8C3 el pasadizo secreto, un cuadro: 0xCDC5 = 1 si hay que repintar
 C 0xB8C8 arriba: un paso adelante
 C 0xB8D0 izquierda: gira a la izquierda
 C 0xB8D5 derecha: gira a la derecha
 C 0xB8DA abajo: media vuelta
-C 0xB8DF el primer boton: el mapa del laberinto (p03:BAF1)
+C 0xB8DF el primer boton: el mapa del pasadizo secreto (p03:BAF1)
 C 0xB8EA con una salida delante (0xCDCC)...
 C 0xB8F0 ... si hay pared justo delante (0xCDB2 = 1), no se mueve
 C 0xB8F8 un paso hacia donde mira (0xCDC4): el vector de 0xBAD9
@@ -372,7 +372,7 @@ C 0xBA47 el lado izquierdo (0xBAE1): 5 casillas, a 0xCDB3 y su dibujo a 0xCDBB
 C 0xBA62 el derecho (0xBAE9), a 0xCDB7 y 0xCDBF
 C 0xBA8E tantas casillas como haya hasta la pared de delante (4 si no hay)
 C 0xBAA5 el dibujo de cada una: pared (1) o hueco, segun la profundidad
-C 0xBAF1 el mapa del laberinto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
+C 0xBAF1 el mapa del pasadizo secreto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
 C 0xBAFA 0xCDC8 = mapa en pantalla; el efecto 0x1A
 C 0xBB44 un sprite marca donde se esta
 C 0xBB5F cada casilla, su pieza de 8 x 8 (0xBC1B segun lo que sea)
@@ -382,19 +382,19 @@ C 0xBBCD la salida se ve en el mapa solo con el bit 6 de 0xEF80 y la cosa 0x0A..
 C 0xBBDA ... y entonces con una flecha hacia el lado abierto
 C 0xBC27 en el mapa: el primer boton vuelve a la vista
 C 0xBC3A borra la pantalla y los sprites
-C 0xBC43 los iconos de lo cogido en el laberinto: el mapa (0xC27A)...
+C 0xBC43 los iconos de lo cogido en el pasadizo secreto: el mapa (0xC27A)...
 C 0xBC4A ... y uno por cada moneda (0xC27B)
 C 0xBC5C al pisar una casilla con algo (2-5): se coge una vez (0xC290) y la casilla queda vacia
 C 0xBC6F segun lo que sea (tabla de 0xBC74)
 C 0xBC7E 2: 200 ryo y un icono mas
 C 0xBC89 el icono 0x10 en (0x28, 0x40 + n * 16)
 C 0xBC97 3: una cosa 9 mas
-C 0xBCA0 4: el MAPA del laberinto (0xC27A = 1), y su icono
+C 0xBCA0 4: el MAPA del pasadizo secreto (0xC27A = 1), y su icono
 C 0xBCAD 5: una vida (hasta 99)
 C 0xBCBE 6: la salida: 0xCDCD = 1, 15 cuadros y la musica 0x00
 C 0xBCD3 apunta la casilla en el primer hueco de las 11 de 0xC290: ya no vuelve a salir
-C 0xBCF2 al entrar en la zona: lo cogido en el laberinto, el mapa y 0xC28E a cero
-C 0xBD06 la salida del laberinto, paso a paso (0xCDD2)
+C 0xBCF2 al entrar en la zona: lo cogido en el pasadizo secreto, el mapa y 0xC28E a cero
+C 0xBD06 la salida del pasadizo secreto, paso a paso (0xCDD2)
 C 0xBD12 paso 0: se abre la puerta (p03:BD48 y p03:BD57) durante 15 cuadros
 C 0xBD2E y aparecen los iconos 0x13 y 0x14
 C 0xBD3E si ya se salio una vez en esta zona (0xC28E), sin premio
@@ -402,9 +402,9 @@ C 0xBD48 0xCD08 el sitio, 0xCD0A el tamano, 0xCD0C el paso, 0xCD0D cuantos
 C 0xBD57 la puerta que se abre: trozos que se corren con HMMM y el hueco en negro
 C 0xBDB2 paso 1: el rotulo 0x0E, 10000 PUNTOS (C = 1)...
 C 0xBDCB ... 0xC28E = 1 y la musica 0x13
-C 0xBDD5 paso 2: fuera del laberinto, la entrada se gasta (0xCDB0 = 0) y sube de precio
+C 0xBDD5 paso 2: fuera del pasadizo secreto, la entrada se gasta (0xCDB0 = 0) y sube de precio
 C 0xBDF6 en la pausa: las teclas, hasta 5, en 0xC580
-C 0xBE13 con 5 tecleadas: dentro del laberinto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
+C 0xBE13 con 5 tecleadas: dentro del pasadizo secreto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
 C 0xBE21 ... y con el, el mapa (0xC27A = 1)
 C 0xBE2C fuera, la segunda (0xBE49) pone el bit 1
 C 0xBE31 si las 5 letras son las de DE, el bit C en 0xEF80
@@ -418,7 +418,7 @@ C 0xBEC1 ... el 5, continuar
 C 0xBEDD cambiar la opcion del menu del titulo 6 o 7 veces (p00:5EB6) pone el bit 6 de 0xEF80
 C 0xB8A2 el caracter de HL, 14 veces hacia abajo
 C 0xB8B3 el caracter de HL, 16 veces hacia la derecha
-C 0xB843 el laberinto: el marco de alrededor, con los caracteres de la pagina 1
+C 0xB843 el pasadizo secreto: el marco de alrededor, con los caracteres de la pagina 1
 C 0xA5BB FALLO: quiere apuntar a la y del jugador (ld hl,0xC494) pero lee la palabra de 0xC494 (su y y la fraccion de su x)...
 C 0xA5BE ... y compara con el byte de esa direccion: la decision es casi al azar
 C 0xA02D HL = (ix+0x1E) * 0x80
@@ -851,7 +851,7 @@ C 0xBB6F lo que hay en la casilla
 C 0xBB73 0: nada
 C 0xBB7A la pieza de lo que hay (1-5)
 C 0xBB8E 8 a la derecha
-C 0xBB99 la fila siguiente del laberinto (28)
+C 0xBB99 la fila siguiente del pasadizo secreto (28)
 C 0xBB9F 8 mas abajo
 C 0xBBAD la x * 8
 C 0xBBB3 la y * 8
@@ -1052,7 +1052,7 @@ L 0xB7D3 lo_que_se_cobra lo que se cobra segun el dinero
 L 0xB836 caja_y_texto la caja del texto y el texto A
 L 0xB8A2 caracter_hacia_abajo el caracter de HL 14 veces hacia abajo
 L 0xB8B3 caracter_a_la_derecha el caracter de HL 16 veces a la derecha
-L 0xB8C3 anda_por_el_laberinto arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+L 0xB8C3 anda_por_el_pasadizo_secreto arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
 L 0xB955 lo_de_delante hasta 4 casillas hacia delante: la pared y lo que hay
 L 0xB9AB lo_de_detras si detras no hay pared, 0xCDCC = 1
 L 0xB9CB flecha_de_direccion los sprites de la flecha hacia donde se mira
@@ -1061,18 +1061,18 @@ L 0xBA47 lado_izquierdo las paredes del lado izquierdo de la vista
 L 0xBA62 lado_derecho las paredes del lado derecho de la vista
 L 0xBAA5 dibujo_de_la_casilla el dibujo de una casilla del lado
 L 0xBAD2 hl_mas_de HL += DE
-L 0xBAF1 mapa_del_laberinto el mapa entero, si se tiene (0xC27A)
-L 0xBB1B pinta_el_mapa el laberinto en piezas de 8 x 8, centrado
+L 0xBAF1 mapa_del_pasadizo_secreto el mapa entero, si se tiene (0xC27A)
+L 0xBB1B pinta_el_mapa el pasadizo secreto en piezas de 8 x 8, centrado
 L 0xBBAA donde_se_esta la marca del jugador en el mapa
 L 0xBC27 sale_del_mapa el boton vuelve a la vista
 L 0xBC3A borra_todo borra la pantalla y los sprites
-L 0xBC43 iconos_del_laberinto los iconos de lo cogido en el laberinto
-L 0xBC5C coge_en_el_laberinto lo que hay en la casilla, una vez
+L 0xBC43 iconos_del_pasadizo_secreto los iconos de lo cogido en el pasadizo secreto
+L 0xBC5C coge_en_el_pasadizo_secreto lo que hay en la casilla, una vez
 L 0xBC89 icono_de_moneda el icono 0x10 de la moneda n
-L 0xBCA5 icono_del_mapa el icono del mapa del laberinto
+L 0xBCA5 icono_del_mapa el icono del mapa del pasadizo secreto
 L 0xBCD3 apunta_lo_cogido la casilla, a la lista de 0xC290
-L 0xBCF2 laberinto_a_cero lo cogido y el mapa, a cero
-L 0xBD06 salida_del_laberinto la puerta, el premio y fuera
+L 0xBCF2 pasadizo_secreto_a_cero lo cogido y el mapa, a cero
+L 0xBD06 salida_del_pasadizo_secreto la puerta, el premio y fuera
 L 0xBD48 prepara_la_puerta los datos de la puerta que se abre
 L 0xBD57 abre_la_puerta un paso de la puerta que se abre
 L 0xBDF6 teclea_palabra las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
@@ -1622,32 +1622,32 @@ C 0xB864 caracter_a_la_derecha: el caracter de HL 16 veces a la derecha
 C 0xB878 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB8AD de_mas_a: DE += A
 C 0xB8B7 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
-C 0xB8E2 mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
+C 0xB8E2 mapa_del_pasadizo_secreto: el mapa entero, si se tiene (0xC27A)
 C 0xB8FF hl_mas_a: HL += A
 C 0xB94F lado_izquierdo: las paredes del lado izquierdo de la vista
 C 0xB952 lado_derecho: las paredes del lado derecho de la vista
-C 0xB95C sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xB95C sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 C 0xB962 lo_de_detras: si detras no hay pared, 0xCDCC = 1
 C 0xB96B palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xB975 hl_mas_de: HL += DE
-C 0xB97B sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xB97B sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 C 0xB9B5 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xB9BB hl_mas_de: HL += DE
-C 0xB9BE sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xB9BE sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 C 0xBA02 de_mas_a: DE += A
 C 0xBA4D palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA53 hl_mas_de: HL += DE
 C 0xBA68 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA6E hl_mas_de: HL += DE
 C 0xBA82 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
-C 0xBA92 sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xBA92 sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 C 0xBB00 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBB03 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xBB06 borra_todo: borra la pantalla y los sprites
 C 0xBB09 pinta_las_cosas: pinta las cosas del marcador
 C 0xBB0C pinta_el_marcador: pinta el marcador entero
 C 0xBB0F pinta_la_vida: pinta la barra de vida
-C 0xBB12 pinta_el_mapa: el laberinto en piezas de 8 x 8, centrado
+C 0xBB12 pinta_el_mapa: el pasadizo secreto en piezas de 8 x 8, centrado
 C 0xBB15 donde_se_esta: la marca del jugador en el mapa
 C 0xBB18 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xBB7F de_mas_a: DE += A
@@ -1658,13 +1658,13 @@ C 0xBBA2 hl_mas_de: HL += DE
 C 0xBBCA copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xBBF8 de_mas_a: DE += A
 C 0xBC31 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-C 0xBC34 pinta_el_laberinto: la vista del laberinto y el marcador
+C 0xBC34 pinta_el_pasadizo_secreto: la vista del pasadizo secreto y el marcador
 C 0xBC37 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xBC3D pinta_de_color_0: rellena del color 0 B x C puntos desde (0, 0) y pone el scroll a 0
 C 0xBC40 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-C 0xBC47 icono_del_mapa: el icono del mapa del laberinto
+C 0xBC47 icono_del_mapa: el icono del mapa del pasadizo secreto
 C 0xBC53 icono_de_moneda: el icono 0x10 de la moneda n
-C 0xBC5F sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xBC5F sitio_en_el_pasadizo_secreto: HL = 0xD800 + H * 28 + L
 C 0xBC68 apunta_lo_cogido: la casilla, a la lista de 0xC290
 C 0xBC71 despacha: salta a la entrada A de la tabla que va detras del call
 C 0xBC94 pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
@@ -1683,7 +1683,7 @@ C 0xBDAF hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x 
 C 0xBDBC rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xBDD2 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBDDA apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-C 0xBDE4 guarda si se esta en el laberinto
+C 0xBDE4 guarda si se esta en el pasadizo secreto
 C 0xBDEB guarda el lado al que mira el jugador
 C 0xBDF0 sube_el_precio_de_a: una compra mas de la cosa A
 C 0xBDF3 caracteres_del_juego: sube los caracteres del juego de graficos de la zona

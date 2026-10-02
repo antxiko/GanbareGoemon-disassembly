@@ -138,7 +138,7 @@ def main():
     out.append("")
     out.append("PALABRAS DE LA PAUSA (0xBE44, p03:BE13) Y CLAVES DE LA CONTRASENA (0xBE8A, p03:BE4E)")
     S3 = (1, 2, 3)
-    out.append("0xBE44 %s  (dentro del laberinto: bit 0 de 0xEF80 y el mapa, 0xC27A)" % junta([cart.leer(0xBE44 + i, S3) for i in range(5)]))
+    out.append("0xBE44 %s  (dentro del pasadizo secreto: bit 0 de 0xEF80 y el mapa, 0xC27A)" % junta([cart.leer(0xBE44 + i, S3) for i in range(5)]))
     out.append("0xBE49 %s  (fuera: bit 1, +10 ryo con los tipos 8 y 0x21)" % junta([cart.leer(0xBE49 + i, S3) for i in range(5)]))
     efecto = ["jugar con el jugador 2", "vida maxima 0x20", "2000 ryo", "continuar"]
     for k in range(4):
