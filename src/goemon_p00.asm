@@ -3045,7 +3045,7 @@ L_542E:
 	jp z,L_54AF		;5431   ; 0: hueco
 	push de			;5434
 	push af			;5435
-	ld hl,0a998h		;5436   ; algunos tipos llevan algo mas: 8 entradas de 5 bytes en 0xA998, [tipo][VRAM][rle]
+	ld hl,0a998h		;5436   ; algunos tipos llevan un dibujo mas: 8 entradas de 5 bytes en 0xA998, [tipo][rle][VRAM]
 	ld b,008h		;5439
 	ld d,a			;543b
 L_543C:
@@ -3061,11 +3061,11 @@ L_5447:
 	djnz L_543C		;5447   ; las 8
 	jr L_5457		;5449   ; ninguna
 L_544B:
-	inc hl			;544b   ; el destino en la VRAM
+	inc hl			;544b   ; el rle
 	ld e,(hl)			;544c
 	inc hl			;544d
 	ld d,(hl)			;544e
-	inc hl			;544f   ; y el rle
+	inc hl			;544f   ; y la VRAM de destino
 	ld a,(hl)			;5450
 	inc hl			;5451
 	ld h,(hl)			;5452
@@ -3089,10 +3089,10 @@ L_5457:
 	add hl,de			;5468
 	push hl			;5469
 	pop ix		;546a
-	ld e,(ix+000h)		;546c   ; [0-1] el sitio de sus patrones en la VRAM
+	ld e,(ix+000h)		;546c   ; [0-1] los dibujos, en rle (guardado en 0xCD42)
 	ld d,(ix+001h)		;546f
 	ld (0cd42h),de		;5472
-	ld l,(ix+002h)		;5476   ; [2-3] los patrones, en rle
+	ld l,(ix+002h)		;5476   ; [2-3] su sitio en la VRAM
 	ld h,(ix+003h)		;5479
 	call rle_a_la_vram		;547c   ; rle_a_la_vram: descomprime un rle a la VRAM
 	ld a,004h		;547f   ; [4-5] el color 4 de la paleta (RB, G); 0xFF, sin colores
@@ -3109,7 +3109,7 @@ L_5457:
 	ld e,(ix+007h)		;5496
 	call pon_un_color		;5499   ; pon_un_color: color A de la paleta = DE
 L_549C:
-	ld de,(0cd42h)		;549c   ; [8-9] los patrones que van dados la vuelta, detras de los otros; 0xFF, ninguno
+	ld de,(0cd42h)		;549c   ; [8-9] donde va la copia dada la vuelta del mismo rle; 0xFF, ninguna
 	ld a,(ix+008h)		;54a0
 	cp 0ffh		;54a3
 	jr z,L_54AE		;54a5

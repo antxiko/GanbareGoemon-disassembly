@@ -163,8 +163,15 @@ test:
 # openMSX de work/ (tools/lanza_*.sh los hacen, un emulador cada vez).
 imagenes: $(ROM)
 
+# Los cotejos que dibujan necesitan PIL (en esta maquina, el python de
+# Programs, no el python3 de la Store).
+PYIMG ?= python
+
 coteja: $(ROM)
 	python3 tools/coteja.py
+	$(PYIMG) tools/titulo.py coteja
+	$(PYIMG) tools/figuras.py coteja
+	$(PYIMG) tools/enemigos.py coteja
 
 # La web: las paginas se escriben en markdown y se convierten con md2html.py;
 # la portada la monta make_web.py con lo de tools/contenido_web.py.

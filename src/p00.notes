@@ -633,15 +633,9 @@ C 0x5413 DE = la lista de figuras de la casilla: [cuantas - 1] y un tipo por fig
 C 0x541B las fichas de las figuras estan en los bancos 11 y 12
 C 0x542E el tipo
 C 0x5431 0: hueco
-C 0x5436 algunos tipos llevan algo mas: 8 entradas de 5 bytes en 0xA998, [tipo][VRAM][rle]
-C 0x544B el destino en la VRAM
-C 0x544F y el rle
 C 0x545A 10 bytes por tipo en la tabla de 0xA830
-C 0x546C [0-1] el sitio de sus patrones en la VRAM
-C 0x5476 [2-3] los patrones, en rle
 C 0x547F [4-5] el color 4 de la paleta (RB, G); 0xFF, sin colores
 C 0x5491 [6-7] el color 6
-C 0x549C [8-9] los patrones que van dados la vuelta, detras de los otros; 0xFF, ninguno
 C 0x54AF el tipo siguiente
 C 0x54E7 la tabla de 0x554E: dos listas por pose, una por lado
 C 0x54EA la pose de 0xCD37
@@ -931,6 +925,12 @@ C 0x59E9 B = los bytes de la fila
 C 0x59ED C = el ancho
 C 0x59F2 el byte de bits
 C 0x59FB lo que queda de fila
+C 0x5436 algunos tipos llevan un dibujo mas: 8 entradas de 5 bytes en 0xA998, [tipo][rle][VRAM]
+C 0x544B el rle
+C 0x544F y la VRAM de destino
+C 0x546C [0-1] los dibujos, en rle (guardado en 0xCD42)
+C 0x5476 [2-3] su sitio en la VRAM
+C 0x549C [8-9] donde va la copia dada la vuelta del mismo rle; 0xFF, ninguna
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x4000 0x4010 cabecera_ab  la cabecera del cartucho: 'AB', INIT (0x4097) y STATEMENT, DEVICE y TEXT a cero; lo leen la BIOS (16 bytes)
