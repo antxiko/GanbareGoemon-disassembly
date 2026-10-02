@@ -200,7 +200,7 @@ C 0xA42E borra_la_figura: borra la figura
 C 0xA442 guarda la x de la figura
 C 0xA445 lee la y del jugador
 C 0xA459 guarda la y de la figura
-C 0xA464 se_puede_pisar: carry si el caracter se puede pisar
+C 0xA464 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA468 borra_la_figura: borra la figura
 C 0xA478 hl_mas_a: HL += A
 C 0xA4A1 la pose de la figura = 0x41
@@ -236,14 +236,14 @@ C 0xA6B5 guarda la fraccion de la y de la figura
 C 0xA6B8 guarda la y de la figura
 C 0xA6C8 lee la x de la figura
 C 0xA6CB lee la y de la figura
-C 0xA6E1 se_puede_pisar: carry si el caracter se puede pisar
-C 0xA6EA se_puede_pisar: carry si el caracter se puede pisar
-C 0xA6F4 se_puede_pisar: carry si el caracter se puede pisar
-C 0xA6FD se_puede_pisar: carry si el caracter se puede pisar
-C 0xA709 se_puede_pisar: carry si el caracter se puede pisar
-C 0xA712 se_puede_pisar: carry si el caracter se puede pisar
-C 0xA71E se_puede_pisar: carry si el caracter se puede pisar
-C 0xA727 se_puede_pisar: carry si el caracter se puede pisar
+C 0xA6E1 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA6EA no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA6F4 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA6FD no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA709 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA712 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA71E no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0xA727 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA736 guarda la pose de la figura
 C 0xA73C baja el paso en que va la figura
 C 0xA74D pon_la_pose: pone la pose de la figura
@@ -461,6 +461,7 @@ C 0xB20A sube la pose de la figura
 C 0xB223 sube el paso en que va la figura
 C 0xB233 lee el DINERO (ryo, BCD)
 C 0xB244 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0xB247 dinero_a_la_mitad: el dinero (BCD) entre dos
 C 0xB24A pinta_el_dinero: pinta el dinero (4 cifras) en (0x70, 8)
 C 0xB257 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB25A el paso en que va la figura = 0x03
@@ -591,7 +592,7 @@ C 0xB7AF el paso en que va la figura = 0x05
 C 0xB7BE guarda la pantalla especial
 C 0xB7C6 guarda el estado del jugador
 C 0xB7CB sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0xB7CE esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0xB7CE esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0xB7D3 lee el DINERO (ryo, BCD)
 C 0xB7E9 lee el DINERO (ryo, BCD)
 C 0xB7F5 lee el DINERO (ryo, BCD)
@@ -671,6 +672,7 @@ C 0xBE5B de_mas_a: DE += A
 C 0xBE6C lee los SECRETOS que ponen las claves
 C 0xBE76 guarda el estado (0xC000) y el paso (0xC001) de un tiron
 C 0xBE7A empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
+C 0xBE7D prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
 C 0xBE86 guarda el estado (0xC000) y el paso (0xC001) de un tiron
 C 0xBEB0 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xBEB3 lee los SECRETOS que ponen las claves

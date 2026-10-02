@@ -243,6 +243,7 @@ C 0x8BD8 lee la x del jugador
 C 0x8BEC hl_mas_a: HL += A
 C 0x8CB6 lee el tipo de la figura
 C 0x8CD2 lee el paso en que va la figura
+C 0x8CD7 efecto_del_tipo: el efecto de sonido del tipo (0x7D98)
 C 0x8CDA lee el tipo de la figura
 C 0x8CDE despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8D04 sube el paso en que va la figura
@@ -254,6 +255,7 @@ C 0x8D24 de_mas_a: DE += A
 C 0x8D28 guarda la pose de la figura
 C 0x8D32 lee el paso en que va la figura
 C 0x8D35 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x8D4A efecto_del_tipo: el efecto de sonido del tipo (0x7D98)
 C 0x8D50 suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 C 0x8D57 sube el paso en que va la figura
 C 0x8D5E lee la y de la figura
@@ -400,9 +402,9 @@ C 0x9758 guarda la copia del banco de 0xA000
 C 0x975C sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
 C 0x975F bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x976B borra_la_figura: borra la figura
-C 0x97B8 se_puede_pisar: carry si el caracter se puede pisar
-C 0x97C3 se_puede_pisar: carry si el caracter se puede pisar
-C 0x97D4 se_puede_pisar: carry si el caracter se puede pisar
+C 0x97B8 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0x97C3 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+C 0x97D4 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0x97E7 la x de la figura = 0xF7
 C 0x97F2 la x de la figura = 0x08
 C 0x97FD guarda la y de la figura
@@ -427,8 +429,8 @@ C 0x99FF el mapper: pone en 0xA000 el banco de A
 C 0x9A02 guarda la copia del banco de 0xA000
 C 0x9A0A palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x9A42 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x9A46 borra_las_figuras: borra todas las figuras
-C 0x9A49 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x9A46 borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+C 0x9A49 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x9A6E lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x9AAD lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
 C 0x9B37 despacha: salta a la entrada A de la tabla que va detras del call

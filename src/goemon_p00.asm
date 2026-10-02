@@ -118,7 +118,7 @@ init:		; arranque del cartucho
 	ld (hl),000h		;40c4
 	ldir		;40c6
 	call bancos_1_2_3		;40c8   ; bancos_1_2_3: pone los bancos 1, 2 y 3
-	call 07eabh		;40cb   ; busca_al_vecino: busca el Game Master o Q*bert en otra ranura (0xEF00)
+	call 07eabh		;40cb   ; busca_al_vecino: 0xEF00 = 0xFF si hay un Game Master (firma en 0x7FFA) o un Q*bert (0xBFFA) en otra ranura
 	call bancos_1_2_3		;40ce   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call prepara_el_vdp		;40d1   ; prepara_el_vdp: pasa a SCREEN 5 y pone los registros del V9938
 	di			;40d4
@@ -1003,12 +1003,12 @@ esconde_los_sprites:		; y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y
 	ld a,0e0h		;460d
 	ld bc,00080h		;460f
 	call rellena_la_vram		;4612   ; rellena_la_vram: llena BC bytes de la VRAM de HL con A
-	call 067dah		;4615   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call 067dah		;4615   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	ld hl,07600h		;4618   ; y la de la otra pagina
 	ld a,0e0h		;461b
 	ld bc,00080h		;461d
 	call rellena_la_vram		;4620   ; rellena_la_vram: llena BC bytes de la VRAM de HL con A
-	jp 067dah		;4623   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	jp 067dah		;4623   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 sprites_fuera:		; apaga los sprites (bit 1 del registro 8 del VDP)
 	ld a,(0ffe7h)		;4626   ; RG8SAV: la copia del registro 8
 	or 002h		;4629   ; el bit 1 (SPD) puesto: sin sprites
@@ -2053,7 +2053,7 @@ L_4CBA:
 	ld hl,0f800h		;4ccb   ; a 0xF800, los patrones de sprite
 	call rle_a_la_vram		;4cce   ; rle_a_la_vram: descomprime un rle a la VRAM
 	jp bancos_1_2_3		;4cd1   ; bancos_1_2_3: pone los bancos 1, 2 y 3
-L_4CD4:
+patrones_del_final:		; los patrones de sprite de 0xBE32 (banco 6) a 0xF800
 	call bancos_4_5_6		;4cd4   ; bancos_4_5_6: pone los bancos 4, 5 y 6
 	ld hl,0f800h		;4cd7   ; los patrones de sprite de 0xBE32 (banco 6)
 	ld de,0be32h		;4cda
@@ -3540,7 +3540,7 @@ resta_dinero:		; resta DE ryo (BCD) al dinero, hasta 0
 ensena_el_plano:		; pasa a la pantalla del plano de la zona
 	ld a,001h		;5969
 	ld (0cdb1h),a		;596b   ; guarda si se esta viendo el plano
-	call 067dah		;596e   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call 067dah		;596e   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	di			;5971
 	ld a,009h		;5972   ; el banco 9 en 0xA000: los planos
 	ld (0a000h),a		;5974   ; el mapper: pone en 0xA000 el banco de A
@@ -4575,9 +4575,9 @@ DATA_tabla_5DCF:
 ; ======================================================================
 
 
-L_5DEF:
+estado_0:		; el logotipo de Konami y el titulo
 	djnz L_5DFF		;5def   ; estado 0, paso 1
-	call 06486h		;5df1
+	call 06486h		;5df1   ; destapa_el_logotipo: una linea mas del logotipo cada dos cuadros; al acabar, 0xC482 = 1
 	ld a,(0c482h)		;5df4   ; con la pantalla especial puesta, las letras
 	or a			;5df7
 	ret z			;5df8
@@ -4594,17 +4594,17 @@ L_5DFF:
 	jp L_5EF1		;5e0a
 L_5E0D:
 	call borra_la_pantalla		;5e0d   ; paso 0: pantalla en negro
-	call 0643fh		;5e10
+	call 0643fh		;5e10   ; logotipo_de_konami: prepara el logotipo de Konami en la pagina 1
 	jr siguiente_paso		;5e13
-L_5E15:
+estado_1:		; el menu del titulo
 	ld hl,0c004h		;5e15   ; estado 1: espera con la marca de la opcion parpadeando; luego el estado 2
 	dec (hl)			;5e18
 	jp nz,parpadea_la_opcion		;5e19   ; parpadea_la_opcion: la marca de 0x63D8 parpadea en la opcion escogida (0xC252)
 	jp siguiente_estado		;5e1c   ; siguiente_estado: el estado siguiente, paso 0, con 0x20 cuadros de espera
-L_5E1F:
+estado_2:		; la demostracion
 	djnz L_5E38		;5e1f   ; estado 2, paso 1
-	call 06923h		;5e21
-	call 068f3h		;5e24
+	call 06923h		;5e21   ; teclas_de_la_demo: la tecla de la demostracion, cada dos cuadros
+	call 068f3h		;5e24   ; cuadro_de_la_demo: un cuadro de la demostracion
 	ld a,(0c263h)		;5e27   ; mientras 0xC263 no sea cero sigue aqui...
 	or a			;5e2a
 	ret nz			;5e2b
@@ -4617,7 +4617,7 @@ cambia_de_estado:		; pasa al estado A, paso 0, con 0x20 cuadros de espera
 	jp L_5EF8		;5e35
 L_5E38:
 	call borra_la_pantalla		;5e38   ; estado 2, paso 0
-	call 0688bh		;5e3b
+	call 0688bh		;5e3b   ; empieza_la_demo: la demostracion: el otro jugador, zona 0, casilla 12, 99 vidas y 999 ryo
 	ld a,020h		;5e3e
 espera_y_sigue:		; A cuadros de espera y el paso siguiente
 	ld (0c004h),a		;5e40   ; guarda la espera del estado, en cuadros
@@ -4625,7 +4625,7 @@ siguiente_paso:		; pasa al paso siguiente (0xC001)
 	ld hl,0c001h		;5e43   ; apunta a el paso del estado
 	inc (hl)			;5e46
 	ret			;5e47
-L_5E48:
+estado_3:		; empieza la partida
 	djnz L_5E73		;5e48   ; estado 3, paso 1: el rotulo de 0x63BC parpadea (cada 4 cuadros)
 	ld a,(0c002h)		;5e4a   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	bit 5,a		;5e4d   ; con el bit 5 (dos jugadores), el de 0x63CB
@@ -4651,7 +4651,7 @@ L_5E66:
 L_5E73:
 	djnz L_5E89		;5e73   ; estado 3, paso 2: la partida empieza
 	call empieza_la_partida		;5e75   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
-	call 0662ch		;5e78
+	call 0662ch		;5e78   ; prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
 	ld hl,0ef04h		;5e7b   ; con 0xEF04 puesto, se pone a cero y p02:8050
 	ld a,(hl)			;5e7e
 	or a			;5e7f
@@ -4673,7 +4673,7 @@ L_5E8D:
 	ld (0ef07h),a		;5e9b
 	ld a,00ch		;5e9e
 	jp cambia_de_estado		;5ea0   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-L_5EA3:
+estado_4:		; la entrada en la zona
 	djnz L_5EE6		;5ea3   ; estado 4, paso 1: la entrada en la zona, al acabar la espera
 	call 0823bh		;5ea5
 	ld hl,0c004h		;5ea8   ; apunta a la espera del estado, en cuadros
@@ -4696,7 +4696,7 @@ L_5EA3:
 	ld (0a000h),a		;5ed0   ; el mapper: pone en 0xA000 el banco de A
 	ld (0f0f3h),a		;5ed3   ; guarda la copia del banco de 0xA000
 	ei			;5ed6
-	call 074a6h		;5ed7
+	call 074a6h		;5ed7   ; sprites_del_jugador_de_ram: la posicion y los patrones de sus sprites en la copia de 0xEE00
 	call bancos_1_2_3		;5eda   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call gira_los_sprites		;5edd   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 	call franja_a_la_pagina_1		;5ee0   ; franja_a_la_pagina_1: con el jugador en el estado 0-1, copia la franja de y 0xE8 a la pagina 1; si no, los colores de los sprites
@@ -4727,7 +4727,7 @@ L_5EFD:
 	call 080d9h		;5f0f
 	ld a,078h		;5f12   ; 120 cuadros
 	jp espera_y_sigue		;5f14   ; espera_y_sigue: A cuadros de espera y el paso siguiente
-L_5F17:
+estado_5:		; el juego
 	call 06802h		;5f17   ; estado 5: el juego
 	ld a,(0c282h)		;5f1a   ; con 0xC282 puesto, al estado 8
 	and a			;5f1d
@@ -4754,10 +4754,10 @@ L_5F42:
 	ld bc,0001fh		;5f48
 	ld (hl),000h		;5f4b
 	ldir		;5f4d
-	call 0635ah		;5f4f
+	call 0635ah		;5f4f   ; ventana_de_la_pausa: la ventana con el texto de la pausa
 	ld a,00ah		;5f52
 	jp cambia_de_estado		;5f54   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-L_5F57:
+estado_6:		; se pierde una vida
 	call 07e9dh		;5f57   ; estado 6
 	ld a,(0c260h)		;5f5a   ; sin vidas, al estado 7
 	or a			;5f5d
@@ -4782,7 +4782,7 @@ L_5F7E:
 	ld a,08eh		;5f7e   ; la musica 0x0E y al estado 7
 	call sonido		;5f80   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jp siguiente_estado		;5f83   ; siguiente_estado: el estado siguiente, paso 0, con 0x20 cuadros de espera
-L_5F86:
+estado_7:		; sin vidas: continuar o se acabo
 	djnz L_5FCC		;5f86   ; estado 7 (sin vidas), paso 1
 	ld a,(0c27fh)		;5f88   ; con continuar (0xC27F)...
 	and a			;5f8b

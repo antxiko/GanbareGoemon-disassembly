@@ -568,7 +568,7 @@ L_A458:
 	ld (ix+010h),a		;a45d
 	ld (ix+00fh),c		;a460
 	ld b,c			;a463
-	call 0781fh		;a464   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;a464   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	ret nc			;a467
 	jp 087b7h		;a468   ; borra_la_figura: borra la figura
 L_A46B:
@@ -929,13 +929,13 @@ L_A6DA:
 	ret nc			;a6de
 	ld d,a			;a6df
 	push de			;a6e0
-	call 0781fh		;a6e1   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;a6e1   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;a6e4
 	ret c			;a6e5
 	ld a,e			;a6e6
 	sub 003h		;a6e7
 	ld e,a			;a6e9
-	jp 0781fh		;a6ea   ; se_puede_pisar: carry si el caracter se puede pisar
+	jp 0781fh		;a6ea   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A6ED:
 	ld a,d			;a6ed
 	sub 008h		;a6ee
@@ -943,13 +943,13 @@ L_A6ED:
 	ret nc			;a6f1
 	ld d,a			;a6f2
 	push de			;a6f3
-	call 0781fh		;a6f4   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;a6f4   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;a6f7
 	ret c			;a6f8
 	ld a,e			;a6f9
 	sub 003h		;a6fa
 	ld e,a			;a6fc
-	jp 0781fh		;a6fd   ; se_puede_pisar: carry si el caracter se puede pisar
+	jp 0781fh		;a6fd   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A700:
 	ld a,e			;a700
 	sub 003h		;a701
@@ -958,13 +958,13 @@ L_A700:
 	ld a,d			;a705
 	sub 008h		;a706
 	ld d,a			;a708
-	call 0781fh		;a709   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;a709   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;a70c
 	ret c			;a70d
 	ld a,d			;a70e
 	add a,008h		;a70f
 	ld d,a			;a711
-	jp 0781fh		;a712   ; se_puede_pisar: carry si el caracter se puede pisar
+	jp 0781fh		;a712   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A715:
 	ld a,0c8h		;a715
 	cp e			;a717
@@ -973,13 +973,13 @@ L_A715:
 	ld a,d			;a71a
 	sub 008h		;a71b
 	ld d,a			;a71d
-	call 0781fh		;a71e   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;a71e   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;a721
 	ret c			;a722
 	ld a,d			;a723
 	add a,008h		;a724
 	ld d,a			;a726
-	jp 0781fh		;a727   ; se_puede_pisar: carry si el caracter se puede pisar
+	jp 0781fh		;a727   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A72A:
 	dec (ix+00bh)		;a72a
 	ret nz			;a72d
@@ -2555,7 +2555,7 @@ L_B213:
 	ld a,019h		;b242
 	jp 04fe4h		;b244   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_B247:
-	call 0701eh		;b247
+	call 0701eh		;b247   ; dinero_a_la_mitad: el dinero (BCD) entre dos
 	call 0593ah		;b24a   ; pinta_el_dinero: pinta el dinero (4 cifras) en (0x70, 8)
 	ld a,009h		;b24d
 	call L_B836		;b24f
@@ -3335,7 +3335,7 @@ L_B7B4:
 	ld (0c490h),a		;b7c6   ; guarda el estado del jugador
 	ld a,08bh		;b7c9
 	call 04fe4h		;b7cb   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-	call 067dah		;b7ce   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call 067dah		;b7ce   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	jr L_B759		;b7d1
 L_B7D3:
 	ld hl,(0c265h)		;b7d3   ; lee el DINERO (ryo, BCD)
@@ -4384,7 +4384,7 @@ L_BE51:
 	ret			;be79
 L_BE7A:
 	call 04351h		;be7a   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
-	call 0662ch		;be7d
+	call 0662ch		;be7d   ; prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
 	call L_BEAE		;be80
 	ld hl,00004h		;be83
 	ld (0c000h),hl		;be86   ; guarda el estado (0xC000) y el paso (0xC001) de un tiron

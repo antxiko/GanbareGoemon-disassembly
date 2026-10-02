@@ -2001,7 +2001,7 @@ L_8CCA:
 L_8CD2:
 	ld a,(ix+001h)		;8cd2   ; lee el paso en que va la figura
 	cp 002h		;8cd5
-	call z,07d7eh		;8cd7
+	call z,07d7eh		;8cd7   ; efecto_del_tipo: el efecto de sonido del tipo (0x7D98)
 	ld a,(ix+000h)		;8cda   ; lee el tipo de la figura
 	dec a			;8cdd
 	call 0408dh		;8cde   ; despacha: salta a la entrada A de la tabla que va detras del call
@@ -2094,7 +2094,7 @@ L_8D40:
 	call L_8E99		;8d40
 	call L_8D95		;8d43
 	ld (ix+00bh),0f0h		;8d46
-	call 07d7eh		;8d4a
+	call 07d7eh		;8d4a   ; efecto_del_tipo: el efecto de sonido del tipo (0x7D98)
 	ld e,(ix+012h)		;8d4d
 	call 05929h		;8d50   ; suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 	ld (ix+00ch),000h		;8d53
@@ -3637,14 +3637,14 @@ L_97B2:
 L_97B6:
 	push bc			;97b6
 	push de			;97b7
-	call 0781fh		;97b8   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;97b8   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;97bb
 	jr c,L_97D8		;97bc
 	push de			;97be
 	ld a,e			;97bf
 	sub 003h		;97c0
 	ld e,a			;97c2
-	call 0781fh		;97c3   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;97c3   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;97c6
 	jr c,L_97D8		;97c7
 	ld a,(0cd5bh)		;97c9
@@ -3654,7 +3654,7 @@ L_97B6:
 	ld a,d			;97d0
 	add a,014h		;97d1
 	ld d,a			;97d3
-	call 0781fh		;97d4   ; se_puede_pisar: carry si el caracter se puede pisar
+	call 0781fh		;97d4   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;97d7
 L_97D8:
 	pop bc			;97d8
@@ -3990,8 +3990,8 @@ L_9A1E:
 	call 04206h		;9a42   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	ret			;9a45
 L_9A46:
-	call 067b3h		;9a46   ; borra_las_figuras: borra todas las figuras
-	call 067dah		;9a49   ; esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+	call 067b3h		;9a46   ; borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+	call 067dah		;9a49   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	xor a			;9a4c
 	ld (0cd54h),a		;9a4d
 	inc a			;9a50

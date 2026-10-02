@@ -29,6 +29,617 @@ D 0x7F0E 0x7F14 marca_del_game_master  los seis ultimos bytes del Konami Game Ma
 D 0x7F14 0x7F1A marca_de_qbert  los seis ultimos bytes de Q*bert (RC-746, 0xBFFA de su ranura), que p01:7EE5 busca igual; si sale una de las dos, p01:7EC6 pone 0xEF00 a 0xFF (6 bytes)
 D 0x7F94 0x7FA3 rotulo_7F94  rotulo en (0x48, 0xA8) que p01:7F83 escribe con 0x48F3 (p01:7FB1) (15 bytes)
 D 0x7FB9 0x7FC8 rotulo_7FB9  rotulo en (0x48, 0xA8) que p01:7FA3 escribe con 0x48F3 (p01:7FB1) (15 bytes)
+C 0x6000 sigue continuar (p00:5FF1): los puntos del jugador que juega
+C 0x6006 a cero
+C 0x600C y desde el principio de la zona: casilla 0, sin dinero...
+C 0x601B ... sin ninguna de las cosas del marcador...
+C 0x6029 ... y con la vida entera (0x10)
+C 0x6031 y al estado 4 por p00:5F60
+C 0x6034 estado 8 (0xC282 puesto), paso 1
+C 0x6039 en el juego de graficos 4, directo a entrar otra vez
+C 0x603D la pantalla fija: dibujos, paleta, pantalla y texto
+C 0x6055 la musica 0x0C
+C 0x605D paso 2: el texto...
+C 0x6062 ... hasta que acaba (0xCD11) y no suena nada
+C 0x606E y vuelta al estado 4
+C 0x609C estado 9: se sale de la casilla
+C 0x60A2 lado 5: p01:672F
+C 0x60A9 lado 6: otra vez la paleta, las pantallas y la musica de la zona
+C 0x60AD lados 0-3: la casilla vecina
+C 0x60C6 y vuelta al estado 5
+C 0x60CF desde un pasadizo
+C 0x60D4 estado 0x0A: la pausa
+C 0x60D8 0xC00E cuenta de 0 a 0x2D
+C 0x60E3 F1 quita la pausa
+C 0x60E9 sin F2, a teclear (las palabras de la pausa)
+C 0x60ED F2 con 0xC28C a cero: al estado 0x0D
+C 0x60F9 fuera la pausa: la musica sigue y al estado 5
+C 0x610A estado 0x0B, paso 1: la espera, con p03:BD57 cada 8 cuadros
+C 0x6120 paso 2: la pantalla del final de la fase
+C 0x613D la musica 0x0A
+C 0x6145 paso 3: las figuras, hasta que acaba (0xCD11) y no suena nada
+C 0x6160 180 cuadros de espera
+C 0x6168 paso 4: la fase siguiente
+C 0x616A 0xC26A cuenta las fases pasadas
+C 0x6172 desde la zona 0
+C 0x617C con la 7 se acabo el juego: al estado 0x0F
+C 0x6181 si no, al 4
+C 0x6186 sin el bit 6: fuera de partida
+C 0x6192 paso 0: un texto de p03:BD48 en (0x38, 0x80)...
+C 0x61A2 ... el efecto 4 y 80 cuadros
+C 0x61AF estado 0x0C: el menu del vecino
+C 0x61B4 paso 1
+C 0x61B6 los dos botones y arriba/abajo
+C 0x61BC arriba o abajo: p02:8096
+C 0x61C1 un boton: segun la opcion (0xEF0B)
+C 0x61C8 la 0: estado 3, paso 2 (la partida)
+C 0x61CF la 1 y la 2, cada una con su texto en 0xEF02
+C 0x61E9 paso 2
+C 0x6073 paso 0: la zona esta pasada; mientras quede tiempo, pasa a puntos (p01:650A)
+C 0x607B a cero: una vida mas (el estado 4 quita una al entrar)...
+C 0x6083 ... 0xC261 + 1...
+C 0x608B ... y la zona siguiente, desde la casilla 0
+C 0x620D el boton 1 en la opcion: 0xEF05 y 0xEF06
+C 0x6214 vuelta al paso 0
+C 0x6219 si no, 0xEF07
+C 0x621E paso 0: el menu (p01:7F1A) y 0xEF08-0xEF16 a cero
+C 0x6232 estado 0x0D (F2 en la pausa), paso 1: hasta que se vuelve a apretar F2
+C 0x623D se quita y vuelta a la pausa
+C 0x6248 paso 0: sin sprites, p01:6B5F y 0xC28C = 1 (F2 no vuelve a valer en esta pausa)
+C 0x6256 estado 0x0E: la contrasena, paso 1
+C 0x625B hasta que se da por acabada (carry)
+C 0x625C 0xEB82 = 0: no es una contrasena normal; se mira si es una de las claves
+C 0x6263 una contrasena buena: partida de un jugador...
+C 0x626E ... con lo que dice la contrasena, y al estado 4
+C 0x6276 paso 0: la pantalla de la contrasena y su rotulo en (0x60, 0x60)
+C 0x6292 estado 0x0F: el final del juego, paso 1
+C 0x6295 el banco 12: el texto del final
+C 0x629E una letra cada 4 cuadros
+C 0x62A9 al acabar la musica, la ultima pantalla: sprites y la musica 0x0F
+C 0x62C5 60 cuadros
+C 0x62CA paso 2: cuando acaba la musica y la espera...
+C 0x62D9 ... fuera de partida, y al estado 0
+C 0x62E5 paso 0: el texto del final, montado en 0xD800...
+C 0x62EB ... se escribe desde (0x20, 0x10)...
+C 0x62F4 ... con la musica 0x0D; 240 cuadros
+C 0x62FE despues de los estados 0-2: el mando y el teclado a 0xC251/0xC250
+C 0x6307 sin nada nuevo apretado, nada
+C 0x6309 algo apretado: fuera la espera
+C 0x630E HL = 0xC000, B = el estado
+C 0x6313 en el estado 1 (el menu del titulo)...
+C 0x6315 ... sin boton: arriba o abajo cambian la opcion
+C 0x6319 el segundo boton: a la contrasena (estado 0x0E)
+C 0x631D el primero: la partida; con la opcion 1, la de dos jugadores (bit 5)
+C 0x6329 los puntos de los dos a cero
+C 0x6337 estado 3, paso 0
+C 0x633A y la marca de la opcion, fija
+C 0x6341 en los estados 0 y 2, se salta al titulo (estado 1)
+C 0x634B la otra opcion
+C 0x634F y 0xEF81 cuenta las veces que se cambia (p00:5EB6 la mira al entrar en la zona)
+C 0x635A la ventana de la pausa en (0x6A, 0x54), de 44 x 16...
+C 0x6366 ... y su texto
+C 0x6374 quita la ventana: vuelve lo que habia debajo, de (0xD0, 0x70) de la pagina 1
+C 0x6382 guarda el fondo en la pagina 1 (pagina 0 a la 1)...
+C 0x638D ... lo borra...
+C 0x6394 ... y le pone el marco, del color 0x0E
+C 0x643F estado 0, paso 0: el logotipo de Konami
+C 0x6442 su paleta
+C 0x6448 el registro 7 (el borde) a 0x0F
+C 0x644F (0x28, 0x40) de la pagina 1, 0xA8 x 0x48, a cero...
+C 0x645B ... y alli se monta el logotipo
+C 0x646A las variables de la vida valen aqui de cuentas: 0xC480 los cuadros...
+C 0x646D ... 0xC481 las lineas que faltan (49)...
+C 0x6470 ... y 0xC482 = 0, aun no se acabo
+C 0x6486 estado 0, paso 1: cada dos cuadros...
+C 0x648F ... una linea mas del logotipo
+C 0x6492 todas: 0xC482 = 1, acabado
+C 0x6498 las lineas que ya se ven...
+C 0x649E ... se copian de la pagina 1 a la 0: el logotipo sale de arriba abajo
+C 0x64A9 un cartel de caracteres: 0xFF acaba, 0xFE [dx] la fila siguiente
+C 0x64BE el caracter, en la pagina 1
+C 0x650A el tiempo que queda pasa a puntos: con centenas...
+C 0x6511 ... cada 16 cuadros, 100 segundos menos y 1000 puntos (efecto 0x1D)
+C 0x651E sin centenas, cada 2 cuadros, 1 segundo menos y 10 puntos (efecto 0x1C)
+C 0x6546 el texto del final: uno de cuatro
+C 0x654E con el vecino en la otra ranura, los dos de abajo
+C 0x6550 con las 7 fases pasadas una a una (0xC26A = 7), el segundo de la pareja
+C 0x655C la lista de frases (tabla de 0x6589)
+C 0x6562 cuantas
+C 0x6567 cada frase, de la tabla de 0xBCD3 (banco 12): [largo] y las letras
+C 0x6579 dos saltos de renglon detras de cada una
+C 0x6582 y 0xFF al final
+C 0x65A2 los 16 sprites del final: [y][x][patron] de 0x65C7
+C 0x65B9 los 256 bytes de color, del 3
+C 0x65F7 los cuatro enlaces de la casilla, en 0xE780 + casilla * 4
+C 0x6603 el lado (1-4), y se pone a cero
+C 0x660A el enlace de ese lado
+C 0x6610 0xFF: no hay casilla, se queda
+C 0x6623 los cuatro enlaces de la casilla, a 0xC284-0xC287
+C 0x6632 la vida y la vida maxima, 0x10
+C 0x663B el banco 9
+C 0x6649 el juego de graficos de la zona, de 0xB8EC
+C 0x665C 0xD000-0xE7FF a cero
+C 0x668B la primera vez en la zona...
+C 0x66A2 ... la casilla de entrada, de 0xB8AF...
+C 0x66AA ... si se esta jugando (no en la demostracion)
+C 0x66BF la vida llena
+C 0x66C5 700 segundos
+C 0x66CC el primero se cuenta enseguida
+C 0x66D1 en la zona 6, el dibujo de (0x00, 0x80) de la pagina 1 se copia a (0x30, 0x80)
+C 0x66E6 0xC0AF = 0
+C 0x66EA las casillas y sus enlaces
+C 0x66F6 entra en la casilla: sus enlaces...
+C 0x6708 ... la pantalla...
+C 0x6714 ... las cosas fijas...
+C 0x671A ... los dibujos de las figuras...
+C 0x6720 ... y los colores
+C 0x672F por el lado 5: la casilla de otra manera (sin las cosas fijas ni el marcador)
+C 0x6747 el jugador en su sitio
+C 0x674A la paleta de 0xA3FF
+C 0x6756 solo la primera vez en la zona: el jugador en su punto de entrada
+C 0x675B el banco 9
+C 0x6765 mirando a la derecha (lado 3)
+C 0x676A seis sitios posibles en 0xB8E0, [y][x]
+C 0x677A el primero (empezando por el ultimo) donde se puede pisar
+C 0x6783 alli, el jugador y sus sprites
+C 0x6791 ya ha entrado
+C 0x6798 por el lado 6, solo la musica
+C 0x679F si no, el jugador en (0x80, 0xB0)
+C 0x67B3 las ocho fichas de 0xC600 (de 0x80)...
+C 0x67BE ... y las ocho de 0xCA00 (de 0x40): el tipo a 0
+C 0x67CC los 0x60 bytes del jugador (0xC490-0xC4EF) a cero
+C 0x67DA la copia de los atributos de sprite (0xEE00): y = 0xE0 en los 32
+C 0x67E8 las dos de 0xC4D3 y 0xC4E3
+C 0x67F4 0xCC00-0xCCFF a cero: las cuatro fichas de 0x40
+C 0x6802 un cuadro del juego (estado 5) y de la demostracion
+C 0x6805 con el plano en pantalla, solo F1 y p02:987A
+C 0x6815 los cuadros pares, una mitad; los impares, la otra
+C 0x681B 0xC00D cuenta los cuadros pares
+C 0x6822 en el estado 3 del jugador F1 no vale
+C 0x6829 F1: la pausa
+C 0x682D el jugador: sus sprites, sus mandos y su movimiento
+C 0x6836 con el plano o saliendo de la casilla, nada mas
+C 0x6846 el banco 9
+C 0x6856 y las figuras
+C 0x685F los cuadros impares: las figuras, el tiempo y el orden de los sprites
+C 0x6877 F1 recien apretada...
+C 0x687C ... 0xC008 = 1 (p00:5F2C pasa a la pausa)...
+C 0x6884 ... el sonido en pausa, y carry
+C 0x688B la demostracion: cada vez, el otro jugador
+C 0x6890 la primera vez (0xCD2F = 0), Goemon
+C 0x68A6 una partida nueva sin perder 0xCD2F
+C 0x68B0 en la fase 0, zona 0...
+C 0x68BD ... 0xC263 = 1, la primera tecla dura 1...
+C 0x68C7 ... desde la casilla 12
+C 0x68CF con 99 vidas...
+C 0x68D4 ... 999 ryo...
+C 0x68DB ... y las cosas del marcador de 0x68E9
+C 0x68F3 un cuadro de la demostracion
+C 0x68F6 si sale de la casilla, lo mismo que el estado 9
+C 0x6923 la demostracion, cada dos cuadros: la tecla siguiente
+C 0x692E 0xCD54: la tecla que se pulsa; 0xFF acaba
+C 0x6935 como si se pulsara (p00:49E4)
+C 0x6938 se acabo: 0xC263 = 0 (p00:5E27 vuelve al estado 0)
+C 0x693F la tecla siguiente del guion de la demostracion (0x6955)
+C 0x6945 dos bytes por tecla: [cuadros][tecla]
+C 0x69D1 se entra o se sale de un pasadizo
+C 0x69DB a donde lleva (tablas de 0xEA80 y 0xEB00)
+C 0x69E1 0xC4AF = 1: el jugador se pone en la puerta
+C 0x69E6 dentro del pasadizo: su pantalla y, en partida, la musica 0x08
+C 0x69FD fuera: la casilla, el jugador en la puerta y la musica de la zona
+C 0x6A06 por un pasadizo, de tramo en tramo: el lado 4 (derecha) al siguiente...
+C 0x6A13 ... y el 3 al anterior
+C 0x6A14 la pantalla del pasadizo
+C 0x6A1D sin colores del sitio, y la lista de 0xC500 (48 bytes) a cero
+C 0x6A30 el mapa de 0xD800 entero del caracter 1
+C 0x6A40 el dibujo del tramo: 0xEA00 + el tramo
+C 0x6A59 al entrar en el pasadizo, la lista de 0xEA80: [casilla][tramo]
+C 0x6A62 al salir, la de 0xEB00: [tramo][casilla][colores]
+C 0x6A65 cuantas entradas
+C 0x6A6A C = la casilla de la que se viene, o el tramo
+C 0x6A74 la entrada que le toca
+C 0x6A7E el tramo, a 0xC484; o la casilla, a 0xC281
+C 0x6A8A al salir, tambien los colores del sitio
+C 0x6A9C con 0xC4AF puesto, una vez...
+C 0x6AA4 ... la puerta: la figura 6 fuera del pasadizo, la 7 dentro
+C 0x6AAD entre las cuatro fichas de 0xCC00
+C 0x6ABD HL = su (y, x)
+C 0x6AC6 cuatro sitios alrededor (0x6AF4, [dy][dx])...
+C 0x6AD6 ... el primero donde se puede pisar
+C 0x6AE0 alli el jugador...
+C 0x6AEE ... mirando a la derecha
+C 0x6AFC los pasadizos de la zona (banco 9): 15 tramos, de 0xAF08...
+C 0x6B0D ... cada uno es un numero de la tabla de 0xB04F, dos bytes...
+C 0x6B05 ... a 0xEA00
+C 0x6B21 y las entradas y salidas, de 0xB21B
+C 0x6B2B a 0xEA80: [cuantas] y [casilla][tramo] (el tramo, 5 bits)
+C 0x6B40 a 0xEB00, cada una al reves: [tramo][casilla] y un byte mas
+C 0x6B53 los 3 bits de arriba, aparte
+C 0x6B5F F2 en la pausa ensena la CONTRASENA del sitio donde se esta: 9 valores en 0xEB90
+C 0x6B62 [0] la fase, con el bit 4 si juega el jugador 2
+C 0x6B71 [1-2] la zona, en dos nibbles
+C 0x6B78 [3-4] la casilla
+C 0x6B7F [5] los colores del sitio
+C 0x6B84 [6] la clave: lo que marque 0xC00E (0-0x2D, sube cada cuadro de la pausa)
+C 0x6B89 [7-8] la suma de los siete primeros, en dos nibbles
+C 0x6B99 se revuelven con la clave
+C 0x6BA9 los tres ultimos (la clave y la suma) van tal cual
+C 0x6BB0 los demas: + la posicion (n * 4 si es par, n * 2 si es impar) + la clave...
+C 0x6BB9 ... modulo 46
+C 0x6BC1 + 0x30: una de las 46 letras desde la 0x30
+C 0x6BCC la ventana, en (0x50, 0x70), 0x60 x 0x1C
+C 0x6BD8 su rotulo
+C 0x6BDE y la contrasena en (0x60, 0x80)
+C 0x6BE7 quita la ventana: vuelve lo de (0xA0, 0xC0) de la pagina 1
+C 0x6BF5 A en dos bytes: el nibble de arriba y el de abajo
+C 0x6C03 cada vez que se aprieta una tecla, una letra mas; con 9, se mira
+C 0x6C0A las letras en 0xEBB0, la cuenta en 0xEB83
+C 0x6C15 la tecla (0xEB81)
+C 0x6C21 se pinta lo que va tecleado en (0x60, 0x80)
+C 0x6C31 las 9: menos 0x30, a 0xEBC0
+C 0x6C42 se deshace el revuelto: B = 6 letras, C = la posicion (9, 8...)
+C 0x6C45 la clave es la letra 6
+C 0x6C49 la posicion por 2 (impar) o por 4 (par)...
+C 0x6C51 ... y la clave, se restan...
+C 0x6C57 ... y si queda negativo, + 46
+C 0x6C60 la suma de los siete primeros...
+C 0x6C6B ... contra la de las letras 7 y 8
+C 0x6C72 mal: carry y 0xEB82 = 0
+C 0x6C74 buena: carry y 0xEB82 = 1
+C 0x6C7A [0]: la fase y el bit 4, el jugador 2
+C 0x6C8D [1-2]: la zona
+C 0x6C96 [3-4]: la casilla
+C 0x6C9F [5]: los colores del sitio
+C 0x6CA5 0xC268 = 1: no se busca la casilla de entrada de la zona
+C 0x6CAB A = L * 16 + H (H y L, dos nibbles)
+C 0x6CB8 nada tecleado: las 9 letras a 0...
+C 0x6CC8 ... y 0xFF detras
+C 0x6CD9 el banco 6: las tablas de las teclas
+C 0x6CE2 las filas 0-8 del teclado, hasta encontrar una tecla apretada
+C 0x6CF1 ninguna: 0xEB80 y 0xEB81 a cero
+C 0x6CFC 0xFCAD (la BIOS) distinto de cero: el teclado en kana, otra tabla
+C 0x6D08 8 bytes por fila, uno por tecla
+C 0x6D10 el primer bit apretado de la fila
+C 0x6D1D en kana, sin SHIFT, la 0x5B es la 0x5C
+C 0x6D2C 0xEB80 la tecla apretada, 0xEB81 si es nueva
+C 0x6D38 el jugador, un cuadro (con 0xCD32 puesto, quieto)
+C 0x6D46 por su estado (0x6D4C): 0 en el suelo, 1 saltando, 2 muriendo, 3, 4 y 5
+C 0x6D58 estado 0: la velocidad, segun lo que lleve
+C 0x6D5B con 0xC492 puesto (el primer boton), nada mas
+C 0x6D67 con carry de p01:7763 (los dos caracteres bajo los pies), a morir (estado 2)
+C 0x6D7E el primer boton: 0xC492 = 1
+C 0x6D85 el segundo: el salto
+C 0x6D89 0xC485: la direccion apretada; andando, la pose cambia cada 4 cuadros
+C 0x6D9F la direccion: arriba...
+C 0x6DA3 ... abajo...
+C 0x6DA7 ... izquierda...
+C 0x6DAB ... derecha
+C 0x6DAF quieto: la accion 0, salvo en el salto
+C 0x6DBF el salto: guarda la direccion, estado 1 y accion 2, y el efecto 1
+C 0x6DD6 se muere: fuera las figuras...
+C 0x6DEE ... estado 2, 15 cuadros de caida...
+C 0x6DFF ... y la musica 0x0B
+C 0x6E04 arriba: lado 0, si no choca, velocidad vertical negativa
+C 0x6E18 abajo: lado 1, hasta la y 0xC9
+C 0x6E30 izquierda: lado 2; sin casilla a la izquierda, no pasa de x 0x10
+C 0x6E57 derecha: lado 3; sin casilla a la derecha, no pasa de x 0xF0
+C 0x6E7B la velocidad, segun cuantas cosas 0 lleve (0x6E92: 1, 1,5, 2 y 2,5 puntos por cuadro)
+C 0x6E88 parado
+C 0x6E9A estado 1: el salto (el primer boton tambien vale en el aire)
+C 0x6EAB la direccion de cuando empezo
+C 0x6EB9 mira los dos caracteres del suelo
+C 0x6EF2 la curva de 0x6F2A, 30 cuadros: lo que sube o baja el sprite
+C 0x6F08 acabado: estado 0, todo a cero
+C 0x6F23 0xC4AA = 1
+C 0x6F48 estado 2, muriendo: 15 cuadros bajando 2 puntos...
+C 0x6F58 ... y cuando acaba la musica, lo que se pierde
+C 0x6F60 los 16 sprites de la copia, en la y del jugador + 6...
+C 0x6F64 ... o en su y
+C 0x6F6B los 8 primeros, 16 puntos mas abajo
+C 0x6F78 x 0, patron 0x1C
+C 0x6F81 y los colores, a 0
+C 0x6F8F estado 3: sin vida o sin tiempo (p01:7193, p03:B7C4); el paso en 0xC491
+C 0x6F96 paso 1: al acabar la cuenta, sale despedido...
+C 0x6F9A ... hacia arriba...
+C 0x6FA0 ... y hacia el lado contrario al que esta (0x200)
+C 0x6FAE cerca del borde, sin paso 2
+C 0x6FBD paso 2
+C 0x6FC1 frena (0x40 por cuadro)
+C 0x6FD6 paso 3: el vaiven
+C 0x6FF8 por abajo de la pantalla...
+C 0x7005 ... y sin musica: lo que se pierde
+C 0x700A al perder una vida: fuera 0xC263, la cosa 0x0A, las cosas 0 y 1 y el pasadizo...
+C 0x701A ... a la zona por su entrada...
+C 0x701E ... y el DINERO a la mitad (en BCD)
+C 0x7022 las cifras de arriba: cada una a la mitad...
+C 0x702A ... y si era impar, 5 a la de al lado
+C 0x7039 las de abajo, igual
+C 0x704E paso 4: quieto...
+C 0x705C ... y parpadeando
+C 0x7064 16 cuadros
+C 0x7069 el paso siguiente
+C 0x706E estado 4: bajando a un pasadizo; da vueltas (el lado cambia cada 2 cuadros)
+C 0x7088 un punto mas abajo cada cuadro
+C 0x708D hasta acabar la cuenta de 0xC4A8
+C 0x7096 estado 0 y quieto
+C 0x709C dentro o fuera del pasadizo, al reves que antes
+C 0x70A9 estado 5: la salida de la zona; quieto
+C 0x70B4 0xC4A8 cuenta hacia atras
+C 0x70C2 a 0x3C, se pinta la puerta
+C 0x70C4 la pose cambia cada 4 cuadros
+C 0x70D3 y sube un punto cada 8
+C 0x70E0 a cero: el jugador fuera de la pantalla...
+C 0x70EA ... y al acabar la musica, 0xC282 = 1: la zona pasada (estado 8)
+C 0x70F5 la puerta: 32 x 32 de (0x00, 0xA0) de la pagina 1 a (0x70, 0x40)...
+C 0x7102 ... en el juego 4, de (0xA8, 0xA0) a (0x80, 0x40)
+C 0x710E 0xC4A7 cuenta hacia atras hasta 0
+C 0x7116 la musica de las prisas
+C 0x711F por debajo de 50 segundos...
+C 0x712A ... cuando no suena nada, otra vez la de la zona (con 0xC0AF, p00:5018)
+C 0x7132 justo en 50 segundos...
+C 0x7143 ... la primera vez (0xC269)...
+C 0x714E ... 0xC0AF = 1 y, fuera de los pasadizos, la musica 0x12
+C 0x715D sin vida...
+C 0x7163 ... o sin tiempo, estado 3
+C 0x716C sin vida y con la cosa 7: se gasta y la vida vuelve entera
+C 0x7183 estado 3: fuera las figuras...
+C 0x7198 ... 32 cuadros...
+C 0x719D ... y la musica 0x0B
+C 0x71A2 0xC485: la direccion que vale
+C 0x71A5 lo apretado...
+C 0x71AD ... si no es nuevo y no esta lo de antes, todo
+C 0x71BB el jugador en los bordes
+C 0x71C7 en la pantalla especial, p01:729D
+C 0x71D1 por los lados de la pantalla se sale de la casilla
+C 0x71D8 x 0xF7 o mas: por la derecha (4), y aparece en x 0x0A
+C 0x71DC menos de x 0x0A: por la izquierda (3), y aparece en x 0xF6
+C 0x71EC la x de los sprites, igual
+C 0x71F2 la primera cosa de la pantalla (0xC520): 1 o 2...
+C 0x71F9 ... su y, 0x50 o 0xC8
+C 0x7200 el jugador a menos de 8 de esa y...
+C 0x7207 ... y entre x 0x40 y 0x60...
+C 0x720F ... con la direccion que toca apretada
+C 0x7224 por esa salida: los colores del sitio que toquen...
+C 0x7229 ... quieto...
+C 0x7236 ... en x 0x50...
+C 0x723E ... y se sale por el lado de la tabla
+C 0x7243 por arriba (1) aparece en y 0xC4; si no, en y 0x54
+C 0x7258 las puertas: las dos primeras cosas de la pantalla (0xC500, de 16 en 16)
+C 0x7263 [1] la y de la puerta (0, no hay)
+C 0x7268 el jugador a menos de 6 de ella...
+C 0x7270 ... y [2] entre x - 8 y x + 8...
+C 0x727D ... con arriba apretado:
+C 0x7284 se entra: el bit 7 de la puerta, para volver a salir por ella...
+C 0x728A ... 0xC482 = 1 (dentro de un interior) y se sale por el lado 5
+C 0x729D dentro de un interior: la salida esta abajo en medio (0x78-0x88, 0xBC-0xCC)
+C 0x72B2 con abajo apretado...
+C 0x72B8 ... fuera del interior, por el lado 6
+C 0x72C1 la puerta por la que se entro (bit 7)...
+C 0x72CD ... y el jugador delante de ella, 8 mas abajo
+C 0x72E6 las salidas de 0xC28A (lo pone p00:5262 segun la pantalla): 1, 2 o 3
+C 0x72F2 la 1: hacen falta 3 de la cosa 9 (0xC279)
+C 0x72F8 x 0x70-0x90
+C 0x7300 y 0x60-0x68, con arriba apretado:
+C 0x730D fuera las figuras...
+C 0x7316 ... 90 cuadros de estado 5 (la salida de la zona)...
+C 0x7327 ... se gastan las cosas 9...
+C 0x732D ... y la musica 0x0F
+C 0x7332 la 3: x 0x98-0xA8, y 0x60-0x68, con arriba...
+C 0x7357 ... 0xC28B = 1: la fase pasada (estado 0x0B)...
+C 0x7361 ... y fuera la musica
+C 0x7366 la 2: x 0x80-0xA0, sin mirar la cosa 9
+C 0x7370 la y del jugador y la de sus sprites += la velocidad vertical (con su fraccion)
+C 0x7382 la x += la horizontal
+C 0x7395 al saltar: el caracter de delante, en la direccion del salto
+C 0x73A3 la direccion del salto: arriba, abajo, izquierda o derecha, de 8 en 8
+C 0x73BB 0xC4A6: un bit por paso en el que el salto se para
+C 0x73C2 tantos pasos como cosas 0 lleve, mas 2
+C 0x73CB el caracter de ese paso...
+C 0x73CE ... dentro del mapa (0xD800-0xDABF)
+C 0x73E4 por debajo de 0xC4F1, se puede
+C 0x73EE C = 1: ahi se para
+C 0x73F0 el bit del paso
+C 0x73FE el paso siguiente, 16 puntos mas alla
+C 0x741B hasta donde llega el salto: segun cuantas cosas 0 lleve (tabla de 0x7425)
+C 0x742D con ninguna...
+C 0x7438 con una...
+C 0x7448 con dos...
+C 0x745D con tres...
+C 0x7470 ... se para al llegar a B cuadros (0xC4A0)
+C 0x7475 A = 0: sigue
+C 0x7477 E 8 arriba
+C 0x747C E 8 abajo
+C 0x7481 D 8 a la izquierda
+C 0x7486 D 8 a la derecha
+C 0x748B E 16 abajo
+C 0x7490 E 16 arriba
+C 0x7495 D 16 a la derecha
+C 0x749B D 16 a la izquierda
+C 0x749F si se sale de la pantalla, 0xEE80 = 1
+C 0x74A6 los sprites del jugador: Goemon (0xAA56, banco 9)...
+C 0x74AF ... o Ebisumaru (0xAA7E)
+C 0x74B2 una entrada por accion y lado
+C 0x74C3 en los estados 0 y 1, desde el sprite 0; en los demas, desde el 16 (0xEE40)
+C 0x74CD [cuantos] y [dy][dx] por sprite
+C 0x74D2 y = la del jugador + dy...
+C 0x74D7 ... parpadeando: en los cuadros impares de 0xC4A7, fuera (0xE0)
+C 0x74E6 con el primer boton, mirando a la izquierda, los que se salen por la izquierda no se ven
+C 0x750C x = la del jugador + dx
+C 0x7514 el patron: n * 4
+C 0x7526 en los estados 2-4, un sprite mas: patron 0x18 en (x - 8, y)
+C 0x7538 los colores: 64 lineas (cuatro sprites) en 0xEC00, o en 0xED00 en los estados 2 o mas
+C 0x7547 parpadeando, todo 0x0E y 2 alternando cada 2 cuadros
+C 0x754D el cuarto sprite, del color 2; el tercero, del 1
+C 0x755A los dos primeros: Goemon del 3 (0x0E con la cosa 1)...
+C 0x756C ... Ebisumaru del 2 (3 con la cosa 1)
+C 0x758A sin golpe, sin la cosa 1 y sin nada lanzado: los sprites del arma
+C 0x759B 32 lineas: 8 y 2 (0x0E y 2 para Ebisumaru)
+C 0x75BC Goemon, segun el lado (0x75E0): dos lineas del color 7
+C 0x75D4 16 lineas del color 2
+C 0x75E4 el golpe del primer boton (0xC492)
+C 0x75E9 0xC492 = 1, empieza
+C 0x75EC con la cosa 1, lanza algo (p01:762B)
+C 0x75F2 si ya hay algo lanzado, nada
+C 0x75F6 accion 3, 0xC492 = 2 y el efecto 8
+C 0x7608 0xC492 = 2: dura 5 cuadros...
+C 0x7612 ... y se esconden los sprites 4 y 5
+C 0x761A acabado: la accion 2 en el aire, 0 en el suelo
+C 0x762B lo lanzado: dos huecos de 16 bytes (0xC4D0 y 0xC4E0)
+C 0x763C [1-2] la velocidad, [3] y, [4] x
+C 0x7643 desde 12 puntos por encima del jugador
+C 0x764E y el efecto 9
+C 0x7655 4 puntos por cuadro hacia donde mira: lado 0 y 2 en negativo; 0 y 1 en vertical
+C 0x766C NZ si hay algo lanzado
+C 0x7675 mueve los dos: y += [1], x += [2]
+C 0x768E fuera de la pantalla, se borra
+C 0x76AC borra lo lanzado: sus 16 bytes a cero...
+C 0x76BC ... y su sprite fuera (0xEE10 el de 0xC4D0, 0xEE14 el de 0xC4E0)
+C 0x76D1 lo lanzado, un cuadro: se mueve, se borra si sale, y sus sprites
+C 0x76EA el sprite: y - 4, x - 4, patron 0x1C
+C 0x76FD y sus colores, de 0x770F
+C 0x771F choca por arriba: dos puntos, 5 por encima de los pies
+C 0x772E el de la derecha
+C 0x7735 y el de la izquierda
+C 0x7741 por abajo: 3 por debajo
+C 0x7763 los dos caracteres bajo los pies (x - 5 y x + 5): carry si los dos son hoyo
+C 0x777E por la derecha: 8 a la derecha, 2 por encima
+C 0x7794 por la izquierda
+C 0x77AA tres bytes por juego de graficos (0x77BF) a 0xC4F0: [pared desde][hoyo desde][cuantos hoyos]
+C 0x77D1 carry si el caracter A es pared
+C 0x77D2 saltando, segun hasta donde llega el salto (p01:741B)
+C 0x77E0 0xFF no para el salto
+C 0x77E7 en el juego 0, los caracteres 0x6C y 0x92 tampoco son pared
+C 0x77ED los de mas alla de 0xC4F0 son pared
+C 0x77FD carry si A es hoyo: entre 0xC4F1 y 0xC4F1 + 0xC4F2
+C 0x7805 la fila: (y - 0x20) / 8, por 32
+C 0x780F la columna: x / 8
+C 0x7818 en el mapa de 0xD800
+C 0x7823 de 0xC4F1 en adelante no se puede estar...
+C 0x7827 ... o, si 0xC4F1 es 0xF0, de mas alla de 0xC4F0
+C 0x7833 los choques del jugador, en el suelo o saltando, fuera de los interiores
+C 0x7844 su golpe contra las figuras
+C 0x7847 lo lanzado contra las figuras
+C 0x784A las figuras contra el jugador
+C 0x784D sin parpadear, tambien las de 0xCA00
+C 0x7855 las ocho figuras de 0xC600
+C 0x785B el bit 0 de (ix+0x0C): la figura hace dano
+C 0x7861 (ix+0x1D) puesto, no
+C 0x7867 solo los tipos 1-0x21
+C 0x786F los tipos 2 y 3 no tocan al jugador del cuadro 4 al 0x19 del salto: se saltan
+C 0x787E carry si se tocan
+C 0x7884 los tipos 8 y 0x21 no hacen dano: dan puntos (p01:79C8)
+C 0x7891 ya parpadeando, nada
+C 0x7898 60 cuadros parpadeando...
+C 0x789B ... y el efecto 0x0B
+C 0x78A0 si lleva lo que para a ese tipo (p01:7A08), se gasta eso y nada mas
+C 0x78A4 si no, pierde la cosa 1
+C 0x78AC el tipo 5 le quita la cosa 0x0A (o 20 ryo si no la tiene)...
+C 0x78B4 ... el 9, 20 ryo...
+C 0x78B9 ... y los demas, 4 de vida
+C 0x78C4 las de 0xCA00 (los disparos)
+C 0x78D9 60 cuadros parpadeando y el efecto 0x0B
+C 0x78E3 si lleva lo que lo para, se gasta
+C 0x78E7 si no, pierde la cosa 1 y 2 de vida
+C 0x78FA el golpe del primer boton contra las figuras
+C 0x790D el bit 1 de (ix+0x0C): se le puede dar
+C 0x7915 carry si le da
+C 0x791B los puntos y el dinero que da
+C 0x7921 (ix+0x0D) = 1: le han dado
+C 0x7926 el efecto 0x0D (0x0C para el tipo 3)
+C 0x793C lo lanzado contra las figuras
+C 0x795B carry si le da
+C 0x796F y lo lanzado se borra (IY apunta a el)
+C 0x7980 los puntos de cada tipo, en centenas: 0xB84C (banco 9)
+C 0x799D el dinero que da cada tipo: 0xB86D
+C 0x79AA dar a los tipos 8 y 0x21 cuesta 50 ryo
+C 0x79C8 tocar a un tipo 8 o 0x21: se va, 1000 puntos...
+C 0x79D1 ... con el bit 1 de 0xEF80 (una de las palabras de la pausa), 10 ryo mas...
+C 0x79DD ... y el efecto 0x12
+C 0x79E2 el tipo 5: si se tiene la cosa 0x0A, se pierde
+C 0x79F0 20 ryo menos
+C 0x79F6 4 de vida menos...
+C 0x79FD ... hasta 0
+C 0x7A04 2 de vida menos
+C 0x7A08 lo que para el golpe de cada tipo: los tipos 1 y 6, la cosa 6...
+C 0x7A16 ... el 5, la cosa 3...
+C 0x7A1D ... y los demas, la cosa 4
+C 0x7A20 sin ella, NC: hace dano
+C 0x7A23 con ella, una menos (si se acaba, fuera su icono) y carry
+C 0x7A29 A = el numero de la cosa (0xC270 + n)
+C 0x7A2F los disparos: de los tipos 1 y 2 para la cosa 5, de los demas la cosa 2
+C 0x7A3E un disparo contra el jugador: carry si se tocan, segun la caja de su tipo
+C 0x7A4E una figura contra el jugador
+C 0x7A61 el golpe contra una figura
+C 0x7A73 lo lanzado contra una figura
+C 0x7A85 la caja de cada tipo (0xB88E, banco 9): A = la clase - 1, B = x, C = y - D
+C 0x7A9B la clase 3: 7 puntos por encima
+C 0x7AA2 las demas, 15
+C 0x7AA9 la 2 contra el jugador: la clase 3, corrida 8 hacia donde mira la figura
+C 0x7ACA la caja de los disparos: 0x7AE8 la clase y 0x7AF0 lo que se resta a la y
+C 0x7AF5 las cajas de cada clase: H = medio alto, L = medio ancho...
+C 0x7B49 contra el jugador: |x - B| < L + 4...
+C 0x7B57 ... y |y - 12 - C| < H + 4: carry si se tocan
+C 0x7B67 contra el golpe: delante del jugador (0x7BA2, [dx][dy] por lado)
+C 0x7B7D mirando a la izquierda se resta
+C 0x7B8A por el borde, no
+C 0x7BAA contra lo lanzado: los dos huecos (IY)
+C 0x7BBC |x - B| < L + 3 y |y - 3 - C| < H + 3
+C 0x7BDA las cuatro cosas de 0xCC00 (de 0x40): lo que hay en el suelo
+C 0x7BE6 los tipos 8 y mas, aparte (p01:7C9C)
+C 0x7BEB sin el bit 0 de (ix+0x0C): solo saltando cerca (32 x 32), (ix+0x0D) = 1
+C 0x7C02 los tipos 6 y 7, las bocas de los pasadizos
+C 0x7C0C las demas se cogen al tocarlas (caja de 8 x 8)...
+C 0x7C12 ... lo que dan, se borran y el efecto 0x12
+C 0x7C25 una boca de pasadizo: en el suelo...
+C 0x7C2B ... a menos de 8 de (x - 4, y - 12)...
+C 0x7C47 ... se baja: fuera todo...
+C 0x7C63 ... estado 4, 32 cuadros...
+C 0x7C6D ... el jugador en el centro de su cuadro de 16...
+C 0x7C87 ... quieto...
+C 0x7C97 ... y la musica 0x10
+C 0x7C9C los tipos 8 y mas: con el bit 0 y en el suelo, a menos de 12...
+C 0x7CC8 ... (ix+0x0D) = 1 y el efecto 0x1E (0x14 el tipo 0x0A)
+C 0x7CDB el golpe contra el tipo 0x0E de 0xCC00: (ix+0x0D) = 1
+C 0x7D0D con 0xCDB0 puesto: en (0x30-0x50, 0x40-0x46) con arriba, el plano de la zona
+C 0x7D2B con la musica 0x08
+C 0x7D30 NC si el jugador esta a menos de 32 de (x - 16, y - 24)
+C 0x7D4A una caja de 8 x 8 en la figura
+C 0x7D56 lo que da cada tipo: el 1, la cosa 1; el 2, la cosa 0
+C 0x7D5E la cosa 0, hasta 3...
+C 0x7D6B ... y con 3, 10 ryo
+C 0x7D71 la cosa 1, si no se tiene; si se tiene, 10 ryo
+C 0x7D7E el efecto de cada tipo (0x7D98)
+C 0x7D86 el 6, con la cosa 8 puesta (0xC278 = 8), ninguno
+C 0x7D9E las salidas de la casilla, de la tabla de 0xB5D6 (banco 9) por zona
+C 0x7DB1 cuantas
+C 0x7DB9 [casilla, con el bit 7] y un byte mas
+C 0x7DCA ninguna: 0xC520-0xC52F a cero
+C 0x7DDA con el bit 7, la salida 2; sin el, la 1
+C 0x7DE4 y el byte que la acompana
+C 0x7DE9 las cosas de la casilla, de la tabla de 0x981D (banco 14) por zona...
+C 0x7DF3 ... a la lista de 0xC500, que se vacia antes
+C 0x7E05 las de esta casilla: [casilla][tipo][dos nibbles][un byte]
+C 0x7E26 la siguiente de 0xC500, 16 bytes mas alla
+C 0x7E42 al cargar la zona: las cosas de tipo 0x14 de la zona, a 0xC340
+C 0x7E5F dos bytes por cosa: la casilla y la marca
+C 0x7E73 0xC28D = cuantas hay
+C 0x7E7B una de ellas, al azar (registro R), lleva la marca 0x80
+C 0x7E8C la casilla, y la marca 0x80 cada cuatro (segun la cuenta del bucle)
+C 0x7E9D en las 16 de 0xC340, se deja solo el bit 7 de la marca
+C 0x7EAB en las cuatro ranuras primarias...
+C 0x7EB4 ... expandida, en sus cuatro subranuras
+C 0x7EC6 encontrado: 0xEF00 = 0xFF
+C 0x7EE5 los 6 bytes de 0xBFFA contra la firma de Q*bert (0x7F14)...
+C 0x7EF1 ... y los de 0x7FFA contra la del Game Master (0x7F0E)
+C 0x7EFC RDSLT: el byte de la otra ranura
+C 0x7F0A los 6 iguales: carry
+C 0x7F1A el menu del vecino: (0x20, 0x90), 0xC0 x 0x38, marco y texto
+C 0x7F2E rellena del color 0 y deja DE = el tamano para el marco
+C 0x7F83 la opcion 1: su texto y el numero de 0xEF05 en (0xB0, 0xA8)
+C 0x7FA3 la opcion 2: su texto y el numero de 0xEF07 en (0xB8, 0xA8)
+C 0x7FC8 borra la linea de las opciones: (0x24, 0xA0), 0xB8 x 0x20
+C 0x7FD1 la tecla que se aprieta en el menu (p02:8006)
+C 0x7FE9 0xEF15 = 0xFF y la cifra a 0xEF0F
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x628A 0x6292 rotulo_628A  rotulo sin posicion delante (0x48FD); lo leen p01:6284 (8 bytes)
@@ -78,27 +689,163 @@ F 0x7F41 16
 # --- fin de los bloques de bloques.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
-L 0x65F7 sale_de_la_casilla pasa a la casilla vecina por el lado de salida
-L 0x663A carga_la_zona carga la zona de 0xC280
-L 0x67B3 borra_las_figuras borra todas las figuras
-L 0x67CC borra_al_jugador borra al jugador
-L 0x67DA esconde_los_sprites_de_ram saca de la pantalla los sprites de la copia en RAM
-L 0x6C03 teclea_la_contrasena la pantalla de la contrasena
-L 0x6C7A aplica_la_contrasena saca de la contrasena la fase, el jugador, la zona y la casilla
-L 0x6CAB junta_nibbles junta dos nibbles en un byte
+L 0x6034 estado_8 la zona pasada: su pantalla, el tiempo a puntos y la zona siguiente
+L 0x609C estado_9 se sale de la casilla
+L 0x60D4 estado_0a la pausa: F1 la quita, F2 al estado 0x0D, y se teclean las palabras
+L 0x610A estado_0b la fase pasada
+L 0x61AF estado_0c el menu del vecino (Game Master o Q*bert en la otra ranura)
+L 0x6232 estado_0d F2 en la pausa
+L 0x6256 estado_0e la contrasena
+L 0x6292 estado_0f el final del juego
+L 0x62FE tras_el_titulo en los estados 0-2: una tecla salta al titulo, o en el menu elige
+L 0x635A ventana_de_la_pausa la ventana con el texto de la pausa
+L 0x6374 quita_la_ventana devuelve lo que tapaba la ventana de la pausa
+L 0x6382 ventana guarda en la pagina 1 el rectangulo de (H, L), B x C, lo borra y le pone marco
+L 0x643F logotipo_de_konami prepara el logotipo de Konami en la pagina 1
+L 0x6486 destapa_el_logotipo una linea mas del logotipo cada dos cuadros; al acabar, 0xC482 = 1
+L 0x64A9 cartel caracteres de HL en DE de la pagina 1; 0xFE [dx] baja, 0xFF acaba
+L 0x650A tiempo_a_puntos el tiempo que queda, a puntos: 10 por segundo
+L 0x653C texto_del_final monta en 0xD800 el texto del final, uno de cuatro
+L 0x65A2 sprites_del_final los 16 sprites de la ultima pantalla
+L 0x65F7 sale_de_la_casilla 0xC281 = la casilla vecina por el lado de 0xC283 (enlaces de 0xE780)
+L 0x6617 enlaces_de_la_casilla los cuatro enlaces de la casilla a 0xC284-0xC287
+L 0x662C prepara_la_partida letras, dibujos de siempre y la vida a 0x10
+L 0x663A carga_la_zona carga la zona de 0xC280: graficos, pantallas, bloques, casillas, vida y tiempo, y entra en la casilla
+L 0x66F6 entra_en_la_casilla monta y pinta la casilla con sus figuras
+L 0x672F entra_por_el_lado_5 la casilla sin cosas fijas, con el jugador abajo en medio
+L 0x6756 punto_de_entrada la primera vez en la zona, el jugador en el primer sitio de 0xB8E0 donde se puede pisar
+L 0x6798 jugador_abajo_en_medio el jugador en (0x80, 0xB0); por el lado 6, solo la musica
+L 0x67B3 borra_las_figuras el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+L 0x67CC borra_al_jugador los 0x60 bytes del jugador (0xC490) a cero
+L 0x67DA esconde_los_sprites_de_ram y = 0xE0 en los 32 sprites de la copia de 0xEE00
+L 0x67E8 las_dos_de_0xc4d3 p01:76AC con 0xC4D3 y con 0xC4E3
+L 0x67F4 borra_las_de_0xcc00 0xCC00-0xCCFF a cero
+L 0x6802 cuadro_del_juego un cuadro del juego: el jugador en los pares, las figuras en los impares
+L 0x6877 f1_pausa F1 recien apretada: la pausa (0xC008 = 1) y carry
+L 0x688B empieza_la_demo la demostracion: el otro jugador, zona 0, casilla 12, 99 vidas y 999 ryo
+L 0x68F3 cuadro_de_la_demo un cuadro de la demostracion
+L 0x6923 teclas_de_la_demo la tecla de la demostracion, cada dos cuadros
+L 0x693F tecla_de_la_demo la tecla siguiente del guion de 0x6955
+L 0x69D1 pasadizo se entra o se sale de un pasadizo
+L 0x6A06 tramo_siguiente al tramo siguiente o al anterior del pasadizo
+L 0x6A14 pinta_el_tramo la pantalla del tramo de pasadizo 0xC484
+L 0x6A59 destino_del_pasadizo el tramo al entrar (0xEA80) o la casilla al salir (0xEB00)
+L 0x6A9C en_la_puerta pone al jugador junto a la puerta (figura 6 o 7)
+L 0x6AFC pasadizos_de_la_zona los tramos y las puertas de los pasadizos de la zona, a 0xEA00, 0xEA80 y 0xEB00
+L 0x6B5F ensena_la_contrasena F2 en la pausa: la contrasena del sitio donde se esta
+L 0x6BE7 quita_la_contrasena devuelve lo que tapaba la ventana de la contrasena
+L 0x6BF5 en_dos_nibbles A en (HL) y (HL+1): el nibble de arriba y el de abajo
+L 0x6C03 teclea_la_contrasena una letra mas de la contrasena; con 9, la deshace y mira la suma: carry al acabar, 0xEB82 = 1 si vale
+L 0x6C7A aplica_la_contrasena la fase, el jugador, la zona, la casilla y los colores de la contrasena de 0xEBC0
+L 0x6CAB junta_nibbles A = L * 16 + H
+L 0x6CB8 contrasena_en_blanco nada tecleado
 L 0x6CD8 lee_el_teclado lee una tecla
-L 0x7804 caracter_bajo el caracter que hay bajo un punto
-L 0x781F se_puede_pisar carry si el caracter se puede pisar
-L 0x7EAB busca_al_vecino busca el Game Master o Q*bert en otra ranura (0xEF00)
+L 0x6D38 el_jugador el jugador, un cuadro: mandos y su estado (tabla de 0x6D4C)
+L 0x6D58 jugador_en_el_suelo estado 0: andar, saltar, el golpe, los hoyos
+L 0x6D9F anda segun la direccion de A: velocidad y lado
+L 0x6DB9 pide_el_golpe 0xC492 = 1
+L 0x6DBF salta el salto: estado 1 y el efecto 1
+L 0x6DD6 cae_al_hoyo estado 2 y la musica 0x0B
+L 0x6E7B velocidad_del_jugador 0xC4A3 segun las cosas 0 (0x6E92) y parado
+L 0x6E9A jugador_saltando estado 1: la curva del salto
+L 0x6F48 jugador_cayendo estado 2: baja y, al acabar la musica, pierde
+L 0x6F60 sprites_en_la_y los 16 sprites de la copia en la y del jugador + C
+L 0x6F8F jugador_despedido estado 3: sin vida o sin tiempo, sale despedido
+L 0x700A pierde fuera las cosas 0 y 1, a la entrada de la zona y el dinero a la mitad
+L 0x701E dinero_a_la_mitad el dinero (BCD) entre dos
+L 0x706E jugador_al_pasadizo estado 4: baja dando vueltas y entra o sale del pasadizo
+L 0x70A9 jugador_sale_de_la_zona estado 5: la puerta y sube; al acabar, 0xC282 = 1
+L 0x70F5 pinta_la_puerta la puerta de salida de la zona, 32 x 32
+L 0x710E baja_0xc4a7 0xC4A7 cuenta hasta 0
+L 0x7116 prisas por debajo de 50 segundos, su musica
+L 0x715D sin_vida_o_tiempo sin vida (y sin la cosa 7) o sin tiempo: estado 3
+L 0x71A2 direccion_que_vale 0xC485 = la direccion apretada
+L 0x71BB bordes por los lados se sale de la casilla; puertas e interiores
+L 0x7258 puertas con arriba ante una puerta, se entra en el interior
+L 0x729D salida_del_interior con abajo en la salida, fuera del interior
+L 0x72E6 salidas_especiales las puertas de 0xC28A: la de la zona (3 cosas 9) y la de la fase
+L 0x7370 mueve_al_jugador posicion += velocidad
+L 0x7395 donde_para_el_salto 0xC4A6: los pasos del salto en los que hay pared
+L 0x741B hasta_donde_salta segun las cosas 0, A = 0 sigue o compara con los cuadros del salto
+L 0x74A6 sprites_del_jugador_de_ram la posicion y los patrones de sus sprites en la copia de 0xEE00
+L 0x75E4 el_golpe el golpe del primer boton, o lanza algo con la cosa 1
+L 0x762B lanza en un hueco libre de 0xC4D0 o 0xC4E0, con el efecto 9
+L 0x7655 velocidad_de_lo_lanzado 4 puntos por cuadro hacia donde mira
+L 0x766C hay_algo_lanzado NZ si 0xC4D0 o 0xC4E0 estan en uso
+L 0x7675 mueve_lo_lanzado posicion += velocidad de los dos
+L 0x768E lanzado_fuera borra los que se salen de la pantalla
+L 0x76AC borra_lo_lanzado sus 16 bytes a cero y su sprite fuera
+L 0x76D1 lo_lanzado un cuadro de lo lanzado
+L 0x771F choca_arriba carry si hay pared encima
+L 0x7741 choca_abajo carry si hay pared debajo
+L 0x7763 en_un_hoyo carry si bajo los dos pies hay hoyo
+L 0x777E choca_derecha carry si hay pared a la derecha
+L 0x7794 choca_izquierda carry si hay pared a la izquierda
+L 0x77AA topes_del_juego pared y hoyos del juego de graficos, a 0xC4F0
+L 0x77D1 es_pared carry si el caracter A es pared
+L 0x77FD es_hoyo carry si el caracter A es hoyo
+L 0x7804 caracter_bajo A = el caracter de 0xD800 en el punto (D, E)
+L 0x781F no_se_puede_estar carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+L 0x7833 choques los choques del jugador con las figuras, sus disparos, su golpe y lo lanzado
+L 0x7855 figuras_contra_el_jugador si le toca una figura que hace dano: parpadeo, efecto y lo que pierde
+L 0x78C4 disparos_contra_el_jugador si le toca un disparo de 0xCA00: 2 de vida o lo que lo pare
+L 0x78FA golpe_contra_las_figuras si el golpe da a una figura: puntos y dinero
+L 0x7926 efecto_del_golpe el efecto 0x0D (0x0C con el tipo 3)
+L 0x793C lanzado_contra_las_figuras si lo lanzado da a una figura: puntos y dinero, y se borra
+L 0x7980 puntos_del_tipo suma los puntos del tipo de la figura (0xB84C, en centenas)
+L 0x799D dinero_del_tipo suma el dinero del tipo (0xB86D); los tipos 8 y 0x21 quitan 50
+L 0x79C8 toca_la_buena tocar un tipo 8 o 0x21: 1000 puntos (y 10 ryo con el bit 1 de 0xEF80)
+L 0x79E2 quita_la_cosa_0a pierde la cosa 0x0A; sin ella, 20 ryo
+L 0x79F0 quita_20_ryo 20 ryo menos
+L 0x79F6 quita_4_de_vida 4 de vida menos
+L 0x79F8 quita_vida B de vida menos, hasta 0
+L 0x7A04 quita_2_de_vida 2 de vida menos
+L 0x7A08 lo_para carry si lleva lo que para a ese tipo, y se gasta uno
+L 0x7A20 gasta_una si (HL) no es cero, una menos y carry
+L 0x7A29 repinta_la_cosa pinta la cosa de la direccion L (0xC270 + n)
+L 0x7A2F lo_para_del_disparo como lo_para, para los disparos
+L 0x7A3E toca_el_disparo carry si el disparo IX toca al jugador
+L 0x7A4E toca_la_figura carry si la figura IX toca al jugador
+L 0x7A61 le_da_el_golpe carry si el golpe da a la figura IX
+L 0x7A73 le_da_lo_lanzado carry si lo lanzado da a la figura IX
+L 0x7A85 caja_del_tipo A = la clase de caja del tipo, B y C su centro
+L 0x7ACA caja_del_disparo A = la clase de caja del disparo, B y C su centro
+L 0x7B49 toca_al_jugador carry si la caja (H, L) en (B, C) toca al jugador
+L 0x7B67 toca_al_golpe carry si la caja toca el golpe, delante del jugador
+L 0x7BAA toca_lo_lanzado carry si la caja toca alguno de los dos lanzados
+L 0x7BBC toca_al_lanzado carry si la caja toca el lanzado IY
+L 0x7BDA lo_del_suelo las cosas de 0xCC00: se cogen, o una boca de pasadizo
+L 0x7CDB golpe_al_0e el golpe contra el tipo 0x0E de 0xCC00
+L 0x7D0D sitio_del_plano con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
+L 0x7D30 cerca_de_la_figura carry si el jugador esta a menos de 32 de la figura
+L 0x7D4A toca_de_8 carry si el jugador toca la caja de 8 x 8 de la figura
+L 0x7D56 coge lo que da el tipo 1 (la cosa 1) o el 2 (la cosa 0), o 10 ryo
+L 0x7D7E efecto_del_tipo el efecto de sonido del tipo (0x7D98)
+L 0x7D9E salidas_de_la_casilla 0xC520: la salida especial de la casilla (tabla 0xB5D6)
+L 0x7DE9 cosas_de_la_casilla la lista de 0xC500 de la casilla (tabla 0x981D)
+L 0x7E34 vacia_0xc500 0xC500-0xC52F a cero
+L 0x7E42 las_del_tipo_14 las cosas de tipo 0x14 de la zona a 0xC340; una al azar marcada
+L 0x7E9D limpia_0xc340 deja solo el bit 7 de cada marca de 0xC340
+L 0x7EAB busca_al_vecino 0xEF00 = 0xFF si hay un Game Master (firma en 0x7FFA) o un Q*bert (0xBFFA) en otra ranura
+L 0x7ED1 busca_en_subranuras las cuatro subranuras de la ranura C
+L 0x7EE5 es_el_vecino carry si en la ranura C esta la firma de Q*bert o la del Game Master
+L 0x7EF9 compara_en_ranura carry si los B bytes de HL en la ranura C son los de DE
+L 0x7F1A menu_del_vecino la ventana, el marco y el texto del menu
+L 0x7F28 ventana_del_menu borra (0x20, 0x90), 0xC0 x 0x38
+L 0x7F2E rellena_y_mide rellena (H, L) B x C del color 0; DE = el tamano
+L 0x7F39 ventana_con_marco rellena y le pone marco
+L 0x7F83 opcion_1 texto y numero (0xEF05) de la opcion 1
+L 0x7FA3 opcion_2 texto y numero (0xEF07) de la opcion 2
+L 0x7FB1 texto_de_opcion borra la linea y pinta el rotulo de HL
+L 0x7FC8 borra_las_opciones borra (0x24, 0xA0), 0xB8 x 0x20
+L 0x7FD1 cifra_del_menu la cifra tecleada en el menu del vecino
 C 0x6003 apunta a los puntos del jugador 2 (BCD)
 C 0x600F guarda la CASILLA de la zona
 C 0x6012 guarda el DINERO (ryo, BCD)
 C 0x6018 guarda si ya entro en la zona
-C 0x601B apunta a las 10 cosas del marcador
 C 0x602B guarda la vida maxima
 C 0x602E guarda la VIDA del jugador
 C 0x6036 lee el juego de graficos de la zona
-C 0x603D borra_la_pantalla: borra la pantalla
 C 0x6040 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x6049 monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
 C 0x604C pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
@@ -108,23 +855,21 @@ C 0x6057 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa,
 C 0x605A siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x6066 lee los canales que suenan
 C 0x6070 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-C 0x6073 lee el TIEMPO (BCD)
-C 0x607B apunta a las vidas
-C 0x608B apunta a la ZONA (0-6)
+C 0x6078 tiempo_a_puntos: el tiempo que queda, a puntos: 10 por segundo
 C 0x6099 siguiente_paso: pasa al paso siguiente (0xC001)
-C 0x609C lee si esta en un pasadizo
-C 0x60A2 lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
-C 0x60AD sale_de_la_casilla: pasa a la casilla vecina por el lado de salida
+C 0x60B0 entra_en_la_casilla: monta y pinta la casilla con sus figuras
+C 0x60B5 entra_por_el_lado_5: la casilla sin cosas fijas, con el jugador abajo en medio
 C 0x60BA paleta_de_la_zona: pone la paleta del juego de graficos de la zona
 C 0x60BD pantallas_de_la_zona: descomprime las pantallas de la zona a 0xD000
+C 0x60C0 entra_en_la_casilla: monta y pinta la casilla con sus figuras
 C 0x60C3 musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
-C 0x60C7 guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x60C7 guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x60CC cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x60E0 lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
-C 0x60E3 lee F1-F3 recien apretadas (bits 0-2)
 C 0x60EA teclea_palabra: lo que se teclea en la pausa
 C 0x60F1 teclea_palabra: lo que se teclea en la pausa
 C 0x60F6 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
+C 0x60FD quita_la_ventana: devuelve lo que tapaba la ventana de la pausa
 C 0x6102 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x6107 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x610C apunta a la espera del estado, en cuadros
@@ -144,41 +889,41 @@ C 0x6165 siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x616E apunta a la FASE (0-6)
 C 0x6173 guarda la ZONA (0-6)
 C 0x6183 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-C 0x6186 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x618F cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-C 0x6192 sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x61A4 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x61A9 guarda la espera del estado, en cuadros
 C 0x61AC siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x61B0 lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
-C 0x61B6 lee lo que se acaba de apretar (mando y cursores)
 C 0x61CB guarda el estado (0xC000) y el paso (0xC001) de un tiron
+C 0x61D8 opcion_2: texto y numero (0xEF07) de la opcion 2
+C 0x61E3 opcion_1: texto y numero (0xEF05) de la opcion 1
 C 0x61E6 siguiente_paso: pasa al paso siguiente (0xC001)
+C 0x61F0 cifra_del_menu: la cifra tecleada en el menu del vecino
 C 0x6215 guarda el paso del estado
 C 0x622F siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x6234 lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
 C 0x6237 lee F1-F3 recien apretadas (bits 0-2)
 C 0x6240 sprites_dentro: enciende los sprites (bit 1 del registro 8 del VDP a cero)
 C 0x6245 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
-C 0x6248 sprites_fuera: apaga los sprites (bit 1 del registro 8 del VDP)
+C 0x624B ensena_la_contrasena: F2 en la pausa: la contrasena del sitio donde se esta
 C 0x6253 siguiente_paso: pasa al paso siguiente (0xC001)
-C 0x6258 teclea_la_contrasena: la pantalla de la contrasena
+C 0x6258 teclea_la_contrasena: una letra mas de la contrasena; con 9, la deshace y mira la suma: carry al acabar, 0xEB82 = 1 si vale
 C 0x6260 claves_secretas: compara lo tecleado con las claves secretas (0xBE8A)
 C 0x6265 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x6268 empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
-C 0x626E aplica_la_contrasena: saca de la contrasena la fase, el jugador, la zona y la casilla
+C 0x626B prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
 C 0x6273 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x6279 borra_la_pantalla: borra la pantalla
 C 0x6284 rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
 C 0x6287 siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x6297 el mapper: pone en 0xA000 el banco de A
 C 0x629A guarda la copia del banco de 0xA000
-C 0x629E lee el contador de cuadros
 C 0x62A3 sigue_texto: saca la letra siguiente del texto de 0xCD65 (0xFF acaba)
 C 0x62A6 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x62A9 lee los canales que suenan
 C 0x62AE apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x62B1 borra_la_pantalla: borra la pantalla
+C 0x62B4 patrones_del_final: los patrones de sprite de 0xBE32 (banco 6) a 0xF800
+C 0x62B7 sprites_del_final: los 16 sprites de la ultima pantalla
 C 0x62BA sube_colores_de_sprite: la copia de 0xEC00-0xEE7F (colores y atributos de los sprites) a 0xF400
 C 0x62BD enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0x62C2 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -186,49 +931,39 @@ C 0x62C7 espera_y_sigue: A cuadros de espera y el paso siguiente
 C 0x62CC lee los canales que suenan
 C 0x62D1 apunta a la espera del estado, en cuadros
 C 0x62D6 borra_la_pantalla: borra la pantalla
-C 0x62D9 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x62E1 guarda el estado (0xC000) y el paso (0xC001) de un tiron
 C 0x62E8 borra_la_pantalla: borra la pantalla
 C 0x62F1 empieza_texto: empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 C 0x62F6 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x62FB espera_y_sigue: A cuadros de espera y el paso siguiente
-C 0x62FE lee_mando_y_teclado: A = el mando 1 y el teclado juntos: bits 0-3 direcciones, 4-5 botones
 C 0x6304 apretado_y_nuevo: guarda A en (HL) y en (HL-1) lo que no estaba apretado antes
-C 0x6309 apunta a la espera del estado, en cuadros
 C 0x6325 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x6329 apunta a los puntos del jugador 1 (BCD)
 C 0x6345 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x6348 pantalla_del_titulo: pinta el titulo: dibujo de 20 x 12, 23 sprites, el marco y el menu
 C 0x6357 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
+C 0x6363 ventana: guarda en la pagina 1 el rectangulo de (H, L), B x C, lo borra y le pone marco
 C 0x6369 rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 C 0x637F hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x6386 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x638F hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 C 0x6398 marco: pinta un marco: (H, L), D de ancho, E de alto, color C
-C 0x643F apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x6445 pon_paleta: pone una lista de colores en la paleta
 C 0x6458 hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
-C 0x645B dibujos_de_konami: sube los dibujos del logotipo de Konami
+C 0x6464 cartel: caracteres de HL en DE de la pagina 1; 0xFE [dx] baja, 0xFF acaba
 C 0x6467 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-C 0x646A apunta a la vida maxima
-C 0x6486 apunta a la vida maxima
 C 0x6494 guarda la pantalla especial
 C 0x64A6 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x64BF caracter_en_la_pagina_1: pinta el caracter A de la pagina 1 en DE de la misma pagina
 C 0x64C2 siguiente_sitio: D 8 puntos a la derecha; al dar la vuelta, E 8 mas abajo
-C 0x6511 lee el contador de cuadros
-C 0x651E lee el contador de cuadros
 C 0x6530 pinta_el_tiempo: pinta el tiempo (4 cifras) en (0x48, 8)
 C 0x6534 suma_puntos: suma puntos en BCD al jugador que juega
 C 0x6539 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x653F el mapper: pone en 0xA000 el banco de A
 C 0x6542 guarda la copia del banco de 0xA000
-C 0x6546 lee el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
 C 0x655F palabra_de_tabla: HL = la palabra A de la tabla de HL
 C 0x656E palabra_de_tabla: HL = la palabra A de la tabla de HL
 C 0x6586 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x65FA lee la CASILLA de la zona
-C 0x6603 apunta a el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 C 0x660C hl_mas_a: HL += A
 C 0x6613 guarda la CASILLA de la zona
 C 0x661A lee la CASILLA de la zona
@@ -248,156 +983,148 @@ C 0x666C pantallas_de_la_zona: descomprime las pantallas de la zona a 0xD000
 C 0x666F bloques_de_la_zona: descomprime los bloques de la zona a 0xE100
 C 0x6675 el mapper: pone en 0xA000 el banco de A
 C 0x6678 guarda la copia del banco de 0xA000
+C 0x667C pasadizos_de_la_zona: los tramos y las puertas de los pasadizos de la zona, a 0xEA00, 0xEA80 y 0xEB00
 C 0x667F bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x6682 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
-C 0x6685 borra_al_jugador: borra al jugador
-C 0x6688 borra_las_figuras: borra todas las figuras
-C 0x668B apunta a si ya entro en la zona
+C 0x6682 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x6685 borra_al_jugador: los 0x60 bytes del jugador (0xC490) a cero
+C 0x6688 borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
 C 0x6696 el mapper: pone en 0xA000 el banco de A
 C 0x6699 guarda la copia del banco de 0xA000
 C 0x669D indice_de_la_zona: A = (fase * 7 + zona) * 2
 C 0x66A5 hl_mas_a: HL += A
-C 0x66AA apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x66B2 guarda la CASILLA de la zona
 C 0x66B6 guarda los colores del sitio
 C 0x66B9 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x66BF lee la vida maxima
+C 0x66BC topes_del_juego: pared y hoyos del juego de graficos, a 0xC4F0
 C 0x66C2 guarda la VIDA del jugador
 C 0x66C8 guarda el TIEMPO (BCD)
-C 0x66D1 lee la ZONA (0-6)
 C 0x66E3 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
-C 0x66EA rejilla_de_la_zona: la pantalla de cada casilla de la zona, a 0xE700 (tabla 0x600C, banco 13)
 C 0x66ED enlaces_de_la_zona: copia los enlaces entre casillas de la zona a 0xE780
-C 0x66FC esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
-C 0x66FF borra_las_figuras: borra todas las figuras
-C 0x6708 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x66F3 las_del_tipo_14: las cosas de tipo 0x14 de la zona a 0xC340; una al azar marcada
+C 0x66F9 salidas_de_la_casilla: 0xC520: la salida especial de la casilla (tabla 0xB5D6)
+C 0x66FC esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x66FF borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+C 0x6702 borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
+C 0x6705 las_dos_de_0xc4d3: p01:76AC con 0xC4D3 y con 0xC4E3
 C 0x670B esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0x670E monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
 C 0x6711 pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
-C 0x6714 cosas_fijas: pinta las cosas fijas de la casilla
-C 0x671A dibujos_de_las_figuras: los patrones y los colores 4 y 6 de las figuras de la casilla (fichas de 0xA830, banco 12)
+C 0x6717 punto_de_entrada: la primera vez en la zona, el jugador en el primer sitio de 0xB8E0 donde se puede pisar
 C 0x671D pinta_las_cosas: pinta las cosas del marcador
-C 0x6720 paleta_de_la_zona: pone la paleta del juego de graficos de la zona
 C 0x672C enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-C 0x672F esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
-C 0x6732 borra_las_figuras: borra todas las figuras
+C 0x6732 borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+C 0x6735 borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
+C 0x6738 las_dos_de_0xc4d3: p01:76AC con 0xC4D3 y con 0xC4E3
 C 0x673B apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x673E esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0x6741 monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
 C 0x6744 pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 C 0x6750 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-C 0x6756 lee si ya entro en la zona
 C 0x675E el mapper: pone en 0xA000 el banco de A
 C 0x6761 guarda la copia del banco de 0xA000
 C 0x6767 guarda el lado al que mira el jugador
 C 0x6772 hl_mas_a: HL += A
-C 0x677A se_puede_pisar: carry si el caracter se puede pisar
 C 0x6784 guarda la y de los sprites del jugador
 C 0x6787 guarda la y del jugador
 C 0x678B guarda la x de los sprites del jugador
 C 0x678E guarda la x del jugador
 C 0x6792 guarda si ya entro en la zona
 C 0x6795 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x6798 lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 C 0x67A1 guarda la y de los sprites del jugador
 C 0x67A4 guarda la y del jugador
 C 0x67A9 guarda la x de los sprites del jugador
 C 0x67AC guarda la x del jugador
 C 0x67B0 musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
-C 0x67CC apunta a el estado del jugador
-C 0x6802 franja_a_la_pagina_1: con el jugador en el estado 0-1, copia la franja de y 0xE8 a la pagina 1; si no, los colores de los sprites
-C 0x6805 lee si se esta viendo el plano
+C 0x67EB borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
+C 0x67F1 borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
 C 0x680B lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
-C 0x6815 lee el contador de cuadros
+C 0x680E f1_pausa: F1 recien apretada: la pausa (0xC008 = 1) y carry
 C 0x681F lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
-C 0x6822 lee el estado del jugador
-C 0x682D sprites_del_jugador: sube los sprites del jugador
-C 0x6836 lee si se esta viendo el plano
-C 0x683B lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x6830 el_jugador: el jugador, un cuadro: mandos y su estado (tabla de 0x6D4C)
+C 0x6833 bordes: por los lados se sale de la casilla; puertas e interiores
+C 0x683B lee por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
+C 0x6840 el_golpe: el golpe del primer boton, o lanza algo con la cosa 1
+C 0x6843 mueve_al_jugador: posicion += velocidad
 C 0x6849 el mapper: pone en 0xA000 el banco de A
 C 0x684C guarda la copia del banco de 0xA000
+C 0x6850 sprites_del_jugador_de_ram: la posicion y los patrones de sus sprites en la copia de 0xEE00
 C 0x6853 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x686E choques: los choques del jugador con las figuras, sus disparos, su golpe y lo lanzado
 C 0x6871 cuenta_el_tiempo: cada 60 - fase * 5 cuadros, un segundo menos
 C 0x6874 gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
-C 0x6877 lee F1-F3 recien apretadas (bits 0-2)
 C 0x6881 sprites_del_jugador: sube los sprites del jugador
 C 0x6886 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x688B apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x68A6 empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
+C 0x68AD prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
 C 0x68B1 guarda la ZONA (0-6)
 C 0x68B4 guarda la FASE (0-6)
 C 0x68BA guarda lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 C 0x68C1 guarda los cuadros que le quedan a la tecla de la demostracion
 C 0x68C4 guarda los colores del sitio
 C 0x68C9 guarda la CASILLA de la zona
-C 0x68CC carga_la_zona: carga la zona de 0xC280
+C 0x68CC carga_la_zona: carga la zona de 0xC280: graficos, pantallas, bloques, casillas, vida y tiempo, y entra en la casilla
 C 0x68D1 guarda las vidas
 C 0x68D7 guarda el DINERO (ryo, BCD)
 C 0x68DE apunta a las 10 cosas del marcador
 C 0x68E6 pinta_el_marcador: pinta el marcador entero
-C 0x68F6 lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
 C 0x6903 lee si esta en un pasadizo
-C 0x6909 sale_de_la_casilla: pasa a la casilla vecina por el lado de salida
-C 0x6910 guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x6909 sale_de_la_casilla: 0xC281 = la casilla vecina por el lado de 0xC283 (enlaces de 0xE780)
+C 0x690C entra_en_la_casilla: monta y pinta la casilla con sus figuras
+C 0x6910 guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
+C 0x6914 tramo_siguiente: al tramo siguiente o al anterior del pasadizo
+C 0x6919 entra_por_el_lado_5: la casilla sin cosas fijas, con el jugador abajo en medio
 C 0x691E paleta_de_la_zona: pone la paleta del juego de graficos de la zona
-C 0x6923 lee el contador de cuadros
 C 0x6928 apunta a los cuadros que le quedan a la tecla de la demostracion
 C 0x693C paleta_del_titulo: pone la paleta de 0xA44E (banco 9)
 C 0x694B guarda los cuadros que le quedan a la tecla de la demostracion
 C 0x69D4 el mapper: pone en 0xA000 el banco de A
 C 0x69D7 guarda la copia del banco de 0xA000
 C 0x69DE bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x69E6 lee si esta en un pasadizo
-C 0x69EC esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x69EC esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x69EF pinta_el_tramo: la pantalla del tramo de pasadizo 0xC484
 C 0x69F2 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x69FA sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
+C 0x6A00 en_la_puerta: pone al jugador junto a la puerta (figura 6 o 7)
 C 0x6A03 musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
-C 0x6A09 lee el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
-C 0x6A14 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+C 0x6A09 lee por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x6A17 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+C 0x6A1A las_dos_de_0xc4d3: p01:76AC con 0xC4D3 y con 0xC4E3
 C 0x6A1E guarda los colores del sitio
 C 0x6A2D colores_del_sitio: cambia los colores del sitio (0xC267)
 C 0x6A3D pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 C 0x6A46 hl_mas_a: HL += A
 C 0x6A4A pinta_pasadizo: pinta el pasadizo A con la pieza de (0x00, 0x80): 9 filas de bits de 0xAB18 (banco 9)
+C 0x6A4D borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
 C 0x6A50 cosas_fijas: pinta las cosas fijas de la casilla
+C 0x6A53 en_la_puerta: pone al jugador junto a la puerta (figura 6 o 7)
 C 0x6A56 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-C 0x6A59 lee si esta en un pasadizo
 C 0x6A66 lee si esta en un pasadizo
-C 0x6A6A lee la CASILLA de la zona
 C 0x6A79 lee si esta en un pasadizo
 C 0x6A7F apunta a la CASILLA de la zona
 C 0x6A8C guarda los colores del sitio
 C 0x6A90 lee si esta en un pasadizo
-C 0x6AA4 lee si esta en un pasadizo
-C 0x6AD6 se_puede_pisar: carry si el caracter se puede pisar
 C 0x6AE1 guarda la y de los sprites del jugador
 C 0x6AE4 guarda la y del jugador
 C 0x6AE8 guarda la x de los sprites del jugador
 C 0x6AEB guarda la x del jugador
 C 0x6AF0 guarda el lado al que mira el jugador
-C 0x6AFC indice_de_la_zona: A = (fase * 7 + zona) * 2
 C 0x6B02 palabra_de_tabla: HL = la palabra A de la tabla de HL
-C 0x6B21 indice_de_la_zona: A = (fase * 7 + zona) * 2
 C 0x6B27 palabra_de_tabla: HL = la palabra A de la tabla de HL
-C 0x6B62 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x6B6B lee la FASE (0-6)
-C 0x6B71 lee la ZONA (0-6)
-C 0x6B78 lee la CASILLA de la zona
-C 0x6B7F lee los colores del sitio
+C 0x6B74 en_dos_nibbles: A en (HL) y (HL+1): el nibble de arriba y el de abajo
+C 0x6B7B en_dos_nibbles: A en (HL) y (HL+1): el nibble de arriba y el de abajo
+C 0x6B96 en_dos_nibbles: A en (HL) y (HL+1): el nibble de arriba y el de abajo
+C 0x6BD5 ventana: guarda en la pagina 1 el rectangulo de (H, L), B x C, lo borra y le pone marco
 C 0x6BDB rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 C 0x6BE4 rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
 C 0x6BF2 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
-C 0x6C03 lee_el_teclado: lee una tecla
 C 0x6C0D apunta a los caracteres de la contrasena
-C 0x6C15 lee la tecla
 C 0x6C29 rotulo_sin_posicion: pinta el texto de HL en DE (D = x, E = y), sin [x][y] delante; C = 0 borra
-C 0x6C6E junta_nibbles: junta dos nibbles en un byte
+C 0x6C6E junta_nibbles: A = L * 16 + H
 C 0x6C80 guarda la FASE (0-6)
 C 0x6C86 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x6C90 junta_nibbles: junta dos nibbles en un byte
+C 0x6C90 junta_nibbles: A = L * 16 + H
 C 0x6C93 guarda la ZONA (0-6)
-C 0x6C99 junta_nibbles: junta dos nibbles en un byte
+C 0x6C99 junta_nibbles: A = L * 16 + H
 C 0x6C9C guarda la CASILLA de la zona
 C 0x6CA2 guarda los colores del sitio
 C 0x6CA7 guarda si ya entro en la zona
@@ -407,217 +1134,201 @@ C 0x6CDE guarda la copia del banco de 0xA000
 C 0x6CF8 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x6D0C hl_mas_a: HL += A
 C 0x6D35 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x6D46 lee el estado del jugador
+C 0x6D3D baja_0xc4a7: 0xC4A7 cuenta hasta 0
+C 0x6D40 direccion_que_vale: 0xC485 = la direccion apretada
+C 0x6D43 prisas: por debajo de 50 segundos, su musica
 C 0x6D49 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x6D64 sitio_del_plano: con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
+C 0x6D6C sin_vida_o_tiempo: sin vida (y sin la cosa 7) o sin tiempo: estado 3
 C 0x6D6F lee el estado del jugador
+C 0x6D75 salidas_especiales: las puertas de 0xC28A: la de la zona (3 cosas 9) y la de la fase
 C 0x6D78 lee la pantalla especial
-C 0x6D7E lee lo que se acaba de apretar (mando y cursores)
 C 0x6D97 apunta a la accion del jugador
-C 0x6DAF lee el estado del jugador
 C 0x6DB5 guarda la accion del jugador
 C 0x6DC7 guarda el estado del jugador
 C 0x6DCB guarda la accion del jugador
+C 0x6DCE donde_para_el_salto: 0xC4A6: los pasos del salto en los que hay pared
 C 0x6DD3 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x6DD6 borra_las_figuras: borra todas las figuras
-C 0x6DD9 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x6DD9 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x6DDC borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
+C 0x6DE2 borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
+C 0x6DE8 borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
 C 0x6DF0 guarda el estado del jugador
 C 0x6DF9 guarda la accion del jugador
 C 0x6E01 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x6E05 guarda el lado al que mira el jugador
+C 0x6E08 choca_arriba: carry si hay pared encima
 C 0x6E10 niega_de: DE = -DE
 C 0x6E1A guarda el lado al que mira el jugador
 C 0x6E1D lee la y del jugador
+C 0x6E23 choca_abajo: carry si hay pared debajo
 C 0x6E32 guarda el lado al que mira el jugador
 C 0x6E35 lee si esta en un pasadizo
 C 0x6E41 lee la x del jugador
+C 0x6E47 choca_izquierda: carry si hay pared a la izquierda
 C 0x6E4F niega_de: DE = -DE
 C 0x6E59 guarda el lado al que mira el jugador
 C 0x6E5C lee si esta en un pasadizo
 C 0x6E68 lee la x del jugador
-C 0x6E7B lee las 10 cosas del marcador
+C 0x6E6E choca_derecha: carry si hay pared a la derecha
 C 0x6E82 palabra_de_tabla: HL = la palabra A de la tabla de HL
 C 0x6EA0 lee lo que se acaba de apretar (mando y cursores)
-C 0x6EB9 lee la x del jugador
+C 0x6EA5 pide_el_golpe: 0xC492 = 1
+C 0x6EA8 velocidad_del_jugador: 0xC4A3 segun las cosas 0 (0x6E92) y parado
 C 0x6EBF lee la y del jugador
-C 0x6EC3 caracter_bajo: el caracter que hay bajo un punto
-C 0x6ECD caracter_bajo: el caracter que hay bajo un punto
+C 0x6EC3 caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x6ECD caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
 C 0x6EDA lee lo que se acaba de apretar (mando y cursores)
+C 0x6EEF anda: segun la direccion de A: velocidad y lado
 C 0x6EFE de_mas_a: DE += A
 C 0x6F02 apunta a la y de los sprites del jugador
 C 0x6F09 guarda el estado del jugador
 C 0x6F0F guarda la accion del jugador
 C 0x6F50 apunta a la y de los sprites del jugador
-C 0x6F58 lee los canales que suenan
+C 0x6F5D pierde: fuera las cosas 0 y 1, a la entrada de la zona y el dinero a la mitad
 C 0x6F6E lee la y del jugador
-C 0x6FA0 lee la x de los sprites del jugador
 C 0x6FA7 niega_de: DE = -DE
-C 0x6FAE lee la x de los sprites del jugador
-C 0x6FC1 lee la x de los sprites del jugador
 C 0x6FC8 niega_de: DE = -DE
 C 0x6FE3 niega_de: DE = -DE
-C 0x6FF8 apunta a la y de los sprites del jugador
-C 0x7005 lee los canales que suenan
 C 0x7011 apunta a las 10 cosas del marcador
 C 0x7017 guarda si esta en un pasadizo
 C 0x701B guarda si ya entro en la zona
 C 0x705E guarda la accion del jugador
 C 0x7061 guarda el parpadeo del jugador
 C 0x7084 guarda el lado al que mira el jugador
-C 0x7088 apunta a la y de los sprites del jugador
-C 0x7096 guarda el estado del jugador
-C 0x709C apunta a si esta en un pasadizo
+C 0x70A3 borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
+C 0x70A6 pasadizo: se entra o se sale de un pasadizo
 C 0x70CC apunta a la accion del jugador
 C 0x70D7 apunta a la y del jugador
 C 0x70DB apunta a la y de los sprites del jugador
 C 0x70E2 guarda la y del jugador
 C 0x70E7 guarda la y de los sprites del jugador
-C 0x70EA lee los canales que suenan
-C 0x70F5 lee el juego de graficos de la zona
 C 0x710B lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
-C 0x7116 lee el estado del jugador
-C 0x711F lee el TIEMPO (BCD)
-C 0x712A lee los canales que suenan
 C 0x712F musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
 C 0x7134 lee el TIEMPO (BCD)
 C 0x7153 lee si esta en un pasadizo
 C 0x715A sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x715D lee la VIDA del jugador
-C 0x7163 lee el TIEMPO (BCD)
 C 0x7175 lee la vida maxima
 C 0x7178 guarda la VIDA del jugador
 C 0x717B pinta_la_vida: pinta la barra de vida
 C 0x7180 pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
-C 0x7183 borra_las_figuras: borra todas las figuras
-C 0x7186 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x7186 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x7195 guarda el estado del jugador
 C 0x719F sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x71A5 lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
-C 0x71AD lee lo que se acaba de apretar (mando y cursores)
-C 0x71BB lee el estado del jugador
 C 0x71C1 lee si esta en un pasadizo
-C 0x71C7 lee la pantalla especial
-C 0x71D1 apunta a el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x71CB salida_del_interior: con abajo en la salida, fuera del interior
+C 0x71CE puertas: con arriba ante una puerta, se entra en el interior
 C 0x71D4 apunta a la x del jugador
-C 0x7200 lee la y del jugador
-C 0x7207 lee la x del jugador
-C 0x720F lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 C 0x7226 guarda los colores del sitio
 C 0x722A guarda el estado del jugador
 C 0x7230 guarda la accion del jugador
 C 0x7238 guarda la x de los sprites del jugador
 C 0x723B guarda la x del jugador
-C 0x7240 guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x7240 guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x7248 guarda la y de los sprites del jugador
 C 0x724B guarda la y del jugador
 C 0x7251 guarda la y de los sprites del jugador
 C 0x7254 guarda la y del jugador
-C 0x7258 lee el estado del jugador
-C 0x7268 lee la y del jugador
 C 0x7275 lee la x del jugador
-C 0x727D lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 C 0x728C guarda la pantalla especial
-C 0x7291 guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x7291 guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x72A2 lee la y del jugador
 C 0x72AA lee la x del jugador
-C 0x72B2 lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 C 0x72B9 guarda la pantalla especial
-C 0x72BE guarda el lado por el que se sale (0 arriba, 1 abajo, 2 izquierda, 3 derecha)
+C 0x72BE guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x72D0 guarda la y de los sprites del jugador
 C 0x72D3 guarda la y del jugador
 C 0x72D8 guarda la x de los sprites del jugador
 C 0x72DB guarda la x del jugador
-C 0x72F8 lee la x del jugador
-C 0x7300 lee la y del jugador
 C 0x7308 lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
-C 0x730D borra_las_figuras: borra todas las figuras
-C 0x7310 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x7310 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x7313 las_dos_de_0xc4d3: p01:76AC con 0xC4D3 y con 0xC4E3
 C 0x731D guarda el estado del jugador
 C 0x7321 guarda el lado al que mira el jugador
 C 0x7324 guarda la accion del jugador
 C 0x732F sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x7332 lee la x del jugador
 C 0x733A lee la y del jugador
 C 0x7342 lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
-C 0x7347 borra_las_figuras: borra todas las figuras
-C 0x734A esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x7347 borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+C 0x734A esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
+C 0x734D las_dos_de_0xc4d3: p01:76AC con 0xC4D3 y con 0xC4E3
 C 0x7351 guarda el lado al que mira el jugador
 C 0x7354 guarda la accion del jugador
 C 0x735E sprites_del_jugador: sube los sprites del jugador
 C 0x7363 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x7366 lee la x del jugador
-C 0x7395 lee la y del jugador
 C 0x739D lee la x del jugador
-C 0x73C2 lee las 10 cosas del marcador
-C 0x73CB caracter_bajo: el caracter que hay bajo un punto
 C 0x741F lee las 10 cosas del marcador
 C 0x7422 despacha: salta a la entrada A de la tabla que va detras del call
-C 0x74A6 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x74B2 lee la accion del jugador
 C 0x74B8 lee el lado al que mira el jugador
 C 0x74BD palabra_de_tabla: HL = la palabra A de la tabla de HL
 C 0x74C0 lee el estado del jugador
-C 0x74D2 lee la y de los sprites del jugador
+C 0x74ED hay_algo_lanzado: NZ si 0xC4D0 o 0xC4E0 estan en uso
 C 0x74F8 lee el lado al que mira el jugador
 C 0x74FF lee la x de los sprites del jugador
-C 0x750C lee la x de los sprites del jugador
 C 0x751D lee el estado del jugador
 C 0x7529 lee la y del jugador
 C 0x752E lee la x del jugador
 C 0x753A lee el estado del jugador
-C 0x7547 lee el parpadeo del jugador
-C 0x755A lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x7584 lee el estado del jugador
+C 0x7596 hay_algo_lanzado: NZ si 0xC4D0 o 0xC4E0 estan en uso
 C 0x75AA lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x75B6 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0x75BC lee el lado al que mira el jugador
 C 0x75C2 hl_mas_a: HL += A
 C 0x75CC hl_mas_a: HL += A
 C 0x75F8 guarda la accion del jugador
 C 0x7605 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x761E lee el estado del jugador
 C 0x7627 guarda la accion del jugador
-C 0x7643 lee la y de los sprites del jugador
 C 0x764A lee la x de los sprites del jugador
 C 0x7650 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x7657 lee el lado al que mira el jugador
-C 0x771F lee la y del jugador
+C 0x76D4 lanzado_fuera: borra los que se salen de la pantalla
+C 0x76D7 hay_algo_lanzado: NZ si 0xC4D0 o 0xC4E0 estan en uso
 C 0x7725 lee la x del jugador
-C 0x772E caracter_bajo: el caracter que hay bajo un punto
-C 0x773B caracter_bajo: el caracter que hay bajo un punto
-C 0x7741 lee la y del jugador
+C 0x7731 es_pared: carry si el caracter A es pared
+C 0x773B caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x773E es_pared: carry si el caracter A es pared
 C 0x7747 lee la x del jugador
-C 0x7750 caracter_bajo: el caracter que hay bajo un punto
-C 0x775D caracter_bajo: el caracter que hay bajo un punto
-C 0x7763 lee la y del jugador
+C 0x7750 caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x7753 es_pared: carry si el caracter A es pared
+C 0x775D caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x7760 es_pared: carry si el caracter A es pared
 C 0x7767 lee la x del jugador
-C 0x776D caracter_bajo: el caracter que hay bajo un punto
-C 0x7778 caracter_bajo: el caracter que hay bajo un punto
-C 0x777E lee la y del jugador
+C 0x776D caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x7770 es_hoyo: carry si el caracter A es hoyo
+C 0x7778 caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
+C 0x777B es_hoyo: carry si el caracter A es hoyo
 C 0x7782 lee la x del jugador
-C 0x778F caracter_bajo: el caracter que hay bajo un punto
-C 0x7794 lee la y del jugador
+C 0x778F caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
 C 0x7798 lee la x del jugador
-C 0x77A5 caracter_bajo: el caracter que hay bajo un punto
-C 0x77AA lee el juego de graficos de la zona
+C 0x77A5 caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
 C 0x77B3 hl_mas_a: HL += A
-C 0x77D2 lee el estado del jugador
-C 0x77E7 lee el juego de graficos de la zona
+C 0x77D9 hasta_donde_salta: segun las cosas 0, A = 0 sigue o compara con los cuadros del salto
 C 0x7815 hl_mas_a: HL += A
-C 0x781F caracter_bajo: el caracter que hay bajo un punto
-C 0x7833 lee el estado del jugador
+C 0x781F caracter_bajo: A = el caracter de 0xD800 en el punto (D, E)
 C 0x7839 lee la pantalla especial
-C 0x7867 lee el tipo de la figura
-C 0x7884 lee el tipo de la figura
+C 0x783E lo_del_suelo: las cosas de 0xCC00: se cogen, o una boca de pasadizo
+C 0x7841 golpe_al_0e: el golpe contra el tipo 0x0E de 0xCC00
+C 0x7852 disparos_contra_el_jugador: si le toca un disparo de 0xCA00: 2 de vida o lo que lo pare
+C 0x7889 toca_la_buena: tocar un tipo 8 o 0x21: 1000 puntos (y 10 ryo con el bit 1 de 0xEF80)
+C 0x788E toca_la_buena: tocar un tipo 8 o 0x21: 1000 puntos (y 10 ryo con el bit 1 de 0xEF80)
 C 0x789D sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x78A9 pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
-C 0x78AC lee el tipo de la figura
+C 0x78B1 quita_la_cosa_0a: pierde la cosa 0x0A; sin ella, 20 ryo
+C 0x78B6 quita_20_ryo: 20 ryo menos
 C 0x78CA lee el tipo de la figura
+C 0x78D3 toca_el_disparo: carry si el disparo IX toca al jugador
 C 0x78E0 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x78EC pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
+C 0x78EF quita_2_de_vida: 2 de vida menos
 C 0x7905 lee el tipo de la figura
-C 0x7926 lee el tipo de la figura
+C 0x791E dinero_del_tipo: suma el dinero del tipo (0xB86D); los tipos 8 y 0x21 quitan 50
 C 0x7931 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x794B lee el tipo de la figura
+C 0x7961 puntos_del_tipo: suma los puntos del tipo de la figura (0xB84C, en centenas)
+C 0x7964 dinero_del_tipo: suma el dinero del tipo (0xB86D); los tipos 8 y 0x21 quitan 50
+C 0x796C efecto_del_golpe: el efecto 0x0D (0x0C con el tipo 3)
+C 0x7975 borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
 C 0x7983 el mapper: pone en 0xA000 el banco de A
 C 0x7986 guarda la copia del banco de 0xA000
 C 0x798A lee el tipo de la figura
@@ -631,21 +1342,21 @@ C 0x79B6 hl_mas_a: HL += A
 C 0x79BA suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 C 0x79C2 resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 C 0x79C5 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x79C8 borra_la_figura: borra la figura
 C 0x79CE suma_puntos: suma puntos en BCD al jugador que juega
-C 0x79D1 lee los SECRETOS que ponen las claves
 C 0x79DA suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 C 0x79DF sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x79ED pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 C 0x79F3 resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 C 0x79F8 apunta a la VIDA del jugador
 C 0x7A01 pinta_la_vida: pinta la barra de vida
-C 0x7A08 lee el tipo de la figura
+C 0x7A24 repinta_la_cosa: pinta la cosa de la direccion L (0xC270 + n)
 C 0x7A2C pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
-C 0x7A2F lee el tipo de la figura
 C 0x7A41 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x7A53 caja_del_tipo: A = la clase de caja del tipo, B y C su centro
 C 0x7A56 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x7A65 caja_del_tipo: A = la clase de caja del tipo, B y C su centro
 C 0x7A68 despacha: salta a la entrada A de la tabla que va detras del call
+C 0x7A77 caja_del_tipo: A = la clase de caja del tipo, B y C su centro
 C 0x7A7A despacha: salta a la entrada A de la tabla que va detras del call
 C 0x7A88 el mapper: pone en 0xA000 el banco de A
 C 0x7A8B guarda la copia del banco de 0xA000
@@ -654,11 +1365,24 @@ C 0x7A96 hl_mas_a: HL += A
 C 0x7ABB lee la x de la figura
 C 0x7AC0 lee la y de la figura
 C 0x7AC7 bancos_1_2_3: pone los bancos 1, 2 y 3
-C 0x7ACA lee el tipo de la figura
 C 0x7AD1 hl_mas_a: HL += A
 C 0x7AD7 lee la x de la figura
 C 0x7ADD hl_mas_a: HL += A
 C 0x7AE1 lee la y de la figura
+C 0x7AF8 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7AFE toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B04 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B0A toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B10 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B16 toca_al_golpe: carry si la caja toca el golpe, delante del jugador
+C 0x7B1C toca_lo_lanzado: carry si la caja toca alguno de los dos lanzados
+C 0x7B22 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B28 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B2E toca_al_golpe: carry si la caja toca el golpe, delante del jugador
+C 0x7B34 toca_lo_lanzado: carry si la caja toca alguno de los dos lanzados
+C 0x7B3A toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
+C 0x7B40 toca_al_golpe: carry si la caja toca el golpe, delante del jugador
+C 0x7B46 toca_lo_lanzado: carry si la caja toca alguno de los dos lanzados
 C 0x7B4D lee la x de los sprites del jugador
 C 0x7B5B lee la y de los sprites del jugador
 C 0x7B68 lee el lado al que mira el jugador
@@ -666,26 +1390,29 @@ C 0x7B6F hl_mas_a: HL += A
 C 0x7B7A lee el lado al que mira el jugador
 C 0x7B7F lee la x de los sprites del jugador
 C 0x7B97 lee la y de los sprites del jugador
+C 0x7BAF toca_al_lanzado: carry si la caja toca el lanzado IY
+C 0x7BB8 toca_al_lanzado: carry si la caja toca el lanzado IY
 C 0x7BE0 lee el tipo de la figura
 C 0x7BF1 lee el estado del jugador
-C 0x7C02 lee el tipo de la figura
+C 0x7BF7 cerca_de_la_figura: carry si el jugador esta a menos de 32 de la figura
 C 0x7C15 borra_la_figura: borra la figura
 C 0x7C1A sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x7C25 lee el estado del jugador
-C 0x7C2B lee la y de la figura
 C 0x7C31 lee la y del jugador
 C 0x7C39 lee la x de la figura
 C 0x7C3F lee la x del jugador
 C 0x7C4B guarda la accion del jugador
-C 0x7C4E borra_las_figuras: borra todas las figuras
-C 0x7C60 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x7C4E borra_las_figuras: el tipo a 0 en las ocho fichas de 0xC600 y las ocho de 0xCA00
+C 0x7C51 borra_las_de_0xcc00: 0xCC00-0xCCFF a cero
+C 0x7C57 borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
+C 0x7C5D borra_lo_lanzado: sus 16 bytes a cero y su sprite fuera
+C 0x7C60 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x7C65 guarda el estado del jugador
-C 0x7C6D lee la y del jugador
 C 0x7C74 guarda la y del jugador
 C 0x7C77 guarda la y de los sprites del jugador
 C 0x7C7A lee la x del jugador
 C 0x7C81 guarda la x del jugador
 C 0x7C84 guarda la x de los sprites del jugador
+C 0x7C94 sprites_en_la_y: los 16 sprites de la copia en la y del jugador + C
 C 0x7C99 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x7CA3 lee el estado del jugador
 C 0x7CAA lee la y del jugador
@@ -698,25 +1425,21 @@ C 0x7CD8 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa,
 C 0x7CE6 lee el tipo de la figura
 C 0x7CF1 lee la x de la figura
 C 0x7CF4 lee la y de la figura
-C 0x7D0D lee la y del jugador
+C 0x7CFA toca_al_golpe: carry si la caja toca el golpe, delante del jugador
 C 0x7D15 lee la x del jugador
 C 0x7D1D lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
-C 0x7D22 esconde_los_sprites_de_ram: saca de la pantalla los sprites de la copia en RAM
+C 0x7D22 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x7D25 gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 C 0x7D28 ensena_el_plano: pasa a la pantalla del plano de la zona
 C 0x7D2D sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0x7D30 lee la x de la figura
 C 0x7D36 lee la x del jugador
 C 0x7D3D lee la y de la figura
 C 0x7D43 lee la y del jugador
-C 0x7D4A lee la x de la figura
 C 0x7D4D lee la y de la figura
-C 0x7D56 lee el tipo de la figura
-C 0x7D5E apunta a las 10 cosas del marcador
+C 0x7D53 toca_al_jugador: carry si la caja (H, L) en (B, C) toca al jugador
 C 0x7D68 pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 C 0x7D6E suma_dinero: suma E ryo (BCD) al dinero, hasta 9999
 C 0x7D7B pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
-C 0x7D7E lee el tipo de la figura
 C 0x7D91 hl_mas_a: HL += A
 C 0x7D95 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x7DA1 el mapper: pone en 0xA000 el banco de A
@@ -730,7 +1453,6 @@ C 0x7DEC el mapper: pone en 0xA000 el banco de A
 C 0x7DEF guarda la copia del banco de 0xA000
 C 0x7DF6 lee la ZONA (0-6)
 C 0x7DFD palabra_de_tabla: HL = la palabra A de la tabla de HL
-C 0x7E05 lee la CASILLA de la zona
 C 0x7E31 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x7E45 el mapper: pone en 0x8000 el banco de A
 C 0x7E48 guarda la copia del banco de 0x8000
@@ -740,12 +1462,21 @@ C 0x7E5C palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x7E78 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x7E83 hl_mas_a: HL += A
 C 0x7E89 bancos_1_2_3: pone los bancos 1, 2 y 3
+C 0x7EB8 es_el_vecino: carry si en la ranura C esta la firma de Q*bert o la del Game Master
 C 0x7EC8 guarda el VECINO: 0xFF con el Game Master o Q*bert en otra ranura
+C 0x7ECC busca_en_subranuras: las cuatro subranuras de la ranura C
+C 0x7ED8 es_el_vecino: carry si en la ranura C esta la firma de Q*bert o la del Game Master
+C 0x7EED compara_en_ranura: carry si los B bytes de HL en la ranura C son los de DE
 C 0x7F1F marco: pinta un marco: (H, L), D de ancho, E de alto, color C
 C 0x7F25 rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 C 0x7F33 hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
+C 0x7F39 rellena_y_mide: rellena (H, L) B x C del color 0; DE = el tamano
 C 0x7F3E marco: pinta un marco: (H, L), D de ancho, E de alto, color C
+C 0x7F86 texto_de_opcion: borra la linea y pinta el rotulo de HL
 C 0x7F91 pinta_bcd: pinta cifras en BCD
+C 0x7FA6 texto_de_opcion: borra la linea y pinta el rotulo de HL
+C 0x7FB2 borra_las_opciones: borra (0x24, 0xA0), 0xB8 x 0x20
 C 0x7FB6 rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
+C 0x7FCE rellena_y_mide: rellena (H, L) B x C del color 0; DE = el tamano
 C 0x7FFA pinta_bcd: pinta cifras en BCD
 # --- fin de las anotaciones de anota.py ---
