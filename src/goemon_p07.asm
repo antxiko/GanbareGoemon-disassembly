@@ -1,5 +1,5 @@
 ; ==========================================================================
-; GANBARE GOEMON - Konami (1987) - MSX1 - MegaROM RC-748 de 128 KB (Konami4) - banco 07 (se ejecuta en 0x6000)
+; GANBARE GOEMON - Konami (1987) - MSX2 - MegaROM RC-748 de 128 KB (Konami4) - banco 07 (se ejecuta en 0x6000)
 ; ==========================================================================
 ; Generado por tools/mkasm.py a partir del trazado de flujo real.
 ; Los comentarios provienen de tools/../src/*.notes y estan anclados a
@@ -10,8 +10,11 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6000..0x8000  (8192 bytes)
-DATA_6000:
+; DATOS dibujos_6000: dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se
+;   solapan 2 bloques (0x6000-0x63C0, 0x61A0-0x63C0); lo leen p00:4AD5,
+;   p00:4AE0 (960 bytes)
+;   0x6000..0x63c0  (960 bytes)
+DATA_dibujos_6000:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 6000  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 6010  ................
 	defb 0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh,0bbh	; 6020  ................
@@ -72,6 +75,14 @@ DATA_6000:
 	defb 00ah,0a0h,000h,000h,00ah,0a0h,000h,000h,00ah,0a0h,000h,000h,00ah,0a0h,000h,000h	; 6390  ................
 	defb 07ah,0aah,0aah,0a0h,077h,0aah,0aah,0a0h,077h,07ah,0aah,0a0h,007h,077h,0aah,0a0h	; 63a0  z...w...wz...w..
 	defb 000h,077h,07ah,0a0h,0b0h,007h,077h,0a0h,0bbh,000h,077h,070h,0bbh,0b0h,000h,000h	; 63b0  .wz...w...wp....
+
+; ----------------------------------------------------------------------
+; DATOS dibujos_63C0: dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se
+;   solapan 4 bloques (0x63C0-0x6900, 0x6820-0x6F80, 0x6AC0-0x6F60,
+;   0x6F60-0x79E0); lo leen p00:4AEB, p00:4B68, p00:4B73, p00:4DAF (5664
+;   bytes)
+;   0x63c0..0x79e0  (5664 bytes)
+DATA_dibujos_63C0:
 	defb 000h,00fh,0ffh,00fh,0ffh,0dfh,0ffh,000h,0ffh,00dh,0dfh,0fdh,00dh,0f7h,0dfh,0f0h	; 63c0  ................
 	defb 0ffh,007h,055h,00fh,0d0h,0ddh,075h,05fh,0fdh,0fdh,0f7h,055h,00fh,0fdh,0f0h,077h	; 63d0  ..U...u_...U...w
 	defb 0ffh,0d0h,00fh,000h,00dh,0ffh,0f0h,000h,0d0h,0fdh,0ddh,0f0h,0f0h,0fdh,07fh,000h	; 63e0  ................
@@ -426,6 +437,12 @@ DATA_6000:
 	defb 003h,033h,033h,033h,033h,033h,033h,030h,003h,033h,033h,033h,033h,033h,033h,030h	; 79b0  .3333330.3333330
 	defb 000h,033h,033h,033h,033h,033h,033h,000h,000h,000h,033h,033h,033h,033h,000h,000h	; 79c0  .333333...3333..
 	defb 000h,003h,000h,000h,000h,000h,030h,000h,000h,000h,033h,033h,033h,033h,000h,000h	; 79d0  ......0...3333..
+
+; ----------------------------------------------------------------------
+; DATOS dibujos16_79E0: dibujos de 16x16 a 4 bits, 128 bytes cada uno
+;   (0x48B8); lo leen p00:4DBA (512 bytes)
+;   0x79e0..0x7be0  (512 bytes)
+DATA_dibujos16_79E0:
 	defb 000h,000h,003h,030h,000h,000h,000h,000h,000h,000h,030h,003h,002h,088h,088h,020h	; 79e0  ...0......0....
 	defb 000h,0cch,0cch,0c0h,008h,088h,088h,080h,00ch,088h,038h,08ch,008h,088h,088h,080h	; 79f0  ..........8.....
 	defb 008h,088h,088h,088h,002h,077h,077h,020h,008h,02eh,028h,0e8h,007h,077h,077h,070h	; 7a00  .....ww ..(..wwp
@@ -458,6 +475,12 @@ DATA_6000:
 	defb 02eh,0eeh,023h,033h,033h,03eh,0eeh,023h,02eh,0eeh,023h,033h,033h,03eh,0eeh,023h	; 7bb0  ..#33>.#..#33>.#
 	defb 02eh,0eeh,02eh,0eeh,0eeh,0eeh,0eeh,023h,02eh,0eeh,022h,022h,022h,02eh,0eeh,023h	; 7bc0  .......#.."""..#
 	defb 03eh,0e2h,033h,033h,033h,03eh,0e2h,033h,032h,023h,033h,033h,033h,032h,023h,033h	; 7bd0  >.333>.32#3332#3
+
+; ----------------------------------------------------------------------
+; DATOS dibujos16_7BE0: dibujos de 16x16 a 4 bits, 128 bytes cada uno
+;   (0x48B8); lo leen p00:4DC5 (384 bytes)
+;   0x7be0..0x7d60  (384 bytes)
+DATA_dibujos16_7BE0:
 	defb 002h,022h,000h,000h,000h,022h,022h,000h,022h,0c2h,020h,000h,002h,022h,0cch,022h	; 7be0  ."..."".". .."."
 	defb 02ch,0cch,0c2h,000h,002h,022h,0cch,0c2h,022h,0c2h,022h,000h,022h,022h,02ch,0c2h	; 7bf0  ,....".."."."",.
 	defb 022h,022h,020h,000h,022h,022h,022h,0c2h,000h,022h,002h,020h,022h,02ch,0c2h,022h	; 7c00  "" ."""..". ",."
@@ -482,19 +505,43 @@ DATA_6000:
 	defb 000h,003h,037h,071h,011h,011h,011h,010h,000h,037h,070h,011h,011h,011h,011h,010h	; 7d30  ..7q.....7p.....
 	defb 003h,070h,000h,011h,011h,011h,011h,010h,003h,033h,070h,001h,011h,011h,011h,000h	; 7d40  .p.......3p.....
 	defb 000h,033h,070h,000h,011h,011h,010h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 7d50  .3p.............
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7D60: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4DD1 (48 bytes)
+;   0x7d60..0x7d90  (48 bytes)
+DATA_hmmc_7D60:
 	defb 0eeh,0e3h,03eh,0eeh,0eeh,0ech,0c0h,000h,000h,00ch,0eeh,0eeh,0eeh,0e3h,03eh,0eeh	; 7d60  ..>...........>.
 	defb 0eeh,0eeh,0eeh,0eeh,0cch,0cch,000h,000h,000h,000h,00ch,0cch,0eeh,0eeh,0eeh,0eeh	; 7d70  ................
 	defb 0cch,0cch,0cch,0cch,000h,000h,000h,000h,000h,000h,000h,000h,0cch,0cch,0cch,0cch	; 7d80  ................
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7D90: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4DDD (80 bytes)
+;   0x7d90..0x7de0  (80 bytes)
+DATA_hmmc_7D90:
 	defb 0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h	; 7d90  .w.p.w.p.w.p.w.p
 	defb 0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h	; 7da0  .w.p.w.p.w.p.w.p
 	defb 0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h,0bbh,077h,00bh,070h	; 7db0  .w.p.w.p.w.p.w.p
 	defb 0bbh,077h,00bh,000h,0bbh,077h,00bh,000h,0bbh,077h,000h,070h,0bbh,077h,000h,070h	; 7dc0  .w...w...w.p.w.p
 	defb 0bbh,077h,00bh,070h,0bbh,077h,00bh,000h,0bbh,070h,00bh,000h,0bbh,070h,000h,000h	; 7dd0  .w.p.w...p...p..
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7DE0: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4DE9 (80 bytes)
+;   0x7de0..0x7e30  (80 bytes)
+DATA_hmmc_7DE0:
 	defb 007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh	; 7de0  ..w...w...w...w.
 	defb 007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh	; 7df0  ..w...w...w...w.
 	defb 007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh,007h,0b0h,077h,0bbh	; 7e00  ..w...w...w...w.
 	defb 000h,0b0h,077h,0bbh,000h,0b0h,077h,0bbh,007h,000h,077h,0bbh,007h,000h,077h,0bbh	; 7e10  ..w...w...w...w.
 	defb 007h,0b0h,077h,0bbh,000h,0b0h,077h,0bbh,000h,0b0h,007h,0bbh,000h,000h,007h,0bbh	; 7e20  ..w...w.........
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7E30: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4DF5 (128 bytes)
+;   0x7e30..0x7eb0  (128 bytes)
+DATA_hmmc_7E30:
 	defb 0bbh,007h,000h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,000h,070h,0bbh	; 7e30  ..............p.
 	defb 0bbh,007h,009h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,090h,070h,0bbh	; 7e40  ..............p.
 	defb 000h,077h,009h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,090h,077h,000h	; 7e50  .w............w.
@@ -503,6 +550,12 @@ DATA_6000:
 	defb 0bbh,009h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,090h,0bbh	; 7e80  ................
 	defb 0bbh,009h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,090h,0bbh	; 7e90  ................
 	defb 000h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,099h,000h	; 7ea0  ................
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7EB0: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4E01 (256 bytes)
+;   0x7eb0..0x7fb0  (256 bytes)
+DATA_hmmc_7EB0:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7eb0  ................
 	defb 0f0h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,00fh	; 7ec0  ................
 	defb 007h,077h,077h,077h,077h,077h,077h,077h,077h,077h,077h,077h,077h,077h,077h,070h	; 7ed0  .wwwwwwwwwwwwwwp
@@ -519,8 +572,21 @@ DATA_6000:
 	defb 00ah,0aah,0abh,000h,033h,033h,033h,030h,003h,033h,033h,033h,000h,0bah,0aah,0a0h	; 7f80  ....3330.333....
 	defb 00ah,0aah,0abh,000h,033h,033h,033h,030h,003h,033h,033h,033h,000h,0bah,0aah,0a0h	; 7f90  ....3330.333....
 	defb 00ah,0aah,0abh,000h,033h,033h,033h,030h,003h,033h,033h,033h,000h,0bah,0aah,0a0h	; 7fa0  ....3330.333....
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7FB0: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4E0D (45 bytes)
+;   0x7fb0..0x7fdd  (45 bytes)
+DATA_hmmc_7FB0:
 	defb 00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah	; 7fb0  ................
 	defb 0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah	; 7fc0  ................
-	defb 0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,0bah,0aah,0a0h	; 7fd0  ................
-	defb 0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah	; 7fe0  ................
-	defb 0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah	; 7ff0  ................
+	defb 0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh,00ah,0aah,0abh	; 7fd0  .............
+
+; ----------------------------------------------------------------------
+; DATOS hmmc_7FDD: dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto /
+;   2 bytes; lo leen p00:4E19 (35 bytes)
+;   0x7fdd..0x8000  (35 bytes)
+DATA_hmmc_7FDD:
+	defb 0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah	; 7fdd  ................
+	defb 0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah,0a0h,0bah,0aah	; 7fed  ................
+	defb 0a0h,0bah,0aah	; 7ffd

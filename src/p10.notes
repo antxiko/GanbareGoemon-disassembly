@@ -1,0 +1,35 @@
+# Notas del banco 10: comentarios (C), etiquetas (L) y datos (D) anclados a direccion.
+# El banco 10 es el controlador de sonido y sus partituras; se ejecuta en
+# 0x6000 con los bancos 10, 11 y 12 puestos (p00:404D y p00:4FE9).
+
+# --- A MANO: comentarios, nombres y bloques ---
+D 0x60D5 0x60ED mascaras_del_mezclador  cuatro parejas de mascaras (AND, OR) por canal para el registro 7 del PSG: p10:60A3 apunta a 0x60E7, p10:60AA a 0x60E1, p10:60B1 a 0x60DB y p10:60B8 a 0x60D5, y p10:60BC suma el doble del canal (24 bytes)
+F 0x60D5 6
+D 0x6303 0x631B tonos_de_las_notas  las doce notas de la octava mas grave, una palabra cada una con el periodo del PSG: p10:6250 la escoge por el nibble alto de la nota y p10:625B la parte por dos tantas veces como diga la octava (ix+7) (24 bytes)
+F 0x6303 2
+D 0x663A 0x663C musica_9C_a_medias  el primer puntero de una musica 0x9C (0x8050, el silencio, como los de la 0x9B): detras ya empieza el efecto 0x20 en 0x663C, asi que esa musica no existe; nadie pide mas alla de la 0x96 (2 bytes)
+D 0x6868 0x6869 ff_de_mas_6868  un segundo 0xFF detras del que acaba el efecto de 0x6867; el interprete se para en el primero y este no lo lee nadie (1 byte)
+D 0x6B14 0x6B15 ff_de_mas_6B14  un segundo 0xFF detras del que acaba la partitura de 0x6B13; no lo lee nadie (1 byte)
+D 0x6B28 0x6B29 ff_de_mas_6B28  un segundo 0xFF detras del que acaba la partitura de 0x6B27; no lo lee nadie (1 byte)
+D 0x6B81 0x6B82 ff_de_mas_6B81  un segundo 0xFF detras del que acaba la musica de la pausa (0x6B74, p00:5182); no lo lee nadie (1 byte)
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6552 0x6592 efectos_de_sonido  32 punteros, los de los efectos 0x01-0x20 (p00:50DF suma el doble del numero a 0x6550: la palabra del 0 serian los bytes 37 C9 de `scf / ret` de p10:6550, y no se lee porque p00:5009 para el sonido con el 0): la lista de cuadros del canal de efectos que p00:50E7 deja en 0xC074; lo leen p00:50DF (64 bytes)
+F 0x6552 16
+D 0x6592 0x663A musicas  28 musicas (0x80-0x9B) de tres punteros cada una, la partitura de cada canal del PSG, que p00:5064 deja en 0xC01A, 0xC034 y 0xC04E; lo leen p00:505C (168 bytes)
+F 0x6592 16
+D 0x663C 0x6868 efecto_663C  cuadros de un efecto de sonido que interpreta p10:6454 (volumen y tono, ruido, mezcla y repeticiones; ver tools/bloques.py); lo leen p10:6454 (556 bytes)
+F 0x663C 16
+D 0x6869 0x6ABB partitura_6869  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); se solapan 4 bloques (0x6869-0x689C, 0x6869-0x6ABA, 0x692A-0x698D, 0x6A7D-0x6ABB); lo leen p10:61F1, p10:6454 (594 bytes)
+F 0x6869 16
+D 0x6ABB 0x6AEB efecto_6ABB  cuadros de un efecto de sonido que interpreta p10:6454 (volumen y tono, ruido, mezcla y repeticiones; ver tools/bloques.py); lo leen p10:6454 (48 bytes)
+F 0x6ABB 16
+D 0x6AEB 0x6B14 partitura_6AEB  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); lo leen p10:61F1 (41 bytes)
+F 0x6AEB 16
+D 0x6B15 0x6B28 partitura_6B15  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); lo leen p10:61F1 (19 bytes)
+F 0x6B15 16
+D 0x6B29 0x6B81 partitura_6B29  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); lo leen p10:61F1 (88 bytes)
+F 0x6B29 16
+D 0x6B82 0x8000 partitura_6B82  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py); lo leen p10:61F1 (5246 bytes)
+F 0x6B82 16
+# --- fin de los bloques de bloques.py ---

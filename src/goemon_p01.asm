@@ -1,5 +1,5 @@
 ; ==========================================================================
-; GANBARE GOEMON - Konami (1987) - MSX1 - MegaROM RC-748 de 128 KB (Konami4) - banco 01 (se ejecuta en 0x6000)
+; GANBARE GOEMON - Konami (1987) - MSX2 - MegaROM RC-748 de 128 KB (Konami4) - banco 01 (se ejecuta en 0x6000)
 ; ==========================================================================
 ; Generado por tools/mkasm.py a partir del trazado de flujo real.
 ; Los comentarios provienen de tools/../src/*.notes y estan anclados a
@@ -335,8 +335,10 @@ L_6276:
 	jp 05e43h		;6287
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x628a..0x6292  (8 bytes)
-DATA_628A:
+; DATOS rotulo_628A: rotulo sin posicion delante (0x48FD); lo leen p01:6284 (8
+;   bytes)
+;   0x628a..0x6292  (8 bytes)
+DATA_rotulo_628A:
 	defb 030h,05dh,039h,063h,032h,049h,067h,0ffh	; 628a  0]9c2Ig.
 
 ; ======================================================================
@@ -417,8 +419,10 @@ L_635A:
 	jp 048f3h		;6369
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x636c..0x6374  (8 bytes)
-DATA_636C:
+; DATOS rotulo_636C: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p01:6369 (8 bytes)
+;   0x636c..0x6374  (8 bytes)
+DATA_rotulo_636C:
 	defb 06eh,058h,031h,05eh,04bh,062h,037h,0ffh	; 636c  nX1^Kb7.
 
 ; ======================================================================
@@ -452,19 +456,58 @@ L_6382:
 	jp 04704h		;6398
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x639b..0x643f  (164 bytes)
-DATA_639B:
+; DATOS rotulo_639B: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); se solapan 2 bloques (0x639B-0x63D8, 0x63CB-0x63D8); lo
+;   leen p00:5B06, p00:5E5E (61 bytes)
+;   0x639b..0x63d8  (61 bytes)
+DATA_rotulo_639B:
 	defb 050h,010h,069h,02ah,02bh,02ch,02dh,02eh,02fh,000h,021h,029h,028h,027h,0feh,048h	; 639b  P.i*+,-./.!)('.H
 	defb 098h,043h,063h,05eh,040h,042h,063h,000h,030h,03eh,04ah,063h,04eh,05eh,035h,067h	; 63ab  .Cc^@Bc.0>JcN^5g
 	defb 0feh,058h,0a8h,04ah,043h,057h,042h,063h,000h,035h,063h,05dh,049h,063h,058h,0feh	; 63bb  .X.JCWBc.5c]IcX.
-	defb 058h,0b0h,04bh,03fh,057h,042h,063h,000h,03fh,048h,03bh,050h,0ffh,0bch,0bdh,0ffh	; 63cb  X.K?WBc.?H;P....
-	defb 070h,050h,07eh,07fh,080h,081h,082h,0ffh,060h,060h,078h,025h,000h,042h,063h,000h	; 63db  pP~.....``x%.Bc.
-	defb 041h,041h,063h,036h,0ffh,048h,000h,06fh,070h,071h,072h,0feh,070h,000h,06bh,06ch	; 63eb  AAc6.H.opqr.p.kl
-	defb 06dh,06eh,0feh,090h,008h,06ah,0feh,0a0h,000h,073h,074h,075h,076h,077h,0feh,0e8h	; 63fb  mn...j...stuvw..
-	defb 000h,0afh,0b0h,0ffh,054h,060h,083h,084h,085h,086h,087h,000h,079h,07ah,07bh,07ch	; 640b  ....T`......yz{|
-	defb 07dh,0ffh,04ch,060h,088h,089h,08ah,08bh,08ch,08dh,08eh,000h,079h,07ah,07bh,07ch	; 641b  }.L`........yz{|
-	defb 07dh,0ffh,010h,000h,083h,084h,085h,086h,087h,0ffh,008h,000h,088h,089h,08ah,08bh	; 642b  }...............
-	defb 08ch,08dh,08eh,0ffh	; 643b
+	defb 058h,0b0h,04bh,03fh,057h,042h,063h,000h,03fh,048h,03bh,050h,0ffh	; 63cb  X.K?WBc.?H;P.
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_63D8: rotulo sin posicion delante (0x48FD); lo leen p00:4479 (3
+;   bytes)
+;   0x63d8..0x63db  (3 bytes)
+DATA_rotulo_63D8:
+	defb 0bch,0bdh,0ffh	; 63d8
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_63DB: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p00:5FD2 (8 bytes)
+;   0x63db..0x63e3  (8 bytes)
+DATA_rotulo_63DB:
+	defb 070h,050h,07eh,07fh,080h,081h,082h,0ffh	; 63db  pP~.....
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_63E3: rotulo en el otro color (0x48F7); lo leen p00:5F9B,
+;   p00:5FDE (13 bytes)
+;   0x63e3..0x63f0  (13 bytes)
+DATA_rotulo_63E3:
+	defb 060h,060h,078h,025h,000h,042h,063h,000h,041h,041h,063h,036h,0ffh	; 63e3  ``x%.Bc.AAc6.
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_63F0: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p00:43F4 (31 bytes)
+;   0x63f0..0x640f  (31 bytes)
+DATA_rotulo_63F0:
+	defb 048h,000h,06fh,070h,071h,072h,0feh,070h,000h,06bh,06ch,06dh,06eh,0feh,090h,008h	; 63f0  H.opqr.p.klmn...
+	defb 06ah,0feh,0a0h,000h,073h,074h,075h,076h,077h,0feh,0e8h,000h,0afh,0b0h,0ffh	; 6400  j...stuvw......
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0x640f..0x6435  (38 bytes)
+DATA_640F:
+	defb 054h,060h,083h,084h,085h,086h,087h,000h,079h,07ah,07bh,07ch,07dh,0ffh,04ch,060h	; 640f  T`......yz{|}.L`
+	defb 088h,089h,08ah,08bh,08ch,08dh,08eh,000h,079h,07ah,07bh,07ch,07dh,0ffh,010h,000h	; 641f  ........yz{|}...
+	defb 083h,084h,085h,086h,087h,0ffh	; 642f
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_6435: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p00:43EE (10 bytes)
+;   0x6435..0x643f  (10 bytes)
+DATA_rotulo_6435:
+	defb 008h,000h,088h,089h,08ah,08bh,08ch,08dh,08eh,0ffh	; 6435  ..........
 
 ; ======================================================================
 ; CODIGO 0x643f..0x6476  (55 bytes)
@@ -497,8 +540,10 @@ L_643F:
 	ret			;6475
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6476..0x6486  (16 bytes)
-DATA_6476:
+; DATOS paleta_6476: colores de la paleta, [color][RB][G], 0xFF acaba
+;   (0x4666); lo leen p01:6445 (16 bytes)
+;   0x6476..0x6486  (16 bytes)
+DATA_paleta_6476:
 	defb 000h,000h,000h,001h,070h,003h,002h,060h,001h,003h,044h,004h,00fh,077h,007h,0ffh	; 6476  ....p..`..D..w..
 
 ; ======================================================================
@@ -1621,8 +1666,10 @@ L_6CB8:
 	ret			;6ccb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6ccc..0x6cd8  (12 bytes)
-DATA_6CCC:
+; DATOS rotulo_6CCC: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p01:6BDB (12 bytes)
+;   0x6ccc..0x6cd8  (12 bytes)
+DATA_rotulo_6CCC:
 	defb 058h,074h,04ah,04fh,041h,048h,030h,05dh,039h,063h,032h,0ffh	; 6ccc  XtJOAH0]9c2.
 
 ; ======================================================================
@@ -4148,7 +4195,7 @@ DATA_7D98:
 	defb 011h,011h,011h,010h,010h,013h	; 7d98
 
 ; ======================================================================
-; CODIGO 0x7d9e..0x7de9  (75 bytes)
+; CODIGO 0x7d9e..0x7f0e  (368 bytes)
 ; ======================================================================
 
 
@@ -4198,22 +4245,65 @@ L_7DE1:
 	ld a,(hl)			;7de4
 	ld (de),a			;7de5
 	jp 04206h		;7de6
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7de9..0x7e42  (89 bytes)
-DATA_7DE9:
-	defb 0f3h,03eh,00eh,032h,000h,0a0h,032h,0f3h,0f0h,0fbh,0cdh,034h,07eh,03ah,080h,0c2h	; 7de9  .>.2..2....4~:..
-	defb 087h,021h,01dh,098h,0cdh,081h,04dh,046h,023h,011h,000h,0c5h,03ah,081h,0c2h,0beh	; 7df9  .!....MF#...:...
-	defb 020h,021h,0e5h,023h,07eh,012h,00eh,000h,0d5h,023h,01ch,07eh,0e6h,0f0h,012h,01ch	; 7e09   !.#~....#.~....
-	defb 07eh,017h,017h,017h,017h,0e6h,0f0h,012h,01ch,023h,07eh,012h,0d1h,021h,010h,000h	; 7e19  ~........#~..!..
-	defb 019h,0ebh,0e1h,023h,023h,023h,010h,0d4h,0c3h,006h,042h,021h,000h,0c5h,011h,001h	; 7e29  ...###....B!....
-	defb 0c5h,036h,000h,001h,02fh,000h,0edh,0b0h,0c9h	; 7e39  .6../....
-
-; ======================================================================
-; CODIGO 0x7e42..0x7f0e  (204 bytes)
-; ======================================================================
-
-
+L_7DE9:
+	di			;7de9
+	ld a,00eh		;7dea
+	ld (0a000h),a		;7dec
+	ld (0f0f3h),a		;7def
+	ei			;7df2
+	call L_7E34		;7df3
+	ld a,(0c280h)		;7df6
+	add a,a			;7df9
+	ld hl,0981dh		;7dfa
+	call 04d81h		;7dfd
+	ld b,(hl)			;7e00
+	inc hl			;7e01
+	ld de,0c500h		;7e02
+L_7E05:
+	ld a,(0c281h)		;7e05
+	cp (hl)			;7e08
+	jr nz,L_7E2C		;7e09
+	push hl			;7e0b
+	inc hl			;7e0c
+	ld a,(hl)			;7e0d
+	ld (de),a			;7e0e
+	ld c,000h		;7e0f
+	push de			;7e11
+	inc hl			;7e12
+	inc e			;7e13
+	ld a,(hl)			;7e14
+	and 0f0h		;7e15
+	ld (de),a			;7e17
+	inc e			;7e18
+	ld a,(hl)			;7e19
+	rla			;7e1a
+	rla			;7e1b
+	rla			;7e1c
+	rla			;7e1d
+	and 0f0h		;7e1e
+	ld (de),a			;7e20
+	inc e			;7e21
+	inc hl			;7e22
+	ld a,(hl)			;7e23
+	ld (de),a			;7e24
+	pop de			;7e25
+	ld hl,00010h		;7e26
+	add hl,de			;7e29
+	ex de,hl			;7e2a
+	pop hl			;7e2b
+L_7E2C:
+	inc hl			;7e2c
+	inc hl			;7e2d
+	inc hl			;7e2e
+	djnz L_7E05		;7e2f
+	jp 04206h		;7e31
+L_7E34:
+	ld hl,0c500h		;7e34
+	ld de,0c501h		;7e37
+	ld (hl),000h		;7e3a
+	ld bc,0002fh		;7e3c
+	ldir		;7e3f
+	ret			;7e41
 L_7E42:
 	di			;7e42
 	ld a,00eh		;7e43
@@ -4386,13 +4476,20 @@ L_7F2E:
 	ret			;7f38
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7f39..0x7f83  (74 bytes)
+; DATOS sin identificar  0x7f39..0x7f41  (8 bytes)
 DATA_7F39:
-	defb 0cdh,02eh,07fh,00eh,00eh,0c3h,004h,047h,058h,098h,066h,066h,066h,03dh,05dh,03fh	; 7f39  .......GX.fff=]?
-	defb 037h,066h,066h,066h,0feh,024h,0a8h,0bch,0bdh,0feh,040h,0a8h,055h,044h,034h,03bh	; 7f49  7fff.$....@.UD4;
-	defb 000h,049h,03bh,063h,051h,058h,0feh,040h,0b0h,037h,045h,048h,000h,049h,063h,05dh	; 7f59  .I;cQX.@.7EH.Ic]
-	defb 039h,063h,032h,05ch,000h,035h,033h,058h,0feh,040h,0b8h,039h,063h,033h,052h,05dh	; 7f69  9c2\.53X.@.9c3R]
-	defb 048h,035h,03ch,063h,05ch,000h,035h,033h,058h,0ffh	; 7f79  H5<c\.53X.
+	defb 0cdh,02eh,07fh,00eh,00eh,0c3h,004h,047h	; 7f39  .......G
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_7F41: rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF
+;   acaba (0x48F3); lo leen p01:7F25 (66 bytes)
+;   0x7f41..0x7f83  (66 bytes)
+DATA_rotulo_7F41:
+	defb 058h,098h,066h,066h,066h,03dh,05dh,03fh,037h,066h,066h,066h,0feh,024h,0a8h,0bch	; 7f41  X.fff=]?7fff.$..
+	defb 0bdh,0feh,040h,0a8h,055h,044h,034h,03bh,000h,049h,03bh,063h,051h,058h,0feh,040h	; 7f51  ..@.UD4;.I;cQX.@
+	defb 0b0h,037h,045h,048h,000h,049h,063h,05dh,039h,063h,032h,05ch,000h,035h,033h,058h	; 7f61  .7EH.Ic]9c2\.53X
+	defb 0feh,040h,0b8h,039h,063h,033h,052h,05dh,048h,035h,03ch,063h,05ch,000h,035h,033h	; 7f71  .@.9c3R]H5<c\.53
+	defb 058h,0ffh	; 7f81
 
 ; ======================================================================
 ; CODIGO 0x7f83..0x7f94  (17 bytes)

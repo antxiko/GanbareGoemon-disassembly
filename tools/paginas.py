@@ -15,7 +15,9 @@ Lo que dice la ROM (tools/reconocimiento.py lo vuelve a medir cada vez):
     De ahi sale la tabla: el banco 3k+1 va a 0x6000, el 3k+2 a 0x8000 y el
     3k+3 a 0xA000.
   - UNA excepcion: p01:7DEC pone el banco 14 en 0xA000 (su sitio es 0x8000).
-    Ver EXCEPCIONES; el banco 14 se lee desde las dos ranuras.
+    Esta en codigo huerfano (p01:7DE9, que no llama nadie): una version vieja
+    del cargador de cosas de la casilla que leeria 0x981D con el banco 2 en
+    0x8000. Ver EXCEPCIONES.
 
 Uso como programa:
     paginas.py org <n>               imprime el org del banco n

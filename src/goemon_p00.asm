@@ -1,5 +1,5 @@
 ; ==========================================================================
-; GANBARE GOEMON - Konami (1987) - MSX1 - MegaROM RC-748 de 128 KB (Konami4) - banco 00 (se ejecuta en 0x4000)
+; GANBARE GOEMON - Konami (1987) - MSX2 - MegaROM RC-748 de 128 KB (Konami4) - banco 00 (se ejecuta en 0x4000)
 ; ==========================================================================
 ; Generado por tools/mkasm.py a partir del trazado de flujo real.
 ; Los comentarios provienen de tools/../src/*.notes y estan anclados a
@@ -1932,11 +1932,22 @@ L_4C26:
 	jp L_4206		;4c48
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x4c4b..0x4c75  (42 bytes)
-DATA_4C4B:
-	defb 000h,060h,00eh,06bh,026h,078h,03ah,083h,05ah,08fh,0f3h,09bh,050h,08ch,026h,0a0h	; 4c4b  .`.k&x:.Z...P.&.
-	defb 0d9h,07ch,08ch,006h,000h,0dfh,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 4c5b  .|..............
-	defb 07ch,08ch,021h,0a0h,0dbh,000h,090h,015h,040h,0ddh	; 4c6b  |.!.....@.
+; DATOS caracteres_de_cada_juego: 6 punteros, uno por juego de graficos
+;   (0xC289), a sus caracteres de 8x8 en rle; p00:4AA7 los descomprime en
+;   0xD000 (con los bancos 4-5-6); lo leen p00:4A9D (12 bytes)
+;   0x4c4b..0x4c57  (12 bytes)
+DATA_caracteres_de_cada_juego:
+	defb 000h,060h,00eh,06bh,026h,078h,03ah,083h,05ah,08fh,0f3h,09bh	; 4c4b  .`.k&x:.Z...
+
+; ----------------------------------------------------------------------
+; DATOS caracteres_vueltos_de_cada_juego: 6 fichas de 5 bytes, una por juego
+;   de graficos: [VRAM][n][fuente en 0xD000] de los caracteres que p00:4AC7
+;   sube dados la vuelta (0x4C75); los juegos 2 y 3 van a cero; lo leen
+;   p00:4C15 (30 bytes)
+;   0x4c57..0x4c75  (30 bytes)
+DATA_caracteres_vueltos_de_cada_juego:
+	defb 050h,08ch,026h,0a0h,0d9h,07ch,08ch,006h,000h,0dfh,000h,000h,000h,000h,000h,000h	; 4c57  P.&..|..........
+	defb 000h,000h,000h,000h,07ch,08ch,021h,0a0h,0dbh,000h,090h,015h,040h,0ddh	; 4c67  ....|.!.....@.
 
 ; ======================================================================
 ; CODIGO 0x4c75..0x4efc  (647 bytes)
@@ -3053,11 +3064,20 @@ L_54AF:
 	jp L_4206		;54b5
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x54b8..0x54e6  (46 bytes)
-DATA_54B8:
+; DATOS jefe_de_cada_fase: 21 punteros (p00:5409, el numero lo da p02:9282) a
+;   la figura del jefe: un solo tipo; lo leen p00:540C (42 bytes)
+;   0x54b8..0x54e2  (42 bytes)
+DATA_jefe_de_cada_fase:
 	defb 0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h,0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h	; 54b8  .T.T.T.T.T.T.T.T
 	defb 0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h,0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h	; 54c8  .T.T.T.T.T.T.T.T
-	defb 0e5h,054h,0e4h,054h,0e5h,054h,0e2h,054h,0e4h,054h,022h,023h,024h,000h	; 54d8  .T.T.T.T.T"#$.
+	defb 0e5h,054h,0e4h,054h,0e5h,054h,0e2h,054h,0e4h,054h	; 54d8  .T.T.T.T.T
+
+; ----------------------------------------------------------------------
+; DATOS jefes: los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0
+;   (ninguno); lo leen p00:542F (4 bytes)
+;   0x54e2..0x54e6  (4 bytes)
+DATA_jefes:
+	defb 022h,023h,024h,000h	; 54e2
 
 ; ======================================================================
 ; CODIGO 0x54e6..0x554e  (104 bytes)
@@ -3781,41 +3801,651 @@ L_5B9C:
 	jp L_447C		;5baf
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x5bb2..0x5dbb  (521 bytes)
-DATA_5BB2:
-	defb 0beh,05bh,0deh,05bh,0f6h,05bh,014h,05ch,02ch,05ch,048h,05ch,066h,05ch,06ah,05ch	; 5bb2  .[.[.[.\,\H\f\j\
-	defb 06eh,05ch,073h,05ch,077h,05ch,07bh,05ch,07fh,05ch,084h,05ch,088h,05ch,08ch,05ch	; 5bc2  n\s\w\{\.\.\.\.\
-	defb 090h,05ch,095h,05ch,099h,05ch,09dh,05ch,0a1h,05ch,0a7h,05ch,0abh,05ch,0aeh,05ch	; 5bd2  .\.\.\.\.\.\.\.\
-	defb 0b2h,05ch,0b6h,05ch,0bah,05ch,0beh,05ch,0c2h,05ch,0c6h,05ch,0cah,05ch,0ceh,05ch	; 5be2  .\.\.\.\.\.\.\.\
-	defb 0d3h,05ch,0d8h,05ch,0dch,05ch,0e0h,05ch,0e4h,05ch,0e8h,05ch,0ech,05ch,0f0h,05ch	; 5bf2  .\.\.\.\.\.\.\.\
-	defb 0f4h,05ch,0f9h,05ch,0fdh,05ch,001h,05dh,006h,05dh,00ah,05dh,00eh,05dh,013h,05dh	; 5c02  .\.\.\.].].].].]
-	defb 017h,05dh,01dh,05dh,021h,05dh,025h,05dh,029h,05dh,02dh,05dh,031h,05dh,035h,05dh	; 5c12  .].]!]%])]-]1]5]
-	defb 039h,05dh,03dh,05dh,041h,05dh,045h,05dh,048h,05dh,04bh,05dh,04fh,05dh,054h,05dh	; 5c22  9]=]A]E]H]K]O]T]
-	defb 058h,05dh,05ch,05dh,061h,05dh,065h,05dh,069h,05dh,06dh,05dh,071h,05dh,075h,05dh	; 5c32  X]\]a]e]i]m]q]u]
-	defb 079h,05dh,07dh,05dh,081h,05dh,085h,05dh,088h,05dh,08bh,05dh,08fh,05dh,093h,05dh	; 5c42  y]}].].].].].].]
-	defb 096h,05dh,099h,05dh,09dh,05dh,0a0h,05dh,0a4h,05dh,0a7h,05dh,0abh,05dh,0afh,05dh	; 5c52  .].].].].].].].]
-	defb 0b3h,05dh,0b7h,05dh,002h,002h,011h,00bh,002h,006h,005h,00bh,003h,000h,009h,011h	; 5c62  .].]............
-	defb 00bh,002h,008h,005h,00ch,002h,005h,011h,00ch,002h,006h,009h,00ch,003h,005h,011h	; 5c72  ................
-	defb 010h,018h,002h,002h,011h,010h,002h,006h,009h,010h,002h,008h,010h,013h,003h,000h	; 5c82  ................
-	defb 009h,011h,019h,002h,008h,019h,013h,002h,005h,011h,019h,002h,002h,011h,019h,004h	; 5c92  ................
-	defb 000h,007h,010h,013h,018h,002h,005h,019h,007h,001h,001h,003h,002h,001h,009h,00bh	; 5ca2  ................
-	defb 002h,000h,003h,007h,002h,000h,003h,011h,002h,001h,013h,01ah,002h,001h,005h,01ah	; 5cb2  ................
-	defb 002h,001h,01ah,009h,002h,005h,007h,01ah,002h,000h,007h,010h,003h,000h,007h,013h	; 5cc2  ................
-	defb 018h,003h,000h,007h,010h,018h,002h,001h,005h,00bh,002h,002h,011h,00bh,002h,006h	; 5cd2  ................
-	defb 005h,00bh,002h,002h,006h,01eh,002h,002h,01ch,01eh,002h,008h,013h,01eh,002h,005h	; 5ce2  ................
-	defb 007h,01eh,003h,000h,009h,007h,01eh,002h,002h,006h,014h,002h,002h,01ch,014h,003h	; 5cf2  ................
-	defb 000h,009h,011h,014h,002h,008h,005h,014h,002h,002h,01ch,00ch,003h,000h,009h,01ch	; 5d02  ................
-	defb 00ch,002h,002h,007h,01eh,004h,000h,007h,010h,013h,018h,002h,004h,005h,00bh,002h	; 5d12  ................
-	defb 004h,009h,00bh,002h,004h,00dh,005h,002h,004h,009h,00eh,002h,004h,005h,00fh,002h	; 5d22  ................
-	defb 004h,009h,00fh,002h,004h,00dh,00fh,002h,004h,00eh,00fh,002h,004h,00fh,010h,002h	; 5d32  ................
-	defb 004h,00fh,013h,001h,004h,00fh,001h,005h,010h,002h,000h,015h,019h,003h,000h,010h	; 5d42  ................
-	defb 015h,018h,002h,000h,00ah,015h,002h,000h,013h,00ah,003h,000h,009h,00ah,011h,002h	; 5d52  ................
-	defb 002h,006h,00ah,002h,000h,00ah,020h,002h,000h,020h,019h,002h,005h,011h,00bh,002h	; 5d62  ...... .. ......
-	defb 002h,011h,00bh,002h,002h,011h,017h,002h,006h,009h,017h,002h,002h,00ah,007h,002h	; 5d72  ................
-	defb 000h,016h,015h,001h,000h,020h,001h,000h,01fh,002h,000h,00ah,020h,002h,000h,00ah	; 5d82  ..... ...... ...
-	defb 01fh,001h,021h,020h,001h,021h,01fh,002h,000h,009h,017h,001h,006h,017h,002h,000h	; 5d92  ..! .!..........
-	defb 009h,00bh,001h,006h,00bh,002h,000h,016h,015h,002h,000h,00ah,015h,002h,000h,010h	; 5da2  ................
-	defb 015h,002h,000h,007h,010h,002h,000h,007h,00ah	; 5db2  .........
+; DATOS conjuntos_de_cada_juego: 6 punteros, uno por juego de graficos
+;   (0xC289), a sus conjuntos de figuras (p00:5BA8); lo leen p00:5BA8 (12
+;   bytes)
+;   0x5bb2..0x5bbe  (12 bytes)
+DATA_conjuntos_de_cada_juego:
+	defb 0beh,05bh,0deh,05bh,0f6h,05bh,014h,05ch,02ch,05ch,048h,05ch	; 5bb2  .[.[.[.\,\H\
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_0: 16 punteros, uno por conjunto de figuras del juego
+;   0, a su lista (p00:5BAF); lo leen p00:5BAF (32 bytes)
+;   0x5bbe..0x5bde  (32 bytes)
+DATA_conjuntos_juego_0:
+	defb 066h,05ch,06ah,05ch,06eh,05ch,073h,05ch,077h,05ch,07bh,05ch,07fh,05ch,084h,05ch	; 5bbe  f\j\n\s\w\{\.\.\
+	defb 088h,05ch,08ch,05ch,090h,05ch,095h,05ch,099h,05ch,09dh,05ch,0a1h,05ch,0a7h,05ch	; 5bce  .\.\.\.\.\.\.\.\
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_1: 12 punteros, uno por conjunto de figuras del juego
+;   1, a su lista (p00:5BAF); lo leen p00:5BAF (24 bytes)
+;   0x5bde..0x5bf6  (24 bytes)
+DATA_conjuntos_juego_1:
+	defb 0abh,05ch,0aeh,05ch,0b2h,05ch,0b6h,05ch,0bah,05ch,0beh,05ch,0c2h,05ch,0c6h,05ch	; 5bde  .\.\.\.\.\.\.\.\
+	defb 0cah,05ch,0ceh,05ch,0d3h,05ch,0d8h,05ch	; 5bee  .\.\.\.\
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_2: 15 punteros, uno por conjunto de figuras del juego
+;   2, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
+;   0x5bf6..0x5c14  (30 bytes)
+DATA_conjuntos_juego_2:
+	defb 0dch,05ch,0e0h,05ch,0e4h,05ch,0e8h,05ch,0ech,05ch,0f0h,05ch,0f4h,05ch,0f9h,05ch	; 5bf6  .\.\.\.\.\.\.\.\
+	defb 0fdh,05ch,001h,05dh,006h,05dh,00ah,05dh,00eh,05dh,013h,05dh,017h,05dh	; 5c06  .\.].].].].].]
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_3: 12 punteros, uno por conjunto de figuras del juego
+;   3, a su lista (p00:5BAF); lo leen p00:5BAF (24 bytes)
+;   0x5c14..0x5c2c  (24 bytes)
+DATA_conjuntos_juego_3:
+	defb 01dh,05dh,021h,05dh,025h,05dh,029h,05dh,02dh,05dh,031h,05dh,035h,05dh,039h,05dh	; 5c14  .]!]%])]-]1]5]9]
+	defb 03dh,05dh,041h,05dh,045h,05dh,048h,05dh	; 5c24  =]A]E]H]
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_4: 13 punteros, uno por conjunto de figuras del juego
+;   4, a su lista (p00:5BAF); lo leen p00:5BAF (26 bytes)
+;   0x5c2c..0x5c46  (26 bytes)
+DATA_conjuntos_juego_4:
+	defb 04bh,05dh,04fh,05dh,054h,05dh,058h,05dh,05ch,05dh,061h,05dh,065h,05dh,069h,05dh	; 5c2c  K]O]T]X]\]a]e]i]
+	defb 06dh,05dh,071h,05dh,075h,05dh,079h,05dh,07dh,05dh	; 5c3c  m]q]u]y]}]
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0x5c46..0x5c48  (2 bytes)
+DATA_5C46:
+	defb 081h,05dh	; 5c46
+
+; ----------------------------------------------------------------------
+; DATOS conjuntos_juego_5: 15 punteros, uno por conjunto de figuras del juego
+;   5, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
+;   0x5c48..0x5c66  (30 bytes)
+DATA_conjuntos_juego_5:
+	defb 085h,05dh,088h,05dh,08bh,05dh,08fh,05dh,093h,05dh,096h,05dh,099h,05dh,09dh,05dh	; 5c48  .].].].].].].].]
+	defb 0a0h,05dh,0a4h,05dh,0a7h,05dh,0abh,05dh,0afh,05dh,0b3h,05dh,0b7h,05dh	; 5c58  .].].].].].].]
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C66: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c66..0x5c6a  (4 bytes)
+DATA_figuras_5C66:
+	defb 002h,002h,011h,00bh	; 5c66
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C6A: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c6a..0x5c6e  (4 bytes)
+DATA_figuras_5C6A:
+	defb 002h,006h,005h,00bh	; 5c6a
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C6E: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5c6e..0x5c73  (5 bytes)
+DATA_figuras_5C6E:
+	defb 003h,000h,009h,011h,00bh	; 5c6e
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C73: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c73..0x5c77  (4 bytes)
+DATA_figuras_5C73:
+	defb 002h,008h,005h,00ch	; 5c73
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C77: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c77..0x5c7b  (4 bytes)
+DATA_figuras_5C77:
+	defb 002h,005h,011h,00ch	; 5c77
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C7B: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c7b..0x5c7f  (4 bytes)
+DATA_figuras_5C7B:
+	defb 002h,006h,009h,00ch	; 5c7b
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C7F: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5c7f..0x5c84  (5 bytes)
+DATA_figuras_5C7F:
+	defb 003h,005h,011h,010h,018h	; 5c7f
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C84: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c84..0x5c88  (4 bytes)
+DATA_figuras_5C84:
+	defb 002h,002h,011h,010h	; 5c84
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C88: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c88..0x5c8c  (4 bytes)
+DATA_figuras_5C88:
+	defb 002h,006h,009h,010h	; 5c88
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C8C: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c8c..0x5c90  (4 bytes)
+DATA_figuras_5C8C:
+	defb 002h,008h,010h,013h	; 5c8c
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C90: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5c90..0x5c95  (5 bytes)
+DATA_figuras_5C90:
+	defb 003h,000h,009h,011h,019h	; 5c90
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C95: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c95..0x5c99  (4 bytes)
+DATA_figuras_5C95:
+	defb 002h,008h,019h,013h	; 5c95
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C99: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c99..0x5c9d  (4 bytes)
+DATA_figuras_5C99:
+	defb 002h,005h,011h,019h	; 5c99
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5C9D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5c9d..0x5ca1  (4 bytes)
+DATA_figuras_5C9D:
+	defb 002h,002h,011h,019h	; 5c9d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CA1: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (6 bytes)
+;   0x5ca1..0x5ca7  (6 bytes)
+DATA_figuras_5CA1:
+	defb 004h,000h,007h,010h,013h,018h	; 5ca1
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CA7: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5ca7..0x5cab  (4 bytes)
+DATA_figuras_5CA7:
+	defb 002h,005h,019h,007h	; 5ca7
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CAB: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5cab..0x5cae  (3 bytes)
+DATA_figuras_5CAB:
+	defb 001h,001h,003h	; 5cab
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CAE: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cae..0x5cb2  (4 bytes)
+DATA_figuras_5CAE:
+	defb 002h,001h,009h,00bh	; 5cae
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CB2: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cb2..0x5cb6  (4 bytes)
+DATA_figuras_5CB2:
+	defb 002h,000h,003h,007h	; 5cb2
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CB6: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cb6..0x5cba  (4 bytes)
+DATA_figuras_5CB6:
+	defb 002h,000h,003h,011h	; 5cb6
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CBA: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cba..0x5cbe  (4 bytes)
+DATA_figuras_5CBA:
+	defb 002h,001h,013h,01ah	; 5cba
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CBE: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cbe..0x5cc2  (4 bytes)
+DATA_figuras_5CBE:
+	defb 002h,001h,005h,01ah	; 5cbe
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CC2: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cc2..0x5cc6  (4 bytes)
+DATA_figuras_5CC2:
+	defb 002h,001h,01ah,009h	; 5cc2
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CC6: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cc6..0x5cca  (4 bytes)
+DATA_figuras_5CC6:
+	defb 002h,005h,007h,01ah	; 5cc6
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CCA: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cca..0x5cce  (4 bytes)
+DATA_figuras_5CCA:
+	defb 002h,000h,007h,010h	; 5cca
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CCE: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5cce..0x5cd3  (5 bytes)
+DATA_figuras_5CCE:
+	defb 003h,000h,007h,013h,018h	; 5cce
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CD3: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5cd3..0x5cd8  (5 bytes)
+DATA_figuras_5CD3:
+	defb 003h,000h,007h,010h,018h	; 5cd3
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CD8: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cd8..0x5cdc  (4 bytes)
+DATA_figuras_5CD8:
+	defb 002h,001h,005h,00bh	; 5cd8
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CDC: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cdc..0x5ce0  (4 bytes)
+DATA_figuras_5CDC:
+	defb 002h,002h,011h,00bh	; 5cdc
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CE0: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5ce0..0x5ce4  (4 bytes)
+DATA_figuras_5CE0:
+	defb 002h,006h,005h,00bh	; 5ce0
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CE4: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5ce4..0x5ce8  (4 bytes)
+DATA_figuras_5CE4:
+	defb 002h,002h,006h,01eh	; 5ce4
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CE8: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5ce8..0x5cec  (4 bytes)
+DATA_figuras_5CE8:
+	defb 002h,002h,01ch,01eh	; 5ce8
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CEC: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cec..0x5cf0  (4 bytes)
+DATA_figuras_5CEC:
+	defb 002h,008h,013h,01eh	; 5cec
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CF0: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cf0..0x5cf4  (4 bytes)
+DATA_figuras_5CF0:
+	defb 002h,005h,007h,01eh	; 5cf0
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CF4: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5cf4..0x5cf9  (5 bytes)
+DATA_figuras_5CF4:
+	defb 003h,000h,009h,007h,01eh	; 5cf4
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CF9: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cf9..0x5cfd  (4 bytes)
+DATA_figuras_5CF9:
+	defb 002h,002h,006h,014h	; 5cf9
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5CFD: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5cfd..0x5d01  (4 bytes)
+DATA_figuras_5CFD:
+	defb 002h,002h,01ch,014h	; 5cfd
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D01: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5d01..0x5d06  (5 bytes)
+DATA_figuras_5D01:
+	defb 003h,000h,009h,011h,014h	; 5d01
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D06: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d06..0x5d0a  (4 bytes)
+DATA_figuras_5D06:
+	defb 002h,008h,005h,014h	; 5d06
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D0A: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d0a..0x5d0e  (4 bytes)
+DATA_figuras_5D0A:
+	defb 002h,002h,01ch,00ch	; 5d0a
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D0E: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5d0e..0x5d13  (5 bytes)
+DATA_figuras_5D0E:
+	defb 003h,000h,009h,01ch,00ch	; 5d0e
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D13: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d13..0x5d17  (4 bytes)
+DATA_figuras_5D13:
+	defb 002h,002h,007h,01eh	; 5d13
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D17: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (6 bytes)
+;   0x5d17..0x5d1d  (6 bytes)
+DATA_figuras_5D17:
+	defb 004h,000h,007h,010h,013h,018h	; 5d17
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D1D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d1d..0x5d21  (4 bytes)
+DATA_figuras_5D1D:
+	defb 002h,004h,005h,00bh	; 5d1d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D21: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d21..0x5d25  (4 bytes)
+DATA_figuras_5D21:
+	defb 002h,004h,009h,00bh	; 5d21
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D25: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d25..0x5d29  (4 bytes)
+DATA_figuras_5D25:
+	defb 002h,004h,00dh,005h	; 5d25
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D29: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d29..0x5d2d  (4 bytes)
+DATA_figuras_5D29:
+	defb 002h,004h,009h,00eh	; 5d29
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D2D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d2d..0x5d31  (4 bytes)
+DATA_figuras_5D2D:
+	defb 002h,004h,005h,00fh	; 5d2d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D31: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d31..0x5d35  (4 bytes)
+DATA_figuras_5D31:
+	defb 002h,004h,009h,00fh	; 5d31
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D35: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d35..0x5d39  (4 bytes)
+DATA_figuras_5D35:
+	defb 002h,004h,00dh,00fh	; 5d35
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D39: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d39..0x5d3d  (4 bytes)
+DATA_figuras_5D39:
+	defb 002h,004h,00eh,00fh	; 5d39
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D3D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d3d..0x5d41  (4 bytes)
+DATA_figuras_5D3D:
+	defb 002h,004h,00fh,010h	; 5d3d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D41: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d41..0x5d45  (4 bytes)
+DATA_figuras_5D41:
+	defb 002h,004h,00fh,013h	; 5d41
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D45: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d45..0x5d48  (3 bytes)
+DATA_figuras_5D45:
+	defb 001h,004h,00fh	; 5d45
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D48: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d48..0x5d4b  (3 bytes)
+DATA_figuras_5D48:
+	defb 001h,005h,010h	; 5d48
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D4B: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d4b..0x5d4f  (4 bytes)
+DATA_figuras_5D4B:
+	defb 002h,000h,015h,019h	; 5d4b
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D4F: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5d4f..0x5d54  (5 bytes)
+DATA_figuras_5D4F:
+	defb 003h,000h,010h,015h,018h	; 5d4f
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D54: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d54..0x5d58  (4 bytes)
+DATA_figuras_5D54:
+	defb 002h,000h,00ah,015h	; 5d54
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D58: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d58..0x5d5c  (4 bytes)
+DATA_figuras_5D58:
+	defb 002h,000h,013h,00ah	; 5d58
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D5C: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+;   0x5d5c..0x5d61  (5 bytes)
+DATA_figuras_5D5C:
+	defb 003h,000h,009h,00ah,011h	; 5d5c
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D61: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d61..0x5d65  (4 bytes)
+DATA_figuras_5D61:
+	defb 002h,002h,006h,00ah	; 5d61
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D65: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d65..0x5d69  (4 bytes)
+DATA_figuras_5D65:
+	defb 002h,000h,00ah,020h	; 5d65
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D69: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d69..0x5d6d  (4 bytes)
+DATA_figuras_5D69:
+	defb 002h,000h,020h,019h	; 5d69
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D6D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d6d..0x5d71  (4 bytes)
+DATA_figuras_5D6D:
+	defb 002h,005h,011h,00bh	; 5d6d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D71: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d71..0x5d75  (4 bytes)
+DATA_figuras_5D71:
+	defb 002h,002h,011h,00bh	; 5d71
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D75: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d75..0x5d79  (4 bytes)
+DATA_figuras_5D75:
+	defb 002h,002h,011h,017h	; 5d75
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D79: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d79..0x5d7d  (4 bytes)
+DATA_figuras_5D79:
+	defb 002h,006h,009h,017h	; 5d79
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D7D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d7d..0x5d81  (4 bytes)
+DATA_figuras_5D7D:
+	defb 002h,002h,00ah,007h	; 5d7d
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0x5d81..0x5d85  (4 bytes)
+DATA_5D81:
+	defb 002h,000h,016h,015h	; 5d81
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D85: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d85..0x5d88  (3 bytes)
+DATA_figuras_5D85:
+	defb 001h,000h,020h	; 5d85
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D88: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d88..0x5d8b  (3 bytes)
+DATA_figuras_5D88:
+	defb 001h,000h,01fh	; 5d88
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D8B: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d8b..0x5d8f  (4 bytes)
+DATA_figuras_5D8B:
+	defb 002h,000h,00ah,020h	; 5d8b
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D8F: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d8f..0x5d93  (4 bytes)
+DATA_figuras_5D8F:
+	defb 002h,000h,00ah,01fh	; 5d8f
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D93: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d93..0x5d96  (3 bytes)
+DATA_figuras_5D93:
+	defb 001h,021h,020h	; 5d93
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D96: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d96..0x5d99  (3 bytes)
+DATA_figuras_5D96:
+	defb 001h,021h,01fh	; 5d96
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D99: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5d99..0x5d9d  (4 bytes)
+DATA_figuras_5D99:
+	defb 002h,000h,009h,017h	; 5d99
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5D9D: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5d9d..0x5da0  (3 bytes)
+DATA_figuras_5D9D:
+	defb 001h,006h,017h	; 5d9d
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DA0: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5da0..0x5da4  (4 bytes)
+DATA_figuras_5DA0:
+	defb 002h,000h,009h,00bh	; 5da0
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DA4: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+;   0x5da4..0x5da7  (3 bytes)
+DATA_figuras_5DA4:
+	defb 001h,006h,00bh	; 5da4
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DA7: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5da7..0x5dab  (4 bytes)
+DATA_figuras_5DA7:
+	defb 002h,000h,016h,015h	; 5da7
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DAB: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5dab..0x5daf  (4 bytes)
+DATA_figuras_5DAB:
+	defb 002h,000h,00ah,015h	; 5dab
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DAF: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5daf..0x5db3  (4 bytes)
+DATA_figuras_5DAF:
+	defb 002h,000h,010h,015h	; 5daf
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DB3: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5db3..0x5db7  (4 bytes)
+DATA_figuras_5DB3:
+	defb 002h,000h,007h,010h	; 5db3
+
+; ----------------------------------------------------------------------
+; DATOS figuras_5DB7: un conjunto de figuras: [n] y n+1 tipos (0 es ninguno)
+;   que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+;   0x5db7..0x5dbb  (4 bytes)
+DATA_figuras_5DB7:
+	defb 002h,000h,007h,00ah	; 5db7
 
 ; ======================================================================
 ; CODIGO 0x5dbb..0x5dcf  (20 bytes)

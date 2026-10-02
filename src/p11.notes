@@ -1,0 +1,75 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x8051 partitura_6B82_cola  partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, llamadas y repeticiones; ver tools/bloques.py) (sigue del banco anterior, 0x6B82); lo leen p10:61F1 (81 bytes)
+F 0x8000 16
+D 0x8051 0x813B instrumentos  9 instrumentos (0xE8 n de la partitura, p10:628F), cada uno 13 punteros, uno por nota (p10:62C7), a la envolvente que p10:6454 recorre cuadro a cuadro; lo leen p10:628F (234 bytes)
+F 0x8051 16
+D 0x813B 0x84AA envolvente_813B  envolvente de un instrumento: cuadros de volumen como los de los efectos, que p10:6454 recorre (ver tools/bloques.py); lo leen p10:62D2 (879 bytes)
+F 0x813B 16
+D 0x84AA 0x87D1 rle_84AA  rle a la VRAM (0x4539); lo leen p00:4B8B (807 bytes)
+F 0x84AA 16
+D 0x87D1 0x8852 rle_87D1  rle a la VRAM (0x4539); lo leen p00:4D9E (129 bytes)
+F 0x87D1 16
+D 0x8852 0x892C figura_01  el dibujo de la figura de tipo 0x01 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (218 bytes)
+F 0x8852 16
+D 0x892C 0x899C figura_02  el dibujo de la figura de tipo 0x02 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (112 bytes)
+F 0x892C 16
+D 0x899C 0x89F0 de_mas_899C  dibujo de mas de la figura de tipo 0x02, en rle (p00:5454); lo leen p00:5454 (84 bytes)
+F 0x899C 16
+D 0x89F0 0x8BAD figura_03  el dibujo de la figura de tipo 0x03 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (445 bytes)
+F 0x89F0 16
+D 0x8BAD 0x8CA6 de_mas_8BAD  dibujo de mas de la figura de tipo 0x03, en rle (p00:5454); lo leen p00:5454 (249 bytes)
+F 0x8BAD 16
+D 0x8CA6 0x8D0E figura_04  el dibujo de la figura de tipo 0x04 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (104 bytes)
+F 0x8CA6 16
+D 0x8D0E 0x8E09 figura_05  el dibujo de la figura de tipo 0x05 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (251 bytes)
+F 0x8D0E 16
+D 0x8E09 0x8ED4 figura_06  el dibujo de la figura de tipo 0x06 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (203 bytes)
+F 0x8E09 16
+D 0x8ED4 0x8F52 figura_07  el dibujo de la figura de tipo 0x07 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (126 bytes)
+F 0x8ED4 16
+D 0x8F52 0x9012 figura_08  el dibujo de la figura de tipo 0x08 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (192 bytes)
+F 0x8F52 16
+D 0x9012 0x9104 figura_09  el dibujo de la figura de tipo 0x09 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (242 bytes)
+F 0x9012 16
+D 0x9104 0x91BF figura_0A  el dibujo de la figura de tipo 0x0A en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (187 bytes)
+F 0x9104 16
+D 0x91BF 0x922A de_mas_91BF  dibujo de mas de la figura de tipo 0x0A, en rle (p00:5454); lo leen p00:5454 (107 bytes)
+F 0x91BF 16
+D 0x922A 0x930F figura_0B  el dibujo de la figura de tipo 0x0B en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (229 bytes)
+F 0x922A 16
+D 0x930F 0x9360 de_mas_930F  dibujo de mas de la figura de tipo 0x0B, en rle (p00:5454); lo leen p00:5454 (81 bytes)
+F 0x930F 16
+D 0x9360 0x9484 figura_0D  el dibujo de la figura de tipo 0x0D en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (292 bytes)
+F 0x9360 16
+D 0x9484 0x9504 figura_0F  el dibujo de la figura de tipo 0x0F en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (128 bytes)
+F 0x9484 16
+D 0x9504 0x951F de_mas_9504  dibujo de mas de la figura de tipo 0x0F, en rle (p00:5454); lo leen p00:5454 (27 bytes)
+F 0x9504 16
+D 0x951F 0x95D9 figura_10  el dibujo de la figura de tipo 0x10 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (186 bytes)
+F 0x951F 16
+D 0x95D9 0x968F figura_11  el dibujo de la figura de tipo 0x11 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (182 bytes)
+F 0x95D9 16
+D 0x968F 0x9783 figura_13  el dibujo de la figura de tipo 0x13 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (244 bytes)
+F 0x968F 16
+D 0x9783 0x9898 figura_14  el dibujo de la figura de tipo 0x14 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (277 bytes)
+F 0x9783 16
+D 0x9898 0x9989 figura_15  el dibujo de la figura de tipo 0x15 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (241 bytes)
+F 0x9898 16
+D 0x9989 0x99BA de_mas_9989  dibujo de mas de la figura de tipo 0x15, en rle (p00:5454); lo leen p00:5454 (49 bytes)
+F 0x9989 16
+D 0x99BA 0x9AF1 figura_16  el dibujo de la figura de tipo 0x16 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (311 bytes)
+F 0x99BA 16
+D 0x9AF1 0x9BE0 figura_17  el dibujo de la figura de tipo 0x17 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (239 bytes)
+F 0x9AF1 16
+D 0x9BE0 0x9C81 figura_18  el dibujo de la figura de tipo 0x18 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (161 bytes)
+F 0x9BE0 16
+D 0x9C81 0x9DA4 figura_19  el dibujo de la figura de tipo 0x19 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (291 bytes)
+F 0x9C81 16
+D 0x9DA4 0x9EF1 figura_1A  el dibujo de la figura de tipo 0x1A en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (333 bytes)
+F 0x9DA4 16
+D 0x9EF1 0x9F67 figura_1C  el dibujo de la figura de tipo 0x1C en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (118 bytes)
+F 0x9EF1 16
+D 0x9F67 0xA000 figura_1E  el dibujo de la figura de tipo 0x1E en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (153 bytes)
+F 0x9F67 16
+# --- fin de los bloques de bloques.py ---

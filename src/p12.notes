@@ -1,0 +1,27 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA0BE figura_1E_cola  el dibujo de la figura de tipo 0x1E en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide) (sigue del banco anterior, 0x9F67); lo leen p00:547C (190 bytes)
+F 0xA000 16
+D 0xA0BE 0xA200 figura_1F  el dibujo de la figura de tipo 0x1F en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (322 bytes)
+F 0xA0BE 16
+D 0xA200 0xA2A0 de_mas_A200  dibujo de mas de la figura de tipo 0x1F, en rle (p00:5454); lo leen p00:5454 (160 bytes)
+F 0xA200 16
+D 0xA2A0 0xA3F7 figura_20  el dibujo de la figura de tipo 0x20 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (343 bytes)
+F 0xA2A0 16
+D 0xA3F7 0xA4B5 figura_21  el dibujo de la figura de tipo 0x21 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (190 bytes)
+F 0xA3F7 16
+D 0xA4B5 0xA59C figura_22  el dibujo de la figura de tipo 0x22 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (231 bytes)
+F 0xA4B5 16
+D 0xA59C 0xA68F figura_23  el dibujo de la figura de tipo 0x23 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (243 bytes)
+F 0xA59C 16
+D 0xA68F 0xA783 figura_24  el dibujo de la figura de tipo 0x24 en rle (p00:547C; p00:54AB lo vuelve a leer dado la vuelta si la ficha lo pide); lo leen p00:547C (244 bytes)
+F 0xA68F 16
+D 0xA7DD 0xA830 rle_A7DD  rle a la VRAM (0x4539); lo leen p00:53F6 (83 bytes)
+F 0xA7DD 16
+D 0xA830 0xA998 fichas_de_figura  36 fichas de 10 bytes, una por tipo de figura 1-0x24 (p00:5465): el dibujo en rle, su sitio en la VRAM, los colores 4 y 6 de la paleta (0xFFFF, sin tocar) y el sitio de la copia dada la vuelta (0xFF, sin copia); lo leen p00:5465 (360 bytes)
+F 0xA830 16
+D 0xA998 0xA9C0 dibujos_de_mas  8 fichas de 5 bytes: [tipo][rle][VRAM], un dibujo de mas para los tipos 2, 3, 0x0A, 0x0B, 0x0C, 0x0F, 0x15 y 0x1F (p00:5436); lo leen p00:5436 (40 bytes)
+F 0xA998 16
+D 0xBEC0 0xC000 relleno_12  320 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (320 bytes)
+F 0xBEC0 16
+# --- fin de los bloques de bloques.py ---

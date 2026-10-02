@@ -1,0 +1,451 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA10E rle_9FB0_cola  rle dado la vuelta a un bufer y de ahi a la VRAM (0x4562) (sigue del banco anterior, 0x9FB0); lo leen p00:4BF6, p00:4BFF (270 bytes)
+F 0xA000 16
+D 0xA10E 0xA37A rle_A10E  rle a la VRAM (0x4539); lo leen p00:4C08 (620 bytes)
+F 0xA10E 16
+D 0xA37A 0xA386 paleta_de_cada_juego  6 punteros, uno por juego de graficos (0xC289), a su lista de colores (p00:4CF0); lo leen p00:4CE9 (12 bytes)
+F 0xA37A 16
+D 0xA386 0xA396 paleta_juego_0  los colores del juego de graficos 0: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (16 bytes)
+F 0xA386 16
+D 0xA396 0xA3AC paleta_juego_1  los colores del juego de graficos 1: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (22 bytes)
+F 0xA396 16
+D 0xA3AC 0xA3B9 paleta_juego_4  los colores del juego de graficos 4: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (13 bytes)
+F 0xA3AC 16
+D 0xA3B9 0xA3C0 paleta_juego_5  los colores del juego de graficos 5: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (7 bytes)
+F 0xA3B9 16
+D 0xA3C0 0xA3D0 paleta_juego_2  los colores del juego de graficos 2: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (16 bytes)
+F 0xA3C0 16
+D 0xA3D0 0xA3E6 paleta_juego_3  los colores del juego de graficos 3: [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4CF3 (22 bytes)
+F 0xA3D0 16
+D 0xA3E6 0xA3FF paleta_A3E6  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D02 (25 bytes)
+F 0xA3E6 16
+D 0xA3FF 0xA418 paleta_A3FF  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D0E (25 bytes)
+F 0xA3FF 16
+D 0xA42B 0xA438 paleta_A42B  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D26 (13 bytes)
+F 0xA42B 16
+D 0xA438 0xA44E paleta_A438  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4B7F (22 bytes)
+F 0xA438 16
+D 0xA44E 0xA476 paleta_A44E  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D4E (40 bytes)
+F 0xA44E 16
+D 0xA476 0xA48F paleta_A476  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D5D (25 bytes)
+F 0xA476 16
+D 0xA48F 0xA4A5 paleta_A48F  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D7B (22 bytes)
+F 0xA48F 16
+D 0xA4B8 0xA4C5 paleta_A4B8  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p00:4D6C (13 bytes)
+F 0xA4B8 16
+D 0xA4C5 0xA4D1 colores_de_cada_sitio  6 punteros, uno por juego de graficos, a una ventana de la lista de 0xA4D1: el puntero de cada sitio (0xC267) a los colores que se le cambian (p00:4D36); lo leen p00:4D33 (12 bytes)
+F 0xA4C5 16
+D 0xA4D1 0xA4F1 colores_de_los_sitios  16 punteros seguidos a listas de colores; cada juego entra por un sitio distinto (0xA4C5) y p00:4D3D escoge por 0xC267; lo leen p00:4D3D (32 bytes)
+F 0xA4D1 16
+D 0xA4F1 0xA4F5 colores_A4F1  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; se solapan 2 bloques (0xA4F1-0xA4F5, 0xA4F4-0xA4F5); lo leen p00:4D42 (4 bytes)
+F 0xA4F1 16
+D 0xA4F5 0xA4F9 colores_A4F5  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (4 bytes)
+F 0xA4F5 16
+D 0xA4FD 0xA501 colores_A4FD  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (4 bytes)
+F 0xA4FD 16
+D 0xA501 0xA505 colores_A501  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (4 bytes)
+F 0xA501 16
+D 0xA505 0xA509 colores_A505  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (4 bytes)
+F 0xA505 16
+D 0xA509 0xA510 colores_A509  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (7 bytes)
+F 0xA509 16
+D 0xA510 0xA51A colores_A510  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (10 bytes)
+F 0xA510 16
+D 0xA51A 0xA527 colores_A51A  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA51A 16
+D 0xA527 0xA534 colores_A527  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA527 16
+D 0xA534 0xA541 colores_A534  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA534 16
+D 0xA541 0xA54E colores_A541  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA541 16
+D 0xA54E 0xA55B colores_A54E  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA54E 16
+D 0xA55B 0xA568 colores_A55B  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA55B 16
+D 0xA568 0xA575 colores_A568  colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el 0xFF de la de 0xA4F1, una lista vacia; lo leen p00:4D42 (13 bytes)
+F 0xA568 16
+D 0xA575 0xA5D7 plano_de_cada_zona  49 punteros, uno por zona (fase x 7 + zona), a su ficha de plano (p00:59B9); lo leen p00:59B6 (98 bytes)
+F 0xA575 16
+D 0xA5D7 0xA5E1 plano_A5D7  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-0 (10 bytes)
+F 0xA5D7 16
+D 0xA5E1 0xA5ED plano_A5E1  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-1 (12 bytes)
+F 0xA5E1 16
+D 0xA5ED 0xA5F9 plano_A5ED  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-2 (12 bytes)
+F 0xA5ED 16
+D 0xA5F9 0xA607 plano_A5F9  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-3 (14 bytes)
+F 0xA5F9 16
+D 0xA607 0xA619 plano_A607  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-4 (18 bytes)
+F 0xA607 16
+D 0xA619 0xA627 plano_A619  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 1-5, zona 1-6 (14 bytes)
+F 0xA619 16
+D 0xA627 0xA62D plano_A627  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-0 (6 bytes)
+F 0xA627 16
+D 0xA62D 0xA639 plano_A62D  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-1 (12 bytes)
+F 0xA62D 16
+D 0xA639 0xA647 plano_A639  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-2 (14 bytes)
+F 0xA639 16
+D 0xA647 0xA651 plano_A647  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-3 (10 bytes)
+F 0xA647 16
+D 0xA651 0xA65B plano_A651  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-4 (10 bytes)
+F 0xA651 16
+D 0xA65B 0xA671 plano_A65B  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 2-5, zona 2-6 (22 bytes)
+F 0xA65B 16
+D 0xA671 0xA67F plano_A671  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-0 (14 bytes)
+F 0xA671 16
+D 0xA67F 0xA68D plano_A67F  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-1 (14 bytes)
+F 0xA67F 16
+D 0xA68D 0xA69F plano_A68D  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-2 (18 bytes)
+F 0xA68D 16
+D 0xA69F 0xA6AB plano_A69F  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-3 (12 bytes)
+F 0xA69F 16
+D 0xA6AB 0xA6BF plano_A6AB  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-4 (20 bytes)
+F 0xA6AB 16
+D 0xA6BF 0xA6D3 plano_A6BF  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 3-5, zona 3-6 (20 bytes)
+F 0xA6BF 16
+D 0xA6D3 0xA6E3 plano_A6D3  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-0 (16 bytes)
+F 0xA6D3 16
+D 0xA6E3 0xA6F3 plano_A6E3  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-1 (16 bytes)
+F 0xA6E3 16
+D 0xA6F3 0xA701 plano_A6F3  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-2 (14 bytes)
+F 0xA6F3 16
+D 0xA701 0xA715 plano_A701  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-3 (20 bytes)
+F 0xA701 16
+D 0xA715 0xA71D plano_A715  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-4 (8 bytes)
+F 0xA715 16
+D 0xA71D 0xA733 plano_A71D  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 4-5, zona 4-6 (22 bytes)
+F 0xA71D 16
+D 0xA733 0xA73B plano_A733  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-0 (8 bytes)
+F 0xA733 16
+D 0xA73B 0xA745 plano_A73B  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-1 (10 bytes)
+F 0xA73B 16
+D 0xA745 0xA753 plano_A745  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-2 (14 bytes)
+F 0xA745 16
+D 0xA753 0xA76B plano_A753  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-3 (24 bytes)
+F 0xA753 16
+D 0xA76B 0xA783 plano_A76B  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-4 (24 bytes)
+F 0xA76B 16
+D 0xA783 0xA799 plano_A783  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 5-5, zona 5-6 (22 bytes)
+F 0xA783 16
+D 0xA799 0xA7A5 plano_A799  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-0 (12 bytes)
+F 0xA799 16
+D 0xA7A5 0xA7BF plano_A7A5  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-1 (26 bytes)
+F 0xA7A5 16
+D 0xA7BF 0xA7CF plano_A7BF  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-2 (16 bytes)
+F 0xA7BF 16
+D 0xA7CF 0xA7E1 plano_A7CF  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-3 (18 bytes)
+F 0xA7CF 16
+D 0xA7E1 0xA7EF plano_A7E1  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-4 (14 bytes)
+F 0xA7E1 16
+D 0xA7EF 0xA805 plano_A7EF  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 6-5, zona 6-6 (22 bytes)
+F 0xA7EF 16
+D 0xA805 0xA80B plano_A805  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-0 (6 bytes)
+F 0xA805 16
+D 0xA80B 0xA823 plano_A80B  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-1 (24 bytes)
+F 0xA80B 16
+D 0xA823 0xA831 plano_A823  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-2 (14 bytes)
+F 0xA823 16
+D 0xA831 0xA843 plano_A831  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-3 (18 bytes)
+F 0xA831 16
+D 0xA843 0xA85B plano_A843  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-4 (24 bytes)
+F 0xA843 16
+D 0xA85B 0xA86D plano_A85B  ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que p00:5A10 marca en 0xD800; 0 acaba; lo leen zona 7-5, zona 7-6 (18 bytes)
+F 0xA85B 16
+D 0xA86D 0xA88D dibujos_de_plano  16 punteros a los dibujos de plano (p00:59C2); lo leen p00:59BF (32 bytes)
+F 0xA86D 16
+D 0xA88D 0xA89B plano_dibujo_0  dibujo de plano 0: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (14 bytes)
+F 0xA88D 16
+D 0xA89B 0xA8AD plano_dibujo_1  dibujo de plano 1: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (18 bytes)
+F 0xA89B 16
+D 0xA8AD 0xA8C3 plano_dibujo_2  dibujo de plano 2: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (22 bytes)
+F 0xA8AD 16
+D 0xA8C3 0xA8D3 plano_dibujo_3  dibujo de plano 3: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (16 bytes)
+F 0xA8C3 16
+D 0xA8D3 0xA8E7 plano_dibujo_4  dibujo de plano 4: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (20 bytes)
+F 0xA8D3 16
+D 0xA8E7 0xA8ED plano_dibujo_5  dibujo de plano 5: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (6 bytes)
+F 0xA8E7 16
+D 0xA8ED 0xA903 plano_dibujo_6  dibujo de plano 6: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (22 bytes)
+F 0xA8ED 16
+D 0xA903 0xA91D plano_dibujo_7  dibujo de plano 7: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (26 bytes)
+F 0xA903 16
+D 0xA91D 0xA937 plano_dibujo_8  dibujo de plano 8: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (26 bytes)
+F 0xA91D 16
+D 0xA937 0xA959 plano_dibujo_9  dibujo de plano 9: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (34 bytes)
+F 0xA937 16
+D 0xA959 0xA985 plano_dibujo_10  dibujo de plano 10: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (44 bytes)
+F 0xA959 16
+D 0xA985 0xA9AB plano_dibujo_11  dibujo de plano 11: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (38 bytes)
+F 0xA985 16
+D 0xA9AB 0xA9BD plano_dibujo_12  dibujo de plano 12: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (18 bytes)
+F 0xA9AB 16
+D 0xA9BD 0xA9FB plano_dibujo_13  dibujo de plano 13: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (62 bytes)
+F 0xA9BD 16
+D 0xA9FB 0xAA2A plano_dibujo_14  dibujo de plano 14: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (47 bytes)
+F 0xA9FB 16
+D 0xAA2A 0xAA56 plano_dibujo_15  dibujo de plano 15: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a 0xD800, 28 por fila); lo leen p00:59C5 (44 bytes)
+F 0xAA2A 16
+D 0xAA56 0xAA7E poses_jugador_1  20 punteros, uno por (0xC49F x 4 + 0xC4A2), a la pose del jugador 1: la lista de sprites que p01:74CD copia a 0xEE00 (p01:74AA y 74AF, por el bit 7 de 0xC002); lo leen p01:74BD (40 bytes)
+F 0xAA56 16
+D 0xAA7E 0xAAA6 poses_jugador_2  20 punteros, uno por (0xC49F x 4 + 0xC4A2), a la pose del jugador 2: la lista de sprites que p01:74CD copia a 0xEE00 (p01:74AA y 74AF, por el bit 7 de 0xC002); lo leen p01:74BD (40 bytes)
+F 0xAA7E 16
+D 0xAAA6 0xAAAF pose_AAA6  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (9 bytes)
+F 0xAAA6 16
+D 0xAAAF 0xAAB8 pose_AAAF  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (9 bytes)
+F 0xAAAF 16
+D 0xAAB8 0xAAC5 pose_AAB8  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAAB8 16
+D 0xAAC5 0xAAD2 pose_AAC5  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAAC5 16
+D 0xAAD2 0xAADF pose_AAD2  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAAD2 16
+D 0xAADF 0xAAE8 pose_AADF  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (9 bytes)
+F 0xAADF 16
+D 0xAAE8 0xAAF5 pose_AAE8  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAAE8 16
+D 0xAAF5 0xAB02 pose_AAF5  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAAF5 16
+D 0xAB02 0xAB0B pose_AB02  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (9 bytes)
+F 0xAB02 16
+D 0xAB0B 0xAB18 pose_AB0B  una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de cada sprite es 4 x su orden (p01:7514); lo leen p01:74CD (13 bytes)
+F 0xAB0B 16
+D 0xAB18 0xAF08 formas_de_pasadizo  56 formas de 9 filas x 2 bytes: cada bit puesto es un bloque de 16x16 que p00:4F94 pinta (la forma la escoge p01:6A49 en 0xEA00); lo leen p00:4F78 (1008 bytes)
+F 0xAB18 16
+D 0xAF08 0xAF6A pasadizos_de_cada_zona  49 punteros, uno por zona, a sus 15 parejas de formas (p01:6B02); lo leen p01:6AFF (98 bytes)
+F 0xAF08 16
+D 0xAF6A 0xB04F pasadizos_tira  la tira de numeros de pareja de la que cada zona coge 15 seguidos (0xAF08): las ventanas se pisan unas a otras, y la ultima (0xB04B) sigue 11 bytes dentro de la tabla 0xB04F; lo leen p01:6B0A (229 bytes)
+F 0xAF6A 16
+D 0xB04F 0xB21B parejas_de_formas  230 parejas de formas de pasadizo (0-55) que p01:6B11 copia a 0xEA00; lo leen p01:6B11 (460 bytes)
+F 0xB04F 16
+D 0xB21B 0xB27D salidas_de_cada_zona  49 punteros, uno por zona, a su lista de salidas (p01:6B27); lo leen p01:6B24 (98 bytes)
+F 0xB21B 16
+D 0xB27D 0xB288 salidas_B27D  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-0 (11 bytes)
+F 0xB27D 16
+D 0xB288 0xB299 salidas_B288  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-1 (17 bytes)
+F 0xB288 16
+D 0xB299 0xB2A4 salidas_B299  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-2 (11 bytes)
+F 0xB299 16
+D 0xB2A4 0xB2B3 salidas_B2A4  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-3 (15 bytes)
+F 0xB2A4 16
+D 0xB2B3 0xB2C0 salidas_B2B3  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-4 (13 bytes)
+F 0xB2B3 16
+D 0xB2C0 0xB2D3 salidas_B2C0  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-5 (19 bytes)
+F 0xB2C0 16
+D 0xB2D3 0xB2E6 salidas_B2D3  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 1-6 (19 bytes)
+F 0xB2D3 16
+D 0xB2E6 0xB2ED salidas_B2E6  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 2-0 (7 bytes)
+F 0xB2E6 16
+D 0xB2ED 0xB302 salidas_B2ED  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 2-1 (21 bytes)
+F 0xB2ED 16
+D 0xB302 0xB313 salidas_B302  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 2-2 (17 bytes)
+F 0xB302 16
+D 0xB313 0xB320 salidas_B313  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 2-3 (13 bytes)
+F 0xB313 16
+D 0xB320 0xB331 salidas_B320  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 2-4 (17 bytes)
+F 0xB320 16
+D 0xB331 0xB357 salidas_B331  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); se solapan 2 bloques (0xB331-0xB346, 0xB342-0xB357); lo leen zona 2-5, zona 2-6 (38 bytes)
+F 0xB331 16
+D 0xB357 0xB366 salidas_B357  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-0 (15 bytes)
+F 0xB357 16
+D 0xB366 0xB373 salidas_B366  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-1 (13 bytes)
+F 0xB366 16
+D 0xB373 0xB382 salidas_B373  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-2 (15 bytes)
+F 0xB373 16
+D 0xB382 0xB395 salidas_B382  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-3 (19 bytes)
+F 0xB382 16
+D 0xB395 0xB39E salidas_B395  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-4 (9 bytes)
+F 0xB395 16
+D 0xB39E 0xB3B1 salidas_B39E  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-5 (19 bytes)
+F 0xB39E 16
+D 0xB3B1 0xB3C6 salidas_B3B1  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 3-6 (21 bytes)
+F 0xB3B1 16
+D 0xB3C6 0xB3D9 salidas_B3C6  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-0 (19 bytes)
+F 0xB3C6 16
+D 0xB3D9 0xB3E6 salidas_B3D9  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-1 (13 bytes)
+F 0xB3D9 16
+D 0xB3E6 0xB3FB salidas_B3E6  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-2 (21 bytes)
+F 0xB3E6 16
+D 0xB3FB 0xB410 salidas_B3FB  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-3 (21 bytes)
+F 0xB3FB 16
+D 0xB410 0xB425 salidas_B410  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-4 (21 bytes)
+F 0xB410 16
+D 0xB425 0xB43A salidas_B425  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-5 (21 bytes)
+F 0xB425 16
+D 0xB43A 0xB44D salidas_B43A  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 4-6 (19 bytes)
+F 0xB43A 16
+D 0xB44D 0xB462 salidas_B44D  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-0 (21 bytes)
+F 0xB44D 16
+D 0xB462 0xB477 salidas_B462  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-1 (21 bytes)
+F 0xB462 16
+D 0xB477 0xB484 salidas_B477  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-2 (13 bytes)
+F 0xB477 16
+D 0xB484 0xB491 salidas_B484  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-3 (13 bytes)
+F 0xB484 16
+D 0xB491 0xB4A2 salidas_B491  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-4 (17 bytes)
+F 0xB491 16
+D 0xB4A2 0xB4B5 salidas_B4A2  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-5 (19 bytes)
+F 0xB4A2 16
+D 0xB4B5 0xB4CA salidas_B4B5  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 5-6 (21 bytes)
+F 0xB4B5 16
+D 0xB4CA 0xB4DF salidas_B4CA  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-0 (21 bytes)
+F 0xB4CA 16
+D 0xB4DF 0xB4EE salidas_B4DF  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-1 (15 bytes)
+F 0xB4DF 16
+D 0xB4EE 0xB505 salidas_B4EE  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-2 (23 bytes)
+F 0xB4EE 16
+D 0xB505 0xB516 salidas_B505  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-3 (17 bytes)
+F 0xB505 16
+D 0xB516 0xB527 salidas_B516  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-4 (17 bytes)
+F 0xB516 16
+D 0xB527 0xB53A salidas_B527  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-5 (19 bytes)
+F 0xB527 16
+D 0xB53A 0xB551 salidas_B53A  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 6-6 (23 bytes)
+F 0xB53A 16
+D 0xB551 0xB55E salidas_B551  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-0 (13 bytes)
+F 0xB551 16
+D 0xB55E 0xB56B salidas_B55E  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-1 (13 bytes)
+F 0xB55E 16
+D 0xB56B 0xB580 salidas_B56B  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-2 (21 bytes)
+F 0xB56B 16
+D 0xB580 0xB595 salidas_B580  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-3 (21 bytes)
+F 0xB580 16
+D 0xB595 0xB5A8 salidas_B595  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-4 (19 bytes)
+F 0xB595 16
+D 0xB5A8 0xB5C7 salidas_B5A8  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-5 (31 bytes)
+F 0xB5A8 16
+D 0xB5C7 0xB5D6 salidas_B5C7  [n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y 5-7 del segundo byte por separado); lo leen zona 7-6 (15 bytes)
+F 0xB5C7 16
+D 0xB5D6 0xB638 cosas_de_cada_zona  49 punteros, uno por zona, a su lista de cosas por casilla (p01:7DAE); lo leen p01:7DAB (98 bytes)
+F 0xB5D6 16
+D 0xB638 0xB649 cosas_B638  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 1-0, zona 5-1 (17 bytes)
+F 0xB638 16
+D 0xB649 0xB64A cosas_B649  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 1-1, zona 1-2, zona 1-4, zona 2-1, zona 2-3, zona 3-1, zona 3-3, zona 4-2 y 6 mas (1 bytes)
+F 0xB649 16
+D 0xB64A 0xB657 cosas_B64A  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 1-3 (13 bytes)
+F 0xB64A 16
+D 0xB657 0xB664 cosas_B657  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 2-0, zona 7-1 (13 bytes)
+F 0xB657 16
+D 0xB664 0xB671 cosas_B664  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 1-5, zona 4-5 (13 bytes)
+F 0xB664 16
+D 0xB671 0xB6A2 cosas_B671  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 1-6, zona 4-6, zona 6-6 (49 bytes)
+F 0xB671 16
+D 0xB6A2 0xB6B7 cosas_B6A2  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 2-4 (21 bytes)
+F 0xB6A2 16
+D 0xB6B7 0xB6C8 cosas_B6B7  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 2-2 (17 bytes)
+F 0xB6B7 16
+D 0xB6C8 0xB6DD cosas_B6C8  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 3-0, zona 6-1 (21 bytes)
+F 0xB6C8 16
+D 0xB6DD 0xB6F2 cosas_B6DD  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 2-5, zona 5-5 (21 bytes)
+F 0xB6DD 16
+D 0xB6F2 0xB727 cosas_B6F2  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 2-6, zona 5-6 (53 bytes)
+F 0xB6F2 16
+D 0xB727 0xB730 cosas_B727  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 3-2, zona 5-4 (9 bytes)
+F 0xB727 16
+D 0xB730 0xB749 cosas_B730  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 3-4 (25 bytes)
+F 0xB730 16
+D 0xB749 0xB762 cosas_B749  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 3-5, zona 6-5 (25 bytes)
+F 0xB749 16
+D 0xB762 0xB797 cosas_B762  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 3-6, zona 7-6 (53 bytes)
+F 0xB762 16
+D 0xB797 0xB7AC cosas_B797  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 4-0 (21 bytes)
+F 0xB797 16
+D 0xB7AC 0xB7B1 cosas_B7AC  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 4-1 (5 bytes)
+F 0xB7AC 16
+D 0xB7B1 0xB7C2 cosas_B7B1  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 4-3 (17 bytes)
+F 0xB7B1 16
+D 0xB7C2 0xB7D7 cosas_B7C2  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 4-4, zona 6-4 (21 bytes)
+F 0xB7C2 16
+D 0xB7D7 0xB7F4 cosas_B7D7  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 5-0 (29 bytes)
+F 0xB7D7 16
+D 0xB7F4 0xB809 cosas_B7F4  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 7-4 (21 bytes)
+F 0xB7F4 16
+D 0xB809 0xB81A cosas_B809  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 6-2 (17 bytes)
+F 0xB809 16
+D 0xB81A 0xB837 cosas_B81A  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 7-5 (29 bytes)
+F 0xB81A 16
+D 0xB837 0xB84C cosas_B837  [n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en 0xC520 un 1 (2 con el bit 7) y el valor; lo leen zona 7-3 (21 bytes)
+F 0xB837 16
+D 0xB84C 0xB86D puntos_de_cada_figura  33 bytes, uno por tipo de figura 1-0x21 (ix+0): las centenas de puntos en BCD que suma p00:437E al acabar con ella (p01:7996); lo leen p01:798E (33 bytes)
+F 0xB84C 16
+D 0xB86D 0xB88E dinero_de_cada_figura  33 bytes, uno por tipo de figura: el dinero que suma p00:5929 (p01:79B9); los tipos 8 y 0x21 no van por aqui, restan 50 con p00:5958; lo leen p01:79B3 (33 bytes)
+F 0xB86D 16
+D 0xB88E 0xB8AF tamano_de_cada_figura  33 bytes, uno por tipo de figura: 1, 2 o 3, el tamano de su caja de choque (p01:7A99: 3 es 7 de alto, el resto 15); lo leen p01:7A93 (33 bytes)
+F 0xB88E 16
+D 0xB8AF 0xB8E0 casilla_de_entrada  49 bytes, uno por zona: la casilla 0xC281 en la que se empieza (p01:66A5); lo leen p01:66A2 (49 bytes)
+F 0xB8AF 16
+D 0xB8E0 0xB8EC seis_sitios_B8E0  6 parejas [y][x] que p01:676C recorre del ultimo al primero y pasa a p01:781F; lo leen p01:676C (12 bytes)
+F 0xB8E0 16
+D 0xB8EC 0xB91D juego_de_cada_zona  49 bytes, uno por zona: el juego de graficos 0xC289 (p01:664F); p02:81FD lee los siete de la fase; lo leen p01:6649 (49 bytes)
+F 0xB8EC 16
+D 0xB91D 0xB95F dibujos_de_caracteres  33 punteros a dibujos hechos de caracteres que p02:99FB pinta con 0x4EF1; lo leen p02:9A07 (66 bytes)
+F 0xB91D 16
+D 0xB95F 0xB97E dibujo_car_B95F  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xB95F 16
+D 0xB97E 0xBA45 dibujo_car_B97E  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (199 bytes)
+F 0xB97E 16
+D 0xBA45 0xBAB8 dibujo_car_BA45  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (115 bytes)
+F 0xBA45 16
+D 0xBAB8 0xBAF3 dibujo_car_BAB8  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (59 bytes)
+F 0xBAB8 16
+D 0xBAF3 0xBB12 dibujo_car_BAF3  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBAF3 16
+D 0xBB12 0xBB23 dibujo_car_BB12  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBB12 16
+D 0xBB23 0xBB50 dibujo_car_BB23  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBB23 16
+D 0xBB50 0xBB6F dibujo_car_BB50  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBB50 16
+D 0xBB6F 0xBB80 dibujo_car_BB6F  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBB6F 16
+D 0xBB80 0xBB91 dibujo_car_BB80  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBB80 16
+D 0xBB91 0xBBBE dibujo_car_BB91  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBB91 16
+D 0xBBBE 0xBBDD dibujo_car_BBBE  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBBBE 16
+D 0xBBDD 0xBBEE dibujo_car_BBDD  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBBDD 16
+D 0xBBEE 0xBBFF dibujo_car_BBEE  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBBEE 16
+D 0xBBFF 0xBC2C dibujo_car_BBFF  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBBFF 16
+D 0xBC2C 0xBC4B dibujo_car_BC2C  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBC2C 16
+D 0xBC4B 0xBC5C dibujo_car_BC4B  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBC4B 16
+D 0xBC5C 0xBC6D dibujo_car_BC5C  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBC5C 16
+D 0xBC6D 0xBC9A dibujo_car_BC6D  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBC6D 16
+D 0xBC9A 0xBCB9 dibujo_car_BC9A  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBC9A 16
+D 0xBCB9 0xBCCA dibujo_car_BCB9  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBCB9 16
+D 0xBCCA 0xBCDB dibujo_car_BCCA  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBCCA 16
+D 0xBCDB 0xBD08 dibujo_car_BCDB  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBCDB 16
+D 0xBD08 0xBD27 dibujo_car_BD08  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBD08 16
+D 0xBD27 0xBD38 dibujo_car_BD27  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBD27 16
+D 0xBD38 0xBD49 dibujo_car_BD38  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBD38 16
+D 0xBD49 0xBD76 dibujo_car_BD49  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (45 bytes)
+F 0xBD49 16
+D 0xBD76 0xBD95 dibujo_car_BD76  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBD76 16
+D 0xBD95 0xBDA6 dibujo_car_BD95  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (17 bytes)
+F 0xBD95 16
+D 0xBDA6 0xBE6D dibujo_car_BDA6  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (199 bytes)
+F 0xBDA6 16
+D 0xBE6D 0xBEE0 dibujo_car_BE6D  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (115 bytes)
+F 0xBE6D 16
+D 0xBEE0 0xBF1B dibujo_car_BEE0  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (59 bytes)
+F 0xBEE0 16
+D 0xBF1B 0xBF3A dibujo_car_BF1B  [ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en la hoja de caracteres) que p02:9A19 pinta de 8 en 8; lo leen p02:9A0E (31 bytes)
+F 0xBF1B 16
+D 0xBF3A 0xC000 relleno_09  198 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (198 bytes)
+F 0xBF3A 16
+# --- fin de los bloques de bloques.py ---

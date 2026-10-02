@@ -1,0 +1,25 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x628A 0x6292 rotulo_628A  rotulo sin posicion delante (0x48FD); lo leen p01:6284 (8 bytes)
+F 0x628A 16
+D 0x636C 0x6374 rotulo_636C  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p01:6369 (8 bytes)
+F 0x636C 16
+D 0x639B 0x63D8 rotulo_639B  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); se solapan 2 bloques (0x639B-0x63D8, 0x63CB-0x63D8); lo leen p00:5B06, p00:5E5E (61 bytes)
+F 0x639B 16
+D 0x63D8 0x63DB rotulo_63D8  rotulo sin posicion delante (0x48FD); lo leen p00:4479 (3 bytes)
+F 0x63D8 16
+D 0x63DB 0x63E3 rotulo_63DB  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:5FD2 (8 bytes)
+F 0x63DB 16
+D 0x63E3 0x63F0 rotulo_63E3  rotulo en el otro color (0x48F7); lo leen p00:5F9B, p00:5FDE (13 bytes)
+F 0x63E3 16
+D 0x63F0 0x640F rotulo_63F0  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:43F4 (31 bytes)
+F 0x63F0 16
+D 0x6435 0x643F rotulo_6435  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p00:43EE (10 bytes)
+F 0x6435 16
+D 0x6476 0x6486 paleta_6476  colores de la paleta, [color][RB][G], 0xFF acaba (0x4666); lo leen p01:6445 (16 bytes)
+F 0x6476 16
+D 0x6CCC 0x6CD8 rotulo_6CCC  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p01:6BDB (12 bytes)
+F 0x6CCC 16
+D 0x7F41 0x7F83 rotulo_7F41  rotulo: [x][y] y caracteres, 0xFE otra posicion, 0xFF acaba (0x48F3); lo leen p01:7F25 (66 bytes)
+F 0x7F41 16
+# --- fin de los bloques de bloques.py ---

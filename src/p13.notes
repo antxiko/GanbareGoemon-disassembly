@@ -1,0 +1,105 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x600C pantallas_de_cada_juego  6 punteros, uno por juego de graficos (0xC289): las pantallas de ese juego, en rle; p00:4295 las descomprime en 0xD000 (48 bytes cada una); lo leen p00:429C (12 bytes)
+F 0x6000 16
+D 0x600C 0x606E rejilla_de_cada_zona  49 punteros, uno por zona (fase x 7 + zona): la rejilla de pantallas que p00:5311 copia en 0xE700; lo leen p00:5317 (98 bytes)
+F 0x600C 16
+D 0x606E 0x607A rejilla_606E  rejilla de pantallas de una zona: 24 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-0, zona 5-1 (12 bytes)
+F 0x606E 16
+D 0x607A 0x6081 rejilla_607A  rejilla de pantallas de una zona: 14 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-1 (7 bytes)
+F 0x607A 16
+D 0x6081 0x6089 rejilla_6081  rejilla de pantallas de una zona: 16 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-2, zona 5-3 (8 bytes)
+F 0x6081 16
+D 0x6089 0x6093 rejilla_6089  rejilla de pantallas de una zona: 20 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-3 (10 bytes)
+F 0x6089 16
+D 0x6093 0x60A0 rejilla_6093  rejilla de pantallas de una zona: 26 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-4 (13 bytes)
+F 0x6093 16
+D 0x60A0 0x60A8 rejilla_60A0  rejilla de pantallas de una zona: 16 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-0, zona 7-1 (8 bytes)
+F 0x60A0 16
+D 0x60A8 0x60CE rejilla_60A8  rejilla de pantallas de una zona: 38 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-5, zona 4-5 (38 bytes)
+F 0x60A8 16
+D 0x60CE 0x6110 rejilla_60CE  rejilla de pantallas de una zona: 66 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 1-6, zona 4-6, zona 6-6 (66 bytes)
+F 0x60CE 16
+D 0x6110 0x611A rejilla_6110  rejilla de pantallas de una zona: 20 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-4 (10 bytes)
+F 0x6110 16
+D 0x611A 0x6124 rejilla_611A  rejilla de pantallas de una zona: 20 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-1, zona 6-3 (10 bytes)
+F 0x611A 16
+D 0x6124 0x6130 rejilla_6124  rejilla de pantallas de una zona: 24 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-2 (12 bytes)
+F 0x6124 16
+D 0x6130 0x6139 rejilla_6130  rejilla de pantallas de una zona: 18 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-3 (9 bytes)
+F 0x6130 16
+D 0x6139 0x614A rejilla_6139  rejilla de pantallas de una zona: 34 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-0, zona 6-1 (17 bytes)
+F 0x6139 16
+D 0x614A 0x6170 rejilla_614A  rejilla de pantallas de una zona: 38 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-5, zona 5-5 (38 bytes)
+F 0x614A 16
+D 0x6170 0x61B6 rejilla_6170  rejilla de pantallas de una zona: 70 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 2-6, zona 5-6 (70 bytes)
+F 0x6170 16
+D 0x61B6 0x61BF rejilla_61B6  rejilla de pantallas de una zona: 18 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-1 (9 bytes)
+F 0x61B6 16
+D 0x61BF 0x61C8 rejilla_61BF  rejilla de pantallas de una zona: 18 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-2, zona 5-4 (9 bytes)
+F 0x61BF 16
+D 0x61C8 0x61D1 rejilla_61C8  rejilla de pantallas de una zona: 18 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-3 (9 bytes)
+F 0x61C8 16
+D 0x61D1 0x61DD rejilla_61D1  rejilla de pantallas de una zona: 24 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-4 (12 bytes)
+F 0x61D1 16
+D 0x61DD 0x6209 rejilla_61DD  rejilla de pantallas de una zona: 44 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-5, zona 6-5 (44 bytes)
+F 0x61DD 16
+D 0x6209 0x6259 rejilla_6209  rejilla de pantallas de una zona: 80 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 3-6, zona 7-6 (80 bytes)
+F 0x6209 16
+D 0x6259 0x6267 rejilla_6259  rejilla de pantallas de una zona: 28 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 4-0 (14 bytes)
+F 0x6259 16
+D 0x6267 0x6270 rejilla_6267  rejilla de pantallas de una zona: 18 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 4-1 (9 bytes)
+F 0x6267 16
+D 0x6270 0x627F rejilla_6270  rejilla de pantallas de una zona: 30 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 4-3 (15 bytes)
+F 0x6270 16
+D 0x627F 0x628E rejilla_627F  rejilla de pantallas de una zona: 30 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 4-4, zona 6-4 (15 bytes)
+F 0x627F 16
+D 0x628E 0x629D rejilla_628E  rejilla de pantallas de una zona: 30 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 5-0 (15 bytes)
+F 0x628E 16
+D 0x629D 0x62AD rejilla_629D  rejilla de pantallas de una zona: 32 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 7-4 (16 bytes)
+F 0x629D 16
+D 0x62AD 0x62B8 rejilla_62AD  rejilla de pantallas de una zona: 22 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 5-2 (11 bytes)
+F 0x62AD 16
+D 0x62B8 0x62C3 rejilla_62B8  rejilla de pantallas de una zona: 22 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 4-2, zona 7-2 (11 bytes)
+F 0x62B8 16
+D 0x62C3 0x62CE rejilla_62C3  rejilla de pantallas de una zona: 22 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 6-0 (11 bytes)
+F 0x62C3 16
+D 0x62CE 0x62DD rejilla_62CE  rejilla de pantallas de una zona: 30 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 6-2 (15 bytes)
+F 0x62CE 16
+D 0x62DD 0x62E9 rejilla_62DD  rejilla de pantallas de una zona: 24 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 7-0 (12 bytes)
+F 0x62DD 16
+D 0x62E9 0x6323 rejilla_62E9  rejilla de pantallas de una zona: 58 casillas, un byte cada una (p00:5311 copia siempre 128 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 7-5 (58 bytes)
+F 0x62E9 16
+D 0x6323 0x6334 rejilla_6323  rejilla de pantallas de una zona: 34 casillas, medio byte cada una (p00:5311 copia siempre 64 bytes, y lo de mas es de la zona de al lado); varias zonas la comparten; lo leen zona 7-3 (17 bytes)
+F 0x6323 16
+D 0x6334 0x6477 pantallas_0  las pantallas del juego de graficos 0 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (323 bytes)
+F 0x6334 16
+D 0x6477 0x66D0 pantallas_1  las pantallas del juego de graficos 1 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (601 bytes)
+F 0x6477 16
+D 0x66D0 0x698E pantallas_4  las pantallas del juego de graficos 4 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (702 bytes)
+F 0x66D0 16
+D 0x698E 0x6EDC pantallas_5  las pantallas del juego de graficos 5 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (1358 bytes)
+F 0x698E 16
+D 0x6EDC 0x7083 pantallas_2  las pantallas del juego de graficos 2 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (423 bytes)
+F 0x6EDC 16
+D 0x7083 0x7239 pantallas_3  las pantallas del juego de graficos 3 en rle (0x42C3 las deja en 0xD000): 8x6 bloques cada una; lo leen p00:42A6 (438 bytes)
+F 0x7083 16
+D 0x7239 0x7269 pantalla_7239  la pantalla de la demo (0xC482): 48 bloques de 4x4 caracteres, sin comprimir; lo leen p00:525D (48 bytes)
+F 0x7239 16
+D 0x7269 0x7419 bloques_7269  los 27 bloques que usa la pantalla de la demo (0xC482), 16 bytes cada uno (p00:52A6..52B5); lo leen p00:525D (432 bytes)
+F 0x7269 16
+D 0x7419 0x7449 pantalla_7419  la pantalla de la casilla 0xFF de la rejilla: 48 bloques de 4x4 caracteres, sin comprimir; lo leen p00:5268 (48 bytes)
+F 0x7419 16
+D 0x7449 0x7549 bloques_7449  los 16 bloques que usa la pantalla de la casilla 0xFF de la rejilla, 16 bytes cada uno (p00:52A6..52B5); lo leen p00:5268 (256 bytes)
+F 0x7449 16
+D 0x7549 0x7579 pantalla_7549  la pantalla del estado 8: 48 bloques de 4x4 caracteres, sin comprimir; lo leen p00:526D (48 bytes)
+F 0x7549 16
+D 0x7581 0x75C5 pantalla_7581  la pantalla del estado 0x0B (8 filas de bloques): 64 bloques de 4x4 caracteres, sin comprimir; se solapan 2 bloques (0x7581-0x75C1, 0x75B9-0x75C5); lo leen p00:42B3, p00:5272 (68 bytes)
+F 0x7581 16
+D 0x75C5 0x7A25 bloques_0  los bloques de 4x4 caracteres del juego de graficos 0, en rle; lo leen p00:42BD (1120 bytes)
+F 0x75C5 16
+D 0x7A25 0x7EE7 bloques_1  los bloques de 4x4 caracteres del juego de graficos 1, en rle; lo leen p00:42BD (1218 bytes)
+F 0x7A25 16
+D 0x7EE7 0x8000 bloques_4  los bloques de 4x4 caracteres del juego de graficos 4, en rle; lo leen p00:42BD (281 bytes)
+F 0x7EE7 16
+# --- fin de los bloques de bloques.py ---

@@ -1,0 +1,7 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA02B rle_9F76_cola  rle a la VRAM (0x4539) (sigue del banco anterior, 0x9F76); lo leen p00:5402 (43 bytes)
+F 0xA000 16
+D 0xBEF8 0xC000 relleno_15  264 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (264 bytes)
+F 0xBEF8 16
+# --- fin de los bloques de bloques.py ---

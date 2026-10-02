@@ -1,0 +1,33 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x800A hmmc_7FDD_cola  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes (sigue del banco anterior, 0x7FDD); lo leen p00:4E19 (10 bytes)
+F 0x8000 16
+D 0x800A 0x8133 hmmc_800A  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E25 (297 bytes)
+F 0x800A 16
+D 0x8133 0x81B3 hmmc_8133  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E3D (128 bytes)
+F 0x8133 16
+D 0x81B3 0x8233 hmmc_81B3  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E79 (128 bytes)
+F 0x81B3 16
+D 0x8233 0x8293 hmmc_8233  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E49 (96 bytes)
+F 0x8233 16
+D 0x8293 0x82D3 hmmc_8293  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E55 (64 bytes)
+F 0x8293 16
+D 0x82D3 0x83D3 hmmc_82D3  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E61 (256 bytes)
+F 0x82D3 16
+D 0x83D3 0x8413 hmmc_83D3  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E6D (64 bytes)
+F 0x83D3 16
+D 0x8413 0x858C hmmc_8413  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E31 (377 bytes)
+F 0x8413 16
+D 0x858C 0x92D9 dibujos_858C  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se solapan 4 bloques (0x858C-0x8B4C, 0x86EC-0x8ACC, 0x8ACC-0x908C, 0x8F4C-0x92D9); lo leen p00:4BB6, p00:4BBF, p00:4BD0, p00:4BDB (3405 bytes)
+F 0x858C 16
+D 0x92F9 0x9319 dibujo_92F9  un dibujo de 8x8 a 4 bits (0x4879); lo leen p00:4B07 (32 bytes)
+F 0x92F9 16
+D 0x9369 0x9385 rle_9369  rle a la VRAM (0x4539); lo leen p00:4D92 (28 bytes)
+F 0x9369 16
+D 0x9810 0x986E rle_9810  rle a la VRAM (0x4539) para el jugador 1; el del 2 es 0x9DF6 (p00:4BE1-4BEA); lo leen p00:4BED (94 bytes)
+F 0x9810 16
+D 0x9DF6 0x9E73 rle_9DF6  rle a la VRAM (0x4539); lo leen p00:4BED (125 bytes)
+F 0x9DF6 16
+D 0x9FB0 0xA000 rle_9FB0  rle a la VRAM (0x4539); lo leen p00:4BF6, p00:4BFF (80 bytes)
+F 0x9FB0 16
+# --- fin de los bloques de bloques.py ---

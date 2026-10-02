@@ -1,0 +1,191 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x4C4B 0x4C57 caracteres_de_cada_juego  6 punteros, uno por juego de graficos (0xC289), a sus caracteres de 8x8 en rle; p00:4AA7 los descomprime en 0xD000 (con los bancos 4-5-6); lo leen p00:4A9D (12 bytes)
+F 0x4C4B 16
+D 0x4C57 0x4C75 caracteres_vueltos_de_cada_juego  6 fichas de 5 bytes, una por juego de graficos: [VRAM][n][fuente en 0xD000] de los caracteres que p00:4AC7 sube dados la vuelta (0x4C75); los juegos 2 y 3 van a cero; lo leen p00:4C15 (30 bytes)
+F 0x4C57 16
+D 0x54B8 0x54E2 jefe_de_cada_fase  21 punteros (p00:5409, el numero lo da p02:9282) a la figura del jefe: un solo tipo; lo leen p00:540C (42 bytes)
+F 0x54B8 16
+D 0x54E2 0x54E6 jefes  los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno); lo leen p00:542F (4 bytes)
+F 0x54E2 16
+D 0x5BB2 0x5BBE conjuntos_de_cada_juego  6 punteros, uno por juego de graficos (0xC289), a sus conjuntos de figuras (p00:5BA8); lo leen p00:5BA8 (12 bytes)
+F 0x5BB2 16
+D 0x5BBE 0x5BDE conjuntos_juego_0  16 punteros, uno por conjunto de figuras del juego 0, a su lista (p00:5BAF); lo leen p00:5BAF (32 bytes)
+F 0x5BBE 16
+D 0x5BDE 0x5BF6 conjuntos_juego_1  12 punteros, uno por conjunto de figuras del juego 1, a su lista (p00:5BAF); lo leen p00:5BAF (24 bytes)
+F 0x5BDE 16
+D 0x5BF6 0x5C14 conjuntos_juego_2  15 punteros, uno por conjunto de figuras del juego 2, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
+F 0x5BF6 16
+D 0x5C14 0x5C2C conjuntos_juego_3  12 punteros, uno por conjunto de figuras del juego 3, a su lista (p00:5BAF); lo leen p00:5BAF (24 bytes)
+F 0x5C14 16
+D 0x5C2C 0x5C46 conjuntos_juego_4  13 punteros, uno por conjunto de figuras del juego 4, a su lista (p00:5BAF); lo leen p00:5BAF (26 bytes)
+F 0x5C2C 16
+D 0x5C48 0x5C66 conjuntos_juego_5  15 punteros, uno por conjunto de figuras del juego 5, a su lista (p00:5BAF); lo leen p00:5BAF (30 bytes)
+F 0x5C48 16
+D 0x5C66 0x5C6A figuras_5C66  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C66 16
+D 0x5C6A 0x5C6E figuras_5C6A  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C6A 16
+D 0x5C6E 0x5C73 figuras_5C6E  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5C6E 16
+D 0x5C73 0x5C77 figuras_5C73  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C73 16
+D 0x5C77 0x5C7B figuras_5C77  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C77 16
+D 0x5C7B 0x5C7F figuras_5C7B  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C7B 16
+D 0x5C7F 0x5C84 figuras_5C7F  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5C7F 16
+D 0x5C84 0x5C88 figuras_5C84  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C84 16
+D 0x5C88 0x5C8C figuras_5C88  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C88 16
+D 0x5C8C 0x5C90 figuras_5C8C  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C8C 16
+D 0x5C90 0x5C95 figuras_5C90  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5C90 16
+D 0x5C95 0x5C99 figuras_5C95  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C95 16
+D 0x5C99 0x5C9D figuras_5C99  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C99 16
+D 0x5C9D 0x5CA1 figuras_5C9D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5C9D 16
+D 0x5CA1 0x5CA7 figuras_5CA1  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (6 bytes)
+F 0x5CA1 16
+D 0x5CA7 0x5CAB figuras_5CA7  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CA7 16
+D 0x5CAB 0x5CAE figuras_5CAB  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5CAB 16
+D 0x5CAE 0x5CB2 figuras_5CAE  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CAE 16
+D 0x5CB2 0x5CB6 figuras_5CB2  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CB2 16
+D 0x5CB6 0x5CBA figuras_5CB6  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CB6 16
+D 0x5CBA 0x5CBE figuras_5CBA  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CBA 16
+D 0x5CBE 0x5CC2 figuras_5CBE  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CBE 16
+D 0x5CC2 0x5CC6 figuras_5CC2  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CC2 16
+D 0x5CC6 0x5CCA figuras_5CC6  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CC6 16
+D 0x5CCA 0x5CCE figuras_5CCA  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CCA 16
+D 0x5CCE 0x5CD3 figuras_5CCE  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5CCE 16
+D 0x5CD3 0x5CD8 figuras_5CD3  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5CD3 16
+D 0x5CD8 0x5CDC figuras_5CD8  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CD8 16
+D 0x5CDC 0x5CE0 figuras_5CDC  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CDC 16
+D 0x5CE0 0x5CE4 figuras_5CE0  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CE0 16
+D 0x5CE4 0x5CE8 figuras_5CE4  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CE4 16
+D 0x5CE8 0x5CEC figuras_5CE8  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CE8 16
+D 0x5CEC 0x5CF0 figuras_5CEC  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CEC 16
+D 0x5CF0 0x5CF4 figuras_5CF0  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CF0 16
+D 0x5CF4 0x5CF9 figuras_5CF4  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5CF4 16
+D 0x5CF9 0x5CFD figuras_5CF9  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CF9 16
+D 0x5CFD 0x5D01 figuras_5CFD  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5CFD 16
+D 0x5D01 0x5D06 figuras_5D01  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5D01 16
+D 0x5D06 0x5D0A figuras_5D06  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D06 16
+D 0x5D0A 0x5D0E figuras_5D0A  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D0A 16
+D 0x5D0E 0x5D13 figuras_5D0E  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5D0E 16
+D 0x5D13 0x5D17 figuras_5D13  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D13 16
+D 0x5D17 0x5D1D figuras_5D17  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (6 bytes)
+F 0x5D17 16
+D 0x5D1D 0x5D21 figuras_5D1D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D1D 16
+D 0x5D21 0x5D25 figuras_5D21  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D21 16
+D 0x5D25 0x5D29 figuras_5D25  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D25 16
+D 0x5D29 0x5D2D figuras_5D29  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D29 16
+D 0x5D2D 0x5D31 figuras_5D2D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D2D 16
+D 0x5D31 0x5D35 figuras_5D31  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D31 16
+D 0x5D35 0x5D39 figuras_5D35  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D35 16
+D 0x5D39 0x5D3D figuras_5D39  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D39 16
+D 0x5D3D 0x5D41 figuras_5D3D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D3D 16
+D 0x5D41 0x5D45 figuras_5D41  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D41 16
+D 0x5D45 0x5D48 figuras_5D45  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D45 16
+D 0x5D48 0x5D4B figuras_5D48  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D48 16
+D 0x5D4B 0x5D4F figuras_5D4B  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D4B 16
+D 0x5D4F 0x5D54 figuras_5D4F  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5D4F 16
+D 0x5D54 0x5D58 figuras_5D54  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D54 16
+D 0x5D58 0x5D5C figuras_5D58  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D58 16
+D 0x5D5C 0x5D61 figuras_5D5C  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (5 bytes)
+F 0x5D5C 16
+D 0x5D61 0x5D65 figuras_5D61  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D61 16
+D 0x5D65 0x5D69 figuras_5D65  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D65 16
+D 0x5D69 0x5D6D figuras_5D69  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D69 16
+D 0x5D6D 0x5D71 figuras_5D6D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D6D 16
+D 0x5D71 0x5D75 figuras_5D71  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D71 16
+D 0x5D75 0x5D79 figuras_5D75  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D75 16
+D 0x5D79 0x5D7D figuras_5D79  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D79 16
+D 0x5D7D 0x5D81 figuras_5D7D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D7D 16
+D 0x5D85 0x5D88 figuras_5D85  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D85 16
+D 0x5D88 0x5D8B figuras_5D88  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D88 16
+D 0x5D8B 0x5D8F figuras_5D8B  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D8B 16
+D 0x5D8F 0x5D93 figuras_5D8F  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D8F 16
+D 0x5D93 0x5D96 figuras_5D93  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D93 16
+D 0x5D96 0x5D99 figuras_5D96  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D96 16
+D 0x5D99 0x5D9D figuras_5D99  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5D99 16
+D 0x5D9D 0x5DA0 figuras_5D9D  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5D9D 16
+D 0x5DA0 0x5DA4 figuras_5DA0  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DA0 16
+D 0x5DA4 0x5DA7 figuras_5DA4  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (3 bytes)
+F 0x5DA4 16
+D 0x5DA7 0x5DAB figuras_5DA7  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DA7 16
+D 0x5DAB 0x5DAF figuras_5DAB  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DAB 16
+D 0x5DAF 0x5DB3 figuras_5DAF  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DAF 16
+D 0x5DB3 0x5DB7 figuras_5DB3  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DB3 16
+D 0x5DB7 0x5DBB figuras_5DB7  un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM; lo leen p00:5416 (4 bytes)
+F 0x5DB7 16
+# --- fin de los bloques de bloques.py ---

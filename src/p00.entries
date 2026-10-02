@@ -16,7 +16,7 @@
 0x4097   # cabecera AB: INIT
 0x416F   # p01:60C3 call
 0x4188   # p01:66ED call
-0x4206   # p01:62A6 call
+0x4206   # p01:7E31 jp
 0x4280   # p03:B369 jp
 0x4295   # p01:60BD call
 0x42AC   # p01:666F call
@@ -49,7 +49,7 @@
 0x4D48   # p01:693C jp
 0x4D63   # p01:6046 call
 0x4D72   # p01:612E call
-0x4D81   # p01:655F call
+0x4D81   # p01:7DFD call
 0x4D89   # p01:6669 call
 0x4DA4   # p01:662F call
 0x4E84   # p02:914F call

@@ -1,0 +1,99 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA7E0 caracteres_5_cola  los caracteres de 8x8 a 4 bits del juego de graficos 5, en rle (p00:4AA7 los deja en 0xD000 y p00:4ABA los sube a la VRAM) (sigue del banco anterior, 0x9BF3); lo leen p00:4AA7 (2016 bytes)
+F 0xA000 16
+D 0xA7E0 0xABC0 dibujos_A7E0  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se solapan 2 bloques (0xA7E0-0xABC0, 0xA9C0-0xABC0); lo leen p00:4C31, p00:4C3C (992 bytes)
+F 0xA7E0 16
+D 0xABC0 0xADEC rle_ABC0  rle a la VRAM (0x4539); lo leen p00:4C45 (556 bytes)
+F 0xABC0 16
+D 0xADEC 0xAE34 teclado  lo que da cada tecla al escribir la contrasena: 9 filas de la matriz x 8 bits (p01:6D08); con 0xFCAD a cero; lo leen p01:6D00 (72 bytes)
+F 0xADEC 16
+D 0xAE34 0xAE7C teclado_kana  lo mismo con 0xFCAD distinto de cero (p01:6D05); 0x5B pasa a 0x5C sin la tecla de la fila 6 bit 0 (p01:6D1D); lo leen p01:6D05 (72 bytes)
+F 0xAE34 16
+D 0xAE7C 0xB43C dibujos_AE7C  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); lo leen p00:4B9C (1472 bytes)
+F 0xAE7C 16
+D 0xB43C 0xB6B2 rle_B43C  rle a la VRAM (0x4539); lo leen p00:4BA5 (630 bytes)
+F 0xB43C 16
+D 0xB6B2 0xB7A2 pantalla_B6B2  12 filas de 20 caracteres que p00:5AA4 pinta desde (0x30, 0x20); lo leen p00:5A9F (240 bytes)
+F 0xB6B2 16
+D 0xB7A2 0xB7D0 sprites_B7A2  23 sprites: [y][x] de cada uno; p00:5AC4 los copia a 0xEE00 con el dibujo 4 x n; lo leen p00:5ABB (46 bytes)
+F 0xB7A2 16
+D 0xB7D0 0xB832 enlaces_de_cada_zona  49 punteros, uno por zona, a su ficha de enlaces (p00:4191); lo leen p00:418E (98 bytes)
+F 0xB7D0 16
+D 0xB832 0xB84C enlaces_B832  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-0, zona 5-1 (26 bytes)
+F 0xB832 16
+D 0xB84C 0xB84E enlaces_B84C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-1 (2 bytes)
+F 0xB84C 16
+D 0xB84E 0xB850 enlaces_B84E  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-2, zona 5-3 (2 bytes)
+F 0xB84E 16
+D 0xB850 0xB866 enlaces_B850  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-3 (22 bytes)
+F 0xB850 16
+D 0xB866 0xB870 enlaces_B866  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-4 (10 bytes)
+F 0xB866 16
+D 0xB870 0xB88A enlaces_B870  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-0, zona 7-1 (26 bytes)
+F 0xB870 16
+D 0xB88A 0xB8A8 enlaces_B88A  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-5, zona 4-5 (30 bytes)
+F 0xB88A 16
+D 0xB8A8 0xB902 enlaces_B8A8  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 1-6, zona 4-6, zona 6-6 (90 bytes)
+F 0xB8A8 16
+D 0xB902 0xB91E enlaces_B902  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-4 (28 bytes)
+F 0xB902 16
+D 0xB91E 0xB92E enlaces_B91E  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-1, zona 6-3 (16 bytes)
+F 0xB91E 16
+D 0xB92E 0xB94C enlaces_B92E  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-2 (30 bytes)
+F 0xB92E 16
+D 0xB94C 0xB954 enlaces_B94C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-3 (8 bytes)
+F 0xB94C 16
+D 0xB954 0xB9AA enlaces_B954  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); se solapan 2 bloques (0xB954-0xB982, 0xB980-0xB9AA); lo leen zona 2-5, zona 3-0, zona 5-5, zona 6-1 (86 bytes)
+F 0xB954 16
+D 0xB9AA 0xBA0E enlaces_B9AA  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 2-6, zona 5-6 (100 bytes)
+F 0xB9AA 16
+D 0xBA0E 0xBA14 enlaces_BA0E  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-1 (6 bytes)
+F 0xBA0E 16
+D 0xBA14 0xBA2C enlaces_BA14  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-2, zona 5-4 (24 bytes)
+F 0xBA14 16
+D 0xBA2C 0xBA3C enlaces_BA2C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-3 (16 bytes)
+F 0xBA2C 16
+D 0xBA3C 0xBA5A enlaces_BA3C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-4 (30 bytes)
+F 0xBA3C 16
+D 0xBA5A 0xBA8C enlaces_BA5A  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-5, zona 6-5 (50 bytes)
+F 0xBA5A 16
+D 0xBA8C 0xBAF2 enlaces_BA8C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 3-6, zona 7-6 (102 bytes)
+F 0xBA8C 16
+D 0xBAF2 0xBB1C enlaces_BAF2  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 4-0 (42 bytes)
+F 0xBAF2 16
+D 0xBB1C 0xBB2A enlaces_BB1C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 4-1 (14 bytes)
+F 0xBB1C 16
+D 0xBB2A 0xBB50 enlaces_BB2A  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 4-3 (38 bytes)
+F 0xBB2A 16
+D 0xBB50 0xBB7A enlaces_BB50  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 4-4, zona 6-4 (42 bytes)
+F 0xBB50 16
+D 0xBB7A 0xBBA8 enlaces_BB7A  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 5-0 (46 bytes)
+F 0xBB7A 16
+D 0xBBA8 0xBBD4 enlaces_BBA8  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 7-4 (44 bytes)
+F 0xBBA8 16
+D 0xBBD4 0xBBDE enlaces_BBD4  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 5-2 (10 bytes)
+F 0xBBD4 16
+D 0xBBDE 0xBBF0 enlaces_BBDE  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 4-2, zona 7-2 (18 bytes)
+F 0xBBDE 16
+D 0xBBF0 0xBBFE enlaces_BBF0  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 6-0 (14 bytes)
+F 0xBBF0 16
+D 0xBBFE 0xBC20 enlaces_BBFE  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 6-2 (34 bytes)
+F 0xBBFE 16
+D 0xBC20 0xBC2A enlaces_BC20  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 7-0 (10 bytes)
+F 0xBC20 16
+D 0xBC2A 0xBC6C enlaces_BC2A  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 7-5 (66 bytes)
+F 0xBC2A 16
+D 0xBC6C 0xBC92 enlaces_BC6C  ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7][destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al lado (p00:41AC); lo leen zona 7-3 (38 bytes)
+F 0xBC6C 16
+D 0xBC92 0xBCFA letras_BC92  caracteres de 8x8 a 1 bit, 8 bytes cada uno (0x484F); lo leen p00:4A4F (104 bytes)
+F 0xBC92 16
+D 0xBCFA 0xBD62 letras_BCFA  caracteres de 8x8 a 1 bit, 8 bytes cada uno (0x484F); lo leen p00:4A5B (104 bytes)
+F 0xBCFA 16
+D 0xBD62 0xBE32 letras_BD62  caracteres de 8x8 a 1 bit, 8 bytes cada uno (0x484F); lo leen p00:4A67 (208 bytes)
+F 0xBD62 16
+D 0xBE32 0xBFD9 rle_BE32  rle a la VRAM (0x4539); lo leen p00:4CDD (423 bytes)
+F 0xBE32 16
+D 0xBFD9 0xC000 relleno_06  39 bytes 0xFF hasta el final del banco: relleno, no lo lee nadie; lo leen nadie (39 bytes)
+F 0xBFD9 16
+# --- fin de los bloques de bloques.py ---

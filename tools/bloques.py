@@ -365,6 +365,18 @@ def juego_de_cada_zona(rom):
     return list(rom[o:o + FASES * ZONAS])
 
 
+def casillas(rom, k):
+    """Las casillas de la zona k: el primer byte de su ficha de enlaces, en la
+    tabla 0xB7D0 del banco 6 (p00:418E)."""
+    a = palabra(rom, S4, 0xB7D0 + 2 * k)
+    return byte(rom, S4, a)
+
+
+S4 = (4, 5, 6)              # p00:4220
+S1 = (1, 2, 3)              # p00:4206
+S12 = (10, 11, 12)          # p00:4250
+
+
 def mapas(rom, t, bl):
     s = S13
     # las pantallas comprimidas de cada juego de graficos
@@ -376,17 +388,21 @@ def mapas(rom, t, bl):
         bl.anota(s, a, fin_rle(rom, s, a, False), "pantallas_%d" % k,
                  "las pantallas del juego de graficos %d en rle (0x42C3 las deja en 0xD000): "
                  "8x6 bloques cada una" % k, "p00:42A6")
-    # la rejilla de cada zona
+    # la rejilla de cada zona: tantas casillas como dice su tabla de enlaces
+    # (0xB7D0); medio byte por casilla en los juegos 0-3, uno en el 4 y el 5
     juego = juego_de_cada_zona(rom)
     bl.anota(s, 0x600C, 0x600C + 2 * FASES * ZONAS, "rejilla_de_cada_zona",
              "49 punteros, uno por zona (fase x 7 + zona): la rejilla de pantallas que p00:5311 "
              "copia en 0xE700", "p00:5317")
     for k in range(FASES * ZONAS):
         a = palabra(rom, s, 0x600C + 2 * k)
-        n = 64 if juego[k] < 4 else 128
-        bl.anota(s, a, a + n, "rejilla_%04X" % a,
-                 "rejilla de pantallas de una zona: %s (p00:5311); las zonas comparten bytes"
-                 % ("64 bytes, dos casillas por byte" if n == 64 else "128 bytes, una casilla por byte"),
+        n = casillas(rom, k)
+        largo = (n + 1) // 2 if juego[k] < 4 else n
+        bl.anota(s, a, a + largo, "rejilla_%04X" % a,
+                 "rejilla de pantallas de una zona: %d casillas, %s (p00:5311 copia siempre %s, "
+                 "y lo de mas es de la zona de al lado); varias zonas la comparten"
+                 % (n, "medio byte cada una" if juego[k] < 4 else "un byte cada una",
+                    "64 bytes" if juego[k] < 4 else "128 bytes"),
                  "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
     # los bloques de cada juego
     bl.anota(s, 0x75B9, 0x75C5, "bloques_de_cada_juego",
@@ -410,7 +426,407 @@ def mapas(rom, t, bl):
                  "los %d bloques que usa %s, 16 bytes cada uno (p00:52A6..52B5)" % (maxi + 1, que), quien)
 
 
-RECORRIDOS = [llamadas_a_lectores, mapas]
+# ------------------------------------------------------------------ el sonido
+# El controlador del banco 10 (0x6000, con 10-11-12 puestos) lee, por canal,
+# una partitura que interpreta p10:61F1:
+#   0x00-0xBF  nota: nibble alto la nota, nibble bajo la duracion   1 byte
+#   0xC0-0xCF  silencio de esa duracion (p10:631B)                  1
+#   0xD0-0xDF  la unidad de tiempo (p10:63A1)                       1
+#   0xE0-0xE5  la octava (p10:63F6)                                 1
+#   0xE8, 0xEC un byte detras (p10:63E3, p10:63D7)                  2
+#   0xEA       salta a la direccion que sigue (p10:6416)            3, y no sigue
+#   0xED       llama a la direccion que sigue (p10:641D)            3
+#   0xEE       vuelve de la llamada (p10:642B)                      1, y no sigue
+#   resto 0xEx una bandera (p10:6400, 6408, 640F, 63EF)             1
+#   0xFF       el canal acaba (p10:6434)                            1, y no sigue
+#   0xFE n dir repite n veces desde dir (p10:635A)                  4
+#   resto 0xFx el volumen y su envolvente en el byte de detras       2
+S10 = (10, 11, 12)          # p00:4FE9..5002
+
+
+def recorre_partitura(rom, s, a, tocados, pendientes):
+    for _ in range(20000):
+        c = byte(rom, s, a)
+        tocados.add(a)
+        if c < 0xD0:
+            a += 1
+        elif c < 0xE0:
+            a += 1
+        elif c < 0xF0:
+            k = c & 0x0F
+            if k in (0x8, 0xC):
+                tocados.add(a + 1)
+                a += 2
+            elif k == 0xA:
+                tocados.update((a + 1, a + 2))
+                pendientes.append(palabra(rom, s, a + 1))
+                return
+            elif k == 0xD:
+                tocados.update((a + 1, a + 2))
+                pendientes.append(palabra(rom, s, a + 1))
+                a += 3
+            elif k == 0xE:
+                return
+            else:
+                a += 1
+        else:
+            k = c & 0x0F
+            if k == 0xF:
+                return
+            if k == 0xE:
+                tocados.update((a + 1, a + 2, a + 3))
+                pendientes.append(palabra(rom, s, a + 2))
+                a += 4
+            else:
+                tocados.add(a + 1)
+                a += 2
+    raise FueraDelBanco("partitura sin fin desde 0x%04X" % a)
+
+
+# Los efectos van por otro interprete, p10:6454, que lee un cuadro cada vez:
+#   0xFF       acaba (p10:6550)                                    1, y no sigue
+#   0xFE n dir repite n veces desde dir (p10:64D5)                  4
+#   0x1x       ruido (x*2 al registro 6) y luego volumen/tono      3
+#   0x2x d     mezcla del canal y d cuadros; 0x28-0x2F traen dos
+#              bytes mas, la envolvente (p10:64F5)                 2 o 4
+#   el resto   nibble alto el volumen, bajo y el byte de detras el
+#              tono                                                2
+def recorre_efecto(rom, s, a, tocados, pendientes):
+    for _ in range(20000):
+        c = byte(rom, s, a)
+        tocados.add(a)
+        if c == 0xFF:
+            return
+        if c == 0xFE:
+            tocados.update((a + 1, a + 2, a + 3))
+            pendientes.append(palabra(rom, s, a + 2))
+            a += 4
+        elif c & 0xF0 == 0x10:
+            tocados.update((a + 1, a + 2))
+            a += 3
+        elif c & 0xF0 == 0x20:
+            n = 4 if c >= 0x28 else 2
+            tocados.update(range(a + 1, a + n))
+            a += n
+        else:
+            tocados.add(a + 1)
+            a += 2
+    raise FueraDelBanco("efecto sin fin desde 0x%04X" % a)
+
+
+def partituras(rom, s, inicios, recorre=recorre_partitura):
+    """Todos los bytes que alcanza el interprete desde esos inicios."""
+    tocados, pend, vistos = set(), list(inicios), set()
+    while pend:
+        a = pend.pop()
+        if a in vistos:
+            continue
+        vistos.add(a)
+        recorre(rom, s, a, tocados, pend)
+    return tocados
+
+
+def tramos(dirs):
+    """Rangos [a, f) seguidos de un conjunto de direcciones."""
+    fuera = []
+    for x in sorted(dirs):
+        if fuera and x == fuera[-1][1]:
+            fuera[-1][1] = x + 1
+        else:
+            fuera.append([x, x + 1])
+    return fuera
+
+
+N_MUSICAS = 0x1C             # 0x80..0x9B: p00:505C, seis bytes cada una
+N_EFECTOS = 0x21             # 0x00..0x20: p00:50DF, una palabra cada uno (el 0 no se lee)
+
+
+def sonido(rom, t, bl):
+    s = S10
+    bl.anota(s, 0x6552, 0x6550 + 2 * N_EFECTOS, "efectos_de_sonido",
+             "32 punteros, los de los efectos 0x01-0x20 (p00:50DF suma el doble del numero a "
+             "0x6550: la palabra del 0 serian los bytes 37 C9 de `scf / ret` de p10:6550, y no se "
+             "lee porque p00:5009 para el sonido con el 0): la lista de cuadros del canal de "
+             "efectos que p00:50E7 deja en 0xC074", "p00:50DF")
+    bl.anota(s, 0x6592, 0x6592 + 6 * N_MUSICAS, "musicas",
+             "28 musicas (0x80-0x9B) de tres punteros cada una, la partitura de cada canal del "
+             "PSG, que p00:5064 deja en 0xC01A, 0xC034 y 0xC04E", "p00:505C")
+    efectos = [palabra(rom, s, 0x6550 + 2 * k) for k in range(1, N_EFECTOS)]
+    for a, f in tramos(partituras(rom, s, efectos, recorre_efecto)):
+        bl.anota(s, a, f, "efecto_%04X" % a,
+                 "cuadros de un efecto de sonido que interpreta p10:6454 (volumen y tono, ruido, "
+                 "mezcla y repeticiones; ver tools/bloques.py)", "p10:6454")
+    # los instrumentos: p10:628F escoge por (ix+8) una de nueve tablas de 13
+    # punteros (uno por nota, p10:62C7) a una envolvente con el formato de los
+    # efectos, que p10:6454 recorre cuadro a cuadro
+    bl.anota(s, 0x8051, 0x8051 + 9 * 26, "instrumentos",
+             "9 instrumentos (0xE8 n de la partitura, p10:628F), cada uno 13 punteros, uno por "
+             "nota (p10:62C7), a la envolvente que p10:6454 recorre cuadro a cuadro", "p10:628F")
+    envolventes = [palabra(rom, s, 0x8051 + 2 * k) for k in range(9 * 13)]
+    for a, f in tramos(partituras(rom, s, envolventes, recorre_efecto)):
+        bl.anota(s, a, f, "envolvente_%04X" % a,
+                 "envolvente de un instrumento: cuadros de volumen como los de los efectos, que "
+                 "p10:6454 recorre (ver tools/bloques.py)", "p10:62D2")
+    musica = [palabra(rom, s, 0x6592 + 2 * k) for k in range(N_MUSICAS * 3)] + [0x6B74]
+    for a, f in tramos(partituras(rom, s, musica)):
+        bl.anota(s, a, f, "partitura_%04X" % a,
+                 "partitura que interpreta p10:61F1 (nota, silencio, tiempo, octava, saltos, "
+                 "llamadas y repeticiones; ver tools/bloques.py)", "p10:61F1")
+
+# ------------------------------------------------------------------ las figuras
+# p00:5B6D escoge el conjunto de figuras de la casilla (medio byte en la
+# tabla 0x9BF0 del banco 14, una por zona); 0x5BB2[juego][conjunto] da la
+# lista [n][n+1 tipos] y p00:5413 sube a la VRAM el dibujo de cada tipo con
+# su ficha de 10 bytes de 0xA830 (banco 12).
+N_TIPOS = 0x24
+
+
+def figuras(rom, t, bl):
+    juego = juego_de_cada_zona(rom)
+    bl.anota(S13, 0x9BF0, 0x9BF0 + 2 * FASES * ZONAS, "figuras_de_cada_zona",
+             "49 punteros, uno por zona: el conjunto de figuras de cada casilla (p00:5B6D)", "p00:5B70")
+    usados = defaultdict(set)
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S13, 0x9BF0 + 2 * k)
+        n = casillas(rom, k)
+        for c in range(n):
+            b = byte(rom, S13, a + c // 2)
+            usados[juego[k]].add(b >> 4 if c % 2 == 0 else b & 0x0F)
+        bl.anota(S13, a, a + (n + 1) // 2, "figuras_%04X" % a,
+                 "el conjunto de figuras de cada una de las %d casillas de la zona, medio byte "
+                 "cada una (nibble alto la par); varias zonas la comparten" % n,
+                 "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+    bl.anota(S1, 0x5BB2, 0x5BBE, "conjuntos_de_cada_juego",
+             "6 punteros, uno por juego de graficos (0xC289), a sus conjuntos de figuras (p00:5BA8)",
+             "p00:5BA8")
+    listas = set()
+    for j in range(6):
+        tab = palabra(rom, S1, 0x5BB2 + 2 * j)
+        n = max(usados[j]) + 1
+        bl.anota(S1, tab, tab + 2 * n, "conjuntos_juego_%d" % j,
+                 "%d punteros, uno por conjunto de figuras del juego %d, a su lista (p00:5BAF)" % (n, j),
+                 "p00:5BAF")
+        for c in range(n):
+            listas.add(palabra(rom, S1, tab + 2 * c))
+    tipos = set()
+    for a in sorted(listas):
+        n = byte(rom, S1, a)
+        tipos.update(byte(rom, S1, a + 1 + i) for i in range(n + 1))
+        bl.anota(S1, a, a + 2 + n, "figuras_%04X" % a,
+                 "un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM",
+                 "p00:5416")
+    bl.anota(S1, 0x54B8, 0x54E2, "jefe_de_cada_fase",
+             "21 punteros (p00:5409, el numero lo da p02:9282) a la figura del jefe: un solo tipo",
+             "p00:540C")
+    for a in range(0x54E2, 0x54E6):
+        tipos.add(byte(rom, S1, a))
+    bl.anota(S1, 0x54E2, 0x54E6, "jefes",
+             "los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno)", "p00:542F")
+    bl.anota(S12, 0xA830, 0xA830 + 10 * N_TIPOS, "fichas_de_figura",
+             "36 fichas de 10 bytes, una por tipo de figura 1-0x24 (p00:5465): el dibujo en rle, "
+             "su sitio en la VRAM, los colores 4 y 6 de la paleta (0xFFFF, sin tocar) y el sitio "
+             "de la copia dada la vuelta (0xFF, sin copia)", "p00:5465")
+    for k in range(N_TIPOS):
+        f = 0xA830 + 10 * k
+        src = palabra(rom, S12, f)
+        bl.anota(S12, src, fin_rle(rom, S12, src, False), "figura_%02X" % (k + 1),
+                 "el dibujo de la figura de tipo 0x%02X en rle (p00:547C; p00:54AB lo vuelve a "
+                 "leer dado la vuelta si la ficha lo pide)" % (k + 1), "p00:547C")
+    bl.anota(S12, 0xA998, 0xA9C0, "dibujos_de_mas",
+             "8 fichas de 5 bytes: [tipo][rle][VRAM], un dibujo de mas para los tipos 2, 3, 0x0A, "
+             "0x0B, 0x0C, 0x0F, 0x15 y 0x1F (p00:5436)", "p00:5436")
+    for k in range(8):
+        src = palabra(rom, S12, 0xA998 + 5 * k + 1)
+        bl.anota(S12, src, fin_rle(rom, S12, src, False), "de_mas_%04X" % src,
+                 "dibujo de mas de la figura de tipo 0x%02X, en rle (p00:5454)"
+                 % byte(rom, S12, 0xA998 + 5 * k), "p00:5454")
+
+
+# ------------------------------------------------------------------ los caracteres
+S7 = (7, 8, 9)              # p00:4238
+
+
+def caracteres(rom, t, bl):
+    """p00:4A96: los caracteres de cada juego de graficos, en rle en los bancos
+    4 y 5, que 0x42C3 deja en 0xD000 y luego se suben a la VRAM."""
+    bl.anota(S1, 0x4C4B, 0x4C57, "caracteres_de_cada_juego",
+             "6 punteros, uno por juego de graficos (0xC289), a sus caracteres de 8x8 en rle; "
+             "p00:4AA7 los descomprime en 0xD000 (con los bancos 4-5-6)", "p00:4A9D")
+    for k in range(6):
+        a = palabra(rom, S1, 0x4C4B + 2 * k)
+        bl.anota(S4, a, fin_rle(rom, S4, a, False), "caracteres_%d" % k,
+                 "los caracteres de 8x8 a 4 bits del juego de graficos %d, en rle (p00:4AA7 los "
+                 "deja en 0xD000 y p00:4ABA los sube a la VRAM)" % k, "p00:4AA7")
+    bl.anota(S1, 0x4C57, 0x4C75, "caracteres_vueltos_de_cada_juego",
+             "6 fichas de 5 bytes, una por juego de graficos: [VRAM][n][fuente en 0xD000] de los "
+             "caracteres que p00:4AC7 sube dados la vuelta (0x4C75); los juegos 2 y 3 van a cero", "p00:4C15")
+    # el otro camino de p00:4BE1: el jugador 1 lee 0x9810 y el 2 0x9DF6 (bit 7 de 0xC002)
+    bl.anota(S7, 0x9810, fin_rle(rom, S7, 0x9810, False), "rle_9810",
+             "rle a la VRAM (0x4539) para el jugador 1; el del 2 es 0x9DF6 (p00:4BE1-4BEA)", "p00:4BED")
+
+
+# ------------------------------------------------------------------ tablas de los bancos 6 y 9
+def lista_de_paletas(rom, s, a, bl, nom, que, quien):
+    f = fin_lista(rom, s, a, 3)
+    bl.anota(s, a, f, nom, que, quien)
+
+
+def paletas_y_planos(rom, t, bl):
+    # la paleta de cada juego de graficos (p00:4CE6)
+    bl.anota(S7, 0xA37A, 0xA386, "paleta_de_cada_juego",
+             "6 punteros, uno por juego de graficos (0xC289), a su lista de colores (p00:4CF0)", "p00:4CE9")
+    for k in range(6):
+        a = palabra(rom, S7, 0xA37A + 2 * k)
+        lista_de_paletas(rom, S7, a, bl, "paleta_juego_%d" % k,
+                         "los colores del juego de graficos %d: [color][RB][G], 0xFF acaba (0x4666)" % k,
+                         "p00:4CF3")
+    # los colores de cada sitio (0xC267) en cada juego (p00:4D2C)
+    bl.anota(S7, 0xA4C5, 0xA4D1, "colores_de_cada_sitio",
+             "6 punteros, uno por juego de graficos, a una ventana de la lista de 0xA4D1: el "
+             "puntero de cada sitio (0xC267) a los colores que se le cambian (p00:4D36)", "p00:4D33")
+    bl.anota(S7, 0xA4D1, 0xA4F1, "colores_de_los_sitios",
+             "16 punteros seguidos a listas de colores; cada juego entra por un sitio distinto "
+             "(0xA4C5) y p00:4D3D escoge por 0xC267", "p00:4D3D")
+    for k in range(16):
+        a = palabra(rom, S7, 0xA4D1 + 2 * k)
+        lista_de_paletas(rom, S7, a, bl, "colores_%04X" % a,
+                         "colores de un sitio: [color][RB][G], 0xFF acaba (0x4666); 0xA4F4 es el "
+                         "0xFF de la de 0xA4F1, una lista vacia", "p00:4D42")
+    # el plano de cada zona (p00:59A9)
+    bl.anota(S7, 0xA575, 0xA575 + 2 * FASES * ZONAS, "plano_de_cada_zona",
+             "49 punteros, uno por zona (fase x 7 + zona), a su ficha de plano (p00:59B9)", "p00:59B6")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S7, 0xA575 + 2 * k)
+        f = a + 1
+        while byte(rom, S7, f):
+            f += 2
+        bl.anota(S7, a, f + 1, "plano_%04X" % a,
+                 "ficha de plano de una zona: el dibujo (0xA86D) y parejas [valor<<5 | x][y] que "
+                 "p00:5A10 marca en 0xD800; 0 acaba", "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+    bl.anota(S7, 0xA86D, 0xA88D, "dibujos_de_plano",
+             "16 punteros a los dibujos de plano (p00:59C2)", "p00:59BF")
+    for k in range(16):
+        a = palabra(rom, S7, 0xA86D + 2 * k)
+        filas, ancho = byte(rom, S7, a), byte(rom, S7, a + 1)
+        bl.anota(S7, a, a + 2 + filas * ((ancho + 7) // 8), "plano_dibujo_%d" % k,
+                 "dibujo de plano %d: [filas][ancho] y un bit por casilla (p00:59D7 los pasa a "
+                 "0xD800, 28 por fila)" % k, "p00:59C5")
+    # el teclado de las contrasenas (p01:6CFB)
+    bl.anota(S4, 0xADEC, 0xAE34, "teclado",
+             "lo que da cada tecla al escribir la contrasena: 9 filas de la matriz x 8 bits "
+             "(p01:6D08); con 0xFCAD a cero", "p01:6D00")
+    bl.anota(S4, 0xAE34, 0xAE7C, "teclado_kana",
+             "lo mismo con 0xFCAD distinto de cero (p01:6D05); 0x5B pasa a 0x5C sin la tecla de "
+             "la fila 6 bit 0 (p01:6D1D)", "p01:6D05")
+    # la pantalla de p00:5A93
+    bl.anota(S4, 0xB6B2, 0xB6B2 + 12 * 20, "pantalla_B6B2",
+             "12 filas de 20 caracteres que p00:5AA4 pinta desde (0x30, 0x20)", "p00:5A9F")
+    bl.anota(S4, 0xB7A2, 0xB7A2 + 23 * 2, "sprites_B7A2",
+             "23 sprites: [y][x] de cada uno; p00:5AC4 los copia a 0xEE00 con el dibujo 4 x n", "p00:5ABB")
+    # los enlaces entre casillas de cada zona (p00:4188)
+    bl.anota(S4, 0xB7D0, 0xB7D0 + 2 * FASES * ZONAS, "enlaces_de_cada_zona",
+             "49 punteros, uno por zona, a su ficha de enlaces (p00:4191)", "p00:418E")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S4, 0xB7D0 + 2 * k)
+        m = byte(rom, S4, a + 1)
+        bl.anota(S4, a, a + 2 + 2 * m, "enlaces_%04X" % a,
+                 "ficha de enlaces de una zona: [casillas][n] y n parejas [casilla | lado bit 7]"
+                 "[destino | lado bit 7] (0x7F, ninguno); sin enlace, cada casilla va a la de al "
+                 "lado (p00:41AC)", "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+
+
+# ------------------------------------------------------------------ banco 9: jugador y pasadizos
+def jugador_y_pasadizos(rom, t, bl):
+    # las poses del jugador (p01:74A6): (0xC49F x 4 + 0xC4A2) en una de dos tablas
+    for base, quien in ((0xAA56, "jugador 1"), (0xAA7E, "jugador 2")):
+        bl.anota(S7, base, base + 40, "poses_%s" % quien.replace(" ", "_"),
+                 "20 punteros, uno por (0xC49F x 4 + 0xC4A2), a la pose del %s: la lista de "
+                 "sprites que p01:74CD copia a 0xEE00 (p01:74AA y 74AF, por el bit 7 de 0xC002)"
+                 % quien, "p01:74BD")
+        for k in range(20):
+            a = palabra(rom, S7, base + 2 * k)
+            bl.anota(S7, a, a + 1 + 2 * byte(rom, S7, a), "pose_%04X" % a,
+                     "una pose: [n] y n parejas [y][x] relativas a 0xC498/0xC49A; el dibujo de "
+                     "cada sprite es 4 x su orden (p01:7514)", "p01:74CD")
+    # las formas de los pasadizos (p00:4F47): 9 filas de 16 bits
+    bl.anota(S7, 0xAB18, 0xAB18 + 56 * 18, "formas_de_pasadizo",
+             "56 formas de 9 filas x 2 bytes: cada bit puesto es un bloque de 16x16 que p00:4F94 "
+             "pinta (la forma la escoge p01:6A49 en 0xEA00)", "p00:4F78")
+    bl.anota(S7, 0xAF08, 0xAF08 + 2 * FASES * ZONAS, "pasadizos_de_cada_zona",
+             "49 punteros, uno por zona, a sus 15 parejas de formas (p01:6B02)", "p01:6AFF")
+    bl.anota(S7, 0xAF6A, 0xB04F, "pasadizos_tira",
+             "la tira de numeros de pareja de la que cada zona coge 15 seguidos (0xAF08): las "
+             "ventanas se pisan unas a otras, y la ultima (0xB04B) sigue 11 bytes dentro de la "
+             "tabla 0xB04F", "p01:6B0A")
+    bl.anota(S7, 0xB04F, 0xB21B, "parejas_de_formas",
+             "230 parejas de formas de pasadizo (0-55) que p01:6B11 copia a 0xEA00", "p01:6B11")
+    bl.anota(S7, 0xB21B, 0xB21B + 2 * FASES * ZONAS, "salidas_de_cada_zona",
+             "49 punteros, uno por zona, a su lista de salidas (p01:6B27)", "p01:6B24")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S7, 0xB21B + 2 * k)
+        bl.anota(S7, a, a + 1 + 2 * byte(rom, S7, a), "salidas_%04X" % a,
+                 "[n] y n parejas que p01:6B2E copia a 0xEA80 y p01:6B43 a 0xEB00 (bits 0-4 y "
+                 "5-7 del segundo byte por separado)", "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+
+    # las cosas de cada casilla (p01:7D9E)
+    bl.anota(S7, 0xB5D6, 0xB5D6 + 2 * FASES * ZONAS, "cosas_de_cada_zona",
+             "49 punteros, uno por zona, a su lista de cosas por casilla (p01:7DAE)", "p01:7DAB")
+    for k in range(FASES * ZONAS):
+        a = palabra(rom, S7, 0xB5D6 + 2 * k)
+        bl.anota(S7, a, a + 1 + 2 * byte(rom, S7, a), "cosas_%04X" % a,
+                 "[n] y n parejas [casilla | bit 7][valor]: en la casilla 0xC281, p01:7DDA deja en "
+                 "0xC520 un 1 (2 con el bit 7) y el valor", "zona %d-%d" % (k // ZONAS + 1, k % ZONAS))
+
+
+# ------------------------------------------------------------------ banco 9: tablas por tipo
+S9 = (1, 2, 9)              # p01:7983, p02:99FF: el 9 en 0xA000 sobre los de siempre
+N_FIGURAS = 0x21            # tipos de figura 1-0x21 (los jefes 0x22-0x24 van aparte)
+
+
+def tablas_del_banco_9(rom, t, bl):
+    bl.anota(S9, 0xB84C, 0xB84C + N_FIGURAS, "puntos_de_cada_figura",
+             "33 bytes, uno por tipo de figura 1-0x21 (ix+0): las centenas de puntos en BCD que "
+             "suma p00:437E al acabar con ella (p01:7996)", "p01:798E")
+    bl.anota(S9, 0xB86D, 0xB86D + N_FIGURAS, "dinero_de_cada_figura",
+             "33 bytes, uno por tipo de figura: el dinero que suma p00:5929 (p01:79B9); los tipos "
+             "8 y 0x21 no van por aqui, restan 50 con p00:5958", "p01:79B3")
+    bl.anota(S9, 0xB88E, 0xB88E + N_FIGURAS, "tamano_de_cada_figura",
+             "33 bytes, uno por tipo de figura: 1, 2 o 3, el tamano de su caja de choque "
+             "(p01:7A99: 3 es 7 de alto, el resto 15)", "p01:7A93")
+    bl.anota(S9, 0xB8AF, 0xB8AF + FASES * ZONAS, "casilla_de_entrada",
+             "49 bytes, uno por zona: la casilla 0xC281 en la que se empieza (p01:66A5)", "p01:66A2")
+    bl.anota(S9, 0xB8E0, 0xB8EC, "seis_sitios_B8E0",
+             "6 parejas [y][x] que p01:676C recorre del ultimo al primero y pasa a p01:781F",
+             "p01:676C")
+    bl.anota(S9, 0xB8EC, 0xB8EC + FASES * ZONAS, "juego_de_cada_zona",
+             "49 bytes, uno por zona: el juego de graficos 0xC289 (p01:664F); p02:81FD lee los "
+             "siete de la fase", "p01:6649")
+    bl.anota(S9, 0xB91D, 0xB95F, "dibujos_de_caracteres",
+             "33 punteros a dibujos hechos de caracteres que p02:99FB pinta con 0x4EF1", "p02:9A07")
+    for k in range(33):
+        a = palabra(rom, S9, 0xB91D + 2 * k)
+        bl.anota(S9, a, a + 3 + 14 * byte(rom, S9, a), "dibujo_car_%04X" % a,
+                 "[ancho][posicion] y 14 filas de 'ancho' caracteres (nibbles: fila y columna en "
+                 "la hoja de caracteres) que p02:9A19 pinta de 8 en 8", "p02:9A0E")
+
+
+def rellenos(rom, t, bl):
+    """Los 0xFF con los que acaba un banco, si son 16 o mas: no los lee nadie."""
+    for b in range(N_PAGINAS):
+        blq = rom[b * TAM_PAGINA:(b + 1) * TAM_PAGINA]
+        i = len(blq)
+        while i > 0 and blq[i - 1] == 0xFF:
+            i -= 1
+        if len(blq) - i >= 16:
+            s = {0: S1, 1: S1, 2: S1, 3: S1}.get(b) or (
+                tuple(b if ORG[b] == r else x for r, x in zip((0x6000, 0x8000, 0xA000), S1)))
+            bl.anota(s, ORG[b] + i, ORG[b] + TAM_PAGINA, "relleno_%02d" % b,
+                     "%d bytes 0xFF hasta el final del banco: relleno, no lo lee nadie" % (len(blq) - i),
+                     "nadie")
+
+
+RECORRIDOS = [llamadas_a_lectores, mapas, sonido, figuras, caracteres, paletas_y_planos, jugador_y_pasadizos,
+              tablas_del_banco_9, rellenos]
 
 
 # ------------------------------------------------------------------ escritura

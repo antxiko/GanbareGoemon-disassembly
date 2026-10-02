@@ -1,0 +1,25 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x63C0 dibujos_6000  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se solapan 2 bloques (0x6000-0x63C0, 0x61A0-0x63C0); lo leen p00:4AD5, p00:4AE0 (960 bytes)
+F 0x6000 16
+D 0x63C0 0x79E0 dibujos_63C0  dibujos de 8x8 a 4 bits, 32 bytes cada uno (0x488E); se solapan 4 bloques (0x63C0-0x6900, 0x6820-0x6F80, 0x6AC0-0x6F60, 0x6F60-0x79E0); lo leen p00:4AEB, p00:4B68, p00:4B73, p00:4DAF (5664 bytes)
+F 0x63C0 16
+D 0x79E0 0x7BE0 dibujos16_79E0  dibujos de 16x16 a 4 bits, 128 bytes cada uno (0x48B8); lo leen p00:4DBA (512 bytes)
+F 0x79E0 16
+D 0x7BE0 0x7D60 dibujos16_7BE0  dibujos de 16x16 a 4 bits, 128 bytes cada uno (0x48B8); lo leen p00:4DC5 (384 bytes)
+F 0x7BE0 16
+D 0x7D60 0x7D90 hmmc_7D60  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4DD1 (48 bytes)
+F 0x7D60 16
+D 0x7D90 0x7DE0 hmmc_7D90  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4DDD (80 bytes)
+F 0x7D90 16
+D 0x7DE0 0x7E30 hmmc_7DE0  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4DE9 (80 bytes)
+F 0x7DE0 16
+D 0x7E30 0x7EB0 hmmc_7E30  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4DF5 (128 bytes)
+F 0x7E30 16
+D 0x7EB0 0x7FB0 hmmc_7EB0  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E01 (256 bytes)
+F 0x7EB0 16
+D 0x7FB0 0x7FDD hmmc_7FB0  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E0D (45 bytes)
+F 0x7FB0 16
+D 0x7FDD 0x8000 hmmc_7FDD  dibujo que el V9938 pinta con HMMC (0x4E7F): ancho x alto / 2 bytes; lo leen p00:4E19 (35 bytes)
+F 0x7FDD 16
+# --- fin de los bloques de bloques.py ---

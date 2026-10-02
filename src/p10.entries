@@ -12,3 +12,11 @@
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x6000   # p00:405A call
+0x6067   # a mano: p00:4FD4 y p10:6026: ld hl,0x6067 / ld (0xC010),hl (los tres canales en reposo)
+0x608A   # a mano: p10:607F: ld de,0x608A / ld (hl),e / inc hl / ld (hl),d en 0xC010+2n (el canal que acaba se queda en un `ret`)
+0x60ED   # a mano: p00:5171: ld hl,0x60ED / ld (0xC018),hl (lo que salta p10:608B)
+0x60F4   # a mano: p00:507B: ld hl,0x60F4 / ld (0xC010),hl (canal A de la musica)
+0x60FB   # a mano: p00:5081: ld hl,0x60FB / ld (0xC012),hl (canal B)
+0x6102   # a mano: p00:5087: ld hl,0x6102 / ld (0xC014),hl (canal C)
+0x61BE   # a mano, codigo huerfano: nadie salta a 0x61BE (ni una constante 0x61BE en los 128 KB); es la mitad del vibrato que no se usa (sube o baja el tono de (ix+17/18) y lo escribe con 0x608F)
+0x6449   # a mano: p00:50EE: ld hl,0x6449 / ld (0xC016),hl (efecto de sonido)

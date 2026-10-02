@@ -1,0 +1,11 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x833A caracteres_2_cola  los caracteres de 8x8 a 4 bits del juego de graficos 2, en rle (p00:4AA7 los deja en 0xD000 y p00:4ABA los sube a la VRAM) (sigue del banco anterior, 0x7826); lo leen p00:4AA7 (826 bytes)
+F 0x8000 16
+D 0x833A 0x8F5A caracteres_3  los caracteres de 8x8 a 4 bits del juego de graficos 3, en rle (p00:4AA7 los deja en 0xD000 y p00:4ABA los sube a la VRAM); lo leen p00:4AA7 (3104 bytes)
+F 0x833A 16
+D 0x8F5A 0x9BF3 caracteres_4  los caracteres de 8x8 a 4 bits del juego de graficos 4, en rle (p00:4AA7 los deja en 0xD000 y p00:4ABA los sube a la VRAM); lo leen p00:4AA7 (3225 bytes)
+F 0x8F5A 16
+D 0x9BF3 0xA000 caracteres_5  los caracteres de 8x8 a 4 bits del juego de graficos 5, en rle (p00:4AA7 los deja en 0xD000 y p00:4ABA los sube a la VRAM); lo leen p00:4AA7 (1037 bytes)
+F 0x9BF3 16
+# --- fin de los bloques de bloques.py ---

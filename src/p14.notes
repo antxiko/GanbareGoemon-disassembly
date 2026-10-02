@@ -1,0 +1,109 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x82F2 bloques_4_cola  los bloques de 4x4 caracteres del juego de graficos 4, en rle (sigue del banco anterior, 0x7EE7); lo leen p00:42BD (754 bytes)
+F 0x8000 16
+D 0x82F2 0x86CC bloques_5  los bloques de 4x4 caracteres del juego de graficos 5, en rle; lo leen p00:42BD (986 bytes)
+F 0x82F2 16
+D 0x86CC 0x8BA6 bloques_2  los bloques de 4x4 caracteres del juego de graficos 2, en rle; lo leen p00:42BD (1242 bytes)
+F 0x86CC 16
+D 0x8BA6 0x8EDD bloques_3  los bloques de 4x4 caracteres del juego de graficos 3, en rle; lo leen p00:42BD (823 bytes)
+F 0x8BA6 16
+D 0x8EDD 0x8F9D bloques_8EDD  los 12 bloques que usa la pantalla del estado 8, 16 bytes cada uno (p00:52A6..52B5); lo leen p00:526D (192 bytes)
+F 0x8EDD 16
+D 0x8F9D 0x9C6D bloques_8F9D  los 205 bloques que usa la pantalla del estado 0x0B (8 filas de bloques), 16 bytes cada uno (p00:52A6..52B5); se solapan 8 bloques (0x8F9D-0x9C6D, 0x929D-0x9725, 0x9725-0x9775, 0x9775-0x97D5, 0x9BF0-0x9C52, 0x9C52-0x9C5E); lo leen p00:4A79, p00:4A85, p00:4A90, p00:5272, p00:5B70, zona 1-0, zona 1-1, zona 1-2 (3280 bytes)
+F 0x8F9D 16
+D 0x9C6D 0x9C77 figuras_9C6D  el conjunto de figuras de cada una de las 20 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 1-3 (10 bytes)
+F 0x9C6D 16
+D 0x9C77 0x9C84 figuras_9C77  el conjunto de figuras de cada una de las 26 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 1-4 (13 bytes)
+F 0x9C77 16
+D 0x9C84 0x9C97 figuras_9C84  el conjunto de figuras de cada una de las 38 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 1-5 (19 bytes)
+F 0x9C84 16
+D 0x9C97 0x9CB8 figuras_9C97  el conjunto de figuras de cada una de las 66 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 1-6 (33 bytes)
+F 0x9C97 16
+D 0x9CB8 0x9CC0 figuras_9CB8  el conjunto de figuras de cada una de las 16 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-0 (8 bytes)
+F 0x9CB8 16
+D 0x9CC0 0x9CCA figuras_9CC0  el conjunto de figuras de cada una de las 20 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-1 (10 bytes)
+F 0x9CC0 16
+D 0x9CCA 0x9CD6 figuras_9CCA  el conjunto de figuras de cada una de las 24 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-2 (12 bytes)
+F 0x9CCA 16
+D 0x9CD6 0x9CDF figuras_9CD6  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-3 (9 bytes)
+F 0x9CD6 16
+D 0x9CDF 0x9CE9 figuras_9CDF  el conjunto de figuras de cada una de las 20 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-4 (10 bytes)
+F 0x9CDF 16
+D 0x9CE9 0x9CFC figuras_9CE9  el conjunto de figuras de cada una de las 38 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-5 (19 bytes)
+F 0x9CE9 16
+D 0x9CFC 0x9D1F figuras_9CFC  el conjunto de figuras de cada una de las 70 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 2-6 (35 bytes)
+F 0x9CFC 16
+D 0x9D1F 0x9D30 figuras_9D1F  el conjunto de figuras de cada una de las 34 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-0 (17 bytes)
+F 0x9D1F 16
+D 0x9D30 0x9D39 figuras_9D30  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-1 (9 bytes)
+F 0x9D30 16
+D 0x9D39 0x9D42 figuras_9D39  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-2 (9 bytes)
+F 0x9D39 16
+D 0x9D42 0x9D4B figuras_9D42  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-3 (9 bytes)
+F 0x9D42 16
+D 0x9D4B 0x9D57 figuras_9D4B  el conjunto de figuras de cada una de las 24 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-4 (12 bytes)
+F 0x9D4B 16
+D 0x9D57 0x9D6D figuras_9D57  el conjunto de figuras de cada una de las 44 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-5 (22 bytes)
+F 0x9D57 16
+D 0x9D6D 0x9D95 figuras_9D6D  el conjunto de figuras de cada una de las 80 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 3-6 (40 bytes)
+F 0x9D6D 16
+D 0x9D95 0x9DA3 figuras_9D95  el conjunto de figuras de cada una de las 28 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-0 (14 bytes)
+F 0x9D95 16
+D 0x9DA3 0x9DAC figuras_9DA3  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-1 (9 bytes)
+F 0x9DA3 16
+D 0x9DAC 0x9DB7 figuras_9DAC  el conjunto de figuras de cada una de las 22 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-2 (11 bytes)
+F 0x9DAC 16
+D 0x9DB7 0x9DC6 figuras_9DB7  el conjunto de figuras de cada una de las 30 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-3 (15 bytes)
+F 0x9DB7 16
+D 0x9DC6 0x9DD5 figuras_9DC6  el conjunto de figuras de cada una de las 30 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-4 (15 bytes)
+F 0x9DC6 16
+D 0x9DD5 0x9DE8 figuras_9DD5  el conjunto de figuras de cada una de las 38 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-5 (19 bytes)
+F 0x9DD5 16
+D 0x9DE8 0x9E09 figuras_9DE8  el conjunto de figuras de cada una de las 66 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 4-6 (33 bytes)
+F 0x9DE8 16
+D 0x9E09 0x9E18 figuras_9E09  el conjunto de figuras de cada una de las 30 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-0 (15 bytes)
+F 0x9E09 16
+D 0x9E18 0x9E24 figuras_9E18  el conjunto de figuras de cada una de las 24 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-1 (12 bytes)
+F 0x9E18 16
+D 0x9E24 0x9E2F figuras_9E24  el conjunto de figuras de cada una de las 22 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-2 (11 bytes)
+F 0x9E24 16
+D 0x9E2F 0x9E37 figuras_9E2F  el conjunto de figuras de cada una de las 16 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-3 (8 bytes)
+F 0x9E2F 16
+D 0x9E37 0x9E40 figuras_9E37  el conjunto de figuras de cada una de las 18 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-4 (9 bytes)
+F 0x9E37 16
+D 0x9E40 0x9E53 figuras_9E40  el conjunto de figuras de cada una de las 38 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-5 (19 bytes)
+F 0x9E40 16
+D 0x9E53 0x9E76 figuras_9E53  el conjunto de figuras de cada una de las 70 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 5-6 (35 bytes)
+F 0x9E53 16
+D 0x9E76 0x9E81 figuras_9E76  el conjunto de figuras de cada una de las 22 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-0 (11 bytes)
+F 0x9E76 16
+D 0x9E81 0x9E92 figuras_9E81  el conjunto de figuras de cada una de las 34 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-1 (17 bytes)
+F 0x9E81 16
+D 0x9E92 0x9EA1 figuras_9E92  el conjunto de figuras de cada una de las 30 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-2 (15 bytes)
+F 0x9E92 16
+D 0x9EA1 0x9EAB figuras_9EA1  el conjunto de figuras de cada una de las 20 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-3 (10 bytes)
+F 0x9EA1 16
+D 0x9EAB 0x9EBA figuras_9EAB  el conjunto de figuras de cada una de las 30 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-4 (15 bytes)
+F 0x9EAB 16
+D 0x9EBA 0x9ED0 figuras_9EBA  el conjunto de figuras de cada una de las 44 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-5 (22 bytes)
+F 0x9EBA 16
+D 0x9ED0 0x9EF1 figuras_9ED0  el conjunto de figuras de cada una de las 66 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 6-6 (33 bytes)
+F 0x9ED0 16
+D 0x9EF1 0x9EFD figuras_9EF1  el conjunto de figuras de cada una de las 24 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-0 (12 bytes)
+F 0x9EF1 16
+D 0x9EFD 0x9F05 figuras_9EFD  el conjunto de figuras de cada una de las 16 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-1 (8 bytes)
+F 0x9EFD 16
+D 0x9F05 0x9F10 figuras_9F05  el conjunto de figuras de cada una de las 22 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-2 (11 bytes)
+F 0x9F05 16
+D 0x9F10 0x9F21 figuras_9F10  el conjunto de figuras de cada una de las 34 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-3 (17 bytes)
+F 0x9F10 16
+D 0x9F21 0x9F31 figuras_9F21  el conjunto de figuras de cada una de las 32 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-4 (16 bytes)
+F 0x9F21 16
+D 0x9F31 0x9F4E figuras_9F31  el conjunto de figuras de cada una de las 58 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-5 (29 bytes)
+F 0x9F31 16
+D 0x9F4E 0x9F76 figuras_9F4E  el conjunto de figuras de cada una de las 80 casillas de la zona, medio byte cada una (nibble alto la par); varias zonas la comparten; lo leen zona 7-6 (40 bytes)
+F 0x9F4E 16
+D 0x9F76 0xA000 rle_9F76  rle a la VRAM (0x4539); lo leen p00:5402 (138 bytes)
+F 0x9F76 16
+# --- fin de los bloques de bloques.py ---
