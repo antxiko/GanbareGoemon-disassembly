@@ -162,6 +162,12 @@ test:
 # cartucho (ninguna es una captura), y su cotejo contra los volcados de
 # openMSX de work/ (tools/lanza_*.sh los hacen, un emulador cada vez).
 imagenes: $(ROM)
+	$(PYIMG) tools/titulo.py
+	$(PYIMG) tools/figuras.py
+	$(PYIMG) tools/enemigos.py web
+	$(PYIMG) tools/mapas.py web
+	$(PYIMG) tools/interiores.py
+	$(PYIMG) tools/pasadizos.py web
 
 # Los cotejos que dibujan necesitan PIL (en esta maquina, el python de
 # Programs, no el python3 de la Store).
@@ -173,6 +179,7 @@ coteja: $(ROM)
 	$(PYIMG) tools/figuras.py coteja
 	$(PYIMG) tools/enemigos.py coteja
 	$(PYIMG) tools/interiores.py coteja
+	$(PYIMG) tools/pasadizos.py coteja
 
 # La web: las paginas se escriben en markdown y se convierten con md2html.py;
 # la portada la monta make_web.py con lo de tools/contenido_web.py.
