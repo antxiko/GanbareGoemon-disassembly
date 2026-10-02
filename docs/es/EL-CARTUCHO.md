@@ -51,12 +51,12 @@ RAM (0xF0F1-0xF0F3).
 | 0 | 6.703 B | el arranque, la interrupción, los estados del juego, los lectores de datos (rle, dibujos, letras, HMMC, paletas, rótulos), el montaje y la pintada de la pantalla, el marcador; las listas de color de las figuras |
 | 1 | 7.439 B | la partida: la carga de la zona, el jugador y sus choques, la pausa, la contraseña, los finales; las marcas del Game Master y de Q\*bert, el guion de la demo |
 | 2 | 6.087 B | las figuras (crear, mover, sus sprites), los interiores y sus precios (0x9371), los pasadizos, el final de fase y sus textos |
-| 3 | 7.181 B | cada tipo de figura, las compras, los dados, el laberinto, las palabras de la pausa y las claves; la marca de Konami |
+| 3 | 7.181 B | cada tipo de figura, las compras, los dados, los pasadizos secretos, las palabras de la pausa y las claves; la marca de Konami |
 | 4, 5 | — | los caracteres de los seis juegos de gráficos, en rle |
 | 6 | — | los enlaces de las 49 zonas, las tablas del teclado, el dibujo del título |
 | 7 | — | los dibujos que comparten todos los juegos y los del marcador |
 | 8 | — | los sprites de las 20 poses de Goemon y de Ebisumaru |
-| 9 | — | las salidas de cada zona, los planos de las zonas (0xA575), las paletas, las poses de las figuras, el juego de gráficos de cada zona (0xB8EC) y el dinero de cada tipo (0xB86D) |
+| 9 | — | las salidas de cada zona, los pasadizos secretos (0xA575 y 0xA86D), las paletas, las poses de las figuras, el juego de gráficos de cada zona (0xB8EC) y el dinero de cada tipo (0xB86D) |
 | 10 | 1.314 B | el **sonido**: 28 músicas y 32 efectos, y la rutina que lo toca |
 | 11 | — | dibujos de figuras, los 9 instrumentos y el final de una partitura del banco 10 |
 | 12 | — | 114 rótulos (0xA9C0), las fichas de figura (0xA830) y de pose, las frases del final (0xBCD3) |
@@ -101,6 +101,6 @@ un cuadro antes, y los cotejos lo tienen en cuenta.
 | 0xC480 / 0xC481 | la vida máxima y la vida |
 | 0xC4B0 | el tiempo (BCD) |
 | 0xC600 | las 8 figuras, 0x80 bytes cada una |
-| 0xCDB1 | se está en el laberinto |
+| 0xCDB1 | se está en un pasadizo secreto |
 | 0xEF00 | 0xFF si está el vecino |
 | 0xEF80 | los secretos: bits 0-1 las palabras, 2-5 las claves, 6 el menú |

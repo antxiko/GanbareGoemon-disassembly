@@ -30,12 +30,12 @@ texto 32: «かくしこまんど きみちゃんげんき») ya da la segunda.
 En la pausa (F1) se pueden teclear 5 letras (p03:BDF6). Cada tecla da una
 letra según la tabla del banco 6 (0xADEC, u 0xAE34 con el teclado en kana).
 
-- **おやぶん** dentro del laberinto pone el bit 0 de 0xEF80 y saca su mapa
-  (0xC27A).
+- **おやぶん** dentro de un pasadizo secreto pone el bit 0 de 0xEF80 y da su
+  mapa (0xC27A).
 - **すきやねん** fuera pone el bit 1. Con él, tocar a los tipos 8 y 0x21 da 10
   ryo además de los 1000 puntos (p01:79D1).
 
-Comprobado en openMSX tecleándolas: los dos bits y 0xC27A (el laberinto,
+Comprobado en openMSX tecleándolas: los dos bits y 0xC27A (el pasadizo,
 forzado en la RAM). Los 10 ryo están leídos en el código.
 
 ## Cambiar de opción seis veces en el título
@@ -43,7 +43,7 @@ forzado en la RAM). Los 10 ryo están leídos en el código.
 p01:634F cuenta en 0xEF81 las veces que se cambia la opción del menú. Si al
 empezar son 6 o 7, p00:5EB6 pone el bit 6 de 0xEF80 (p03:BEDD). Comprobado en
 openMSX. Lo que hace ese bit está leído en el código: con la cosa 0x0A, el
-mapa del laberinto marca la salida.
+mapa del pasadizo marca la salida con una flecha (p03:BBCD).
 
 ## F2 enseña la contraseña, F5 continúa
 

@@ -32,20 +32,20 @@ During the pause (F1) five letters can be typed (p03:BDF6). Each key gives a
 letter from the table in bank 6 (0xADEC, or 0xAE34 with the keyboard in kana
 mode).
 
-- **おやぶん** inside the maze sets bit 0 of 0xEF80 and brings up its map
-  (0xC27A).
+- **おやぶん** inside a secret passage sets bit 0 of 0xEF80 and gives its
+  map (0xC27A).
 - **すきやねん** outside it sets bit 1. With it, touching types 8 and 0x21
   gives 10 ryo on top of the 1000 points (p01:79D1).
 
-Checked in openMSX by typing them: both bits and 0xC27A (the maze forced in
+Checked in openMSX by typing them: both bits and 0xC27A (the passage forced in
 RAM). The 10 ryo are read in the code.
 
 ## Changing the option six times on the title screen
 
 p01:634F counts in 0xEF81 how many times the menu option is changed. If it is
 6 or 7 when the game starts, p00:5EB6 sets bit 6 of 0xEF80 (p03:BEDD). Checked
-in openMSX. What that bit does is read in the code: with item 0x0A, the maze
-map marks the exit.
+in openMSX. What that bit does is read in the code: with item 0x0A, the passage
+map marks the exit with an arrow (p03:BBCD).
 
 ## F2 shows the password, F5 continues
 

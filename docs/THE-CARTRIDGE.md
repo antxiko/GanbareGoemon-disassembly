@@ -51,12 +51,12 @@ out puts them back from their copies in RAM (0xF0F1-0xF0F3).
 | 0 | 6,703 B | start-up, the interrupt, the game states, the data readers (rle, patterns, letters, HMMC, palettes, labels), building and painting the screen, the status bar; the figures' colour lists |
 | 1 | 7,439 B | the game: loading the area, the player and his collisions, the pause, the password, the endings; the Game Master and Q\*bert signatures, the demo script |
 | 2 | 6,087 B | the figures (creating, moving, their sprites), the interiors and their prices (0x9371), the passages, the end of the stage and its texts |
-| 3 | 7,181 B | each figure type, the purchases, the dice, the maze, the pause words and the keywords; Konami's mark |
+| 3 | 7,181 B | each figure type, the purchases, the dice, the secret passages, the pause words and the keywords; Konami's mark |
 | 4, 5 | — | the characters of the six graphics sets, in rle |
 | 6 | — | the links of the 49 areas, the keyboard tables, the title picture |
 | 7 | — | the patterns shared by every set and those of the status bar |
 | 8 | — | the sprites of the 20 poses of Goemon and Ebisumaru |
-| 9 | — | the exits of each area, the area maps (0xA575), the palettes, the figure poses, each area's graphics set (0xB8EC) and the money of each type (0xB86D) |
+| 9 | — | the exits of each area, the secret passages (0xA575 and 0xA86D), the palettes, the figure poses, each area's graphics set (0xB8EC) and the money of each type (0xB86D) |
 | 10 | 1,314 B | the **sound**: 28 tunes and 32 effects, and the routine that plays them |
 | 11 | — | figure patterns, the 9 instruments and the end of a score from bank 10 |
 | 12 | — | 114 labels (0xA9C0), the figure (0xA830) and pose records, the ending sentences (0xBCD3) |
@@ -101,6 +101,6 @@ one frame earlier, and the comparisons allow for it.
 | 0xC480 / 0xC481 | maximum life and life |
 | 0xC4B0 | the timer (BCD) |
 | 0xC600 | the 8 figures, 0x80 bytes each |
-| 0xCDB1 | inside the maze |
+| 0xCDB1 | inside a secret passage |
 | 0xEF00 | 0xFF if the neighbour is there |
 | 0xEF80 | the secrets: bits 0-1 the words, 2-5 the keywords, 6 the menu |

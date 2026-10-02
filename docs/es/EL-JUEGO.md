@@ -137,6 +137,48 @@ La tabla entera, con las tres clases y los cuatro tramos (en ryo):
 | 2, 2 | 150 | 100 | 300 | 300 | 250 | 250 | 250 | 600 | 600 | 2000 | 150 | 100 | 300 | 0 | 600 | 580 |
 | 2, 3 | 250 | 200 | 700 | 700 | 500 | 500 | 500 | 1000 | 1500 | 2000 | 250 | 200 | 700 | 0 | 800 | 780 |
 
+## Los pasadizos secretos
+
+![El pasadizo de la zona 1-0](../imagenes/pasadizo_1_0.png)
+
+*El mapa del pasadizo de la zona 1-0, como lo enseña el juego (p03:BB1B): cada
+casilla es una pieza de 8 × 8, y Goemon, arriba a la izquierda, está donde se
+empieza.*
+
+En cada zona, menos en la 5 de cada fase, el interior 16 ofrece llevarte «al
+pasadizo secreto del fondo». Son **42 pasadizos**, hechos con **16 dibujos**
+(0xA86D) que se repiten con lo de dentro en otro sitio (0xA575). Se recorren
+en primera persona: arriba avanza, izquierda y derecha giran, y abajo da media
+vuelta (p03:B8C3).
+
+- **La entrada** cuesta 900 ryo, o el precio de la cosa 15 si se lleva la
+  cosa 0x0A (p02:92E3). Cada vez que se entra en la misma zona, cuesta el
+  doble. Ya pagada, se entra pulsando arriba en el fondo del interior
+  (p01:7D0D).
+- **Dentro** hay 200 ryo, una cosa 9 más, el mapa, una vida y la salida
+  (p03:BC5C). Cada cosa se coge una vez, y vuelven al volver a la zona.
+- **El mapa**, si se ha cogido, lo enseña el botón. No pinta ni el mapa ni la
+  vida, y la salida solo con el secreto del menú (ver
+  [Hallazgos](HALLAZGOS.md)).
+- **La salida** da 10000 puntos la primera vez en la zona y te deja en la
+  calle, delante de la puerta.
+
+Los 42 están cotejados contra openMSX: la rejilla de 0xD800, el mapa punto a
+punto y la paleta.
+
+| Fase | Zona 0 | 1 | 2 | 3 | 4 | 6 |
+|---|---|---|---|---|---|---|
+| 1 | [2](../imagenes/pasadizo_1_0.png) | [4](../imagenes/pasadizo_1_1.png) | [11](../imagenes/pasadizo_1_2.png) | [18](../imagenes/pasadizo_1_3.png) | [19](../imagenes/pasadizo_1_4.png) | [26](../imagenes/pasadizo_1_6.png) |
+| 2 | [6](../imagenes/pasadizo_2_0.png) | [13](../imagenes/pasadizo_2_1.png) | [22](../imagenes/pasadizo_2_2.png) | [16](../imagenes/pasadizo_2_3.png) | [8](../imagenes/pasadizo_2_4.png) | [51](../imagenes/pasadizo_2_6.png) |
+| 3 | [13](../imagenes/pasadizo_3_0.png) | [15](../imagenes/pasadizo_3_1.png) | [7](../imagenes/pasadizo_3_2.png) | [8](../imagenes/pasadizo_3_3.png) | [16](../imagenes/pasadizo_3_4.png) | [3](../imagenes/pasadizo_3_6.png) |
+| 4 | [19](../imagenes/pasadizo_4_0.png) | [9](../imagenes/pasadizo_4_1.png) | [6](../imagenes/pasadizo_4_2.png) | [24](../imagenes/pasadizo_4_3.png) | [28](../imagenes/pasadizo_4_4.png) | [44](../imagenes/pasadizo_4_6.png) |
+| 5 | [10](../imagenes/pasadizo_5_0.png) | [20](../imagenes/pasadizo_5_1.png) | [12](../imagenes/pasadizo_5_2.png) | [4](../imagenes/pasadizo_5_3.png) | [15](../imagenes/pasadizo_5_4.png) | [54](../imagenes/pasadizo_5_6.png) |
+| 6 | [20](../imagenes/pasadizo_6_0.png) | [27](../imagenes/pasadizo_6_1.png) | [20](../imagenes/pasadizo_6_2.png) | [7](../imagenes/pasadizo_6_3.png) | [24](../imagenes/pasadizo_6_4.png) | [22](../imagenes/pasadizo_6_6.png) |
+| 7 | [13](../imagenes/pasadizo_7_0.png) | [10](../imagenes/pasadizo_7_1.png) | [14](../imagenes/pasadizo_7_2.png) | [21](../imagenes/pasadizo_7_3.png) | [24](../imagenes/pasadizo_7_4.png) | [0](../imagenes/pasadizo_7_6.png) |
+
+*La casilla del interior 16 en cada zona; cada número lleva al mapa de su
+pasadizo.*
+
 ## La contraseña
 
 Son 9 caracteres. A cada uno se le resta 0x30, se desordenan con la clave de

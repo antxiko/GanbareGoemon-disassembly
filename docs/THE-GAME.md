@@ -137,6 +137,47 @@ The whole table, with the three classes and the four bands (in ryo):
 | 2, 2 | 150 | 100 | 300 | 300 | 250 | 250 | 250 | 600 | 600 | 2000 | 150 | 100 | 300 | 0 | 600 | 580 |
 | 2, 3 | 250 | 200 | 700 | 700 | 500 | 500 | 500 | 1000 | 1500 | 2000 | 250 | 200 | 700 | 0 | 800 | 780 |
 
+## The secret passages
+
+![The passage of area 1-0](imagenes/pasadizo_1_0.png)
+
+*The map of the passage in area 1-0, as the game shows it (p03:BB1B): each
+cell is an 8 × 8 piece, and Goemon, top left, is where you start.*
+
+In every area except area 5 of each stage, interior 16 offers to take you "to
+the secret passage at the back". There are **42 passages**, made from **16
+drawings** (0xA86D) that repeat with what is inside in other places (0xA575).
+They are walked in first person: up moves forward, left and right turn, and
+down turns around (p03:B8C3).
+
+- **Entry** costs 900 ryo, or the price of item 15 if you carry item 0x0A
+  (p02:92E3). Each time you enter in the same area, it costs double. Once
+  paid, you go in by pressing up at the back of the interior (p01:7D0D).
+- **Inside** there are 200 ryo, one more item 9, the map, a life and the exit
+  (p03:BC5C). Each thing is picked up once, and they come back when you
+  return to the area.
+- **The map**, if you have picked it up, is shown by the button. It draws
+  neither the map nor the life, and the exit only with the menu secret (see
+  [Findings](FINDINGS.md)).
+- **The exit** gives 10000 points the first time in the area and leaves you
+  in the street, in front of the door.
+
+All 42 are checked against openMSX: the grid at 0xD800, the map pixel by
+pixel and the palette.
+
+| Stage | Area 0 | 1 | 2 | 3 | 4 | 6 |
+|---|---|---|---|---|---|---|
+| 1 | [2](imagenes/pasadizo_1_0.png) | [4](imagenes/pasadizo_1_1.png) | [11](imagenes/pasadizo_1_2.png) | [18](imagenes/pasadizo_1_3.png) | [19](imagenes/pasadizo_1_4.png) | [26](imagenes/pasadizo_1_6.png) |
+| 2 | [6](imagenes/pasadizo_2_0.png) | [13](imagenes/pasadizo_2_1.png) | [22](imagenes/pasadizo_2_2.png) | [16](imagenes/pasadizo_2_3.png) | [8](imagenes/pasadizo_2_4.png) | [51](imagenes/pasadizo_2_6.png) |
+| 3 | [13](imagenes/pasadizo_3_0.png) | [15](imagenes/pasadizo_3_1.png) | [7](imagenes/pasadizo_3_2.png) | [8](imagenes/pasadizo_3_3.png) | [16](imagenes/pasadizo_3_4.png) | [3](imagenes/pasadizo_3_6.png) |
+| 4 | [19](imagenes/pasadizo_4_0.png) | [9](imagenes/pasadizo_4_1.png) | [6](imagenes/pasadizo_4_2.png) | [24](imagenes/pasadizo_4_3.png) | [28](imagenes/pasadizo_4_4.png) | [44](imagenes/pasadizo_4_6.png) |
+| 5 | [10](imagenes/pasadizo_5_0.png) | [20](imagenes/pasadizo_5_1.png) | [12](imagenes/pasadizo_5_2.png) | [4](imagenes/pasadizo_5_3.png) | [15](imagenes/pasadizo_5_4.png) | [54](imagenes/pasadizo_5_6.png) |
+| 6 | [20](imagenes/pasadizo_6_0.png) | [27](imagenes/pasadizo_6_1.png) | [20](imagenes/pasadizo_6_2.png) | [7](imagenes/pasadizo_6_3.png) | [24](imagenes/pasadizo_6_4.png) | [22](imagenes/pasadizo_6_6.png) |
+| 7 | [13](imagenes/pasadizo_7_0.png) | [10](imagenes/pasadizo_7_1.png) | [14](imagenes/pasadizo_7_2.png) | [21](imagenes/pasadizo_7_3.png) | [24](imagenes/pasadizo_7_4.png) | [0](imagenes/pasadizo_7_6.png) |
+
+*The cell of interior 16 in each area; each number links to the map of its
+passage.*
+
 ## The password
 
 It is 9 characters. 0x30 is subtracted from each, they are shuffled with the
