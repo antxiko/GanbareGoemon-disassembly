@@ -1,0 +1,133 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El juego — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html" style=color:var(--tinta)>El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../THE-GAME.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="el-juego">El juego</h1>
+<p>Goemon (o Ebisumaru, el jugador 2) cruza <b>7 fases de 7 zonas</b>: <b>49 zonas y 1608 pantallas</b> (las casillas). En cada fase, las zonas 0 a 4 son calles y campo, la 5 son murallas y la 6 es el interior de un castillo, la más grande (de 66 a 80 casillas).</p>
+<p>Todas las imágenes de esta página están <b>dibujadas desde los bytes de la ROM</b> con las herramientas de <code>tools/</code>, que siguen los pasos del propio cartucho, y cotejadas contra volcados de openMSX (<code>C-BIOS_MSX2_JP</code>). Debajo de cada una se dice de qué tabla sale.</p>
+<h2 id="la-pantalla-de-titulo">La pantalla de título</h2>
+<p><img src="../imagenes/konami.png" alt="El logotipo de Konami"></p>
+<p><img src="../imagenes/titulo.png" alt="La pantalla de título"></p>
+<p>El menú tiene dos opciones, uno o dos jugadores, y los dos juegan por turnos. El segundo botón lleva a la pantalla de la contraseña (estado 0x0E). El logotipo y el título coinciden con openMSX sin un punto distinto (<code>titulo.py coteja</code>). Con Q\*bert o el Game Master en la otra ranura, el título saca otro menú: está en <a href="HALLAZGOS.html">Hallazgos</a>.</p>
+<h2 id="las-49-zonas">Las 49 zonas</h2>
+<p><img src="../imagenes/zona_1_0.png" alt="La zona 0 de la fase 1"></p>
+<p><em>La zona 0 de la fase 1. Cada fila es una <b>calle</b>: casillas seguidas de izquierda a derecha (p00:4188). Debajo de cada casilla, las flechas dicen a qué casilla llevan sus salidas de arriba y de abajo (0xB7D0). La flecha azul de la derecha marca una calle que vuelve a empezar.</em></p>
+<p>Las salidas de arriba y de abajo no son geométricas: en esta zona, subir desde la casilla 3 lleva a la 4, que también está a su derecha. Por eso los planos van por calles y no en rejilla. Las figuras que se mueven no se pintan, porque dependen de la partida; las cosas fijas (0xA08E), sí. Las 49 entradas de zona están cotejadas contra openMSX (pantalla, caracteres y paleta).</p>
+<table><tr><th>Fase</th><th>Zona 0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr><tr><td>1</td><td><a href="../imagenes/zona_1_0.png">24</a></td><td><a href="../imagenes/zona_1_1.png">14</a></td><td><a href="../imagenes/zona_1_2.png">16</a></td><td><a href="../imagenes/zona_1_3.png">20</a></td><td><a href="../imagenes/zona_1_4.png">26</a></td><td><a href="../imagenes/zona_1_5.png">38</a></td><td><a href="../imagenes/zona_1_6.png">66</a></td></tr><tr><td>2</td><td><a href="../imagenes/zona_2_0.png">16</a></td><td><a href="../imagenes/zona_2_1.png">20</a></td><td><a href="../imagenes/zona_2_2.png">24</a></td><td><a href="../imagenes/zona_2_3.png">18</a></td><td><a href="../imagenes/zona_2_4.png">20</a></td><td><a href="../imagenes/zona_2_5.png">38</a></td><td><a href="../imagenes/zona_2_6.png">70</a></td></tr><tr><td>3</td><td><a href="../imagenes/zona_3_0.png">34</a></td><td><a href="../imagenes/zona_3_1.png">18</a></td><td><a href="../imagenes/zona_3_2.png">18</a></td><td><a href="../imagenes/zona_3_3.png">18</a></td><td><a href="../imagenes/zona_3_4.png">24</a></td><td><a href="../imagenes/zona_3_5.png">44</a></td><td><a href="../imagenes/zona_3_6.png">80</a></td></tr><tr><td>4</td><td><a href="../imagenes/zona_4_0.png">28</a></td><td><a href="../imagenes/zona_4_1.png">18</a></td><td><a href="../imagenes/zona_4_2.png">22</a></td><td><a href="../imagenes/zona_4_3.png">30</a></td><td><a href="../imagenes/zona_4_4.png">30</a></td><td><a href="../imagenes/zona_4_5.png">38</a></td><td><a href="../imagenes/zona_4_6.png">66</a></td></tr><tr><td>5</td><td><a href="../imagenes/zona_5_0.png">30</a></td><td><a href="../imagenes/zona_5_1.png">24</a></td><td><a href="../imagenes/zona_5_2.png">22</a></td><td><a href="../imagenes/zona_5_3.png">16</a></td><td><a href="../imagenes/zona_5_4.png">18</a></td><td><a href="../imagenes/zona_5_5.png">38</a></td><td><a href="../imagenes/zona_5_6.png">70</a></td></tr><tr><td>6</td><td><a href="../imagenes/zona_6_0.png">22</a></td><td><a href="../imagenes/zona_6_1.png">34</a></td><td><a href="../imagenes/zona_6_2.png">30</a></td><td><a href="../imagenes/zona_6_3.png">20</a></td><td><a href="../imagenes/zona_6_4.png">30</a></td><td><a href="../imagenes/zona_6_5.png">44</a></td><td><a href="../imagenes/zona_6_6.png">66</a></td></tr><tr><td>7</td><td><a href="../imagenes/zona_7_0.png">24</a></td><td><a href="../imagenes/zona_7_1.png">16</a></td><td><a href="../imagenes/zona_7_2.png">22</a></td><td><a href="../imagenes/zona_7_3.png">34</a></td><td><a href="../imagenes/zona_7_4.png">32</a></td><td><a href="../imagenes/zona_7_5.png">58</a></td><td><a href="../imagenes/zona_7_6.png">80</a></td></tr></table>
+<p><em>Casillas de cada zona (primer byte de su ficha, 0xB7D0); cada número lleva a su plano.</em></p>
+<h2 id="una-pantalla">Una pantalla</h2>
+<p>Una casilla son <b>8 × 6 bloques de 4 × 4 caracteres</b> (p00:5275). Se monta en 0xD800 y se pinta carácter a carácter con HMMM, de la página 1 a la 0 (p00:534E), en SCREEN 5. Cada zona tiene su juego de gráficos (0xB8EC, seis en total) con sus caracteres y su paleta: la base (0xA3E6), la del juego (0xA37A) y unos colores del sitio que cambian algunas salidas (0xA4C5).</p>
+<h2 id="goemon-y-ebisumaru">Goemon y Ebisumaru</h2>
+<p><img src="../imagenes/goemon.png" alt="Goemon"></p>
+<p><img src="../imagenes/ebisumaru.png" alt="Ebisumaru"></p>
+<p><em>Las 20 poses de cada uno: dibujos, sprites y colores cotejados con la pose de cada volcado.</em></p>
+<p>La vida empieza en 0x10 (0x20 con una de las claves), y el tiempo corre en BCD (0xC4B0). Por debajo de 50 segundos suena la música de las prisas (p01:714E).</p>
+<h2 id="los-enemigos">Los enemigos</h2>
+<p><img src="../imagenes/enemigos.png" alt="Los enemigos"></p>
+<p><em>Los 30 tipos que salen en las casillas, con la pose base y las tres siguientes (0xAA51), cada uno con la paleta de la primera zona donde sale.</em></p>
+<p>Cada casilla tiene un conjunto de figuras: un nibble en la tabla de su zona (0x9BF0) elige una lista en la tabla de su juego de gráficos (0x5BB2). Las listas coinciden con las figuras de los 49 volcados. Cuando el golpe le da, cada tipo suma el dinero de 0xB86D (5, 10 o 20 ryo, o nada), salvo los tipos 8 y 0x21, que cuestan 50 ryo; tocarlos, en cambio, da 1000 puntos (p01:79C8). Hay 107 figuras de los volcados cotejadas a cero.</p>
+<p>Los tipos 0x12 y 0x1D no salen en las casillas: son figuras de la escena del final de fase (p02:9AA6, p02:9B6E).</p>
+<h2 id="los-interiores">Los interiores</h2>
+<p><img src="../imagenes/interior_00.png" alt="Un interior"></p>
+<p>Hay <b>21 interiores</b> (0x9567); cada uno tiene sus figuras y lo que vende.</p>
+<ul><li><b>0 a 15:</b> tiendas.</li><li><b>16:</b> por 900 ryo te lleva a un pasadizo secreto.</li><li><b>17:</b> los dados.</li><li><b>18:</b> pregunta si te quedas a dormir, y llena la vida.</li><li><b>19:</b> echa a quien no lleva la carta del jefe.</li><li><b>20:</b> da consejos.</li></ul>
+<p>Los 21 están dibujados y cotejados a cero contra openMSX, y los de las tiendas también abiertos.</p>
+<p>Los precios (0x9371) dependen de tres cosas:</p>
+<ul><li><b>La clase de tienda</b>, que sale del juego de gráficos de la zona.</li><li><b>Lo avanzado de la partida</b>, en cuatro tramos: hasta la zona 9, de la 10 a la 19, de la 20 a la 39, y de la 40 en adelante.</li><li><b>Cuántas veces has comprado la cosa</b> en esa zona: cada compra dobla el precio (p02:930C).</li></ul>
+<table><tr><th>Cosa</th><th>Lo que hace (0xADEB)</th><th>Precio, clase 0, tramo 0</th></tr><tr><td>1, 10</td><td>una más, hasta 3</td><td>30, 150</td></tr><tr><td>2, 8</td><td>la tienes</td><td>20, 120</td></tr><tr><td>3–7</td><td>cinco golpes</td><td>50</td></tr><tr><td>9</td><td>100 segundos</td><td>40</td></tr><tr><td>11 / 12</td><td>16 / 8 de vida</td><td>30 / 20</td></tr><tr><td>13</td><td>200 segundos más</td><td>50</td></tr></table>
+<p>La tabla entera, con las tres clases y los cuatro tramos (en ryo):</p>
+<table><tr><th>Clase, tramo</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr><tr><td>0, 0</td><td>30</td><td>20</td><td>50</td><td>50</td><td>50</td><td>50</td><td>50</td><td>120</td><td>40</td><td>150</td><td>30</td><td>20</td><td>50</td><td>5</td><td>50</td><td>100</td></tr><tr><td>0, 1</td><td>60</td><td>40</td><td>100</td><td>100</td><td>100</td><td>100</td><td>100</td><td>250</td><td>180</td><td>300</td><td>60</td><td>40</td><td>100</td><td>0</td><td>150</td><td>240</td></tr><tr><td>0, 2</td><td>90</td><td>60</td><td>280</td><td>280</td><td>300</td><td>300</td><td>300</td><td>400</td><td>440</td><td>800</td><td>90</td><td>60</td><td>280</td><td>0</td><td>500</td><td>420</td></tr><tr><td>0, 3</td><td>120</td><td>100</td><td>600</td><td>600</td><td>400</td><td>400</td><td>400</td><td>500</td><td>600</td><td>1500</td><td>120</td><td>100</td><td>600</td><td>0</td><td>700</td><td>620</td></tr><tr><td>1, 0</td><td>30</td><td>20</td><td>40</td><td>40</td><td>50</td><td>50</td><td>50</td><td>150</td><td>50</td><td>150</td><td>30</td><td>20</td><td>40</td><td>0</td><td>50</td><td>100</td></tr><tr><td>1, 1</td><td>60</td><td>40</td><td>80</td><td>80</td><td>150</td><td>150</td><td>150</td><td>300</td><td>160</td><td>400</td><td>60</td><td>40</td><td>80</td><td>0</td><td>200</td><td>280</td></tr><tr><td>1, 2</td><td>90</td><td>60</td><td>250</td><td>250</td><td>400</td><td>400</td><td>400</td><td>500</td><td>1200</td><td>700</td><td>90</td><td>60</td><td>250</td><td>0</td><td>500</td><td>400</td></tr><tr><td>1, 3</td><td>150</td><td>120</td><td>420</td><td>420</td><td>600</td><td>600</td><td>600</td><td>800</td><td>1200</td><td>1200</td><td>150</td><td>120</td><td>420</td><td>0</td><td>700</td><td>520</td></tr><tr><td>2, 0</td><td>50</td><td>30</td><td>80</td><td>80</td><td>50</td><td>50</td><td>50</td><td>400</td><td>100</td><td>2000</td><td>50</td><td>30</td><td>80</td><td>0</td><td>50</td><td>100</td></tr><tr><td>2, 1</td><td>100</td><td>60</td><td>150</td><td>150</td><td>100</td><td>100</td><td>100</td><td>500</td><td>250</td><td>2000</td><td>100</td><td>60</td><td>150</td><td>0</td><td>200</td><td>380</td></tr><tr><td>2, 2</td><td>150</td><td>100</td><td>300</td><td>300</td><td>250</td><td>250</td><td>250</td><td>600</td><td>600</td><td>2000</td><td>150</td><td>100</td><td>300</td><td>0</td><td>600</td><td>580</td></tr><tr><td>2, 3</td><td>250</td><td>200</td><td>700</td><td>700</td><td>500</td><td>500</td><td>500</td><td>1000</td><td>1500</td><td>2000</td><td>250</td><td>200</td><td>700</td><td>0</td><td>800</td><td>780</td></tr></table>
+<h2 id="los-pasadizos-secretos">Los pasadizos secretos</h2>
+<p><img src="../imagenes/pasadizo_1_0.png" alt="El pasadizo de la zona 1-0"></p>
+<p><em>El mapa del pasadizo de la zona 1-0, como lo enseña el juego (p03:BB1B): cada casilla es una pieza de 8 × 8, y Goemon, arriba a la izquierda, está donde se empieza.</em></p>
+<p>En cada zona, menos en la 5 de cada fase, el interior 16 ofrece llevarte «al pasadizo secreto del fondo». Son <b>42 pasadizos</b>, hechos con <b>16 dibujos</b> (0xA86D) que se repiten con lo de dentro en otro sitio (0xA575). Se recorren en primera persona: arriba avanza, izquierda y derecha giran, y abajo da media vuelta (p03:B8C3).</p>
+<ul><li><b>La entrada</b> cuesta 900 ryo, o el precio de la cosa 15 si se lleva la cosa 0x0A (p02:92E3). Cada vez que se entra en la misma zona, cuesta el doble. Ya pagada, se entra pulsando arriba en el fondo del interior (p01:7D0D).</li><li><b>Dentro</b> hay 200 ryo, una cosa 9 más, el mapa, una vida y la salida (p03:BC5C). Cada cosa se coge una vez, y vuelven al volver a la zona.</li><li><b>El mapa</b>, si se ha cogido, lo enseña el botón. No pinta ni el mapa ni la vida, y la salida solo con el secreto del menú (ver <a href="HALLAZGOS.html">Hallazgos</a>).</li><li><b>La salida</b> da 10000 puntos la primera vez en la zona y te deja en la calle, delante de la puerta.</li></ul>
+<p>Los 42 están cotejados contra openMSX: la rejilla de 0xD800, el mapa punto a punto y la paleta.</p>
+<table><tr><th>Fase</th><th>Zona 0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>6</th></tr><tr><td>1</td><td><a href="../imagenes/pasadizo_1_0.png">2</a></td><td><a href="../imagenes/pasadizo_1_1.png">4</a></td><td><a href="../imagenes/pasadizo_1_2.png">11</a></td><td><a href="../imagenes/pasadizo_1_3.png">18</a></td><td><a href="../imagenes/pasadizo_1_4.png">19</a></td><td><a href="../imagenes/pasadizo_1_6.png">26</a></td></tr><tr><td>2</td><td><a href="../imagenes/pasadizo_2_0.png">6</a></td><td><a href="../imagenes/pasadizo_2_1.png">13</a></td><td><a href="../imagenes/pasadizo_2_2.png">22</a></td><td><a href="../imagenes/pasadizo_2_3.png">16</a></td><td><a href="../imagenes/pasadizo_2_4.png">8</a></td><td><a href="../imagenes/pasadizo_2_6.png">51</a></td></tr><tr><td>3</td><td><a href="../imagenes/pasadizo_3_0.png">13</a></td><td><a href="../imagenes/pasadizo_3_1.png">15</a></td><td><a href="../imagenes/pasadizo_3_2.png">7</a></td><td><a href="../imagenes/pasadizo_3_3.png">8</a></td><td><a href="../imagenes/pasadizo_3_4.png">16</a></td><td><a href="../imagenes/pasadizo_3_6.png">3</a></td></tr><tr><td>4</td><td><a href="../imagenes/pasadizo_4_0.png">19</a></td><td><a href="../imagenes/pasadizo_4_1.png">9</a></td><td><a href="../imagenes/pasadizo_4_2.png">6</a></td><td><a href="../imagenes/pasadizo_4_3.png">24</a></td><td><a href="../imagenes/pasadizo_4_4.png">28</a></td><td><a href="../imagenes/pasadizo_4_6.png">44</a></td></tr><tr><td>5</td><td><a href="../imagenes/pasadizo_5_0.png">10</a></td><td><a href="../imagenes/pasadizo_5_1.png">20</a></td><td><a href="../imagenes/pasadizo_5_2.png">12</a></td><td><a href="../imagenes/pasadizo_5_3.png">4</a></td><td><a href="../imagenes/pasadizo_5_4.png">15</a></td><td><a href="../imagenes/pasadizo_5_6.png">54</a></td></tr><tr><td>6</td><td><a href="../imagenes/pasadizo_6_0.png">20</a></td><td><a href="../imagenes/pasadizo_6_1.png">27</a></td><td><a href="../imagenes/pasadizo_6_2.png">20</a></td><td><a href="../imagenes/pasadizo_6_3.png">7</a></td><td><a href="../imagenes/pasadizo_6_4.png">24</a></td><td><a href="../imagenes/pasadizo_6_6.png">22</a></td></tr><tr><td>7</td><td><a href="../imagenes/pasadizo_7_0.png">13</a></td><td><a href="../imagenes/pasadizo_7_1.png">10</a></td><td><a href="../imagenes/pasadizo_7_2.png">14</a></td><td><a href="../imagenes/pasadizo_7_3.png">21</a></td><td><a href="../imagenes/pasadizo_7_4.png">24</a></td><td><a href="../imagenes/pasadizo_7_6.png">0</a></td></tr></table>
+<p><em>La casilla del interior 16 en cada zona; cada número lleva al mapa de su pasadizo.</em></p>
+<h2 id="la-contrasena">La contraseña</h2>
+<p>Son 9 caracteres. A cada uno se le resta 0x30, se desordenan con la clave de 0xEBC6 y llevan suma de control (p01:6C7A). Guardan la fase, el jugador, la zona, la casilla y los colores. F2 en la pausa la enseña, y la misma pantalla acepta cuatro claves (ver <a href="HALLAZGOS.html">Hallazgos</a>).</p>
+<h2 id="el-final-de-cada-fase">El final de cada fase</h2>
+<p>El señor de la fase dice su texto (0x9E0B, uno por fase) y promete gobernar mejor. El juego tiene cuatro finales distintos: están en <a href="HALLAZGOS.html">Hallazgos</a>.</p>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> lo public&oacute; Konami para MSX2 en 1987; su n&uacute;mero de cat&aacute;logo es RC-748 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservaci&oacute;n, estudio y documentaci&oacute;n, y la imagen del cartucho no se distribuye.</p></footer></div>

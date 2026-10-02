@@ -109,5 +109,5 @@ and right behind it effect 0x20 already begins (0x663A).
 - `make sanity` checks that no data is read as code and that not a single
   byte is left unassigned.
 
-Density: **42.5 %** of the 14,355 instructions carry a comment, and all 1678
+Density: **42.5%** of the 14,355 instructions carry a comment, and all 1,678
 routines are above 10 % (`make densidad`).

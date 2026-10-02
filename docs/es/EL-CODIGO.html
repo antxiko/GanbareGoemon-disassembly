@@ -1,0 +1,110 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El código — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html" style=color:var(--tinta)>El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../THE-CODE.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="el-codigo">El código</h1>
+<h2 id="todo-corre-en-la-interrupcion">Todo corre en la interrupción</h2>
+<p>INIT (0x4097) borra la RAM del juego (0xC000-0xF0EF), busca al vecino en las otras ranuras (p01:7EAB), pasa a SCREEN 5 y engancha H.TIMI. Desde ahí el programa principal se queda en un <code>jr</code> sobre sí mismo (p00:40E5), y todo el juego corre en <b>p00:4045</b>, una vez por cuadro:</p>
+<ol><li>Si está el vecino, primero la pausa de STOP (p00:40E7, 0xEF01).</li><li>El sonido, con los bancos 10, 11 y 12 puestos (p10:6000). Luego vuelven los bancos del juego desde 0xF0F1-0xF0F3.</li><li>Si el cuadro anterior ya acabó (el semáforo de 0xC005), la <b>máquina de estados</b> (p00:5DBB). La interrupción se abre antes, para que el sonido no espere al juego.</li></ol>
+<h2 id="el-despachador">El despachador</h2>
+<p>p00:408D es el despachador de Konami: la tabla de destinos va <b>pegada detrás del <code>call</code></b>. Saca de la pila la dirección de vuelta, que es la base de la tabla, y salta al destino número A. El listado marca cada una de esas tablas como datos y nombra sus destinos.</p>
+<h2 id="los-estados-del-juego">Los estados del juego</h2>
+<p>0xC000 es el estado y 0xC001 su paso (tabla de 0x5DCF):</p>
+<table><tr><th>estado</th><th>qué es</th></tr><tr><td>0</td><td>el logotipo de Konami y el título</td></tr><tr><td>1</td><td>el menú del título</td></tr><tr><td>2</td><td>la demostración</td></tr><tr><td>3</td><td>empieza la partida</td></tr><tr><td>4</td><td>la entrada en la zona</td></tr><tr><td>5</td><td>el juego</td></tr><tr><td>6</td><td>se pierde una vida</td></tr><tr><td>7</td><td>sin vidas: continuar o se acabó</td></tr><tr><td>8</td><td>la zona pasada: el tiempo a puntos y la zona siguiente</td></tr><tr><td>9</td><td>se sale de la casilla</td></tr><tr><td>0x0A</td><td>la pausa</td></tr><tr><td>0x0B</td><td>la fase pasada</td></tr><tr><td>0x0C</td><td>el menú del vecino</td></tr><tr><td>0x0D</td><td>F2 en la pausa: la contraseña</td></tr><tr><td>0x0E</td><td>la pantalla de la contraseña</td></tr><tr><td>0x0F</td><td>el final del juego</td></tr></table>
+<p>En los estados 0 a 2, cualquier tecla lleva al título (p01:62FE).</p>
+<h2 id="el-jugador">El jugador</h2>
+<p>p01:6D38 lleva al jugador un cuadro: lee los mandos y despacha por su estado (0xC490, tabla de 0x6D4C), donde 0 es en el suelo, 1 saltando y 2 muriendo. Los mandos van a 0xC006/0xC007 y F1-F3 a 0xC00B/0xC00C (p00:49D2). p01:781F dice si el jugador puede estar en un sitio: da carry si <b>no</b> puede.</p>
+<h2 id="una-casilla">Una casilla</h2>
+<p>Al entrar en una casilla, p01:66F6 hace por orden:</p>
+<ol><li>sus enlaces y sus salidas especiales;</li><li>borra las figuras;</li><li>monta la pantalla en 0xD800 (p00:51ED) y la pinta (p00:534E);</li><li>encima, las cosas fijas (p02:90C0);</li><li>pone al jugador en el punto de entrada;</li><li>sube los dibujos de las figuras de la casilla (p00:5413);</li><li>pinta el marcador y pone los colores.</li></ol>
+<h2 id="las-figuras">Las figuras</h2>
+<p>Hay 8 figuras en 0xC600, de 0x80 bytes cada una: tipo (ix+0), paso (ix+1), y (ix+3), x (ix+5), pose (ix+0x0A)… p02:8334 crea una en el primer hueco libre. Cada tipo tiene dos entradas en sus tablas: la de arranque (p02:8427) y la de cada cuadro (p02:871C), y esta despacha a su vez por el paso de la figura. Sus sprites salen de la pose (0xB6D2) y sus colores de las listas de 0x554E.</p>
+<h2 id="los-pasadizos-secretos">Los pasadizos secretos</h2>
+<p>p00:5969 monta el de la zona en 0xD800, un byte por casilla y 28 por fila, a partir de una rejilla de bits (1 pared, 0 paso) y unas marcas encima (p00:5A10). Mientras se está dentro, 0xCDB1 no es cero, y cada cuadro va a p02:9881: andar (p03:B8C3), coger lo que haya (p03:BC5C), el mapa (p03:BAF1) o la salida (p03:BD06).</p>
+<h2 id="el-sonido">El sonido</h2>
+<p>Todo está en el banco 10, y lo llama la interrupción en cada cuadro. Hay <b>28 músicas</b> (0x6592, seis bytes cada una: un puntero por canal del PSG) y <b>32 efectos</b> (0x6550). p10:61F1 lee las partituras: notas, silencios, tiempo, octava, saltos y órdenes 0xD0-0xFF (p10:6341). El tono de cada nota sale de la octava más grave (0x6303). Los 9 instrumentos y el final de una partitura están en el banco 11. Hay una música 0x9C a medias, con el primer puntero al silencio, y detrás ya empieza el efecto 0x20 (0x663A).</p>
+<h2 id="como-esta-hecho-el-listado">Cómo está hecho el listado</h2>
+<ul><li><code>tools/bancos.py</code> traza <b>el cartucho entero</b> llevando la cuenta de qué banco hay en cada hueco. De ahí salen las llamadas que cruzan el mapper (<code>src/pNN.entries</code>) y las tablas del despachador (<code>src/pNN.nocode</code>).</li><li><code>tools/z80trace.py</code> sigue el flujo de cada banco desde esas entradas.</li><li><code>tools/bloques.py</code> declara los datos recorriéndolos como los lectores del banco 0 (rle, dibujos, letras, HMMC, paletas, rótulos).</li><li><code>src/pNN.notes</code> guarda las etiquetas, los comentarios y los rangos de datos, anclados a dirección. <code>tools/mkasm.py</code> los mezcla con el trazado y escribe <code>src/goemon_pNN.asm</code>.</li><li><code>make verify</code> reensambla los dieciséis bancos con Pasmo y la ROM entera, y compara los sha256.</li><li><code>make sanity</code> comprueba que ningún dato se lea como código y que no quede ni un byte sin asignar.</li></ul>
+<p>La densidad: <b>42,5 %</b> de las 14.355 instrucciones llevan comentario, y las 1.678 rutinas pasan todas del 10 % (<code>make densidad</code>).</p>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> lo public&oacute; Konami para MSX2 en 1987; su n&uacute;mero de cat&aacute;logo es RC-748 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservaci&oacute;n, estudio y documentaci&oacute;n, y la imagen del cartucho no se distribuye.</p></footer></div>

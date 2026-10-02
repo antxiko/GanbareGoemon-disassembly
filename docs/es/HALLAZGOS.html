@@ -1,0 +1,123 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hallazgos — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html" style=color:var(--tinta)>Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../FINDINGS.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="hallazgos">Hallazgos</h1>
+<p>Lo que apareció al desmontar el cartucho. Cada cosa lleva la dirección donde se puede comprobar y dice si se ha visto en openMSX o solo se ha leído en el código.</p>
+<h2 id="con-q-bert-o-el-game-master-al-lado-un-menu-para-elegir-fase">Con Q\*bert o el Game Master al lado, un menú para elegir fase</h2>
+<p>Al arrancar, p01:7EAB mira la otra ranura. Si encuentra Q\*bert o el Game Master, pone 0xEF00 a 0xFF y el título saca un menú más (p01:7F1A) para elegir la fase y las vidas. Comprobado en openMSX con los dos cartuchos; el menú está dibujado desde la ROM y coincide con el volcado sin un solo punto distinto.</p>
+<h2 id="cuatro-claves-en-la-pantalla-de-la-contrasena">Cuatro claves en la pantalla de la contraseña</h2>
+<p>p03:BE4E compara lo tecleado con cuatro textos de 9 letras (0xBE8A):</p>
+<table><tr><th>Clave</th><th>Lo que hace</th></tr><tr><td>くるくるてんてん</td><td>juega el jugador 2</td></tr><tr><td>きみちやんげんき</td><td>vida máxima 0x20 en vez de 0x10</td></tr><tr><td>あけみさんのさいふ</td><td>2000 ryo</td></tr><tr><td>つづきがしたい</td><td>se puede continuar</td></tr></table>
+<p>Las cuatro comprobadas en openMSX. Uno de los consejos del propio juego (el texto 32: «かくしこまんど きみちゃんげんき») ya da la segunda.</p>
+<h2 id="dos-palabras-en-la-pausa">Dos palabras en la pausa</h2>
+<p>En la pausa (F1) se pueden teclear 5 letras (p03:BDF6). Cada tecla da una letra según la tabla del banco 6 (0xADEC, u 0xAE34 con el teclado en kana).</p>
+<ul><li><b>おやぶん</b> dentro de un pasadizo secreto pone el bit 0 de 0xEF80 y da su mapa (0xC27A).</li><li><b>すきやねん</b> fuera pone el bit 1. Con él, tocar a los tipos 8 y 0x21 da 10 ryo además de los 1000 puntos (p01:79D1).</li></ul>
+<p>Comprobado en openMSX tecleándolas: los dos bits y 0xC27A (el pasadizo, forzado en la RAM). Los 10 ryo están leídos en el código.</p>
+<h2 id="cambiar-de-opcion-seis-veces-en-el-titulo">Cambiar de opción seis veces en el título</h2>
+<p>p01:634F cuenta en 0xEF81 las veces que se cambia la opción del menú. Si al empezar son 6 o 7, p00:5EB6 pone el bit 6 de 0xEF80 (p03:BEDD). Comprobado en openMSX. Lo que hace ese bit está leído en el código: con la cosa 0x0A, el mapa del pasadizo marca la salida con una flecha (p03:BBCD).</p>
+<h2 id="f2-ensena-la-contrasena-f5-continua">F2 enseña la contraseña, F5 continúa</h2>
+<ul><li><b>F2 en la pausa</b> enseña la contraseña del sitio donde se está (p01:6B5F). F2 otra vez la quita, y solo vale una vez por pausa (0xC28C).</li><li><b>F5 sin vidas:</b> si se ha ganado «continuar» (0xC27F), la partida sigue (p00:5F8E) con los puntos y el dinero a cero. «Continuar» se gana con la clave つづきがしたい o cambiando la cosa 3 en la casa de cambio (p03:B047, leído en el código).</li></ul>
+<p>F2 y F5 están comprobados en openMSX.</p>
+<h2 id="al-morir-la-mitad-del-dinero">Al morir, la mitad del dinero</h2>
+<p>p01:701E divide el dinero entre dos en BCD, cifra a cifra; además se pierden las cosas 0, 1 y 0x0A (p01:700A). En openMSX, 4800 ryo se quedaron en 2400, y en la siguiente muerte 2180 se quedaron en 1090.</p>
+<h2 id="las-tiendas-abren-segun-el-reloj">Las tiendas abren según el reloj</h2>
+<p>Los interiores 8 a 15 están cerrados cuando la cifra de las decenas del tiempo es impar (p03:AD57). Comprobado en openMSX: los ocho, abiertos y cerrados.</p>
+<h2 id="los-bloques-dan-50-ryo-si-el-tiempo-acaba-en-11-33-55-77-o-99">Los bloques dan 50 ryo si el tiempo acaba en 11, 33, 55, 77 o 99</h2>
+<p>p02:8D95: 5 ryo, o 50 si las dos últimas cifras del tiempo son iguales e impares. Leído en el código.</p>
+<h2 id="los-dados-el-doble-o-la-mitad">Los dados: el doble o la mitad</h2>
+<p>En el interior 17 se apuesta a par o impar (0xCD8F). Si se acierta, el dinero se dobla (p03:B233); si no, se queda en la mitad (p03:B247). Leído en el código.</p>
+<h2 id="pegar-ocho-veces-al-tipo-0x21-cambia-el-final-de-la-fase">Pegar ocho veces al tipo 0x21 cambia el final de la fase</h2>
+<p>p03:A9D3 cuenta los golpes en 0xCD60. Con 8 o más, el señor de la fase no dice su texto sino el de 0x9F92 (p02:9BC7): «おぬし わしのせいじにけちをつけるか…» («¿Le pones pegas a mi gobierno? … Acuérdate en la próxima fase»). Pasa en todas las fases menos en la última. Leído en el código.</p>
+<h2 id="cuatro-finales">Cuatro finales</h2>
+<p>p01:6546 elige el final según dos cosas: si se han pasado las 7 fases y si estaba el vecino. Las frases están en 0xBCD3 (banco 12):</p>
+<ul><li><b>Sin las 7 fases:</b> no todos los señores han prometido gobernar bien; hay que volver a las provincias.</li><li><b>Con las 7:</b> la paz, y «por cierto, los próximos juegos de Konami son ひのとり y まじょうでんせつ2» (Hinotori y Majō Densetsu 2).</li><li><b>Con el vecino</b> se añade: «la próxima vez, haz el <em>yonaoshi</em> sin usar el cartucho para divertirse diez veces más».</li></ul>
+<p>Leído en el código; los textos salen de la ROM.</p>
+<h2 id="cuatro-fallos-del-codigo">Cuatro fallos del código</h2>
+<ul><li><b>p03:AAFE:</b> quiere escribir en (ix+0x75) y escribe en 0x0075, que es ROM de la BIOS. La cuenta de p03:ABC4 empieza entonces con lo que dejó en ese hueco la figura anterior.</li><li><b>p03:B4F1:</b> carga 0x20 en DE para sumar vida, pero p00:5884 suma A, que ahí vale 0xD0, así que la vida se llena entera. Es la figura 0x2C del interior 18.</li><li><b>p03:A5BB:</b> <code>ld hl,(0xC494)</code> en lugar de <code>ld hl,0xC494</code>. Al decidir si va hacia arriba o hacia abajo, la figura compara con un byte casi al azar.</li><li><b>p03:ADB4:</b> si no hay nada a la venta, el <code>djnz</code> de p03:ADB2 cae en una tabla y la ejecuta como código.</li></ul>
+<h2 id="la-cosa-14-no-la-vende-nadie">La cosa 14 no la vende nadie</h2>
+<p>Tiene precio (0x9371) y rutina (p03:AEB2), pero no está en ninguno de los 21 interiores (0x9567).</p>
+<h2 id="la-marca-de-konami-en-hiragana">La marca de Konami, en hiragana</h2>
+<p>Al final del banco 3 está la marca que Konami escondía en sus cartuchos (la descubrió Manuel Pazos). Aquí no va en katakana con el código de la casa, sino en la fuente del propio juego: がんばれごえもん, y detrás 0x48, el RC-748.</p>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> lo public&oacute; Konami para MSX2 en 1987; su n&uacute;mero de cat&aacute;logo es RC-748 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservaci&oacute;n, estudio y documentaci&oacute;n, y la imagen del cartucho no se distribuye.</p></footer></div>

@@ -108,4 +108,4 @@ silencio, y detrás ya empieza el efecto 0x20 (0x663A).
   un byte sin asignar.
 
 La densidad: **42,5 %** de las 14.355 instrucciones llevan comentario, y las
-1678 rutinas pasan todas del 10 % (`make densidad`).
+1.678 rutinas pasan todas del 10 % (`make densidad`).

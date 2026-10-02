@@ -1,0 +1,133 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The game — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html" style=color:var(--tinta)>The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/EL-JUEGO.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="the-game">The game</h1>
+<p>Goemon (or Ebisumaru, player 2) crosses <b>7 stages of 7 areas</b>: <b>49 areas and 1608 screens</b> (the cells). In each stage, areas 0 to 4 are streets and countryside, area 5 is walls and area 6 is the inside of a castle, the biggest one (66 to 80 cells).</p>
+<p>Every picture on this page is <b>drawn from the bytes of the ROM</b> by the tools in <code>tools/</code>, which follow the cartridge&#x27;s own steps, and checked against openMSX dumps (<code>C-BIOS_MSX2_JP</code>). Under each one it says which table it comes from.</p>
+<h2 id="the-title-screen">The title screen</h2>
+<p><img src="imagenes/konami.png" alt="The Konami logo"></p>
+<p><img src="imagenes/titulo.png" alt="The title screen"></p>
+<p>The menu has two options, one or two players, and the two take turns. The second button leads to the password screen (state 0x0E). The logo and the title match openMSX with not a single pixel different (<code>titulo.py coteja</code>). With Q\*bert or the Game Master in the other slot, the title screen shows another menu: see <a href="FINDINGS.html">Findings</a>.</p>
+<h2 id="the-49-areas">The 49 areas</h2>
+<p><img src="imagenes/zona_1_0.png" alt="Area 0 of stage 1"></p>
+<p><em>Area 0 of stage 1. Each row is a <b>street</b>: cells following each other from left to right (p00:4188). Under each cell, the arrows say which cell its up and down exits lead to (0xB7D0). The blue arrow on the right marks a street that starts over.</em></p>
+<p>The up and down exits are not geometric: in this area, going up from cell 3 leads to cell 4, which is also to its right. That is why the maps are laid out by streets and not as a grid. Moving figures are not drawn, since they depend on the game; the fixed objects (0xA08E) are. All 49 area entrances are checked against openMSX (screen, characters and palette).</p>
+<table><tr><th>Stage</th><th>Area 0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr><tr><td>1</td><td><a href="imagenes/zona_1_0.png">24</a></td><td><a href="imagenes/zona_1_1.png">14</a></td><td><a href="imagenes/zona_1_2.png">16</a></td><td><a href="imagenes/zona_1_3.png">20</a></td><td><a href="imagenes/zona_1_4.png">26</a></td><td><a href="imagenes/zona_1_5.png">38</a></td><td><a href="imagenes/zona_1_6.png">66</a></td></tr><tr><td>2</td><td><a href="imagenes/zona_2_0.png">16</a></td><td><a href="imagenes/zona_2_1.png">20</a></td><td><a href="imagenes/zona_2_2.png">24</a></td><td><a href="imagenes/zona_2_3.png">18</a></td><td><a href="imagenes/zona_2_4.png">20</a></td><td><a href="imagenes/zona_2_5.png">38</a></td><td><a href="imagenes/zona_2_6.png">70</a></td></tr><tr><td>3</td><td><a href="imagenes/zona_3_0.png">34</a></td><td><a href="imagenes/zona_3_1.png">18</a></td><td><a href="imagenes/zona_3_2.png">18</a></td><td><a href="imagenes/zona_3_3.png">18</a></td><td><a href="imagenes/zona_3_4.png">24</a></td><td><a href="imagenes/zona_3_5.png">44</a></td><td><a href="imagenes/zona_3_6.png">80</a></td></tr><tr><td>4</td><td><a href="imagenes/zona_4_0.png">28</a></td><td><a href="imagenes/zona_4_1.png">18</a></td><td><a href="imagenes/zona_4_2.png">22</a></td><td><a href="imagenes/zona_4_3.png">30</a></td><td><a href="imagenes/zona_4_4.png">30</a></td><td><a href="imagenes/zona_4_5.png">38</a></td><td><a href="imagenes/zona_4_6.png">66</a></td></tr><tr><td>5</td><td><a href="imagenes/zona_5_0.png">30</a></td><td><a href="imagenes/zona_5_1.png">24</a></td><td><a href="imagenes/zona_5_2.png">22</a></td><td><a href="imagenes/zona_5_3.png">16</a></td><td><a href="imagenes/zona_5_4.png">18</a></td><td><a href="imagenes/zona_5_5.png">38</a></td><td><a href="imagenes/zona_5_6.png">70</a></td></tr><tr><td>6</td><td><a href="imagenes/zona_6_0.png">22</a></td><td><a href="imagenes/zona_6_1.png">34</a></td><td><a href="imagenes/zona_6_2.png">30</a></td><td><a href="imagenes/zona_6_3.png">20</a></td><td><a href="imagenes/zona_6_4.png">30</a></td><td><a href="imagenes/zona_6_5.png">44</a></td><td><a href="imagenes/zona_6_6.png">66</a></td></tr><tr><td>7</td><td><a href="imagenes/zona_7_0.png">24</a></td><td><a href="imagenes/zona_7_1.png">16</a></td><td><a href="imagenes/zona_7_2.png">22</a></td><td><a href="imagenes/zona_7_3.png">34</a></td><td><a href="imagenes/zona_7_4.png">32</a></td><td><a href="imagenes/zona_7_5.png">58</a></td><td><a href="imagenes/zona_7_6.png">80</a></td></tr></table>
+<p><em>Cells in each area (first byte of its record, 0xB7D0); each number links to its map.</em></p>
+<h2 id="one-screen">One screen</h2>
+<p>A cell is <b>8 × 6 blocks of 4 × 4 characters</b> (p00:5275). It is built at 0xD800 and painted character by character with HMMM, from page 1 to page 0 (p00:534E), in SCREEN 5. Each area has its graphics set (0xB8EC, six in all) with its characters and its palette: the base one (0xA3E6), the set&#x27;s (0xA37A) and a few colours for the spot, which some exits change (0xA4C5).</p>
+<h2 id="goemon-and-ebisumaru">Goemon and Ebisumaru</h2>
+<p><img src="imagenes/goemon.png" alt="Goemon"></p>
+<p><img src="imagenes/ebisumaru.png" alt="Ebisumaru"></p>
+<p><em>The 20 poses of each: patterns, sprites and colours checked against the pose in each dump.</em></p>
+<p>Life starts at 0x10 (0x20 with one of the keywords), and the timer runs in BCD (0xC4B0). Below 50 seconds the hurry-up music plays (p01:714E).</p>
+<h2 id="the-enemies">The enemies</h2>
+<p><img src="imagenes/enemigos.png" alt="The enemies"></p>
+<p><em>The 30 types that appear in the cells, with the base pose and the next three (0xAA51), each with the palette of the first area where it appears.</em></p>
+<p>Each cell has a set of figures: a nibble in its area&#x27;s table (0x9BF0) picks a list in its graphics set&#x27;s table (0x5BB2). The lists match the figures in the 49 dumps. When the blow lands, each type adds the money in 0xB86D (5, 10 or 20 ryo, or nothing), except types 8 and 0x21, which cost 50 ryo; touching them, on the other hand, gives 1000 points (p01:79C8). 107 figures from the dumps are checked with zero differences.</p>
+<p>Types 0x12 and 0x1D do not appear in the cells: they are figures from the end-of-stage scene (p02:9AA6, p02:9B6E).</p>
+<h2 id="the-interiors">The interiors</h2>
+<p><img src="imagenes/interior_00.png" alt="An interior"></p>
+<p>There are <b>21 interiors</b> (0x9567); each has its figures and what it sells.</p>
+<ul><li><b>0 to 15:</b> shops.</li><li><b>16:</b> for 900 ryo it takes you to a secret passage.</li><li><b>17:</b> the dice.</li><li><b>18:</b> asks whether you will stay the night, and fills your life.</li><li><b>19:</b> sends away anyone without the boss&#x27;s letter.</li><li><b>20:</b> gives hints.</li></ul>
+<p>All 21 are drawn and checked with zero differences against openMSX, and the shops open as well.</p>
+<p>Prices (0x9371) depend on three things:</p>
+<ul><li><b>The shop class</b>, which comes from the area&#x27;s graphics set.</li><li><b>How far the game has gone</b>, in four bands: up to area 9, 10 to 19, 20 to 39, and 40 onwards.</li><li><b>How many times you have bought the item</b> in that area: each purchase doubles the price (p02:930C).</li></ul>
+<table><tr><th>Item</th><th>What it does (0xADEB)</th><th>Price, class 0, band 0</th></tr><tr><td>1, 10</td><td>one more, up to 3</td><td>30, 150</td></tr><tr><td>2, 8</td><td>you have it</td><td>20, 120</td></tr><tr><td>3–7</td><td>five hits</td><td>50</td></tr><tr><td>9</td><td>100 seconds</td><td>40</td></tr><tr><td>11 / 12</td><td>16 / 8 life</td><td>30 / 20</td></tr><tr><td>13</td><td>200 more seconds</td><td>50</td></tr></table>
+<p>The whole table, with the three classes and the four bands (in ryo):</p>
+<table><tr><th>Class, band</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr><tr><td>0, 0</td><td>30</td><td>20</td><td>50</td><td>50</td><td>50</td><td>50</td><td>50</td><td>120</td><td>40</td><td>150</td><td>30</td><td>20</td><td>50</td><td>5</td><td>50</td><td>100</td></tr><tr><td>0, 1</td><td>60</td><td>40</td><td>100</td><td>100</td><td>100</td><td>100</td><td>100</td><td>250</td><td>180</td><td>300</td><td>60</td><td>40</td><td>100</td><td>0</td><td>150</td><td>240</td></tr><tr><td>0, 2</td><td>90</td><td>60</td><td>280</td><td>280</td><td>300</td><td>300</td><td>300</td><td>400</td><td>440</td><td>800</td><td>90</td><td>60</td><td>280</td><td>0</td><td>500</td><td>420</td></tr><tr><td>0, 3</td><td>120</td><td>100</td><td>600</td><td>600</td><td>400</td><td>400</td><td>400</td><td>500</td><td>600</td><td>1500</td><td>120</td><td>100</td><td>600</td><td>0</td><td>700</td><td>620</td></tr><tr><td>1, 0</td><td>30</td><td>20</td><td>40</td><td>40</td><td>50</td><td>50</td><td>50</td><td>150</td><td>50</td><td>150</td><td>30</td><td>20</td><td>40</td><td>0</td><td>50</td><td>100</td></tr><tr><td>1, 1</td><td>60</td><td>40</td><td>80</td><td>80</td><td>150</td><td>150</td><td>150</td><td>300</td><td>160</td><td>400</td><td>60</td><td>40</td><td>80</td><td>0</td><td>200</td><td>280</td></tr><tr><td>1, 2</td><td>90</td><td>60</td><td>250</td><td>250</td><td>400</td><td>400</td><td>400</td><td>500</td><td>1200</td><td>700</td><td>90</td><td>60</td><td>250</td><td>0</td><td>500</td><td>400</td></tr><tr><td>1, 3</td><td>150</td><td>120</td><td>420</td><td>420</td><td>600</td><td>600</td><td>600</td><td>800</td><td>1200</td><td>1200</td><td>150</td><td>120</td><td>420</td><td>0</td><td>700</td><td>520</td></tr><tr><td>2, 0</td><td>50</td><td>30</td><td>80</td><td>80</td><td>50</td><td>50</td><td>50</td><td>400</td><td>100</td><td>2000</td><td>50</td><td>30</td><td>80</td><td>0</td><td>50</td><td>100</td></tr><tr><td>2, 1</td><td>100</td><td>60</td><td>150</td><td>150</td><td>100</td><td>100</td><td>100</td><td>500</td><td>250</td><td>2000</td><td>100</td><td>60</td><td>150</td><td>0</td><td>200</td><td>380</td></tr><tr><td>2, 2</td><td>150</td><td>100</td><td>300</td><td>300</td><td>250</td><td>250</td><td>250</td><td>600</td><td>600</td><td>2000</td><td>150</td><td>100</td><td>300</td><td>0</td><td>600</td><td>580</td></tr><tr><td>2, 3</td><td>250</td><td>200</td><td>700</td><td>700</td><td>500</td><td>500</td><td>500</td><td>1000</td><td>1500</td><td>2000</td><td>250</td><td>200</td><td>700</td><td>0</td><td>800</td><td>780</td></tr></table>
+<h2 id="the-secret-passages">The secret passages</h2>
+<p><img src="imagenes/pasadizo_1_0.png" alt="The passage of area 1-0"></p>
+<p><em>The map of the passage in area 1-0, as the game shows it (p03:BB1B): each cell is an 8 × 8 piece, and Goemon, top left, is where you start.</em></p>
+<p>In every area except area 5 of each stage, interior 16 offers to take you &quot;to the secret passage at the back&quot;. There are <b>42 passages</b>, made from <b>16 drawings</b> (0xA86D) that repeat with what is inside in other places (0xA575). They are walked in first person: up moves forward, left and right turn, and down turns around (p03:B8C3).</p>
+<ul><li><b>Entry</b> costs 900 ryo, or the price of item 15 if you carry item 0x0A (p02:92E3). Each time you enter in the same area, it costs double. Once paid, you go in by pressing up at the back of the interior (p01:7D0D).</li><li><b>Inside</b> there are 200 ryo, one more item 9, the map, a life and the exit (p03:BC5C). Each thing is picked up once, and they come back when you return to the area.</li><li><b>The map</b>, if you have picked it up, is shown by the button. It draws neither the map nor the life, and the exit only with the menu secret (see <a href="FINDINGS.html">Findings</a>).</li><li><b>The exit</b> gives 10000 points the first time in the area and leaves you in the street, in front of the door.</li></ul>
+<p>All 42 are checked against openMSX: the grid at 0xD800, the map pixel by pixel and the palette.</p>
+<table><tr><th>Stage</th><th>Area 0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>6</th></tr><tr><td>1</td><td><a href="imagenes/pasadizo_1_0.png">2</a></td><td><a href="imagenes/pasadizo_1_1.png">4</a></td><td><a href="imagenes/pasadizo_1_2.png">11</a></td><td><a href="imagenes/pasadizo_1_3.png">18</a></td><td><a href="imagenes/pasadizo_1_4.png">19</a></td><td><a href="imagenes/pasadizo_1_6.png">26</a></td></tr><tr><td>2</td><td><a href="imagenes/pasadizo_2_0.png">6</a></td><td><a href="imagenes/pasadizo_2_1.png">13</a></td><td><a href="imagenes/pasadizo_2_2.png">22</a></td><td><a href="imagenes/pasadizo_2_3.png">16</a></td><td><a href="imagenes/pasadizo_2_4.png">8</a></td><td><a href="imagenes/pasadizo_2_6.png">51</a></td></tr><tr><td>3</td><td><a href="imagenes/pasadizo_3_0.png">13</a></td><td><a href="imagenes/pasadizo_3_1.png">15</a></td><td><a href="imagenes/pasadizo_3_2.png">7</a></td><td><a href="imagenes/pasadizo_3_3.png">8</a></td><td><a href="imagenes/pasadizo_3_4.png">16</a></td><td><a href="imagenes/pasadizo_3_6.png">3</a></td></tr><tr><td>4</td><td><a href="imagenes/pasadizo_4_0.png">19</a></td><td><a href="imagenes/pasadizo_4_1.png">9</a></td><td><a href="imagenes/pasadizo_4_2.png">6</a></td><td><a href="imagenes/pasadizo_4_3.png">24</a></td><td><a href="imagenes/pasadizo_4_4.png">28</a></td><td><a href="imagenes/pasadizo_4_6.png">44</a></td></tr><tr><td>5</td><td><a href="imagenes/pasadizo_5_0.png">10</a></td><td><a href="imagenes/pasadizo_5_1.png">20</a></td><td><a href="imagenes/pasadizo_5_2.png">12</a></td><td><a href="imagenes/pasadizo_5_3.png">4</a></td><td><a href="imagenes/pasadizo_5_4.png">15</a></td><td><a href="imagenes/pasadizo_5_6.png">54</a></td></tr><tr><td>6</td><td><a href="imagenes/pasadizo_6_0.png">20</a></td><td><a href="imagenes/pasadizo_6_1.png">27</a></td><td><a href="imagenes/pasadizo_6_2.png">20</a></td><td><a href="imagenes/pasadizo_6_3.png">7</a></td><td><a href="imagenes/pasadizo_6_4.png">24</a></td><td><a href="imagenes/pasadizo_6_6.png">22</a></td></tr><tr><td>7</td><td><a href="imagenes/pasadizo_7_0.png">13</a></td><td><a href="imagenes/pasadizo_7_1.png">10</a></td><td><a href="imagenes/pasadizo_7_2.png">14</a></td><td><a href="imagenes/pasadizo_7_3.png">21</a></td><td><a href="imagenes/pasadizo_7_4.png">24</a></td><td><a href="imagenes/pasadizo_7_6.png">0</a></td></tr></table>
+<p><em>The cell of interior 16 in each area; each number links to the map of its passage.</em></p>
+<h2 id="the-password">The password</h2>
+<p>It is 9 characters. 0x30 is subtracted from each, they are shuffled with the key at 0xEBC6 and carry a checksum (p01:6C7A). They store the stage, the player, the area, the cell and the colours. F2 in the pause shows it, and the same screen accepts four keywords (see <a href="FINDINGS.html">Findings</a>).</p>
+<h2 id="the-end-of-each-stage">The end of each stage</h2>
+<p>The stage&#x27;s lord says his text (0x9E0B, one per stage) and promises to rule better. The game has four different endings: they are in <a href="FINDINGS.html">Findings</a>.</p>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> was published by Konami for the MSX2 in 1987; its catalogue number is RC-748 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>

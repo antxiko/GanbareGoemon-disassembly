@@ -1,0 +1,103 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The cartridge — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html" style=color:var(--tinta)>The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/EL-CARTUCHO.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="the-cartridge">The cartridge</h1>
+<table><tr><th></th><th></th></tr><tr><td>title</td><td><em>Ganbare Goemon! Karakuri Dōchū</em> (Konami, 1987)</td></tr><tr><td>number</td><td>RC-748</td></tr><tr><td>machine</td><td>MSX2 (V9938), SCREEN 5</td></tr><tr><td>size</td><td>131,072 bytes: 16 banks of 8 KB</td></tr><tr><td>mapper</td><td>Konami without SCC (Konami4)</td></tr><tr><td>sound</td><td>PSG, three channels</td></tr><tr><td>sha256</td><td><code>a436addc241d977ba38081463322e7e611d6bab4d10cd06305fe5a71f02a549c</code></td></tr></table>
+<p>The header is <code>AB</code> with INIT at 0x4097, and the interrupt comes in at 0x4045 through H.TIMI. At 0x4010 there is a second header, <code>CD</code>, which is the one the Game Master looks for.</p>
+<h2 id="the-mapper">The mapper</h2>
+<p>Bank 0 is <b>fixed</b> at 0x4000-0x5FFF. The other three slots are chosen by writing the bank number to 0x6000, 0x8000 and 0xA000. There is not a single write to 0x5000, 0x7000, 0x9000 or 0xB000, the registers of the SCC mapper: that is why it is Konami4.</p>
+<p>There are <b>49 writes</b> to the mapper (<code>tools/reconocimiento.py</code>): 8 to 0x6000, 10 to 0x8000 and 31 to 0xA000. Banks are loaded three at a time by five routines, p00:4206, 4220, 4238, 4250 and 4268 (1-2-3, 4-5-6, 7-8-9, 10-11-12 and 13-14-15). With that, each bank has its slot and the listing splits into sixteen modules, each with its own <code>org</code>:</p>
+<table><tr><th>slot</th><th>banks</th></tr><tr><td>0x4000 (fixed)</td><td>0</td></tr><tr><td>0x6000</td><td>1, 4, 7, 10, 13</td></tr><tr><td>0x8000</td><td>2, 5, 8, 11, 14</td></tr><tr><td>0xA000</td><td>3, 6, 9, 12, 15</td></tr></table>
+<p>There is <b>one exception</b>: p01:7DEC puts bank 14 at 0xA000 to read the objects of each cell, and the listing declares it (<code>tools/paginas.py</code>). Of the 31 writes to 0xA000, <b>21 are single ones</b>: routines that read a table and change only that slot (to bank 6, 9, 12, 14 or 15). Twenty go back to the 1-2-3 trio when they finish. The other one, p01:7DA1, leaves early if the area has no special exits: in 14 areas it leaves bank 9 in place until the next return to the trio, with no visible effect (all 14 match openMSX). The interrupt calls the sound with banks 10, 11 and 12 (p00:404F) and on the way out puts them back from their copies in RAM (0xF0F1-0xF0F3).</p>
+<h2 id="what-is-in-each-bank">What is in each bank</h2>
+<table><tr><th>bank</th><th>code</th><th>what it holds</th></tr><tr><td>0</td><td>6,703 B</td><td>start-up, the interrupt, the game states, the data readers (rle, patterns, letters, HMMC, palettes, labels), building and painting the screen, the status bar; the figures&#x27; colour lists</td></tr><tr><td>1</td><td>7,439 B</td><td>the game: loading the area, the player and his collisions, the pause, the password, the endings; the Game Master and Q\*bert signatures, the demo script</td></tr><tr><td>2</td><td>6,087 B</td><td>the figures (creating, moving, their sprites), the interiors and their prices (0x9371), the passages, the end of the stage and its texts</td></tr><tr><td>3</td><td>7,181 B</td><td>each figure type, the purchases, the dice, the secret passages, the pause words and the keywords; Konami&#x27;s mark</td></tr><tr><td>4, 5</td><td>—</td><td>the characters of the six graphics sets, in rle</td></tr><tr><td>6</td><td>—</td><td>the links of the 49 areas, the keyboard tables, the title picture</td></tr><tr><td>7</td><td>—</td><td>the patterns shared by every set and those of the status bar</td></tr><tr><td>8</td><td>—</td><td>the sprites of the 20 poses of Goemon and Ebisumaru</td></tr><tr><td>9</td><td>—</td><td>the exits of each area, the secret passages (0xA575 and 0xA86D), the palettes, the figure poses, each area&#x27;s graphics set (0xB8EC) and the money of each type (0xB86D)</td></tr><tr><td>10</td><td>1,314 B</td><td>the <b>sound</b>: 28 tunes and 32 effects, and the routine that plays them</td></tr><tr><td>11</td><td>—</td><td>figure patterns, the 9 instruments and the end of a score from bank 10</td></tr><tr><td>12</td><td>—</td><td>114 labels (0xA9C0), the figure (0xA830) and pose records, the ending sentences (0xBCD3)</td></tr><tr><td>13</td><td>—</td><td>the grids of the 49 areas, the screens and the blocks of each set</td></tr><tr><td>14</td><td>—</td><td>which figures appear in each cell (0x9BF0), the objects of each cell (0x981D), more blocks</td></tr><tr><td>15</td><td>—</td><td>the fixed objects (0xA08E), the passages of each area, the texts after clearing an area (0xBC16)</td></tr></table>
+<p>In all, <b>28,724 bytes of code and 102,348 of data</b>: 100 % of the cartridge accounted for (<code>make sanity</code>).</p>
+<h2 id="the-vram">The VRAM</h2>
+<p>The game runs in <b>SCREEN 5</b> (p00:4994), with 16 colours out of a palette of 512.</p>
+<ul><li><b>Page 1</b> is the store: each area uploads its 8 × 8, 4-bit characters there, and character k sits at x = (k % 32) × 8, y = (k / 32) × 8 (p00:4976).</li><li><b>Page 0</b> is the screen. The cell is built at 0xD800 and painted from line 0x20, one HMMM per character (p00:534E). The fixed objects are copied on top with LMMM and transparency (p02:90C0).</li></ul>
+<p>Sprites are <b>mode 2</b> (16 × 16, colour per line). Their patterns go to 0xF800. The table and the colours are rebuilt in RAM (0xEE00 and 0xEC80) and p01:685F copies them on odd frames. That is why a dump can catch the copy from one frame earlier, and the comparisons allow for it.</p>
+<h2 id="the-ram-that-matters">The RAM that matters</h2>
+<table><tr><th>address</th><th>what it is</th></tr><tr><td>0xC000 / 0xC001</td><td>the game state and its step</td></tr><tr><td>0xC002</td><td>game flags (bit 7 player 2, bit 6 playing)</td></tr><tr><td>0xC00B / 0xC00C</td><td>F1-F3 just pressed</td></tr><tr><td>0xC257</td><td>the score (BCD)</td></tr><tr><td>0xC260</td><td>the lives</td></tr><tr><td>0xC265-0xC266</td><td>the money, in BCD</td></tr><tr><td>0xC270-0xC27D</td><td>the status-bar items</td></tr><tr><td>0xC27F</td><td>continue allowed</td></tr><tr><td>0xC280 / 0xC281 / 0xC288</td><td>the area, the cell and the stage</td></tr><tr><td>0xC289</td><td>the area&#x27;s graphics set</td></tr><tr><td>0xC480 / 0xC481</td><td>maximum life and life</td></tr><tr><td>0xC4B0</td><td>the timer (BCD)</td></tr><tr><td>0xC600</td><td>the 8 figures, 0x80 bytes each</td></tr><tr><td>0xCDB1</td><td>inside a secret passage</td></tr><tr><td>0xEF00</td><td>0xFF if the neighbour is there</td></tr><tr><td>0xEF80</td><td>the secrets: bits 0-1 the words, 2-5 the keywords, 6 the menu</td></tr></table>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> was published by Konami for the MSX2 in 1987; its catalogue number is RC-748 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>

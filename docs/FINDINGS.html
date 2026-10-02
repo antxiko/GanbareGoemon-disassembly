@@ -1,0 +1,123 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Findings — Ganbare Goemon! (Konami, 1987)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html" style=color:var(--tinta)>Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/HALLAZGOS.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="findings">Findings</h1>
+<p>What turned up while taking the cartridge apart. Each item gives the address where it can be checked and says whether it was seen in openMSX or only read in the code.</p>
+<h2 id="with-q-bert-or-the-game-master-next-to-it-a-menu-to-pick-the-stage">With Q\*bert or the Game Master next to it, a menu to pick the stage</h2>
+<p>At start-up, p01:7EAB looks at the other slot. If it finds Q\*bert or the Game Master, it sets 0xEF00 to 0xFF and the title screen shows an extra menu (p01:7F1A) to choose the stage and the lives. Checked in openMSX with both cartridges; the menu is drawn from the ROM and matches the dump with not a single pixel different.</p>
+<h2 id="four-keywords-on-the-password-screen">Four keywords on the password screen</h2>
+<p>p03:BE4E compares what was typed with four 9-letter texts (0xBE8A):</p>
+<table><tr><th>Keyword</th><th>What it does</th></tr><tr><td>くるくるてんてん</td><td>player 2 plays</td></tr><tr><td>きみちやんげんき</td><td>maximum life 0x20 instead of 0x10</td></tr><tr><td>あけみさんのさいふ</td><td>2000 ryo</td></tr><tr><td>つづきがしたい</td><td>continue is allowed</td></tr></table>
+<p>All four checked in openMSX. One of the game&#x27;s own hints (text 32: «かくしこまんど きみちゃんげんき») already gives away the second one.</p>
+<h2 id="two-words-in-the-pause">Two words in the pause</h2>
+<p>During the pause (F1) five letters can be typed (p03:BDF6). Each key gives a letter from the table in bank 6 (0xADEC, or 0xAE34 with the keyboard in kana mode).</p>
+<ul><li><b>おやぶん</b> inside a secret passage sets bit 0 of 0xEF80 and gives its map (0xC27A).</li><li><b>すきやねん</b> outside it sets bit 1. With it, touching types 8 and 0x21 gives 10 ryo on top of the 1000 points (p01:79D1).</li></ul>
+<p>Checked in openMSX by typing them: both bits and 0xC27A (the passage forced in RAM). The 10 ryo are read in the code.</p>
+<h2 id="changing-the-option-six-times-on-the-title-screen">Changing the option six times on the title screen</h2>
+<p>p01:634F counts in 0xEF81 how many times the menu option is changed. If it is 6 or 7 when the game starts, p00:5EB6 sets bit 6 of 0xEF80 (p03:BEDD). Checked in openMSX. What that bit does is read in the code: with item 0x0A, the passage map marks the exit with an arrow (p03:BBCD).</p>
+<h2 id="f2-shows-the-password-f5-continues">F2 shows the password, F5 continues</h2>
+<ul><li><b>F2 in the pause</b> shows the password for the current place (p01:6B5F). F2 again removes it, and it only works once per pause (0xC28C).</li><li><b>F5 out of lives:</b> if &quot;continue&quot; has been earned (0xC27F), the game carries on (p00:5F8E) with score and money set to zero. &quot;Continue&quot; is earned with the keyword つづきがしたい or by exchanging item 3 at the exchange house (p03:B047, read in the code).</li></ul>
+<p>F2 and F5 are checked in openMSX.</p>
+<h2 id="dying-halves-the-money">Dying halves the money</h2>
+<p>p01:701E divides the money by two in BCD, digit by digit; items 0, 1 and 0x0A are lost as well (p01:700A). In openMSX, 4800 ryo became 2400, and on the next death 2180 became 1090.</p>
+<h2 id="the-shops-open-by-the-clock">The shops open by the clock</h2>
+<p>Interiors 8 to 15 are closed when the tens digit of the timer is odd (p03:AD57). Checked in openMSX: all eight, open and closed.</p>
+<h2 id="blocks-give-50-ryo-if-the-timer-ends-in-11-33-55-77-or-99">Blocks give 50 ryo if the timer ends in 11, 33, 55, 77 or 99</h2>
+<p>p02:8D95: 5 ryo, or 50 if the last two digits of the timer are equal and odd. Read in the code.</p>
+<h2 id="the-dice-double-or-half">The dice: double or half</h2>
+<p>In interior 17 you bet on even or odd (0xCD8F). Guess right and the money doubles (p03:B233); guess wrong and it is halved (p03:B247). Read in the code.</p>
+<h2 id="hitting-type-0x21-eight-times-changes-the-end-of-the-stage">Hitting type 0x21 eight times changes the end of the stage</h2>
+<p>p03:A9D3 counts the hits in 0xCD60. With 8 or more, the stage&#x27;s lord does not say his own text but the one at 0x9F92 (p02:9BC7): «おぬし わしのせいじにけちをつけるか…» (&quot;You dare find fault with my rule? … Remember this in the next stage&quot;). It happens in every stage but the last. Read in the code.</p>
+<h2 id="four-endings">Four endings</h2>
+<p>p01:6546 picks the ending from two things: whether all 7 stages have been played and whether the neighbour cartridge was there. The sentences are at 0xBCD3 (bank 12):</p>
+<ul><li><b>Without the 7 stages:</b> not every lord has promised to rule well; go back to the provinces.</li><li><b>With the 7:</b> peace, and &quot;by the way, Konami&#x27;s next games are ひのとり and まじょうでんせつ2&quot; (Hinotori and Majō Densetsu 2).</li><li><b>With the neighbour</b>, it adds: &quot;next time, do the <em>yonaoshi</em> without using the cartridge for ten times the fun&quot;.</li></ul>
+<p>Read in the code; the texts come from the ROM.</p>
+<h2 id="four-bugs-in-the-code">Four bugs in the code</h2>
+<ul><li><b>p03:AAFE:</b> it means to write to (ix+0x75) and writes to 0x0075, which is BIOS ROM. The count at p03:ABC4 then starts with whatever the previous figure left in that slot.</li><li><b>p03:B4F1:</b> it loads 0x20 into DE to add life, but p00:5884 adds A, which is 0xD0 at that point, so life is filled completely. It is figure 0x2C in interior 18.</li><li><b>p03:A5BB:</b> <code>ld hl,(0xC494)</code> instead of <code>ld hl,0xC494</code>. When deciding whether to go up or down, the figure compares against an almost random byte.</li><li><b>p03:ADB4:</b> if nothing is for sale, the <code>djnz</code> at p03:ADB2 falls into a table and runs it as code.</li></ul>
+<h2 id="nobody-sells-item-14">Nobody sells item 14</h2>
+<p>It has a price (0x9371) and a routine (p03:AEB2), but it is in none of the 21 interiors (0x9567).</p>
+<h2 id="konami-s-mark-in-hiragana">Konami&#x27;s mark, in hiragana</h2>
+<p>At the end of bank 3 is the mark Konami hid in its cartridges (discovered by Manuel Pazos). Here it is not in katakana with the house code but in the game&#x27;s own font: がんばれごえもん, followed by 0x48, the RC-748.</p>
+<footer><p><em>Ganbare Goemon! Karakuri D&#333;ch&#363;</em> was published by Konami for the MSX2 in 1987; its catalogue number is RC-748 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>
