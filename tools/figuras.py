@@ -12,7 +12,7 @@ sprite: los dos primeros del color 2, el tercero del 1, el cuarto del 3 (del
 (0xEC40), mitad del 2 y mitad del 8 (0x0E el jugador 2), con dos lineas del 7
 segun el lado (0x75E0).
 
-Uso:  figuras.py            escribe work/goemon.png y work/ebisumaru.png
+Uso:  figuras.py            escribe docs/imagenes/goemon.png y ebisumaru.png
       figuras.py coteja     coteja la pose de los volcados de work/v_zonas
 """
 import os
@@ -124,8 +124,8 @@ def main():
     if sys.argv[1:] == ["coteja"]:
         sys.exit(1 if coteja() else 0)
     cart = G.Cartucho()
-    print(hoja(cart, 1, os.path.join(G.RAIZ, "work", "goemon.png")))
-    print(hoja(cart, 2, os.path.join(G.RAIZ, "work", "ebisumaru.png")))
+    print(hoja(cart, 1, os.path.join(G.IMAGENES, "goemon.png")))
+    print(hoja(cart, 2, os.path.join(G.IMAGENES, "ebisumaru.png")))
 
 
 if __name__ == "__main__":

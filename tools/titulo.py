@@ -217,11 +217,11 @@ def main():
         sys.exit(1 if coteja() else 0)
     cart = G.Cartucho()
     v, fondo = konami(cart)
-    print(G.guarda_png(imagen(v, fondo, y0=0x30, alto=0x48), os.path.join(G.RAIZ, "work", "konami.png"), escala=2))
+    print(G.guarda_png(imagen(v, fondo, y0=0x30, alto=0x48), os.path.join(G.IMAGENES, "konami.png"), escala=2))
     v, fondo, capa = titulo(cart)
-    print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.RAIZ, "work", "titulo.png"), escala=2))
+    print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.IMAGENES, "titulo.png"), escala=2))
     v, fondo, capa = menu_del_vecino(cart)
-    print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.RAIZ, "work", "menu_vecino.png"), escala=2))
+    print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.IMAGENES, "menu_vecino.png"), escala=2))
 
 
 if __name__ == "__main__":

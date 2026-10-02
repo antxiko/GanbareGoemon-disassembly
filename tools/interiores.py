@@ -21,7 +21,7 @@ Cada figura pone sus textos al nacer:
         rotulo 0
 Los textos van por p03:B836: el rotulo 7 (borra), el 0x16 y el del texto.
 
-Uso:  interiores.py           work/interiores/iNN.png
+Uso:  interiores.py           docs/imagenes/interior_NN.png
       interiores.py coteja    contra la pagina 0 de work/v_interiores
 """
 import glob
@@ -176,7 +176,7 @@ def main():
     cart = G.Cartucho()
     for n in range(21):
         v = interior(cart, n, tiempo=0x90 if n < 8 else 0x80)   # la tienda abierta (p03:AD57)
-        print(G.guarda_png(G.foto(v, y0=0x20, alto=0xB0), os.path.join(G.RAIZ, "work", "interiores", "i%02d.png" % n), 2))
+        print(G.guarda_png(G.foto(v, y0=0x20, alto=0xB0), os.path.join(G.IMAGENES, "interior_%02d.png" % n), 2))
 
 
 if __name__ == "__main__":

@@ -14,7 +14,8 @@ donde llevan sus enlaces de arriba y abajo.
 Las cosas que se mueven (figuras) no se pintan: dependen de la partida. Las
 fijas (0xA08E) si.
 
-Uso: mapas.py [fase zona]   sin argumentos, todas las zonas distintas
+Uso: mapas.py [fase zona]   sin argumentos, todas las zonas distintas (work/mapas)
+     mapas.py web           lo mismo en docs/imagenes
 """
 import os
 import sys
@@ -69,6 +70,18 @@ def calles(cart, z):
     return fuera
 
 
+def flecha(dib, x, y, hacia, n, color):
+    """Un triangulo (arriba, abajo o derecha) y el numero de casilla: sin
+    palabras dentro de la imagen, que la web es bilingue. Devuelve la x
+    siguiente."""
+    puntas = {"arriba": [(x, y + 7), (x + 8, y + 7), (x + 4, y)],
+              "abajo": [(x, y), (x + 8, y), (x + 4, y + 7)],
+              "derecha": [(x, y), (x, y + 8), (x + 7, y + 4)]}[hacia]
+    dib.polygon(puntas, fill=color)
+    dib.text((x + 11, y - 2), "%d" % n, fill=color)
+    return x + 11 + 8 * len("%d" % n) + 10
+
+
 def dibuja(cart, z, ruta=None):
     v = G.enlaces(cart, z)
     tiras = calles(cart, z)
@@ -92,15 +105,13 @@ def dibuja(cart, z, ruta=None):
             x = 256 * k
             img.paste(pant, (x, y + MARGEN))
             dib.text((x + 3, y + 1), "%d" % c, fill=(255, 255, 255))
-            notas = []
-            for lado, flecha in ((G.ARRIBA, "arriba"), (G.ABAJO, "abajo")):
+            xx = x + 3
+            for lado, hacia in ((G.ARRIBA, "arriba"), (G.ABAJO, "abajo")):
                 d = v[c][lado]
                 if d is not None:
-                    notas.append("%s %d" % (flecha, d))
-            if notas:
-                dib.text((x + 3, y + MARGEN + ALTO + 1), ", ".join(notas), fill=(255, 220, 120))
+                    xx = flecha(dib, xx, y + MARGEN + ALTO + 3, hacia, d, (255, 220, 120))
         if anillo:
-            dib.text((256 * len(tira) - 60, y + 1), "vuelve a %d" % tira[0], fill=(120, 220, 255))
+            flecha(dib, 256 * len(tira) - 30, y + 2, "derecha", tira[0], (120, 220, 255))
         y += MARGEN + ALTO + PIE + HUECO
     if ruta:
         img.save(ruta)
@@ -124,6 +135,9 @@ def distintas(cart):
 def main():
     cart = G.Cartucho()
     salida = os.path.join(G.RAIZ, "work", "mapas")
+    if sys.argv[1:] == ["web"]:
+        salida = G.IMAGENES
+        del sys.argv[1]
     os.makedirs(salida, exist_ok=True)
     if len(sys.argv) == 3:
         zs = [(int(sys.argv[1]) - 1) * G.ZONAS + int(sys.argv[2])]
