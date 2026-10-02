@@ -32,6 +32,325 @@ D 0xBE44 0xBE4E dos_nombres  dos palabras de 5 caracteres que p03:BE19 y p03:BE2
 F 0xBE44 5
 D 0xBE8A 0xBEAE cuatro_claves  cuatro claves de 9 caracteres que p03:BE51 compara con 0xEBB0; cada una pone su bit (2-5) en 0xEF80 (36 bytes)
 F 0xBE8A 9
+C 0xA000 vuelve la velocidad guardada...
+C 0xA003 ... y (ix+0x1D) = 0
+C 0xA028 la velocidad segun la direccion de (ix+0x1F): (ix+0x1E) * 0x80
+C 0xA037 con los bits 0-1 de (ix+0x1F), 0x80 mas
+C 0xA040 el bit 1, hacia la izquierda...
+C 0xA04A ... y el bit 3, hacia arriba
+C 0xA051 bits 0-1: en horizontal...
+C 0xA05E ... si no, en vertical
+C 0xA067 guarda la velocidad en (ix+0x79)-(ix+0x7C)
+C 0xA080 y la recupera
+C 0xA0ED tipo 1: en y 0x30, hace dano, pose 0x6A
+C 0xA0FE tipo 1: aletea (poses 0x6A, 0x6B) y segun su paso (0xA109)
+C 0xA10D paso 0: sube un poco (0xFF00) hacia el lado del jugador (0x100)...
+C 0xA124 ... y apunta 64 mas abajo
+C 0xA130 paso 1: cae cada vez mas deprisa (0x30) hasta esa y, y vuelta al paso 0
+C 0xA13B la velocidad vertical += DE
+C 0xA151 tipo 3: pose 0x4E, sobre el jugador (x entre 0x28 y 0x98)...
+C 0xA166 ... (ix+0x7C) y (ix+0x7C) + 64: los dos extremos de su vuelta
+C 0xA16F en y 0x10, bajando (0x200)
+C 0xA184 tipo 3: la pose cambia cada 16 cuadros (0x4E-0x51, segun hacia donde va)
+C 0xA1A5 y segun su paso (0xA1AE)
+C 0xA1BA paso 0: al llegar a y 0x30, en diagonal hacia la izquierda
+C 0xA1D7 paso 1: frena; en el extremo izquierdo, hacia la derecha y arriba
+C 0xA1F6 paso 2: hasta el extremo derecho, y baja
+C 0xA20C paso 3: frena hacia el otro lado
+C 0xA231 paso 4: en el extremo izquierdo, otra vuelta desde y 0x30
+C 0xA256 con (ix+0x12) puesto, sube deprisa y se va (paso 5)
+C 0xA26C la velocidad horizontal += DE
+C 0xA27A (ix+0x11) cuenta hasta que se va: entonces (ix+0x12) = 1
+C 0xA283 cada 4 cuadros, (ix+0x10) cuenta 8...
+C 0xA28D ... y dispara el 2
+C 0xA296 tipo 2: sale por un lado (p03:A420), en y 0x30, saltando hacia arriba (0xFD00)
+C 0xA2B0 hacia el jugador, 0x200
+C 0xA2BD dispara cada 24 - dificultad cuadros
+C 0xA2CF tipo 2: el efecto 2 cada 32 cuadros
+C 0xA2D9 rebota
+C 0xA2DC si pasa por encima del jugador, empieza a disparar
+C 0xA2ED cada (ix+0x77) cuadros...
+C 0xA2F7 ... si el jugador esta delante, a menos de 80...
+C 0xA319 ... dispara el de (ix+0x7D)
+C 0xA31F rebota: la gravedad de (ix+0x10) y, al volver a la velocidad de salida, la invierte
+C 0xA331 RST 0x20: HL contra DE
+C 0xA344 (ix+0x12, 0x13) = DE
+C 0xA34B (ix+0x10, 0x11) = DE
+C 0xA352 DE = (ix+0x10, 0x11)
+C 0xA359 DE = la velocidad vertical
+C 0xA360 crea la figura, salvo en la primera tanda
+C 0xA368 tipo 4: sale de abajo (y 0xC8), cerca del jugador
+C 0xA36B una de cuatro fichas al azar (0xA3C6): velocidad x, y, gravedad y su pose
+C 0xA398 A = un numero al azar (registro R y 0xC00D)
+C 0xA3A1 en x a 0x38 del jugador, del lado donde haya mas sitio; en y 0xC8
+C 0xA3E0 tipo 4: sube con su gravedad; al volver a su y de salida, se va
+C 0xA3F9 tipo 5: sale por un lado, quieto en vertical...
+C 0xA405 ... y en horizontal segun la dificultad (0xA481)
+C 0xA412 la direccion en (ix+0x1F): 1 a la derecha, 2 a la izquierda
+C 0xA420 sale por un lado, si el jugador esta lejos de el
+C 0xA431 por la izquierda (x 8) o la derecha (x 0xF8), al azar
+C 0xA445 la y: la del jugador, o 0x68 o 0xBE si esta muy arriba o muy abajo
+C 0xA464 si ahi no se puede estar, no sale
+C 0xA46B tres bytes de 0xA481 segun la dificultad / 4: DE la velocidad y A otro dato
+C 0xA48D tipo 5: con (ix+0x1D) puesto, la curva de caida...
+C 0xA497 ... si no, anda; al chocar, se para y salta (p02:9FCA)
+C 0xA49E tipo 6: sale por un lado, pose 0x41, hace dano
+C 0xA4A9 salta hacia el centro (0x200, 0xFC80)
+C 0xA4BC tipo 6: dos poses, y cae con gravedad 0x66
+C 0xA4CA al volver a su y, otro salto
+C 0xA4D3 el que anda: entra por un lado o sale en un sitio al azar (p02:85B1)...
+C 0xA4D6 ... su ficha (p03:A954), su pose, y hacia el jugador en vertical
+C 0xA4DF (ix+0x19): la direccion horizontal que prefiere
+C 0xA4EB el que anda, segun su paso (0xA4F1)
+C 0xA4F5 con (ix+0x1D) puesto, la curva de caida
+C 0xA502 si choca con algo...
+C 0xA507 ... si no, sigue mientras vaya hacia donde prefiere
+C 0xA50E andando en vertical: prueba la horizontal que prefiere...
+C 0xA521 ... y en horizontal, la vertical que prefiere (ix+0x1A)
+C 0xA52D chocado: si puede, salta por encima (p03:A625); si no, se para y salta (p02:9FCA)
+C 0xA537 si no puede saltar, prueba las direcciones contrarias
+C 0xA567 (ix+0x1A): 8 (arriba) si el jugador esta mas arriba, 4 (abajo) si no
+C 0xA579 las dos direcciones que prefiere, al reves
+C 0xA58A A = la direccion (0: hacia el jugador en vertical)
+C 0xA592 la velocidad segun la dificultad: cuatro tandas de 0xA5D1...
+C 0xA5A0 ... cuatro bytes por direccion: [vertical][horizontal]
+C 0xA5B8 hacia el jugador: arriba (8) si esta mas arriba, abajo (4) si mas abajo, 2 si a su altura
+C 0xA5C8 el lado al que mira: el bit 0 de la direccion horizontal
+C 0xA611 la direccion contraria
+C 0xA625 saltar por encima: (ix+0x1E) pasos de los de 0xA67B segun la direccion...
+C 0xA647 ... sin salirse de la pantalla
+C 0xA65D se mira si al otro lado se puede estar
+C 0xA679 carry: no puede saltar
+C 0xA683 carry si en la direccion B choca (sin cambiar la que lleva)
+C 0xA699 carry si el paso siguiente choca: se mueve, se mira y se vuelve atras
+C 0xA6BC segun la direccion de (ix+0x1F): el primer bit puesto
+C 0xA6DA derecha: 8 mas alla...
+C 0xA6E6 ... y 3 mas arriba
+C 0xA6ED izquierda
+C 0xA700 arriba: 3 mas arriba, a 8 a cada lado
+C 0xA715 abajo: hasta y 0xC8, a 8 a cada lado
+C 0xA72A al acabar la espera, sigue andando: pose 0x43, hace dano otra vez
+C 0xA747 el que persigue: su ficha, su pose...
+C 0xA750 ... cada cuanto cambia de rumbo ((ix+0x15) = (ix+0x0B)), 0x70 en (ix+0x13)...
+C 0xA763 el tipo 21: con (ix+0x1D), la curva de caida; si no, segun su paso (0xA770)
+C 0xA778 el que persigue: con (ix+0x1D), la curva de caida; si no, segun su paso (0xA785)
+C 0xA78D carry si el jugador esta delante (a menos de 32) y a su altura (16)
+C 0xA7B4 los tipos 0x19 y 0x20, con el jugador delante: una figura de ocho pasos (0xA800, 0xA808)
+C 0xA7E3 la primera vez, 18 cuadros y su pose
+C 0xA810 con p03:A966 (carry) no hace nada mas
+C 0xA814 los tipos 0x19 y 0x20 mirando
+C 0xA827 cada 4 cuadros, (ix+0x13) cuenta: al acabar, el paso siguiente
+C 0xA83C si choca, salta por encima o se para
+C 0xA84E dispara cuando le toca
+C 0xA851 al acabar la espera, otra al azar (hasta 31 mas)...
+C 0xA863 ... y un rumbo nuevo hacia el jugador: por el eje en que este mas lejos
+C 0xA879 en vertical: arriba (8) o abajo (4)
+C 0xA887 en horizontal: derecha (1) o izquierda (2)
+C 0xA894 si ya iba, cambia de eje
+C 0xA8A2 chocado dos veces seguidas, cambia de eje; si no, da la vuelta
+C 0xA8B3 (ix+0x17) = |dy| y (ix+0x16) = |dx| hasta el jugador, con el signo en 0xCD20 y 0xCD21
+C 0xA8DE en el paso 1, como si estuviera encima
+C 0xA8EA al acabar la espera, baja, hace dano otra vez y el paso siguiente
+C 0xA8FE baja con la pose 0x4A hasta y 0x60; alli, otra vez desde el paso 0
+C 0xA917 cuando dispara: cada (ix+0x77) cuadros (el 0x15 no dispara)
+C 0xA928 el tipo 0x0F: segun la dificultad, y solo (ix+0x72) veces
+C 0xA943 0xCD38 = el lado al que mira, para el disparo
+C 0xA946 (ix+0x7D): el disparo de su tipo (0, ninguno)
+C 0xA94E y vuelve a empezar la cuenta de tres
+C 0xA954 el lado al que mira, segun hacia donde anda (salvo en el paso 2)
+C 0xA966 cada (ix+0x78) cuadros se para: guarda la velocidad...
+C 0xA976 ... 20 cuadros, la pose 0x68 + el lado, paso 2 y carry
+C 0xA988 parado: al acabar, dispara y el paso siguiente
+C 0xA99F y al acabar otra vez, sigue con la velocidad guardada
+C 0xA9B3 le han dado: tiembla (un punto a cada lado) 32 cuadros y se va
+C 0xA9D3 la primera vez que le dan: si es el tipo 0x21, 0xCD60 + 1 (hasta 8 se queda en 8)
+C 0xA9E5 quieto, ya no hace dano, 32 cuadros
+C 0xAA04 la ficha de su tipo (0xAA51, cuatro bytes, solo los tipos 1-0x21)
+C 0xAA13 [0] su pose base (ix+0x7E)
+C 0xAA18 [1] cada cuanto cambia de rumbo, menos la dificultad * 6, minimo 16
+C 0xAA22 [2] bits 0-4: su disparo (ix+0x7D); bits 6-7: lo que salta (ix+0x1E)
+C 0xAA32 [3] cada cuanto dispara, menos la dificultad * 6, minimo 32
+C 0xAA40 A - la dificultad * 6, y no menos de H
+C 0xAAD5 tipo 10: pose 0x38, hacia arriba, 64 cuadros hasta el primer disparo
+C 0xAAE5 en un sitio al azar: x cualquiera, y 0x50 o 0xD0
+C 0xAAFC FALLO: quiere poner (ix+0x75) = 0xE0, pero escribe en 0x0075, ROM de la BIOS; la cuenta de p03:ABC4 empieza con lo que dejo en ese hueco la figura anterior
+C 0xAB01 en la primera tanda, sale donde p02:85B1
+C 0xAB0C tipo 10: la cuenta de (ix+0x75), el disparo, la pose y segun su paso (0xAB1D)
+C 0xAB25 paso 0: anda 32 cuadros; si choca, salta hacia el jugador
+C 0xAB2E quieto 32 cuadros, y el paso siguiente
+C 0xAB53 paso 1: se da la vuelta cada 4 cuadros...
+C 0xAB62 ... y al acabar, va hacia el jugador (8 + dificultad / 2)
+C 0xAB78 mirando hacia donde va
+C 0xAB8C cada 64 - dificultad * 4 cuadros...
+C 0xABA1 ... el disparo 4 y el efecto 5
+C 0xABB2 paso 2: el salto; al caer, paso 1
+C 0xABC4 al acabar la cuenta de (ix+0x75), cae (paso 3)
+C 0xABD3 tipos 11 y 12: su ficha, su pose...
+C 0xABDC ... el 11 cada 48 cuadros, el 12 cada 24 (se lanza); 64 en (ix+0x75)
+C 0xABF6 sale como los demas: por un lado, o en la primera tanda donde p02:85B1
+C 0xAC00 tipos 11 y 12: pose 0x8B y segun su paso (0xAC0E)
+C 0xAC12 paso 0: la cuenta, mira al jugador, anda (si choca, da la vuelta), y se lanza
+C 0xAC24 cada 8-39 cuadros (al azar) un rumbo nuevo:
+C 0xAC3A la mitad de las veces uno de cuatro (0xAC69)...
+C 0xAC49 ... o hacia donde mira...
+C 0xAC5A ... o hacia el jugador en vertical
+C 0xAC6D andando en vertical, mira hacia el jugador
+C 0xAC83 cada 4 cuadros, (ix+0x18) cuenta: al acabar, (ix+0x1D) = 1, listo para lanzarse
+C 0xAC98 listo y a la altura del jugador (32): el disparo 5 hacia donde mira
+C 0xACB7 cada 4 cuadros, (ix+0x75) cuenta: al acabar, el paso siguiente
+C 0xACC5 si choca, a la izquierda o hacia arriba
+C 0xACD6 crea la figura 0x22 en (0x6D, 0x80)
+C 0xACDE crea la 0x23 en (0x6D, 0x80)
+C 0xACE6 tipos 34 y 35 (las de los interiores): pose 0x10, no hacen dano, andan a la derecha
+C 0xACFE van y vienen entre x 0x50 y 0xA0
+C 0xAD31 crea la 0x25 (el cursor de la tienda) en (0x87, 0x78)
+C 0xAD39 el tipo 37, la tienda: pose 0x19, quieto, la cosa elegida 0
+C 0xAD50 con la cosa 0x0A, siempre abierta
+C 0xAD57 si no: los interiores 0-7 abren con la cifra de las decenas del tiempo impar, los 8-15 con ella par...
+C 0xAD67 ... y si no toca, el rotulo de cerrado (0x6F; 0x70 en los 8-15) y no hay tienda
+C 0xAD78 la tienda, segun su paso (0xAD7E)
+C 0xAD84 paso 0: el primer boton pasa a la cosa siguiente; el segundo, compra
+C 0xAD97 paso 1: la siguiente de las tres que tenga algo (0xCD8C, 0xCD83)
+C 0xADBA la marca, en el sitio de esa cosa (0xADB4)
+C 0xADD4 paso 2: comprar lo elegido, segun lo que sea
+C 0xADE5 la cosa elegida - 1, y lo que hace al comprarla (tabla de 0xADEB)
+C 0xAE07 una cosa de las que se tienen hasta 3: se paga y una mas
+C 0xAE11 una cosa con valor: se paga y, si no se tenia, vale A
+C 0xAE38 el precio de la elegida (0xCD86 + 2 * n) se paga: carry si no llega el dinero
+C 0xAE49 vendida: fuera de la tienda...
+C 0xAE54 ... y el efecto 0x15
+C 0xAE5B una mas de la cosa, salvo que ya tenga 3
+C 0xAE81 fuera su icono de la tienda
+C 0xAE93 la cosa 8 dura 100 segundos (0xC27C)
+C 0xAE98 la cosa vale 1
+C 0xAEA3 la cosa vale 5
+C 0xAEAE 16 de vida...
+C 0xAEB0 ... u 8
+C 0xAEC4 200 segundos mas
+C 0xAED5 el texto de la tienda (C = 0)...
+C 0xAED9 ... o el de que no llega el dinero (C = 4)
+C 0xAEDB segun el interior / 4 (0xAEF1)
+C 0xAEF9 una compra mas de esa cosa en esta zona (hasta 4): el precio se dobla
+C 0xAF08 crea la 0x27 en (0x1E, 0x18)
+C 0xAF10 el tipo 39: la casa de cambio de lo que se tiene; quieto, sin dano
+C 0xAF27 empieza buscando desde la cosa 0
+C 0xAF36 segun su paso (0xAF3C)
+C 0xAF42 el primer boton, la siguiente; el segundo, cambiar; con el texto 0x16
+C 0xAF5A la siguiente cosa que se tenga, de las 10
+C 0xAF7D la marca, en su sitio del marcador (0xB010)
+C 0xAF9A lo que vale, de la tabla de precios
+C 0xAFA9 y se pinta en (0x87, 0x60), con la moneda al lado
+C 0xAFBE el valor segun las veces que se ha comprado: 0 o 1, la mitad...
+C 0xAFD4 ... 3 o mas, el doble por cada una de mas
+C 0xAFE2 la mitad en BCD: cifra a cifra, con el 5 que baja de la de arriba si era impar
+C 0xB007 A / 2 de un nibble BCD (el 8 que baja se corrige a 5)
+C 0xB01A la x de la marca segun cuantas se tienen (16 por cada una)
+C 0xB024 pasada la cosa 8, vuelta a la 0
+C 0xB02E cambiar la elegida: si ya se cambio una, nada
+C 0xB037 si no se tiene, el texto 0x1A
+C 0xB047 la cosa 3: ademas da CONTINUAR (p03:B070)
+C 0xB051 las cosas 1-8 se pierden enteras; la 0 y la 9, una
+C 0xB05E y se cobra lo que vale (0xCD86)
+C 0xB065 ya se cambio una: (ix+0x0F) = 1
+C 0xB06B sin nada que cambiar, paso 3
+C 0xB070 si aun no lo tenia: el texto 0x1B y 0xC27F = 1, se puede CONTINUAR
+C 0xB080 crea la figura B en (0x58, 0x70)
+C 0xB086 el tipo 38: la marca de si o no; 0xCD82 = 0 (nada elegido); x 0x70 o 0x90 (0xCD93)
+C 0xB0AD el primer boton cambia de opcion; el segundo elige
+C 0xB0C0 de una a la otra: x 0x70 o 0xCD93
+C 0xB0D4 elegido: 0xCD82 = 1 (la de x 0x70) o 2
+C 0xB0E6 con 0xCD91 puesto, se va
+C 0xB0F2 crea la 0x28 en (0x6D, 0x80)
+C 0xB0FA el tipo 40: quieto, sin dano
+C 0xB111 con la cosa 0x0A: la marca de si o no (0x26) y los rotulos 0 y 0x19
+C 0xB11A sin ella, los rotulos 0x18 y 0x1C (0x1D en la zona 6)
+C 0xB136 elegido: si (1), el texto 0x16 y la figura 0x27; no (2), el texto 0x1A
+C 0xB15C espera a 0xCD92
+C 0xB16C el tipo 36: quieto; con la cosa 0x0A, la marca de si o no y los rotulos 5 y 0
+C 0xB1C8 elegido: si (1) y se puede pagar (p03:B289)...
+C 0xB1D8 ... el texto 6, el rotulo 1, y las figuras 0x26, 0x29 y 0x2A
+C 0xB1FF elegido: (0xCD8F) y la pose siguiente
+C 0xB213 los dos dados parados (0xCD8D y 0xCD8E)...
+C 0xB222 ... la suma, par o impar...
+C 0xB22C ... contra lo elegido (0xCD8F: 1 par, 2 impar)
+C 0xB233 acierta: el DINERO SE DOBLA, el texto 8 y el efecto 0x19
+C 0xB247 falla: el dinero se queda en la MITAD, el texto 9 y el efecto 0x18
+C 0xB25F los dos dados: sus cifras en (0x70, 0x40) y (0x80, 0x40)...
+C 0xB275 ... y el rotulo de par (0x0A) o impar (0x0B)
+C 0xB289 sin dinero no se juega: efecto 0x1B y carry
+C 0xB29A el dado 0x29 en (0x87, 0xA0)
+C 0xB2A2 el dado 0x2A en (0x87, 0x60)
+C 0xB2AA los tipos 41 y 42, los dados: pose 0x13 (el 1)...
+C 0xB2AE ... y rueda 20-35 cuadros (al azar)
+C 0xB2DE paso 0: espera a que se elija (0xCD90)
+C 0xB2E7 paso 1: rueda, cada 2 cuadros una cara mas, con el efecto 0x0F
+C 0xB2ED el segundo no se para hasta que se pare el primero
+C 0xB30C parado: su cifra (la pose - 0x13 + 1) a 0xCD8D, o a 0xCD8E si ya estaba la otra
+C 0xB320 la cara siguiente, de 6
+C 0xB332 la cara del 1 lleva otro color
+C 0xB347 crea la 0x2C en (0x9A, 0x88)
+C 0xB34F el tipo 44: quieto, pose 0x3E, y el rotulo 2
+C 0xB37E elegido si y se puede pagar (0xCD86):
+C 0xB390 el texto 7, la musica fuera, el tiempo parado (0xCD32)...
+C 0xB3AD ... y el jugador fuera de la pantalla (y 0xF0), quieto
+C 0xB3CB elegido no: el texto 7 y paso 3
+C 0xB3DA sin dinero: el texto 4 y paso 3
+C 0xB3E9 cada 8 cuadros, un paso de la animacion, 8 en total
+C 0xB3FD y luego una pantalla aparte: el dibujo de Goemon (0x90, 0xA0) o de Ebisumaru (0xC8, 0xA0) de la pagina 1 en (0x80, 0x80)
+C 0xB41D sus colores
+C 0xB43F el fundido: los 15 colores de 0xB470, menos el paso (0xC, hasta 0)
+C 0xB49D en la posada, las poses del jugador dormido (0x3E Goemon, 0x7E Ebisumaru, + 0xB535)
+C 0xB4BE con el efecto 0x17
+C 0xB4DF al acabar: la musica 0x16, la casilla otra vez...
+C 0xB4F1 ... y la vida: suma_vida toma A, no DE; A vale 0xD0 (lo que deja pinta_la_pantalla), asi que se llena
+C 0xB4F7 el marcador y la paleta
+C 0xB508 16 cuadros sin sprites, y vuelve el jugador a su sitio
+C 0xB522 la musica 0x01...
+C 0xB527 ... la posada sube de precio (la cosa 15 de 0xCDA0)...
+C 0xB52C ... y el rotulo 3
+C 0xB539 paga DE ryo: si no llega, el efecto 0x1B y carry
+C 0xB549 crea la 0x2B en (0x70, 0x80)
+C 0xB551 el tipo 43, el que vende el PLANO: pose 0x0E, los rotulos 0 y 0x71
+C 0xB57F su precio, en (0x88, 0x38)
+C 0xB58E elegido si y pagado: el icono del plano (0x0E, 32 x 32) en (0x30, 0x20)...
+C 0xB5B0 ... 0xCDB0 = 1 (ya se puede ver el plano, p01:7D0D) y la musica 0x11
+C 0xB5BC sin dinero, el texto 0x6E; si no, el 7
+C 0xB5C9 los tipos 7 y 13 salen de tres en tres, en fila
+C 0xB5EC cada uno 24 - (los bits 2-3 de la dificultad) cuadros despues del anterior
+C 0xB60C el 13 sale en (0xB0, 0x58)
+C 0xB623 el 7 sale donde salio el primero (0xCD4A), con su direccion (0xCD4C)
+C 0xB645 si el primero no pudo salir (0xCD14), los demas tampoco
+C 0xB64C el primero elige por donde sale (p02:9763) y lo apunta para los otros
+C 0xB68D el tipo 47: la casa de las cosas de tipo 0x14 (0xC340), pose 0x10
+C 0xB692 segun su paso (0xB698)
+C 0xB6A4 con la cosa 0x0A, el texto 0x0F
+C 0xB6AA si no: la marca de esta casilla en 0xC340...
+C 0xB6B6 ... elige el texto (0xB716): la marcada (bit 7) y las demas, por lo que lleven
+C 0xB6C4 con 2 visitas:
+C 0xB6E4 ... la marcada: el rotulo 0x1E (0x1F en la zona 6) y la COSA 0x0A (0xC27E = 1)
+C 0xB70A ... las demas: se queda con TODO el dinero
+C 0xB6CF el rotulo 0 y la marca de si o no
+C 0xB71D HL = la marca de esta casilla en la lista de 0xC340 (0xC28D entradas)
+C 0xB72E elegido si: un texto al azar (p03:B75E), 128 cuadros...
+C 0xB74A ... y sin la cosa 0x0A, una visita mas (hasta 3)
+C 0xB75E el texto al azar: de los 0x17 primeros; con las cosas 3 y 4, de 0x37; con ellas y la 0x0A, de 0x46
+C 0xB776 el anterior + 0-15 (registro R), dando la vuelta
+C 0xB787 apuntado en 0xC28F; el rotulo 0x20 + n
+C 0xB790 al acabar la espera, el texto 0x11 y se cobra (p03:B7D3)
+C 0xB79C si no llega, otros 128 cuadros (y luego p03:B7B4)
+C 0xB7B4 sin dinero para pagar: el texto 0x15, fuera del interior y el jugador al estado 3 (despedido)
+C 0xB7D3 lo que se cobra: con el dinero acabado en 5, 300 ryo...
+C 0xB7E0 ... con 1000 o mas, 990...
+C 0xB7E9 ... con menos de 31, 100...
+C 0xB7F5 ... y si no, el dinero - 30
+C 0xB803 se pinta en (0x68, 0x40)
+C 0xB812 y se cobra: carry si no llegaba
+C 0xB828 se sale del interior (p01:72B8)
+C 0xB836 el texto A: la caja del texto y el rotulo 0x16 delante
+C 0xB843 el plano: los marcos de caracteres en blanco de alrededor
+C 0xB867 y ocho trozos mas (0xB882): [x][y][x][y]
+C 0xB8A2 14 caracteres en blanco seguidos, hacia abajo
+C 0xB8B3 16 hacia la derecha
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
@@ -79,6 +398,48 @@ F 0xBFF2 16
 # --- fin de los bloques de bloques.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0xA0ED tipo_01_sale la figura de tipo 1 (0x01): su arranque (tabla de p02:8427)
+L 0xA0FE tipo_01 la figura de tipo 1 (0x01), un cuadro (tabla de p02:871C)
+L 0xA151 tipo_03_sale la figura de tipo 3 (0x03): su arranque (tabla de p02:8427)
+L 0xA184 tipo_03 la figura de tipo 3 (0x03), un cuadro (tabla de p02:871C)
+L 0xA296 tipo_02_sale la figura de tipo 2 (0x02): su arranque (tabla de p02:8427)
+L 0xA2CF tipo_02 la figura de tipo 2 (0x02), un cuadro (tabla de p02:871C)
+L 0xA368 tipo_04_sale la figura de tipo 4 (0x04): su arranque (tabla de p02:8427)
+L 0xA3E0 tipo_04 la figura de tipo 4 (0x04), un cuadro (tabla de p02:871C)
+L 0xA3F9 tipo_05_sale la figura de tipo 5 (0x05): su arranque (tabla de p02:8427)
+L 0xA48D tipo_05 la figura de tipo 5 (0x05), un cuadro (tabla de p02:871C)
+L 0xA49E tipo_06_sale la figura de tipo 6 (0x06): su arranque (tabla de p02:8427)
+L 0xA4BC tipo_06 la figura de tipo 6 (0x06), un cuadro (tabla de p02:871C)
+L 0xA4D3 andador_sale el arranque de los tipos 8, 16, 19, 20, 27, 28, 30 y 33
+L 0xA4EB andador un cuadro de los tipos 7, 8, 16, 19, 20, 27, 28, 30 y 33
+L 0xA747 perseguidor_sale el arranque de los tipos 9, 14, 15, 17, 21-26, 31 y 32: los que persiguen al jugador
+L 0xA763 tipo_21 la figura de tipo 21 (0x15), un cuadro
+L 0xA778 perseguidor un cuadro de los tipos 9, 13-15, 17, 22-26, 31 y 32: persiguen al jugador
+L 0xAAD5 tipo_10_sale la figura de tipo 10 (0x0A): su arranque (tabla de p02:8427)
+L 0xAB0C tipo_10 la figura de tipo 10 (0x0A), un cuadro (tabla de p02:871C)
+L 0xABD3 tipos_11_12_sale los tipos 11 y 12: su arranque
+L 0xAC00 tipos_11_12 los tipos 11 y 12, un cuadro
+L 0xACE6 tipos_34_35_sale los tipos 34 y 35 (0x22, 0x23): su arranque
+L 0xACFE tipos_34_35 los tipos 34 y 35, un cuadro
+L 0xAD39 tipo_37_sale la figura de tipo 37 (0x25): su arranque (tabla de p02:8427)
+L 0xAD78 tipo_37 la figura de tipo 37 (0x25), un cuadro (tabla de p02:871C)
+L 0xAF10 tipo_39_sale la figura de tipo 39 (0x27): su arranque (tabla de p02:8427)
+L 0xAF36 tipo_39 la figura de tipo 39 (0x27), un cuadro (tabla de p02:871C)
+L 0xB086 tipo_38_sale la figura de tipo 38 (0x26): su arranque (tabla de p02:8427)
+L 0xB09F tipo_38 la figura de tipo 38 (0x26), un cuadro (tabla de p02:871C)
+L 0xB0FA tipo_40_sale la figura de tipo 40 (0x28): su arranque (tabla de p02:8427)
+L 0xB12A tipo_40 la figura de tipo 40 (0x28), un cuadro (tabla de p02:871C)
+L 0xB16C tipo_36_sale la figura de tipo 36 (0x24): su arranque (tabla de p02:8427)
+L 0xB1BA tipo_36 la figura de tipo 36 (0x24), un cuadro (tabla de p02:871C)
+L 0xB2AA tipos_41_42_sale los tipos 41 y 42 (0x29, 0x2A): su arranque
+L 0xB2D2 tipos_41_42 los tipos 41 y 42, un cuadro
+L 0xB34F tipo_44_sale la figura de tipo 44 (0x2C): su arranque (tabla de p02:8427)
+L 0xB36C tipo_44 la figura de tipo 44 (0x2C), un cuadro (tabla de p02:871C)
+L 0xB551 tipo_43_sale la figura de tipo 43 (0x2B): su arranque (tabla de p02:8427)
+L 0xB573 tipo_43 la figura de tipo 43 (0x2B), un cuadro (tabla de p02:871C)
+L 0xB5EC tipos_07_13_sale los tipos 7 y 13: su arranque
+L 0xB68D tipo_47_sale la figura de tipo 47 (0x2F): su arranque (tabla de p02:8427)
+L 0xB692 tipo_47 la figura de tipo 47 (0x2F), un cuadro (tabla de p02:871C)
 L 0xBAD2 hl_mas_de HL += DE
 L 0xBDF6 teclea_palabra lo que se teclea en la pausa
 L 0xBE4E claves_secretas compara lo tecleado con las claves secretas (0xBE8A)
@@ -86,9 +447,7 @@ C 0xA046 niega_de: DE = -DE
 C 0xA04D niega_de: DE = -DE
 C 0xA055 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA05B pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0xA05E pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA064 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0xA067 lee la velocidad vertical (parte baja)
 C 0xA06A lee la velocidad vertical
 C 0xA06D lee la velocidad horizontal (parte baja)
 C 0xA070 lee la velocidad horizontal
@@ -105,10 +464,7 @@ C 0xA116 lee la x de los sprites del jugador
 C 0xA119 compara con la x de la figura
 C 0xA11E niega_de: DE = -DE
 C 0xA121 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0xA124 lee la y de la figura
 C 0xA12C sube el paso en que va la figura
-C 0xA130 lee la y de la figura
-C 0xA13B lee la velocidad vertical
 C 0xA13E lee la velocidad vertical (parte baja)
 C 0xA142 guarda la velocidad vertical
 C 0xA145 guarda la velocidad vertical (parte baja)
@@ -120,11 +476,9 @@ C 0xA170 guarda la x de la figura
 C 0xA173 la y de la figura = 0x10
 C 0xA17A pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA180 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0xA184 lee la velocidad horizontal
 C 0xA1A2 guarda la pose de la figura
 C 0xA1A8 lee el paso en que va la figura
 C 0xA1AB despacha: salta a la entrada A de la tabla que va detras del call
-C 0xA1BA lee la y de la figura
 C 0xA1C3 niega_de: DE = -DE
 C 0xA1C6 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA1CC pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
@@ -134,7 +488,6 @@ C 0xA1E4 sube el paso en que va la figura
 C 0xA1EA pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA1F0 niega_de: DE = -DE
 C 0xA1F3 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0xA1F6 lee la x de la figura
 C 0xA1FD sube el paso en que va la figura
 C 0xA203 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA209 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
@@ -145,7 +498,6 @@ C 0xA222 niega_de: DE = -DE
 C 0xA225 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA22B niega_de: DE = -DE
 C 0xA22E pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0xA231 lee la x de la figura
 C 0xA238 el paso en que va la figura = 0x01
 C 0xA23F niega_de: DE = -DE
 C 0xA242 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -155,7 +507,6 @@ C 0xA253 guarda la x de la figura
 C 0xA25E pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA263 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA266 el paso en que va la figura = 0x05
-C 0xA26C lee la velocidad horizontal
 C 0xA26F lee la velocidad horizontal (parte baja)
 C 0xA273 guarda la velocidad horizontal
 C 0xA276 guarda la velocidad horizontal (parte baja)
@@ -176,7 +527,6 @@ C 0xA312 le resta la x de la figura
 C 0xA31C dispara: crea el disparo A (tabla de 0x8B6B)
 C 0xA336 niega_de: DE = -DE
 C 0xA33F niega_de: DE = -DE
-C 0xA359 lee la velocidad vertical (parte baja)
 C 0xA35C lee la velocidad vertical
 C 0xA365 crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xA373 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
@@ -198,9 +548,7 @@ C 0xA424 borra_la_figura: borra la figura
 C 0xA427 lee la x del jugador
 C 0xA42E borra_la_figura: borra la figura
 C 0xA442 guarda la x de la figura
-C 0xA445 lee la y del jugador
 C 0xA459 guarda la y de la figura
-C 0xA464 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA468 borra_la_figura: borra la figura
 C 0xA478 hl_mas_a: HL += A
 C 0xA4A1 la pose de la figura = 0x41
@@ -209,24 +557,20 @@ C 0xA4B3 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = D
 C 0xA4B9 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA4CD compara con la y de la figura
 C 0xA4D9 pon_la_pose: pone la pose de la figura
-C 0xA4EB lee el paso en que va la figura
 C 0xA4EE despacha: salta a la entrada A de la tabla que va detras del call
 C 0xA568 lee la y de los sprites del jugador
 C 0xA56B compara con la y de la figura
 C 0xA59C hl_mas_a: HL += A
 C 0xA5AD pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA5B3 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0xA5B8 lee la y de la figura
 C 0xA5BB lee la y del jugador
 C 0xA63C lee la x de la figura
 C 0xA63F lee la y de la figura
-C 0xA65D guarda la x de la figura
 C 0xA660 guarda la y de la figura
 C 0xA66A guarda la x de la figura
 C 0xA66D guarda la y de la figura
 C 0xA673 guarda la x de la figura
 C 0xA676 guarda la y de la figura
-C 0xA699 lee la fraccion de la y de la figura
 C 0xA69C lee la y de la figura
 C 0xA6A0 lee la fraccion de la x de la figura
 C 0xA6A3 lee la x de la figura
@@ -258,10 +602,7 @@ C 0xA7A1 le resta la y de la figura
 C 0xA7AB lee la x de la figura
 C 0xA7AE apunta a la x del jugador
 C 0xA7F1 pon_la_pose: pone la pose de la figura
-C 0xA814 lee el tipo de la figura
-C 0xA827 lee el paso en que va la figura
 C 0xA839 sube el paso en que va la figura
-C 0xA8B3 lee el paso en que va la figura
 C 0xA8BE lee la y del jugador
 C 0xA8C1 le resta la y de la figura
 C 0xA8CF lee la x del jugador
@@ -269,10 +610,8 @@ C 0xA8D2 le resta la x de la figura
 C 0xA8FA sube el paso en que va la figura
 C 0xA906 lee la y de la figura
 C 0xA912 el paso en que va la figura = 0x00
-C 0xA917 lee el paso en que va la figura
 C 0xA91C lee el tipo de la figura
 C 0xA94B dispara: crea el disparo A (tabla de 0x8B6B)
-C 0xA954 lee el paso en que va la figura
 C 0xA970 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA973 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA97F guarda la pose de la figura
@@ -286,13 +625,9 @@ C 0xA9C3 lee la x de la figura
 C 0xA9C7 guarda la x de la figura
 C 0xA9CB lee la x de la figura
 C 0xA9CF guarda la x de la figura
-C 0xA9D3 lee el tipo de la figura
-C 0xA9E5 lee la y de la figura
 C 0xA9FA pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xA9FD pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-C 0xAA04 lee el tipo de la figura
 C 0xAA10 de_mas_a: DE += A
-C 0xAAD5 la pose de la figura = 0x38
 C 0xAAEC guarda la x de la figura
 C 0xAAF2 le suma la x de la figura
 C 0xAAF9 guarda la y de la figura
@@ -314,11 +649,9 @@ C 0xABBE el paso en que va la figura = 0x01
 C 0xABCA guarda la velocidad vertical
 C 0xABCF guarda el paso en que va la figura
 C 0xABD9 pon_la_pose: pone la pose de la figura
-C 0xABDC lee el tipo de la figura
 C 0xAC08 lee el paso en que va la figura
 C 0xAC0B despacha: salta a la entrada A de la tabla que va detras del call
 C 0xAC41 de_mas_a: DE += A
-C 0xAC5A lee la y del jugador
 C 0xAC5D compara con la y de la figura
 C 0xAC73 lee la x de la figura
 C 0xAC76 apunta a la x del jugador
@@ -328,7 +661,6 @@ C 0xACB4 dispara: crea el disparo A (tabla de 0x8B6B)
 C 0xACC1 sube el paso en que va la figura
 C 0xACDB crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xACE3 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xACE6 la pose de la figura = 0x10
 C 0xACEE guarda la velocidad vertical (parte baja)
 C 0xACF1 guarda la velocidad vertical
 C 0xACF7 guarda la velocidad horizontal (parte baja)
@@ -344,7 +676,6 @@ C 0xAD21 guarda la velocidad horizontal
 C 0xAD25 lee la x de la figura
 C 0xAD2B el paso en que va la figura = 0x00
 C 0xAD36 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xAD39 la pose de la figura = 0x19
 C 0xAD41 guarda la velocidad vertical (parte baja)
 C 0xAD44 guarda la velocidad vertical
 C 0xAD47 guarda la velocidad horizontal (parte baja)
@@ -352,17 +683,13 @@ C 0xAD4A guarda la velocidad horizontal
 C 0xAD5E lee el TIEMPO (BCD)
 C 0xAD72 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xAD75 borra_la_figura: borra la figura
-C 0xAD78 lee el paso en que va la figura
 C 0xAD7B despacha: salta a la entrada A de la tabla que va detras del call
-C 0xAD84 lee lo que se acaba de apretar (mando y cursores)
 C 0xAD90 sube el paso en que va la figura
 C 0xAD93 sube el paso en que va la figura
-C 0xAD97 el paso en que va la figura = 0x00
 C 0xADAB hl_mas_a: HL += A
 C 0xADC0 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xADC3 guarda la y de la figura
 C 0xADC6 guarda la x de la figura
-C 0xADD4 el paso en que va la figura = 0x00
 C 0xADDE hl_mas_a: HL += A
 C 0xADE8 despacha: salta a la entrada A de la tabla que va detras del call
 C 0xAE1A apunta a las 10 cosas del marcador
@@ -386,15 +713,12 @@ C 0xAEE5 de_mas_a: DE += A
 C 0xAEE9 de_mas_a: DE += A
 C 0xAEFF hl_mas_a: HL += A
 C 0xAF0D crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xAF10 la pose de la figura = 0x19
 C 0xAF18 guarda la velocidad vertical (parte baja)
 C 0xAF1B guarda la velocidad vertical
 C 0xAF1E guarda la velocidad horizontal (parte baja)
 C 0xAF21 guarda la velocidad horizontal
 C 0xAF31 el paso en que va la figura = 0x00
-C 0xAF36 lee el paso en que va la figura
 C 0xAF39 despacha: salta a la entrada A de la tabla que va detras del call
-C 0xAF42 lee lo que se acaba de apretar (mando y cursores)
 C 0xAF4E sube el paso en que va la figura
 C 0xAF51 sube el paso en que va la figura
 C 0xAF5E el paso en que va la figura = 0x00
@@ -406,30 +730,22 @@ C 0xAFA2 de_mas_a: DE += A
 C 0xAFB1 pinta_bcd: pinta cifras en BCD
 C 0xAFC2 de_mas_a: DE += A
 C 0xB02A apunta a las 10 cosas del marcador
-C 0xB02E el paso en que va la figura = 0x00
 C 0xB03A apunta a las 10 cosas del marcador
 C 0xB03D hl_mas_a: HL += A
 C 0xB068 pinta_las_cosas: pinta las cosas del marcador
-C 0xB06B el paso en que va la figura = 0x03
-C 0xB070 lee si se puede continuar
 C 0xB07C guarda si se puede continuar
 C 0xB083 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB086 la pose de la figura = 0x1A
 C 0xB093 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xB096 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xB09F lee el paso en que va la figura
 C 0xB0A2 despacha: salta a la entrada A de la tabla que va detras del call
-C 0xB0AD lee lo que se acaba de apretar (mando y cursores)
 C 0xB0B9 sube el paso en que va la figura
 C 0xB0BC sube el paso en que va la figura
-C 0xB0C0 el paso en que va la figura = 0x00
 C 0xB0C4 lee la x de la figura
 C 0xB0D0 guarda la x de la figura
-C 0xB0D4 lee la x de la figura
 C 0xB0E2 sube el paso en que va la figura
 C 0xB0EF borra_la_figura: borra la figura
 C 0xB0F7 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB0FA la pose de la figura = 0x10
 C 0xB102 guarda la velocidad vertical (parte baja)
 C 0xB105 guarda la velocidad vertical
 C 0xB108 guarda la velocidad horizontal (parte baja)
@@ -442,7 +758,6 @@ C 0xB144 sube el paso en que va la figura
 C 0xB157 el paso en que va la figura = 0x02
 C 0xB161 sube el paso en que va la figura
 C 0xB169 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB16C la pose de la figura = 0x10
 C 0xB174 guarda la velocidad vertical (parte baja)
 C 0xB177 guarda la velocidad vertical
 C 0xB17A guarda la velocidad horizontal (parte baja)
@@ -459,28 +774,22 @@ C 0xB1E7 sube el paso en que va la figura
 C 0xB207 sube el paso en que va la figura
 C 0xB20A sube la pose de la figura
 C 0xB223 sube el paso en que va la figura
-C 0xB233 lee el DINERO (ryo, BCD)
 C 0xB244 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0xB247 dinero_a_la_mitad: el dinero (BCD) entre dos
 C 0xB24A pinta_el_dinero: pinta el dinero (4 cifras) en (0x70, 8)
 C 0xB257 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB25A el paso en que va la figura = 0x03
 C 0xB267 letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 C 0xB272 letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
 C 0xB285 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-C 0xB289 lee el DINERO (ryo, BCD)
 C 0xB295 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB29F crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB2A7 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB2AA la pose de la figura = 0x13
-C 0xB2AE lee el tipo de la figura
 C 0xB2B1 lee la x de la figura
 C 0xB2CC pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xB2CF pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xB2D2 lee el paso en que va la figura
 C 0xB2D5 despacha: salta a la entrada A de la tabla que va detras del call
 C 0xB2E3 sube el paso en que va la figura
-C 0xB2ED lee el tipo de la figura
 C 0xB2FC sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB314 lee la pose de la figura
 C 0xB31B sube el paso en que va la figura
@@ -490,7 +799,6 @@ C 0xB32F guarda la pose de la figura
 C 0xB335 lee la pose de la figura
 C 0xB344 colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0xB34C crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB34F la pose de la figura = 0x3E
 C 0xB357 guarda la velocidad vertical (parte baja)
 C 0xB35A guarda la velocidad vertical
 C 0xB35D guarda la velocidad horizontal (parte baja)
@@ -500,22 +808,18 @@ C 0xB36C lee el paso en que va la figura
 C 0xB36F despacha: salta a la entrada A de la tabla que va detras del call
 C 0xB395 sube el paso en que va la figura
 C 0xB3A2 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-C 0xB3AD lee la y de los sprites del jugador
 C 0xB3B3 lee la y del jugador
 C 0xB3BB guarda la y de los sprites del jugador
 C 0xB3BE guarda la y del jugador
 C 0xB3D5 el paso en que va la figura = 0x03
 C 0xB3E4 el paso en que va la figura = 0x03
-C 0xB3FD apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xB400 borra_la_pagina: esconde los sprites y pinta del color 0 los 256 x 256 puntos
 C 0xB403 lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xB41A hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
-C 0xB41D paleta_base: pone la paleta base
 C 0xB428 pon_un_color: color A de la paleta = DE
 C 0xB433 sube el paso en que va la figura
 C 0xB44C hl_mas_a: HL += A
 C 0xB46A pon_un_color: color A de la paleta = DE
-C 0xB49D lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xB4B6 de_mas_a: DE += A
 C 0xB4BB guarda la pose de la figura
 C 0xB4C5 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -526,21 +830,17 @@ C 0xB4E8 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa,
 C 0xB4EB monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
 C 0xB4EE pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
 C 0xB4F4 suma_vida: suma A a la vida, hasta la maxima, y la pinta
-C 0xB4F7 pinta_el_marcador: pinta el marcador entero
 C 0xB4FA paleta_base: pone la paleta base
 C 0xB500 sube el paso en que va la figura
-C 0xB508 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
 C 0xB50F enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xB519 guarda la y de los sprites del jugador
 C 0xB51F guarda la y del jugador
 C 0xB524 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB52E rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB531 borra_la_figura: borra la figura
-C 0xB539 lee el DINERO (ryo, BCD)
 C 0xB53F resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 C 0xB544 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB54E crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB551 la pose de la figura = 0x0E
 C 0xB559 guarda la velocidad vertical (parte baja)
 C 0xB55C guarda la velocidad vertical
 C 0xB55F guarda la velocidad horizontal (parte baja)
@@ -549,7 +849,6 @@ C 0xB56A rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB56F rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB573 lee el paso en que va la figura
 C 0xB576 despacha: salta a la entrada A de la tabla que va detras del call
-C 0xB57F sube el paso en que va la figura
 C 0xB58A pinta_bcd: pinta cifras en BCD
 C 0xB5AD pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 C 0xB5B7 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -557,12 +856,10 @@ C 0xB5C5 sube el paso en que va la figura
 C 0xB5D7 crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB5DC crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB5E1 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB60C lee el tipo de la figura
 C 0xB616 guarda la x de la figura
 C 0xB619 guarda la y de la figura
 C 0xB61C el paso en que va la figura = 0x02
 C 0xB620 pon_la_pose: pone la pose de la figura
-C 0xB623 el paso en que va la figura = 0x01
 C 0xB62B guarda la x de la figura
 C 0xB62E guarda la y de la figura
 C 0xB63F pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -574,8 +871,6 @@ C 0xB66D pon_la_pose: pone la pose de la figura
 C 0xB673 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xB676 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xB68A crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB68D la pose de la figura = 0x10
-C 0xB692 lee el paso en que va la figura
 C 0xB695 despacha: salta a la entrada A de la tabla que va detras del call
 C 0xB6BD de_mas_a: DE += A
 C 0xB6D1 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
@@ -593,9 +888,6 @@ C 0xB7BE guarda la pantalla especial
 C 0xB7C6 guarda el estado del jugador
 C 0xB7CB sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB7CE esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
-C 0xB7D3 lee el DINERO (ryo, BCD)
-C 0xB7E9 lee el DINERO (ryo, BCD)
-C 0xB7F5 lee el DINERO (ryo, BCD)
 C 0xB80F pinta_bcd: pinta cifras en BCD
 C 0xB816 lee el DINERO (ryo, BCD)
 C 0xB81F resta_dinero: resta DE ryo (BCD) al dinero, hasta 0

@@ -23,8 +23,8 @@ ladb4h:	equ 0x0adb4
 
 
 L_A000:
-	call L_A080		;a000
-	xor a			;a003
+	call L_A080		;a000   ; vuelve la velocidad guardada...
+	xor a			;a003   ; ... y (ix+0x1D) = 0
 	ld (ix+01dh),a		;a004
 	ret			;a007
 
@@ -43,7 +43,7 @@ DATA_curva_de_caida:
 
 
 L_A028:
-	ld a,(ix+01eh)		;a028
+	ld a,(ix+01eh)		;a028   ; la velocidad segun la direccion de (ix+0x1F): (ix+0x1E) * 0x80
 	or a			;a02b
 	ret z			;a02c
 	ld hl,00000h		;a02d
@@ -52,32 +52,32 @@ L_A028:
 L_A034:
 	add hl,de			;a034
 	djnz L_A034		;a035
-	ld a,(ix+01fh)		;a037
+	ld a,(ix+01fh)		;a037   ; con los bits 0-1 de (ix+0x1F), 0x80 mas
 	and 003h		;a03a
 	jr z,L_A03F		;a03c
 	add hl,de			;a03e
 L_A03F:
 	ex de,hl			;a03f
-	ld a,(ix+01fh)		;a040
+	ld a,(ix+01fh)		;a040   ; el bit 1, hacia la izquierda...
 	bit 1,a		;a043
 	push af			;a045
 	call nz,08c0ah		;a046   ; niega_de: DE = -DE
 	pop af			;a049
-	bit 3,a		;a04a
+	bit 3,a		;a04a   ; ... y el bit 3, hacia arriba
 	push af			;a04c
 	call nz,08c0ah		;a04d   ; niega_de: DE = -DE
 	pop af			;a050
-	and 003h		;a051
+	and 003h		;a051   ; bits 0-1: en horizontal...
 	jr z,L_A05E		;a053
 	call 087e4h		;a055   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	ld de,00000h		;a058
 	jp 087ebh		;a05b   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_A05E:
-	call 087ebh		;a05e   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+	call 087ebh		;a05e   ; ... si no, en vertical
 	ld de,00000h		;a061
 	jp 087e4h		;a064   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 L_A067:
-	ld d,(ix+006h)		;a067   ; lee la velocidad vertical (parte baja)
+	ld d,(ix+006h)		;a067   ; guarda la velocidad en (ix+0x79)-(ix+0x7C)
 	ld e,(ix+007h)		;a06a   ; lee la velocidad vertical
 	ld h,(ix+008h)		;a06d   ; lee la velocidad horizontal (parte baja)
 	ld l,(ix+009h)		;a070   ; lee la velocidad horizontal
@@ -87,7 +87,7 @@ L_A067:
 	ld (ix+079h),l		;a07c
 	ret			;a07f
 L_A080:
-	ld d,(ix+07ch)		;a080
+	ld d,(ix+07ch)		;a080   ; y la recupera
 	ld e,(ix+07bh)		;a083
 	ld h,(ix+07ah)		;a086
 	ld l,(ix+079h)		;a089
@@ -114,15 +114,15 @@ DATA_tres_filas:
 ; ======================================================================
 
 
-L_A0ED:
-	call L_A3A1		;a0ed
+tipo_01_sale:		; la figura de tipo 1 (0x01): su arranque (tabla de p02:8427)
+	call L_A3A1		;a0ed   ; tipo 1: en y 0x30, hace dano, pose 0x6A
 	ld (ix+003h),030h		;a0f0   ; la y de la figura = 0x30
 	ld (ix+00ch),001h		;a0f4
 	ld a,06ah		;a0f8
 	ld (ix+00ah),a		;a0fa   ; guarda la pose de la figura
 	ret			;a0fd
-L_A0FE:
-	ld b,06ah		;a0fe
+tipo_01:		; la figura de tipo 1 (0x01), un cuadro (tabla de p02:871C)
+	ld b,06ah		;a0fe   ; tipo 1: aletea (poses 0x6A, 0x6B) y segun su paso (0xA109)
 	call 0891ah		;a100
 	ld a,(ix+001h)		;a103   ; lee el paso en que va la figura
 	call 0408dh		;a106   ; despacha: salta a la entrada A de la tabla que va detras del call
@@ -141,7 +141,7 @@ DATA_tabla_A109:
 
 
 L_A10D:
-	ld de,0ff00h		;a10d
+	ld de,0ff00h		;a10d   ; paso 0: sube un poco (0xFF00) hacia el lado del jugador (0x100)...
 	call 087ebh		;a110   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 	ld de,00100h		;a113
 	ld a,(0c49ah)		;a116   ; lee la x de los sprites del jugador
@@ -150,18 +150,18 @@ L_A10D:
 	call 08c0ah		;a11e   ; niega_de: DE = -DE
 L_A121:
 	call 087e4h		;a121   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-	ld a,(ix+003h)		;a124   ; lee la y de la figura
+	ld a,(ix+003h)		;a124   ; ... y apunta 64 mas abajo
 	add a,040h		;a127
 	ld (ix+010h),a		;a129
 	inc (ix+001h)		;a12c   ; sube el paso en que va la figura
 	ret			;a12f
 L_A130:
-	ld a,(ix+003h)		;a130   ; lee la y de la figura
+	ld a,(ix+003h)		;a130   ; paso 1: cae cada vez mas deprisa (0x30) hasta esa y, y vuelta al paso 0
 	cp (ix+010h)		;a133
 	jr nc,L_A149		;a136
 	ld de,00030h		;a138
 L_A13B:
-	ld h,(ix+007h)		;a13b   ; lee la velocidad vertical
+	ld h,(ix+007h)		;a13b   ; la velocidad vertical += DE
 	ld l,(ix+006h)		;a13e   ; lee la velocidad vertical (parte baja)
 	add hl,de			;a141
 	ld (ix+007h),h		;a142   ; guarda la velocidad vertical
@@ -172,8 +172,8 @@ L_A149:
 	ret			;a14d
 L_A14E:
 	jp 08334h		;a14e   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_A151:
-	ld a,04eh		;a151
+tipo_03_sale:		; la figura de tipo 3 (0x03): su arranque (tabla de p02:8427)
+	ld a,04eh		;a151   ; tipo 3: pose 0x4E, sobre el jugador (x entre 0x28 y 0x98)...
 	ld (ix+00ah),a		;a153   ; guarda la pose de la figura
 	ld a,(0c496h)		;a156   ; lee la x del jugador
 	cp 028h		;a159
@@ -184,11 +184,11 @@ L_A151:
 	jr nc,L_A166		;a163
 	ld b,a			;a165
 L_A166:
-	ld (ix+07ch),b		;a166
+	ld (ix+07ch),b		;a166   ; ... (ix+0x7C) y (ix+0x7C) + 64: los dos extremos de su vuelta
 	ld a,b			;a169
 	add a,040h		;a16a
 	ld (ix+07bh),a		;a16c
-	dec b			;a16f
+	dec b			;a16f   ; en y 0x10, bajando (0x200)
 	ld (ix+005h),b		;a170   ; guarda la x de la figura
 	ld (ix+003h),010h		;a173   ; la y de la figura = 0x10
 	ld de,00200h		;a177
@@ -196,8 +196,8 @@ L_A166:
 	ld de,00000h		;a17d
 	call 087e4h		;a180   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	ret			;a183
-L_A184:
-	ld a,(ix+009h)		;a184   ; lee la velocidad horizontal
+tipo_03:		; la figura de tipo 3 (0x03), un cuadro (tabla de p02:871C)
+	ld a,(ix+009h)		;a184   ; tipo 3: la pose cambia cada 16 cuadros (0x4E-0x51, segun hacia donde va)
 	and 050h		;a187
 	ld b,000h		;a189
 	jr nz,L_A18F		;a18b
@@ -216,7 +216,7 @@ L_A18F:
 	add a,04eh		;a1a0
 	ld (ix+00ah),a		;a1a2   ; guarda la pose de la figura
 L_A1A5:
-	call L_A27A		;a1a5
+	call L_A27A		;a1a5   ; y segun su paso (0xA1AE)
 	ld a,(ix+001h)		;a1a8   ; lee el paso en que va la figura
 	call 0408dh		;a1ab   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -239,7 +239,7 @@ DATA_tabla_A1AE:
 
 
 L_A1BA:
-	ld a,(ix+003h)		;a1ba   ; lee la y de la figura
+	ld a,(ix+003h)		;a1ba   ; paso 0: al llegar a y 0x30, en diagonal hacia la izquierda
 	cp 030h		;a1bd
 	ret c			;a1bf
 	ld de,00200h		;a1c0
@@ -251,7 +251,7 @@ L_A1BA:
 	inc (ix+001h)		;a1d3   ; sube el paso en que va la figura
 	ret			;a1d6
 L_A1D7:
-	ld de,00020h		;a1d7
+	ld de,00020h		;a1d7   ; paso 1: frena; en el extremo izquierdo, hacia la derecha y arriba
 	call L_A26C		;a1da
 	ld a,(ix+005h)		;a1dd   ; lee la x de la figura
 	cp (ix+07ch)		;a1e0
@@ -263,7 +263,7 @@ L_A1D7:
 	call 08c0ah		;a1f0   ; niega_de: DE = -DE
 	jp 087ebh		;a1f3   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_A1F6:
-	ld a,(ix+005h)		;a1f6   ; lee la x de la figura
+	ld a,(ix+005h)		;a1f6   ; paso 2: hasta el extremo derecho, y baja
 	cp (ix+07bh)		;a1f9
 	ret c			;a1fc
 	inc (ix+001h)		;a1fd   ; sube el paso en que va la figura
@@ -272,7 +272,7 @@ L_A1F6:
 	ld de,00100h		;a206
 	jp 087ebh		;a209   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_A20C:
-	ld de,00020h		;a20c
+	ld de,00020h		;a20c   ; paso 3: frena hacia el otro lado
 	call 08c0ah		;a20f   ; niega_de: DE = -DE
 	call L_A26C		;a212
 	ld a,(ix+005h)		;a215   ; lee la x de la figura
@@ -286,7 +286,7 @@ L_A20C:
 	call 08c0ah		;a22b   ; niega_de: DE = -DE
 	jp 087ebh		;a22e   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_A231:
-	ld a,(ix+005h)		;a231   ; lee la x de la figura
+	ld a,(ix+005h)		;a231   ; paso 4: en el extremo izquierdo, otra vuelta desde y 0x30
 	cp (ix+07ch)		;a234
 	ret nc			;a237
 	ld (ix+001h),001h		;a238   ; el paso en que va la figura = 0x01
@@ -299,7 +299,7 @@ L_A231:
 	ld a,(ix+07ch)		;a24f
 	dec a			;a252
 	ld (ix+005h),a		;a253   ; guarda la x de la figura
-	ld a,(ix+012h)		;a256
+	ld a,(ix+012h)		;a256   ; con (ix+0x12) puesto, sube deprisa y se va (paso 5)
 	or a			;a259
 	ret z			;a25a
 	ld de,0fd00h		;a25b
@@ -311,27 +311,27 @@ L_A231:
 L_A26B:
 	ret			;a26b
 L_A26C:
-	ld h,(ix+009h)		;a26c   ; lee la velocidad horizontal
+	ld h,(ix+009h)		;a26c   ; la velocidad horizontal += DE
 	ld l,(ix+008h)		;a26f   ; lee la velocidad horizontal (parte baja)
 	add hl,de			;a272
 	ld (ix+009h),h		;a273   ; guarda la velocidad horizontal
 	ld (ix+008h),l		;a276   ; guarda la velocidad horizontal (parte baja)
 	ret			;a279
 L_A27A:
-	dec (ix+011h)		;a27a
+	dec (ix+011h)		;a27a   ; (ix+0x11) cuenta hasta que se va: entonces (ix+0x12) = 1
 	jr nz,L_A283		;a27d
 	ld (ix+012h),001h		;a27f
 L_A283:
-	ld a,(0c00dh)		;a283
+	ld a,(0c00dh)		;a283   ; cada 4 cuadros, (ix+0x10) cuenta 8...
 	and 003h		;a286
 	ret nz			;a288
 	dec (ix+010h)		;a289
 	ret nz			;a28c
-	ld (ix+010h),008h		;a28d
+	ld (ix+010h),008h		;a28d   ; ... y dispara el 2
 	ld a,002h		;a291
 	jp 089c2h		;a293   ; dispara: crea el disparo A (tabla de 0x8B6B)
-L_A296:
-	ld (ix+071h),000h		;a296
+tipo_02_sale:		; la figura de tipo 2 (0x02): su arranque (tabla de p02:8427)
+	ld (ix+071h),000h		;a296   ; tipo 2: sale por un lado (p03:A420), en y 0x30, saltando hacia arriba (0xFD00)
 	call L_A420		;a29a
 	call 0893dh		;a29d   ; pon_la_pose: pone la pose de la figura
 	ld (ix+003h),030h		;a2a0   ; la y de la figura = 0x30
@@ -339,11 +339,11 @@ L_A296:
 	call 087ebh		;a2a7   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 	call 08c0ah		;a2aa   ; niega_de: DE = -DE
 	call L_A344		;a2ad
-	ld de,00200h		;a2b0
+	ld de,00200h		;a2b0   ; hacia el jugador, 0x200
 	bit 0,(ix+00fh)		;a2b3
 	call z,08c0ah		;a2b7   ; niega_de: DE = -DE
 	call 087e4h		;a2ba   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-	ld a,(0cd12h)		;a2bd
+	ld a,(0cd12h)		;a2bd   ; dispara cada 24 - dificultad cuadros
 	ld b,a			;a2c0
 	ld a,018h		;a2c1
 	sub b			;a2c3
@@ -351,13 +351,13 @@ L_A296:
 	ld (ix+077h),a		;a2c7
 	ld de,00080h		;a2ca
 	jr L_A34B		;a2cd
-L_A2CF:
-	ld a,(0c00dh)		;a2cf
+tipo_02:		; la figura de tipo 2 (0x02), un cuadro (tabla de p02:871C)
+	ld a,(0c00dh)		;a2cf   ; tipo 2: el efecto 2 cada 32 cuadros
 	and 01fh		;a2d2
 	ld a,002h		;a2d4
 	call z,04fe4h		;a2d6   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-	call L_A31F		;a2d9
-	bit 0,(ix+071h)		;a2dc
+	call L_A31F		;a2d9   ; rebota
+	bit 0,(ix+071h)		;a2dc   ; si pasa por encima del jugador, empieza a disparar
 	jr nz,L_A2ED		;a2e0
 	ld a,(0c496h)		;a2e2   ; lee la x del jugador
 	sub (ix+005h)		;a2e5   ; le resta la x de la figura
@@ -365,12 +365,12 @@ L_A2CF:
 	cp 003h		;a2e9
 	jr c,L_A309		;a2eb
 L_A2ED:
-	dec (ix+078h)		;a2ed
+	dec (ix+078h)		;a2ed   ; cada (ix+0x77) cuadros...
 	ret nz			;a2f0
 L_A2F1:
 	ld a,(ix+077h)		;a2f1
 	ld (ix+078h),a		;a2f4
-	bit 0,(ix+00fh)		;a2f7
+	bit 0,(ix+00fh)		;a2f7   ; ... si el jugador esta delante, a menos de 80...
 	jr z,L_A30F		;a2fb
 	ld a,(0c49ah)		;a2fd   ; lee la x de los sprites del jugador
 	sub (ix+005h)		;a300   ; le resta la x de la figura
@@ -388,16 +388,16 @@ L_A30F:
 	cp 0b0h		;a316
 	ret c			;a318
 L_A319:
-	ld a,(ix+07dh)		;a319
+	ld a,(ix+07dh)		;a319   ; ... dispara el de (ix+0x7D)
 	jp 089c2h		;a31c   ; dispara: crea el disparo A (tabla de 0x8B6B)
 L_A31F:
-	call 0894dh		;a31f
+	call 0894dh		;a31f   ; rebota: la gravedad de (ix+0x10) y, al volver a la velocidad de salida, la invierte
 	call L_A352		;a322
 	call L_A13B		;a325
 	call L_A359		;a328
 	ld l,(ix+012h)		;a32b
 	ld h,(ix+013h)		;a32e
-	rst 20h			;a331
+	rst 20h			;a331   ; RST 0x20: HL contra DE
 	ret nz			;a332
 	call L_A352		;a333
 	call 08c0ah		;a336   ; niega_de: DE = -DE
@@ -406,29 +406,29 @@ L_A31F:
 	call 08c0ah		;a33f   ; niega_de: DE = -DE
 	jr L_A344		;a342
 L_A344:
-	ld (ix+012h),e		;a344
+	ld (ix+012h),e		;a344   ; (ix+0x12, 0x13) = DE
 	ld (ix+013h),d		;a347
 	ret			;a34a
 L_A34B:
-	ld (ix+010h),e		;a34b
+	ld (ix+010h),e		;a34b   ; (ix+0x10, 0x11) = DE
 	ld (ix+011h),d		;a34e
 	ret			;a351
 L_A352:
-	ld e,(ix+010h)		;a352
+	ld e,(ix+010h)		;a352   ; DE = (ix+0x10, 0x11)
 	ld d,(ix+011h)		;a355
 	ret			;a358
 L_A359:
-	ld e,(ix+006h)		;a359   ; lee la velocidad vertical (parte baja)
+	ld e,(ix+006h)		;a359   ; DE = la velocidad vertical
 	ld d,(ix+007h)		;a35c   ; lee la velocidad vertical
 	ret			;a35f
 L_A360:
-	ld a,(0cd5bh)		;a360
+	ld a,(0cd5bh)		;a360   ; crea la figura, salvo en la primera tanda
 	or a			;a363
 	ret nz			;a364
 	jp 08334h		;a365   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_A368:
-	call L_A3A1		;a368
-	ld de,0a3c6h		;a36b
+tipo_04_sale:		; la figura de tipo 4 (0x04): su arranque (tabla de p02:8427)
+	call L_A3A1		;a368   ; tipo 4: sale de abajo (y 0xC8), cerca del jugador
+	ld de,0a3c6h		;a36b   ; una de cuatro fichas al azar (0xA3C6): velocidad x, y, gravedad y su pose
 	call L_A398		;a36e
 	and 003h		;a371
 	call 0447ch		;a373   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
@@ -452,14 +452,14 @@ L_A368:
 	ld (ix+012h),a		;a392
 	jp 0893dh		;a395   ; pon_la_pose: pone la pose de la figura
 L_A398:
-	ld a,r		;a398
+	ld a,r		;a398   ; A = un numero al azar (registro R y 0xC00D)
 	ld hl,0c00dh		;a39a
 	xor (hl)			;a39d
 	rra			;a39e
 	rra			;a39f
 	ret			;a3a0
 L_A3A1:
-	ld b,038h		;a3a1
+	ld b,038h		;a3a1   ; en x a 0x38 del jugador, del lado donde haya mas sitio; en y 0xC8
 	ld d,000h		;a3a3
 	ld a,(0c496h)		;a3a5   ; lee la x del jugador
 	ld c,a			;a3a8
@@ -505,8 +505,8 @@ DATA_fichas_A3CE:
 ; ======================================================================
 
 
-L_A3E0:
-	call 0894dh		;a3e0
+tipo_04:		; la figura de tipo 4 (0x04), un cuadro (tabla de p02:871C)
+	call 0894dh		;a3e0   ; tipo 4: sube con su gravedad; al volver a su y de salida, se va
 	call 087b1h		;a3e3
 	ld e,(ix+011h)		;a3e6
 	ld d,(ix+012h)		;a3e9
@@ -515,16 +515,16 @@ L_A3E0:
 	cp (ix+003h)		;a3f2   ; compara con la y de la figura
 	ret nc			;a3f5
 	jp 087b7h		;a3f6   ; borra_la_figura: borra la figura
-L_A3F9:
-	call L_A420		;a3f9
+tipo_05_sale:		; la figura de tipo 5 (0x05): su arranque (tabla de p02:8427)
+	call L_A420		;a3f9   ; tipo 5: sale por un lado, quieto en vertical...
 	call 0893dh		;a3fc   ; pon_la_pose: pone la pose de la figura
 	ld de,00000h		;a3ff
 	call 087ebh		;a402   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-	call L_A46B		;a405
+	call L_A46B		;a405   ; ... y en horizontal segun la dificultad (0xA481)
 	bit 0,(ix+00fh)		;a408
 	call nz,08c0ah		;a40c   ; niega_de: DE = -DE
 	call 087e4h		;a40f   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-	ld a,(ix+00fh)		;a412
+	ld a,(ix+00fh)		;a412   ; la direccion en (ix+0x1F): 1 a la derecha, 2 a la izquierda
 	or a			;a415
 	ld a,001h		;a416
 	jr nz,L_A41C		;a418
@@ -533,14 +533,14 @@ L_A41C:
 	ld (ix+01fh),a		;a41c
 	ret			;a41f
 L_A420:
-	ld a,(0cd5bh)		;a420
+	ld a,(0cd5bh)		;a420   ; sale por un lado, si el jugador esta lejos de el
 	or a			;a423
 	jp nz,087b7h		;a424   ; borra_la_figura: borra la figura
 	ld a,(0c496h)		;a427   ; lee la x del jugador
 	add a,040h		;a42a
 	cp 080h		;a42c
 	jp c,087b7h		;a42e   ; borra_la_figura: borra la figura
-	ld bc,00801h		;a431
+	ld bc,00801h		;a431   ; por la izquierda (x 8) o la derecha (x 0xF8), al azar
 	ld a,r		;a434
 	ld hl,0c00dh		;a436
 	xor (hl)			;a439
@@ -551,7 +551,7 @@ L_A420:
 L_A441:
 	ld d,b			;a441
 	ld (ix+005h),b		;a442   ; guarda la x de la figura
-	ld a,(0c494h)		;a445   ; lee la y del jugador
+	ld a,(0c494h)		;a445   ; la y: la del jugador, o 0x68 o 0xBE si esta muy arriba o muy abajo
 	ld b,a			;a448
 	add a,043h		;a449
 	cp 0abh		;a44b
@@ -568,11 +568,11 @@ L_A458:
 	ld (ix+010h),a		;a45d
 	ld (ix+00fh),c		;a460
 	ld b,c			;a463
-	call 0781fh		;a464   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
+	call 0781fh		;a464   ; si ahi no se puede estar, no sale
 	ret nc			;a467
 	jp 087b7h		;a468   ; borra_la_figura: borra la figura
 L_A46B:
-	ld a,(0cd12h)		;a46b
+	ld a,(0cd12h)		;a46b   ; tres bytes de 0xA481 segun la dificultad / 4: DE la velocidad y A otro dato
 	srl a		;a46e
 	srl a		;a470
 	ld b,a			;a472
@@ -602,49 +602,49 @@ DATA_cuatro_tripletes_A481:
 ; ======================================================================
 
 
-L_A48D:
-	call 0894dh		;a48d
+tipo_05:		; la figura de tipo 5 (0x05), un cuadro (tabla de p02:871C)
+	call 0894dh		;a48d   ; tipo 5: con (ix+0x1D) puesto, la curva de caida...
 	ld a,(ix+01dh)		;a490
 	or a			;a493
 	jp nz,09fdeh		;a494
-	call L_A699		;a497
+	call L_A699		;a497   ; ... si no, anda; al chocar, se para y salta (p02:9FCA)
 	ret nc			;a49a
 	jp 09fcah		;a49b
-L_A49E:
-	call L_A420		;a49e
+tipo_06_sale:		; la figura de tipo 6 (0x06): su arranque (tabla de p02:8427)
+	call L_A420		;a49e   ; tipo 6: sale por un lado, pose 0x41, hace dano
 	ld (ix+00ah),041h		;a4a1   ; la pose de la figura = 0x41
 	ld (ix+00ch),001h		;a4a5
 L_A4A9:
-	ld de,0fe00h		;a4a9
+	ld de,0fe00h		;a4a9   ; salta hacia el centro (0x200, 0xFC80)
 	bit 0,(ix+00fh)		;a4ac
 	call nz,08c0ah		;a4b0   ; niega_de: DE = -DE
 	call 087e4h		;a4b3   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	ld de,0fc80h		;a4b6
 	jp 087ebh		;a4b9   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-L_A4BC:
-	ld a,041h		;a4bc
+tipo_06:		; la figura de tipo 6 (0x06), un cuadro (tabla de p02:871C)
+	ld a,041h		;a4bc   ; tipo 6: dos poses, y cae con gravedad 0x66
 	ld de,0c00dh		;a4be
 	call 0895bh		;a4c1
 	ld de,00066h		;a4c4
 	call L_A13B		;a4c7
-	ld a,(ix+010h)		;a4ca
+	ld a,(ix+010h)		;a4ca   ; al volver a su y, otro salto
 	cp (ix+003h)		;a4cd   ; compara con la y de la figura
 	ret nc			;a4d0
 	jr L_A4A9		;a4d1
-L_A4D3:
-	call L_ABF6		;a4d3
+andador_sale:		; el arranque de los tipos 8, 16, 19, 20, 27, 28, 30 y 33
+	call L_ABF6		;a4d3   ; el que anda: entra por un lado o sale en un sitio al azar (p02:85B1)...
 L_A4D6:
-	call L_A954		;a4d6
+	call L_A954		;a4d6   ; ... su ficha (p03:A954), su pose, y hacia el jugador en vertical
 	call 0893dh		;a4d9   ; pon_la_pose: pone la pose de la figura
 	call L_A567		;a4dc
-	ld a,(ix+01fh)		;a4df
+	ld a,(ix+01fh)		;a4df   ; (ix+0x19): la direccion horizontal que prefiere
 	ld (ix+019h),a		;a4e2
 	ret			;a4e5
 L_A4E6:
 	call 085b1h		;a4e6
 	jr L_A4D6		;a4e9
-L_A4EB:
-	ld a,(ix+001h)		;a4eb   ; lee el paso en que va la figura
+andador:		; un cuadro de los tipos 7, 8, 16, 19, 20, 27, 28, 30 y 33
+	ld a,(ix+001h)		;a4eb   ; el que anda, segun su paso (0xA4F1)
 	call 0408dh		;a4ee   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -661,18 +661,18 @@ DATA_tabla_A4F1:
 
 
 L_A4F5:
-	ld a,(ix+01dh)		;a4f5
+	ld a,(ix+01dh)		;a4f5   ; con (ix+0x1D) puesto, la curva de caida
 	or a			;a4f8
 	jp nz,09fdeh		;a4f9
 	call L_A954		;a4fc
 	call 0894dh		;a4ff
-	call L_A699		;a502
+	call L_A699		;a502   ; si choca con algo...
 	jr c,L_A52D		;a505
-	ld a,(ix+01fh)		;a507
+	ld a,(ix+01fh)		;a507   ; ... si no, sigue mientras vaya hacia donde prefiere
 	and (ix+019h)		;a50a
 	ret nz			;a50d
 L_A50E:
-	ld a,(ix+01fh)		;a50e
+	ld a,(ix+01fh)		;a50e   ; andando en vertical: prueba la horizontal que prefiere...
 	and 003h		;a511
 	jr nz,L_A521		;a513
 	ld b,(ix+019h)		;a515
@@ -681,17 +681,17 @@ L_A50E:
 	jr nc,L_A58A		;a51e
 	ret			;a520
 L_A521:
-	ld b,(ix+01ah)		;a521
+	ld b,(ix+01ah)		;a521   ; ... y en horizontal, la vertical que prefiere (ix+0x1A)
 	call L_A683		;a524
 	ld a,(ix+01ah)		;a527
 	jr nc,L_A58A		;a52a
 	ret			;a52c
 L_A52D:
-	call L_A625		;a52d
+	call L_A625		;a52d   ; chocado: si puede, salta por encima (p03:A625); si no, se para y salta (p02:9FCA)
 	jp nc,09fcah		;a530
 	call L_A50E		;a533
 	ret nc			;a536
-	ld d,(ix+019h)		;a537
+	ld d,(ix+019h)		;a537   ; si no puede saltar, prueba las direcciones contrarias
 	ld e,(ix+01ah)		;a53a
 	push de			;a53d
 	ld a,003h		;a53e
@@ -714,7 +714,7 @@ L_A560:
 	ld (ix+01ah),e		;a563
 	ret			;a566
 L_A567:
-	ex af,af'			;a567
+	ex af,af'			;a567   ; (ix+0x1A): 8 (arriba) si el jugador esta mas arriba, 4 (abajo) si no
 	ld a,(0c498h)		;a568   ; lee la y de los sprites del jugador
 	cp (ix+003h)		;a56b   ; compara con la y de la figura
 	ld a,008h		;a56e
@@ -725,7 +725,7 @@ L_A574:
 	ex af,af'			;a577
 	ret			;a578
 L_A579:
-	ld a,(ix+01ah)		;a579
+	ld a,(ix+01ah)		;a579   ; las dos direcciones que prefiere, al reves
 	xor 00ch		;a57c
 	ld (ix+01ah),a		;a57e
 	ld a,(ix+019h)		;a581
@@ -733,12 +733,12 @@ L_A579:
 	ld (ix+019h),a		;a586
 	ret			;a589
 L_A58A:
-	or a			;a58a
+	or a			;a58a   ; A = la direccion (0: hacia el jugador en vertical)
 	call z,L_A5B8		;a58b
 L_A58E:
 	ld (ix+01fh),a		;a58e
 	push af			;a591
-	ld a,(0cd12h)		;a592
+	ld a,(0cd12h)		;a592   ; la velocidad segun la dificultad: cuatro tandas de 0xA5D1...
 	and 00ch		;a595
 	add a,a			;a597
 	add a,a			;a598
@@ -746,7 +746,7 @@ L_A58E:
 	call 04083h		;a59c   ; hl_mas_a: HL += A
 	pop af			;a59f
 L_A5A0:
-	rra			;a5a0
+	rra			;a5a0   ; ... cuatro bytes por direccion: [vertical][horizontal]
 	jr c,L_A5A9		;a5a1
 	inc hl			;a5a3
 	inc hl			;a5a4
@@ -766,7 +766,7 @@ L_A5A9:
 	or a			;a5b6
 	ret			;a5b7
 L_A5B8:
-	ld a,(ix+003h)		;a5b8   ; lee la y de la figura
+	ld a,(ix+003h)		;a5b8   ; hacia el jugador: arriba (8) si esta mas arriba, abajo (4) si mas abajo, 2 si a su altura
 	ld hl,(0c494h)		;a5bb   ; lee la y del jugador
 	cp (hl)			;a5be
 	ld a,008h		;a5bf
@@ -776,7 +776,7 @@ L_A5B8:
 	ld a,002h		;a5c5
 	ret			;a5c7
 L_A5C8:
-	and 003h		;a5c8
+	and 003h		;a5c8   ; el lado al que mira: el bit 0 de la direccion horizontal
 	ret z			;a5ca
 	and 001h		;a5cb
 	ld (ix+00fh),a		;a5cd
@@ -798,7 +798,7 @@ DATA_cuatro_tandas_A5D1:
 
 
 L_A611:
-	ld a,(ix+01fh)		;a611
+	ld a,(ix+01fh)		;a611   ; la direccion contraria
 	and 00ch		;a614
 	jr nz,L_A620		;a616
 	ld a,(ix+01fh)		;a618
@@ -808,7 +808,7 @@ L_A620:
 	xor 00ch		;a620
 	jp L_A58A		;a622
 L_A625:
-	ld a,(ix+01eh)		;a625
+	ld a,(ix+01eh)		;a625   ; saltar por encima: (ix+0x1E) pasos de los de 0xA67B segun la direccion...
 	or a			;a628
 	jr z,L_A679		;a629
 	ld hl,0a67bh		;a62b
@@ -830,7 +830,7 @@ L_A638:
 	ex de,hl			;a643
 	ld b,(ix+01eh)		;a644
 L_A647:
-	push af			;a647
+	push af			;a647   ; ... sin salirse de la pantalla
 	ld a,h			;a648
 	add a,d			;a649
 	ld h,a			;a64a
@@ -845,7 +845,7 @@ L_A647:
 	jr c,L_A671		;a658
 	pop af			;a65a
 	djnz L_A647		;a65b
-	ld (ix+005h),h		;a65d   ; guarda la x de la figura
+	ld (ix+005h),h		;a65d   ; se mira si al otro lado se puede estar
 	ld (ix+003h),l		;a660   ; guarda la y de la figura
 	call 0877ah		;a663
 	call L_A6BC		;a666
@@ -859,7 +859,7 @@ L_A671:
 	ld (ix+005h),d		;a673   ; guarda la x de la figura
 	ld (ix+003h),e		;a676   ; guarda la y de la figura
 L_A679:
-	scf			;a679
+	scf			;a679   ; carry: no puede saltar
 	ret			;a67a
 
 ; ----------------------------------------------------------------------
@@ -878,7 +878,7 @@ DATA_cuatro_parejas_A67B:
 
 
 L_A683:
-	ld a,(ix+01fh)		;a683
+	ld a,(ix+01fh)		;a683   ; carry si en la direccion B choca (sin cambiar la que lleva)
 	ld (0cd5ah),a		;a686
 	ld a,b			;a689
 	call L_A58A		;a68a
@@ -889,7 +889,7 @@ L_A683:
 	pop af			;a697
 	ret			;a698
 L_A699:
-	ld e,(ix+002h)		;a699   ; lee la fraccion de la y de la figura
+	ld e,(ix+002h)		;a699   ; carry si el paso siguiente choca: se mueve, se mira y se vuelve atras
 	ld d,(ix+003h)		;a69c   ; lee la y de la figura
 	push de			;a69f
 	ld e,(ix+004h)		;a6a0   ; lee la fraccion de la x de la figura
@@ -905,7 +905,7 @@ L_A699:
 	ld (ix+003h),d		;a6b8   ; guarda la y de la figura
 	ret			;a6bb
 L_A6BC:
-	ld a,(ix+01fh)		;a6bc
+	ld a,(ix+01fh)		;a6bc   ; segun la direccion de (ix+0x1F): el primer bit puesto
 	ld d,000h		;a6bf
 L_A6C1:
 	rra			;a6c1
@@ -923,7 +923,7 @@ L_A6C7:
 	jr z,L_A715		;a6d6
 	jr L_A700		;a6d8
 L_A6DA:
-	ld a,d			;a6da
+	ld a,d			;a6da   ; derecha: 8 mas alla...
 	add a,008h		;a6db
 	ccf			;a6dd
 	ret nc			;a6de
@@ -932,12 +932,12 @@ L_A6DA:
 	call 0781fh		;a6e1   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 	pop de			;a6e4
 	ret c			;a6e5
-	ld a,e			;a6e6
+	ld a,e			;a6e6   ; ... y 3 mas arriba
 	sub 003h		;a6e7
 	ld e,a			;a6e9
 	jp 0781fh		;a6ea   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A6ED:
-	ld a,d			;a6ed
+	ld a,d			;a6ed   ; izquierda
 	sub 008h		;a6ee
 	ccf			;a6f0
 	ret nc			;a6f1
@@ -951,7 +951,7 @@ L_A6ED:
 	ld e,a			;a6fc
 	jp 0781fh		;a6fd   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A700:
-	ld a,e			;a700
+	ld a,e			;a700   ; arriba: 3 mas arriba, a 8 a cada lado
 	sub 003h		;a701
 	ld e,a			;a703
 	push de			;a704
@@ -966,7 +966,7 @@ L_A700:
 	ld d,a			;a711
 	jp 0781fh		;a712   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A715:
-	ld a,0c8h		;a715
+	ld a,0c8h		;a715   ; abajo: hasta y 0xC8, a 8 a cada lado
 	cp e			;a717
 	ret c			;a718
 	push de			;a719
@@ -981,7 +981,7 @@ L_A715:
 	ld d,a			;a726
 	jp 0781fh		;a727   ; no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 L_A72A:
-	dec (ix+00bh)		;a72a
+	dec (ix+00bh)		;a72a   ; al acabar la espera, sigue andando: pose 0x43, hace dano otra vez
 	ret nz			;a72d
 	ld a,(ix+01fh)		;a72e
 	call L_A58A		;a731
@@ -992,19 +992,19 @@ L_A72A:
 	ld (ix+00ch),003h		;a73f
 	call L_A4D6		;a743
 	ret			;a746
-L_A747:
-	call L_ABF6		;a747
+perseguidor_sale:		; el arranque de los tipos 9, 14, 15, 17, 21-26, 31 y 32: los que persiguen al jugador
+	call L_ABF6		;a747   ; el que persigue: su ficha, su pose...
 	call L_A954		;a74a
 	call 0893dh		;a74d   ; pon_la_pose: pone la pose de la figura
 L_A750:
-	ld a,(ix+00bh)		;a750
+	ld a,(ix+00bh)		;a750   ; ... cada cuanto cambia de rumbo ((ix+0x15) = (ix+0x0B)), 0x70 en (ix+0x13)...
 	ld (ix+015h),a		;a753
 	ld (ix+013h),070h		;a756
 	ld (ix+072h),003h		;a75a
 	ld (ix+070h),001h		;a75e
 	ret			;a762
-L_A763:
-	ld a,(ix+01dh)		;a763
+tipo_21:		; la figura de tipo 21 (0x15), un cuadro
+	ld a,(ix+01dh)		;a763   ; el tipo 21: con (ix+0x1D), la curva de caida; si no, segun su paso (0xA770)
 	or a			;a766
 	jp nz,09fdeh		;a767
 	ld a,(ix+001h)		;a76a   ; lee el paso en que va la figura
@@ -1025,8 +1025,8 @@ DATA_tabla_A770:
 ; ======================================================================
 
 
-L_A778:
-	ld a,(ix+01dh)		;a778
+perseguidor:		; un cuadro de los tipos 9, 13-15, 17, 22-26, 31 y 32: persiguen al jugador
+	ld a,(ix+01dh)		;a778   ; el que persigue: con (ix+0x1D), la curva de caida; si no, segun su paso (0xA785)
 	or a			;a77b
 	jp nz,09fdeh		;a77c
 	ld a,(ix+001h)		;a77f   ; lee el paso en que va la figura
@@ -1048,7 +1048,7 @@ DATA_tabla_A785:
 
 
 L_A78D:
-	ld a,(ix+00fh)		;a78d
+	ld a,(ix+00fh)		;a78d   ; carry si el jugador esta delante (a menos de 32) y a su altura (16)
 	or a			;a790
 	jr z,L_A7AB		;a791
 	ld a,(0c496h)		;a793   ; lee la x del jugador
@@ -1071,7 +1071,7 @@ L_A7AB:
 	sub (hl)			;a7b1
 	jr L_A799		;a7b2
 L_A7B4:
-	call L_A78D		;a7b4
+	call L_A78D		;a7b4   ; los tipos 0x19 y 0x20, con el jugador delante: una figura de ocho pasos (0xA800, 0xA808)
 	jr nc,L_A7FA		;a7b7
 	ld a,(ix+07eh)		;a7b9
 	call 08938h		;a7bc
@@ -1095,7 +1095,7 @@ L_A7D3:
 	xor a			;a7df
 L_A7E0:
 	ld (ix+073h),a		;a7e0
-	bit 0,(ix+074h)		;a7e3
+	bit 0,(ix+074h)		;a7e3   ; la primera vez, 18 cuadros y su pose
 	jr nz,L_A7F4		;a7e7
 	ld (ix+00bh),012h		;a7e9
 	ld (ix+073h),000h		;a7ed
@@ -1120,10 +1120,10 @@ DATA_dos_tandas_A800:
 
 
 L_A810:
-	call L_A966		;a810
+	call L_A966		;a810   ; con p03:A966 (carry) no hace nada mas
 	ret c			;a813
 L_A814:
-	ld a,(ix+000h)		;a814   ; lee el tipo de la figura
+	ld a,(ix+000h)		;a814   ; los tipos 0x19 y 0x20 mirando
 	cp 019h		;a817
 	jp z,L_A7B4		;a819
 	cp 020h		;a81c
@@ -1132,7 +1132,7 @@ L_A821:
 	call L_A954		;a821
 	call 0894dh		;a824
 L_A827:
-	ld a,(ix+001h)		;a827   ; lee el paso en que va la figura
+	ld a,(ix+001h)		;a827   ; cada 4 cuadros, (ix+0x13) cuenta: al acabar, el paso siguiente
 	dec a			;a82a
 	jr z,L_A83C		;a82b
 	ld a,(0c00dh)		;a82d
@@ -1142,15 +1142,15 @@ L_A827:
 	jr nz,L_A83C		;a837
 	inc (ix+001h)		;a839   ; sube el paso en que va la figura
 L_A83C:
-	call L_A699		;a83c
+	call L_A699		;a83c   ; si choca, salta por encima o se para
 	jr nc,L_A84A		;a83f
 	call L_A625		;a841
 	jp c,L_A8A2		;a844
 	jp 09fcah		;a847
 L_A84A:
 	ld (ix+076h),000h		;a84a
-	call L_A917		;a84e
-	dec (ix+00bh)		;a851
+	call L_A917		;a84e   ; dispara cuando le toca
+	dec (ix+00bh)		;a851   ; al acabar la espera, otra al azar (hasta 31 mas)...
 	ret nz			;a854
 	ld hl,0c00dh		;a855
 	ld a,r		;a858
@@ -1158,7 +1158,7 @@ L_A84A:
 	and 01fh		;a85b
 	add a,(ix+015h)		;a85d
 	ld (ix+00bh),a		;a860
-	call L_A8B3		;a863
+	call L_A8B3		;a863   ; ... y un rumbo nuevo hacia el jugador: por el eje en que este mas lejos
 	ld a,(ix+070h)		;a866
 	and 003h		;a869
 	jr nz,L_A894		;a86b
@@ -1167,7 +1167,7 @@ L_A84A:
 	cp (ix+017h)		;a874
 	jr nc,L_A887		;a877
 L_A879:
-	ld hl,0cd20h		;a879
+	ld hl,0cd20h		;a879   ; en vertical: arriba (8) o abajo (4)
 	ld a,004h		;a87c
 	bit 0,(hl)		;a87e
 	jr z,L_A884		;a880
@@ -1175,7 +1175,7 @@ L_A879:
 L_A884:
 	jp L_A58E		;a884
 L_A887:
-	ld hl,0cd21h		;a887
+	ld hl,0cd21h		;a887   ; en horizontal: derecha (1) o izquierda (2)
 	ld a,001h		;a88a
 	bit 0,(hl)		;a88c
 	jr z,L_A891		;a88e
@@ -1183,7 +1183,7 @@ L_A887:
 L_A891:
 	jp L_A58E		;a891
 L_A894:
-	inc (ix+070h)		;a894
+	inc (ix+070h)		;a894   ; si ya iba, cambia de eje
 	ld a,(ix+01fh)		;a897
 	or a			;a89a
 	ret z			;a89b
@@ -1191,7 +1191,7 @@ L_A894:
 	jr z,L_A887		;a89e
 	jr L_A879		;a8a0
 L_A8A2:
-	call L_A8B3		;a8a2
+	call L_A8B3		;a8a2   ; chocado dos veces seguidas, cambia de eje; si no, da la vuelta
 	ld a,(ix+076h)		;a8a5
 	inc a			;a8a8
 	ld (ix+076h),a		;a8a9
@@ -1199,7 +1199,7 @@ L_A8A2:
 	jr nc,L_A894		;a8ae
 	jp L_A611		;a8b0
 L_A8B3:
-	ld a,(ix+001h)		;a8b3   ; lee el paso en que va la figura
+	ld a,(ix+001h)		;a8b3   ; (ix+0x17) = |dy| y (ix+0x16) = |dx| hasta el jugador, con el signo en 0xCD20 y 0xCD21
 	dec a			;a8b6
 	jr z,L_A8DE		;a8b7
 	ld hl,0cd20h		;a8b9
@@ -1222,13 +1222,13 @@ L_A8DA:
 	ld (ix+016h),a		;a8da
 	ret			;a8dd
 L_A8DE:
-	xor a			;a8de
+	xor a			;a8de   ; en el paso 1, como si estuviera encima
 	ld (0cd20h),a		;a8df
 	ld (0cd21h),a		;a8e2
 	ld (ix+017h),a		;a8e5
 	jr L_A8DA		;a8e8
 L_A8EA:
-	dec (ix+00bh)		;a8ea
+	dec (ix+00bh)		;a8ea   ; al acabar la espera, baja, hace dano otra vez y el paso siguiente
 	ret nz			;a8ed
 	ld a,004h		;a8ee
 	call L_A58E		;a8f0
@@ -1237,7 +1237,7 @@ L_A8EA:
 	inc (ix+001h)		;a8fa   ; sube el paso en que va la figura
 	ret			;a8fd
 L_A8FE:
-	call L_A954		;a8fe
+	call L_A954		;a8fe   ; baja con la pose 0x4A hasta y 0x60; alli, otra vez desde el paso 0
 	ld a,04ah		;a901
 	call 08950h		;a903
 	ld a,(ix+003h)		;a906   ; lee la y de la figura
@@ -1248,7 +1248,7 @@ L_A8FE:
 	ld (ix+001h),000h		;a912   ; el paso en que va la figura = 0x00
 	ret			;a916
 L_A917:
-	ld a,(ix+001h)		;a917   ; lee el paso en que va la figura
+	ld a,(ix+001h)		;a917   ; cuando dispara: cada (ix+0x77) cuadros (el 0x15 no dispara)
 	dec a			;a91a
 	ret z			;a91b
 	ld a,(ix+000h)		;a91c   ; lee el tipo de la figura
@@ -1258,7 +1258,7 @@ L_A917:
 	dec (ix+078h)		;a923
 	ret nz			;a926
 	ld a,b			;a927
-	cp 00fh		;a928
+	cp 00fh		;a928   ; el tipo 0x0F: segun la dificultad, y solo (ix+0x72) veces
 	jr nz,L_A93A		;a92a
 	ld a,(ix+072h)		;a92c
 	dec a			;a92f
@@ -1271,16 +1271,16 @@ L_A93A:
 L_A93D:
 	ld (ix+078h),a		;a93d
 	ld a,(ix+00fh)		;a940
-	ld (0cd38h),a		;a943
-	ld a,(ix+07dh)		;a946
+	ld (0cd38h),a		;a943   ; 0xCD38 = el lado al que mira, para el disparo
+	ld a,(ix+07dh)		;a946   ; (ix+0x7D): el disparo de su tipo (0, ninguno)
 	or a			;a949
 	ret z			;a94a
 	jp 089c2h		;a94b   ; dispara: crea el disparo A (tabla de 0x8B6B)
 L_A94E:
-	ld (ix+072h),003h		;a94e
+	ld (ix+072h),003h		;a94e   ; y vuelve a empezar la cuenta de tres
 	jr L_A93A		;a952
 L_A954:
-	ld a,(ix+001h)		;a954   ; lee el paso en que va la figura
+	ld a,(ix+001h)		;a954   ; el lado al que mira, segun hacia donde anda (salvo en el paso 2)
 	cp 002h		;a957
 	ret z			;a959
 	ld a,(ix+01fh)		;a95a
@@ -1290,13 +1290,13 @@ L_A954:
 	ld (ix+00fh),a		;a962
 	ret			;a965
 L_A966:
-	dec (ix+078h)		;a966
+	dec (ix+078h)		;a966   ; cada (ix+0x78) cuadros se para: guarda la velocidad...
 	ret nz			;a969
 	call L_A067		;a96a
 	ld de,00000h		;a96d
 	call 087e4h		;a970   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	call 087ebh		;a973   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-	ld (ix+078h),014h		;a976
+	ld (ix+078h),014h		;a976   ; ... 20 cuadros, la pose 0x68 + el lado, paso 2 y carry
 	ld a,068h		;a97a
 	add a,(ix+00fh)		;a97c
 	ld (ix+00ah),a		;a97f   ; guarda la pose de la figura
@@ -1304,7 +1304,7 @@ L_A966:
 	scf			;a986
 	ret			;a987
 L_A988:
-	dec (ix+078h)		;a988
+	dec (ix+078h)		;a988   ; parado: al acabar, dispara y el paso siguiente
 	ret nz			;a98b
 	ld (ix+078h),014h		;a98c
 	ld a,(ix+00fh)		;a990
@@ -1313,7 +1313,7 @@ L_A988:
 	ld a,(ix+07dh)		;a999
 	jp 089c2h		;a99c   ; dispara: crea el disparo A (tabla de 0x8B6B)
 L_A99F:
-	dec (ix+078h)		;a99f
+	dec (ix+078h)		;a99f   ; y al acabar otra vez, sigue con la velocidad guardada
 	ret nz			;a9a2
 	ld a,(ix+077h)		;a9a3
 	ld (ix+078h),a		;a9a6
@@ -1321,7 +1321,7 @@ L_A99F:
 	call 0893dh		;a9ad   ; pon_la_pose: pone la pose de la figura
 	jp L_A080		;a9b0
 L_A9B3:
-	dec (ix+012h)		;a9b3
+	dec (ix+012h)		;a9b3   ; le han dado: tiembla (un punto a cada lado) 32 cuadros y se va
 	jp z,087b7h		;a9b6   ; borra_la_figura: borra la figura
 	ld a,(ix+011h)		;a9b9
 	xor 001h		;a9bc
@@ -1337,7 +1337,7 @@ L_A9CB:
 	ld (ix+005h),a		;a9cf   ; guarda la x de la figura
 	ret			;a9d2
 L_A9D3:
-	ld a,(ix+000h)		;a9d3   ; lee el tipo de la figura
+	ld a,(ix+000h)		;a9d3   ; la primera vez que le dan: si es el tipo 0x21, 0xCD60 + 1 (hasta 8 se queda en 8)
 	cp 021h		;a9d6
 	jr nz,L_A9E5		;a9d8
 	ld hl,0cd60h		;a9da
@@ -1348,7 +1348,7 @@ L_A9D3:
 L_A9E4:
 	ld (hl),a			;a9e4
 L_A9E5:
-	ld a,(ix+003h)		;a9e5   ; lee la y de la figura
+	ld a,(ix+003h)		;a9e5   ; quieto, ya no hace dano, 32 cuadros
 	ld (ix+010h),a		;a9e8
 	ld (ix+011h),000h		;a9eb
 	ld (ix+00ch),000h		;a9ef
@@ -1359,7 +1359,7 @@ L_A9E5:
 	inc (ix+00dh)		;aa00
 	ret			;aa03
 L_AA04:
-	ld a,(ix+000h)		;aa04   ; lee el tipo de la figura
+	ld a,(ix+000h)		;aa04   ; la ficha de su tipo (0xAA51, cuatro bytes, solo los tipos 1-0x21)
 	cp 022h		;aa07
 	ret nc			;aa09
 	dec a			;aa0a
@@ -1367,15 +1367,15 @@ L_AA04:
 	add a,a			;aa0c
 	ld de,0aa51h		;aa0d
 	call 04088h		;aa10   ; de_mas_a: DE += A
-	ld a,(de)			;aa13
+	ld a,(de)			;aa13   ; [0] su pose base (ix+0x7E)
 	ld (ix+07eh),a		;aa14
 	inc de			;aa17
-	ld a,(de)			;aa18
+	ld a,(de)			;aa18   ; [1] cada cuanto cambia de rumbo, menos la dificultad * 6, minimo 16
 	ld h,010h		;aa19
 	call L_AA40		;aa1b
 	ld (ix+00bh),a		;aa1e
 	inc de			;aa21
-	ld a,(de)			;aa22
+	ld a,(de)			;aa22   ; [2] bits 0-4: su disparo (ix+0x7D); bits 6-7: lo que salta (ix+0x1E)
 	ld c,a			;aa23
 	and 01fh		;aa24
 	ld (ix+07dh),a		;aa26
@@ -1385,14 +1385,14 @@ L_AA04:
 	and 003h		;aa2c
 	ld (ix+01eh),a		;aa2e
 	inc de			;aa31
-	ld a,(de)			;aa32
+	ld a,(de)			;aa32   ; [3] cada cuanto dispara, menos la dificultad * 6, minimo 32
 	ld h,020h		;aa33
 	call L_AA40		;aa35
 	ld (ix+078h),008h		;aa38
 	ld (ix+077h),a		;aa3c
 	ret			;aa3f
 L_AA40:
-	ld c,a			;aa40
+	ld c,a			;aa40   ; A - la dificultad * 6, y no menos de H
 	ld a,(0cd12h)		;aa41
 	add a,a			;aa44
 	ld b,a			;aa45
@@ -1453,12 +1453,12 @@ DATA_fichas_AA51:
 ; ======================================================================
 
 
-L_AAD5:
-	ld (ix+00ah),038h		;aad5   ; la pose de la figura = 0x38
+tipo_10_sale:		; la figura de tipo 10 (0x0A): su arranque (tabla de p02:8427)
+	ld (ix+00ah),038h		;aad5   ; tipo 10: pose 0x38, hacia arriba, 64 cuadros hasta el primer disparo
 	ld (ix+01fh),008h		;aad9
 	ld (ix+018h),040h		;aadd
 	ld (ix+00bh),020h		;aae1
-	ld a,r		;aae5
+	ld a,r		;aae5   ; en un sitio al azar: x cualquiera, y 0x50 o 0xD0
 	ld b,a			;aae7
 	ld a,(0c00dh)		;aae8
 	add a,b			;aaeb
@@ -1468,15 +1468,15 @@ L_AAD5:
 	and 080h		;aaf5
 	add a,050h		;aaf7
 	ld (ix+003h),a		;aaf9   ; guarda la y de la figura
-	ld a,0e0h		;aafc
+	ld a,0e0h		;aafc   ; FALLO: quiere poner (ix+0x75) = 0xE0, pero escribe en 0x0075, ROM de la BIOS; la cuenta de p03:ABC4 empieza con lo que dejo en ese hueco la figura anterior
 	ld (00075h),a		;aafe
-	ld a,(0cd5bh)		;ab01
+	ld a,(0cd5bh)		;ab01   ; en la primera tanda, sale donde p02:85B1
 	or a			;ab04
 	jr z,$+58		;ab05
 	call 085b1h		;ab07
 	jr $+53		;ab0a
-L_AB0C:
-	call L_ABC4		;ab0c
+tipo_10:		; la figura de tipo 10 (0x0A), un cuadro (tabla de p02:871C)
+	call L_ABC4		;ab0c   ; tipo 10: la cuenta de (ix+0x75), el disparo, la pose y segun su paso (0xAB1D)
 	call L_AB8C		;ab0f
 	ld a,038h		;ab12
 	call 08950h		;ab14
@@ -1499,12 +1499,12 @@ DATA_tabla_AB1D:
 
 
 L_AB25:
-	call L_A699		;ab25
+	call L_A699		;ab25   ; paso 0: anda 32 cuadros; si choca, salta hacia el jugador
 	jr c,L_AB3F		;ab28
 	dec (ix+00bh)		;ab2a
 	ret nz			;ab2d
 L_AB2E:
-	ld (ix+00bh),020h		;ab2e
+	ld (ix+00bh),020h		;ab2e   ; quieto 32 cuadros, y el paso siguiente
 	ld de,00000h		;ab32
 	call 087ebh		;ab35   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 	call 087e4h		;ab38   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -1520,14 +1520,14 @@ L_AB3F:
 	call 087ebh		;ab4f   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 	ret			;ab52
 L_AB53:
-	ld a,(0c00dh)		;ab53
+	ld a,(0c00dh)		;ab53   ; paso 1: se da la vuelta cada 4 cuadros...
 	and 003h		;ab56
 	jr nz,L_AB62		;ab58
 	ld a,(ix+00fh)		;ab5a
 	xor 001h		;ab5d
 	ld (ix+00fh),a		;ab5f
 L_AB62:
-	dec (ix+00bh)		;ab62
+	dec (ix+00bh)		;ab62   ; ... y al acabar, va hacia el jugador (8 + dificultad / 2)
 	ret nz			;ab65
 	ld a,(0cd12h)		;ab66
 	and 00ch		;ab69
@@ -1537,7 +1537,7 @@ L_AB62:
 	call 087e4h		;ab71   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	ex de,hl			;ab74
 	call 087ebh		;ab75   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-	ld a,080h		;ab78
+	ld a,080h		;ab78   ; mirando hacia donde va
 	cp h			;ab7a
 	ld a,000h		;ab7b
 	jr nc,L_AB80		;ab7d
@@ -1548,7 +1548,7 @@ L_AB80:
 	ld (ix+001h),000h		;ab87   ; el paso en que va la figura = 0x00
 	ret			;ab8b
 L_AB8C:
-	dec (ix+018h)		;ab8c
+	dec (ix+018h)		;ab8c   ; cada 64 - dificultad * 4 cuadros...
 	ret nz			;ab8f
 	ld a,(0cd12h)		;ab90
 	add a,a			;ab93
@@ -1560,14 +1560,14 @@ L_AB8C:
 	ld a,(ix+01dh)		;ab9c
 	or a			;ab9f
 	ret nz			;aba0
-	ld a,004h		;aba1
+	ld a,004h		;aba1   ; ... el disparo 4 y el efecto 5
 	call 089c2h		;aba3   ; dispara: crea el disparo A (tabla de 0x8B6B)
 	ld a,005h		;aba6
 	call 04fe4h		;aba8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	ld (ix+001h),000h		;abab   ; el paso en que va la figura = 0x00
 	jp L_AB2E		;abaf
 L_ABB2:
-	call 09fdeh		;abb2
+	call 09fdeh		;abb2   ; paso 2: el salto; al caer, paso 1
 	ld a,(ix+01dh)		;abb5
 	or a			;abb8
 	ret nz			;abb9
@@ -1577,18 +1577,18 @@ L_ABB2:
 L_ABC3:
 	ret			;abc3
 L_ABC4:
-	dec (ix+075h)		;abc4
+	dec (ix+075h)		;abc4   ; al acabar la cuenta de (ix+0x75), cae (paso 3)
 	ret nz			;abc7
 	ld a,001h		;abc8
 	ld (ix+007h),a		;abca   ; guarda la velocidad vertical
 	ld a,003h		;abcd
 	ld (ix+001h),a		;abcf   ; guarda el paso en que va la figura
 	ret			;abd2
-L_ABD3:
-	call L_ABF6		;abd3
+tipos_11_12_sale:		; los tipos 11 y 12: su arranque
+	call L_ABF6		;abd3   ; tipos 11 y 12: su ficha, su pose...
 	call L_A954		;abd6
 	call 0893dh		;abd9   ; pon_la_pose: pone la pose de la figura
-	ld a,(ix+000h)		;abdc   ; lee el tipo de la figura
+	ld a,(ix+000h)		;abdc   ; ... el 11 cada 48 cuadros, el 12 cada 24 (se lanza); 64 en (ix+0x75)
 	cp 00bh		;abdf
 	ld a,030h		;abe1
 	jr z,L_ABE7		;abe3
@@ -1600,12 +1600,12 @@ L_ABE7:
 	ld (ix+075h),040h		;abf1
 	ret			;abf5
 L_ABF6:
-	ld a,(0cd5bh)		;abf6
+	ld a,(0cd5bh)		;abf6   ; sale como los demas: por un lado, o en la primera tanda donde p02:85B1
 	or a			;abf9
 	jp z,09763h		;abfa
 	jp 085b1h		;abfd
-L_AC00:
-	call L_A954		;ac00
+tipos_11_12:		; los tipos 11 y 12, un cuadro
+	call L_A954		;ac00   ; tipos 11 y 12: pose 0x8B y segun su paso (0xAC0E)
 	ld a,08bh		;ac03
 	call 0894dh		;ac05
 	ld a,(ix+001h)		;ac08   ; lee el paso en que va la figura
@@ -1625,13 +1625,13 @@ DATA_tabla_AC0E:
 
 
 L_AC12:
-	call L_ACB7		;ac12
+	call L_ACB7		;ac12   ; paso 0: la cuenta, mira al jugador, anda (si choca, da la vuelta), y se lanza
 	call L_AC6D		;ac15
 	call L_A699		;ac18
 	call c,L_A611		;ac1b
 	call L_AC83		;ac1e
 	call L_AC98		;ac21
-	dec (ix+00bh)		;ac24
+	dec (ix+00bh)		;ac24   ; cada 8-39 cuadros (al azar) un rumbo nuevo:
 	ret nz			;ac27
 	ld a,r		;ac28
 	and 01fh		;ac2a
@@ -1642,7 +1642,7 @@ L_AC12:
 	ld a,(0c00dh)		;ac34
 	xor b			;ac37
 	and 007h		;ac38
-	cp 004h		;ac3a
+	cp 004h		;ac3a   ; la mitad de las veces uno de cuatro (0xAC69)...
 	jr nc,L_AC49		;ac3c
 	ld de,0ac69h		;ac3e
 	call 04088h		;ac41   ; de_mas_a: DE += A
@@ -1650,7 +1650,7 @@ L_AC12:
 	call L_A58A		;ac45
 	ret			;ac48
 L_AC49:
-	cp 006h		;ac49
+	cp 006h		;ac49   ; ... o hacia donde mira...
 	jr nc,L_AC5A		;ac4b
 	ld a,(ix+00fh)		;ac4d
 	or a			;ac50
@@ -1659,7 +1659,7 @@ L_AC49:
 	rra			;ac56
 	jp L_A58A		;ac57
 L_AC5A:
-	ld a,(0c494h)		;ac5a   ; lee la y del jugador
+	ld a,(0c494h)		;ac5a   ; ... o hacia el jugador en vertical
 	cp (ix+003h)		;ac5d   ; compara con la y de la figura
 	ld a,008h		;ac60
 	jp c,L_A58A		;ac62
@@ -1679,7 +1679,7 @@ DATA_cuatro_bits:
 
 
 L_AC6D:
-	ld a,(ix+01fh)		;ac6d
+	ld a,(ix+01fh)		;ac6d   ; andando en vertical, mira hacia el jugador
 	and 00ch		;ac70
 	ret z			;ac72
 	ld a,(ix+005h)		;ac73   ; lee la x de la figura
@@ -1692,7 +1692,7 @@ L_AC7F:
 	ld (ix+00fh),a		;ac7f
 	ret			;ac82
 L_AC83:
-	ld a,(0c00dh)		;ac83
+	ld a,(0c00dh)		;ac83   ; cada 4 cuadros, (ix+0x18) cuenta: al acabar, (ix+0x1D) = 1, listo para lanzarse
 	and 003h		;ac86
 	ret nz			;ac88
 	dec (ix+018h)		;ac89
@@ -1702,7 +1702,7 @@ L_AC83:
 	ld (ix+018h),a		;ac94
 	ret			;ac97
 L_AC98:
-	ld a,(ix+01dh)		;ac98
+	ld a,(ix+01dh)		;ac98   ; listo y a la altura del jugador (32): el disparo 5 hacia donde mira
 	or a			;ac9b
 	ret z			;ac9c
 	ld a,(0c494h)		;ac9d   ; lee la y del jugador
@@ -1716,7 +1716,7 @@ L_AC98:
 	ld a,005h		;acb2
 	jp 089c2h		;acb4   ; dispara: crea el disparo A (tabla de 0x8B6B)
 L_ACB7:
-	ld a,(0c00dh)		;acb7
+	ld a,(0c00dh)		;acb7   ; cada 4 cuadros, (ix+0x75) cuenta: al acabar, el paso siguiente
 	and 003h		;acba
 	ret nz			;acbc
 	dec (ix+075h)		;acbd
@@ -1724,7 +1724,7 @@ L_ACB7:
 	inc (ix+001h)		;acc1   ; sube el paso en que va la figura
 	ret			;acc4
 L_ACC5:
-	call L_A699		;acc5
+	call L_A699		;acc5   ; si choca, a la izquierda o hacia arriba
 	ret nc			;acc8
 	or a			;acc9
 	ld a,(ix+01fh)		;acca
@@ -1734,15 +1734,15 @@ L_ACC5:
 L_ACD3:
 	jp L_A58A		;acd3
 L_ACD6:
-	ld de,0806dh		;acd6
+	ld de,0806dh		;acd6   ; crea la figura 0x22 en (0x6D, 0x80)
 	ld a,022h		;acd9
 	jp 08334h		;acdb   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
 L_ACDE:
-	ld de,0806dh		;acde
+	ld de,0806dh		;acde   ; crea la 0x23 en (0x6D, 0x80)
 	ld a,023h		;ace1
 	jp 08334h		;ace3   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_ACE6:
-	ld (ix+00ah),010h		;ace6   ; la pose de la figura = 0x10
+tipos_34_35_sale:		; los tipos 34 y 35 (0x22, 0x23): su arranque
+	ld (ix+00ah),010h		;ace6   ; tipos 34 y 35 (las de los interiores): pose 0x10, no hacen dano, andan a la derecha
 	xor a			;acea
 	ld (ix+00ch),a		;aceb
 	ld (ix+006h),a		;acee   ; guarda la velocidad vertical (parte baja)
@@ -1751,8 +1751,8 @@ L_ACE6:
 	ld (ix+008h),e		;acf7   ; guarda la velocidad horizontal (parte baja)
 	ld (ix+009h),d		;acfa   ; guarda la velocidad horizontal
 	ret			;acfd
-L_ACFE:
-	ld a,010h		;acfe
+tipos_34_35:		; los tipos 34 y 35, un cuadro
+	ld a,010h		;acfe   ; van y vienen entre x 0x50 y 0xA0
 	ld de,0c00dh		;ad00
 	call 0895bh		;ad03
 	ld a,(ix+001h)		;ad06   ; lee el paso en que va la figura
@@ -1776,11 +1776,11 @@ L_AD25:
 	ld (ix+001h),000h		;ad2b   ; el paso en que va la figura = 0x00
 	jr L_AD15		;ad2f
 L_AD31:
-	ld de,07887h		;ad31
+	ld de,07887h		;ad31   ; crea la 0x25 (el cursor de la tienda) en (0x87, 0x78)
 	ld a,025h		;ad34
 	jp 08334h		;ad36   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_AD39:
-	ld (ix+00ah),019h		;ad39   ; la pose de la figura = 0x19
+tipo_37_sale:		; la figura de tipo 37 (0x25): su arranque (tabla de p02:8427)
+	ld (ix+00ah),019h		;ad39   ; el tipo 37, la tienda: pose 0x19, quieto, la cosa elegida 0
 	xor a			;ad3d
 	ld (ix+00ch),a		;ad3e
 	ld (ix+006h),a		;ad41   ; guarda la velocidad vertical (parte baja)
@@ -1788,10 +1788,10 @@ L_AD39:
 	ld (ix+008h),a		;ad47   ; guarda la velocidad horizontal (parte baja)
 	ld (ix+009h),a		;ad4a   ; guarda la velocidad horizontal
 	ld (0cd8ch),a		;ad4d
-	ld a,(0c27eh)		;ad50
+	ld a,(0c27eh)		;ad50   ; con la cosa 0x0A, siempre abierta
 	or a			;ad53
 	jp nz,L_AED5		;ad54
-	ld a,(0cd5fh)		;ad57
+	ld a,(0cd5fh)		;ad57   ; si no: los interiores 0-7 abren con la cifra de las decenas del tiempo impar, los 8-15 con ella par...
 	and 008h		;ad5a
 	add a,a			;ad5c
 	ld b,a			;ad5d
@@ -1799,7 +1799,7 @@ L_AD39:
 	and 010h		;ad61
 	xor b			;ad63
 	jp nz,L_AED5		;ad64
-	ld a,(0cd5fh)		;ad67
+	ld a,(0cd5fh)		;ad67   ; ... y si no toca, el rotulo de cerrado (0x6F; 0x70 en los 8-15) y no hay tienda
 	cp 008h		;ad6a
 	ld a,06fh		;ad6c
 	jr c,L_AD72		;ad6e
@@ -1807,8 +1807,8 @@ L_AD39:
 L_AD72:
 	call 04280h		;ad72   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	jp 087b7h		;ad75   ; borra_la_figura: borra la figura
-L_AD78:
-	ld a,(ix+001h)		;ad78   ; lee el paso en que va la figura
+tipo_37:		; la figura de tipo 37 (0x25), un cuadro (tabla de p02:871C)
+	ld a,(ix+001h)		;ad78   ; la tienda, segun su paso (0xAD7E)
 	call 0408dh		;ad7b   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -1826,7 +1826,7 @@ DATA_tabla_AD7E:
 
 
 L_AD84:
-	ld a,(0c006h)		;ad84   ; lee lo que se acaba de apretar (mando y cursores)
+	ld a,(0c006h)		;ad84   ; paso 0: el primer boton pasa a la cosa siguiente; el segundo, compra
 	ld b,a			;ad87
 	and 010h		;ad88
 	jr nz,L_AD93		;ad8a
@@ -1838,7 +1838,7 @@ L_AD93:
 	inc (ix+001h)		;ad93   ; sube el paso en que va la figura
 	ret			;ad96
 L_AD97:
-	ld (ix+001h),000h		;ad97   ; el paso en que va la figura = 0x00
+	ld (ix+001h),000h		;ad97   ; paso 1: la siguiente de las tres que tenga algo (0xCD8C, 0xCD83)
 	ld b,003h		;ad9b
 L_AD9D:
 	ld hl,0cd8ch		;ad9d
@@ -1863,7 +1863,7 @@ L_ADB4:
 	ld d,b			;adb8
 	add a,a			;adb9
 L_ADBA:
-	ld de,ladb4h		;adba
+	ld de,ladb4h		;adba   ; la marca, en el sitio de esa cosa (0xADB4)
 	ld a,(0cd8ch)		;adbd
 	call 0447ch		;adc0   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld (ix+003h),d		;adc3   ; guarda la y de la figura
@@ -1878,7 +1878,7 @@ L_ADCD:
 	dec hl			;add2
 	ret			;add3
 L_ADD4:
-	ld (ix+001h),000h		;add4   ; el paso en que va la figura = 0x00
+	ld (ix+001h),000h		;add4   ; paso 2: comprar lo elegido, segun lo que sea
 	ld a,(0cd8ch)		;add8
 	ld hl,0cd83h		;addb
 	call 04083h		;adde   ; hl_mas_a: HL += A
@@ -1886,7 +1886,7 @@ L_ADD4:
 	or a			;ade2
 	ret z			;ade3
 	dec a			;ade4
-	ld (0ee80h),a		;ade5
+	ld (0ee80h),a		;ade5   ; la cosa elegida - 1, y lo que hace al comprarla (tabla de 0xADEB)
 	call 0408dh		;ade8   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -1916,12 +1916,12 @@ DATA_tabla_ADEB:
 
 
 L_AE07:
-	call L_AE38		;ae07
+	call L_AE38		;ae07   ; una cosa de las que se tienen hasta 3: se paga y una mas
 	jp c,L_AED9		;ae0a
 	call L_AE5B		;ae0d
 	ret			;ae10
 L_AE11:
-	ld (0ee81h),a		;ae11
+	ld (0ee81h),a		;ae11   ; una cosa con valor: se paga y, si no se tenia, vale A
 	call L_AE81		;ae14
 	ld a,(0ee80h)		;ae17
 	ld hl,0c270h		;ae1a   ; apunta a las 10 cosas del marcador
@@ -1939,7 +1939,7 @@ L_AE11:
 L_AE37:
 	ret			;ae37
 L_AE38:
-	ld a,(0cd8ch)		;ae38
+	ld a,(0cd8ch)		;ae38   ; el precio de la elegida (0xCD86 + 2 * n) se paga: carry si no llega el dinero
 	add a,a			;ae3b
 	ld hl,0cd86h		;ae3c
 	call 04083h		;ae3f   ; hl_mas_a: HL += A
@@ -1948,17 +1948,17 @@ L_AE38:
 	ld d,(hl)			;ae44
 	call L_B539		;ae45
 	ret c			;ae48
-	ld a,(0cd8ch)		;ae49
+	ld a,(0cd8ch)		;ae49   ; vendida: fuera de la tienda...
 	ld hl,0cd83h		;ae4c
 	call 04083h		;ae4f   ; hl_mas_a: HL += A
 	xor a			;ae52
 	ld (hl),a			;ae53
-	ld a,015h		;ae54
+	ld a,015h		;ae54   ; ... y el efecto 0x15
 	call 04fe4h		;ae56   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	or a			;ae59
 	ret			;ae5a
 L_AE5B:
-	call L_AE81		;ae5b
+	call L_AE81		;ae5b   ; una mas de la cosa, salvo que ya tenga 3
 	ld a,(0ee80h)		;ae5e
 	ld hl,0c270h		;ae61   ; apunta a las 10 cosas del marcador
 	call 04083h		;ae64   ; hl_mas_a: HL += A
@@ -1974,7 +1974,7 @@ L_AE5B:
 	call 05856h		;ae7c   ; pinta_las_cosas: pinta las cosas del marcador
 	jr L_AE37		;ae7f
 L_AE81:
-	ld a,(0cd8ch)		;ae81
+	ld a,(0cd8ch)		;ae81   ; fuera su icono de la tienda
 	ld hl,09556h		;ae84
 	add a,a			;ae87
 	call 04083h		;ae88   ; hl_mas_a: HL += A
@@ -1984,24 +1984,24 @@ L_AE81:
 	ld a,0ffh		;ae8e
 	jp 04eb9h		;ae90   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_AE93:
-	ld a,064h		;ae93
+	ld a,064h		;ae93   ; la cosa 8 dura 100 segundos (0xC27C)
 	ld (0c27ch),a		;ae95
 L_AE98:
-	call L_AE38		;ae98
+	call L_AE38		;ae98   ; la cosa vale 1
 	jr c,L_AED9		;ae9b
 	ld a,001h		;ae9d
 	call L_AE11		;ae9f
 	ret			;aea2
 L_AEA3:
-	call L_AE38		;aea3
+	call L_AE38		;aea3   ; la cosa vale 5
 	jr c,L_AED9		;aea6
 	ld a,005h		;aea8
 	call L_AE11		;aeaa
 	ret			;aead
 L_AEAE:
-	ld b,010h		;aeae
+	ld b,010h		;aeae   ; 16 de vida...
 L_AEB0:
-	ld b,008h		;aeb0
+	ld b,008h		;aeb0   ; ... u 8
 L_AEB2:
 	push bc			;aeb2
 	call L_AE38		;aeb3
@@ -2013,19 +2013,19 @@ L_AEB2:
 	call L_AEF9		;aec0
 	ret			;aec3
 L_AEC4:
-	call L_AE38		;aec4
+	call L_AE38		;aec4   ; 200 segundos mas
 	jr c,L_AED9		;aec7
 	call L_AE81		;aec9
 	call L_AEF9		;aecc
 	ld de,00200h		;aecf
 	jp 05945h		;aed2   ; suma_tiempo: suma DE (BCD) al tiempo, hasta 5000
 L_AED5:
-	ld c,000h		;aed5
+	ld c,000h		;aed5   ; el texto de la tienda (C = 0)...
 	jr L_AEDB		;aed7
 L_AED9:
-	ld c,004h		;aed9
+	ld c,004h		;aed9   ; ... o el de que no llega el dinero (C = 4)
 L_AEDB:
-	ld a,(0cd5fh)		;aedb
+	ld a,(0cd5fh)		;aedb   ; segun el interior / 4 (0xAEF1)
 	srl a		;aede
 	srl a		;aee0
 	ld de,0aef1h		;aee2
@@ -2049,7 +2049,7 @@ DATA_ocho_AEF1:
 
 
 L_AEF9:
-	ld a,(0ee80h)		;aef9
+	ld a,(0ee80h)		;aef9   ; una compra mas de esa cosa en esta zona (hasta 4): el precio se dobla
 L_AEFC:
 	ld hl,0cda0h		;aefc
 	call 04083h		;aeff   ; hl_mas_a: HL += A
@@ -2059,11 +2059,11 @@ L_AEFC:
 	inc (hl)			;af06
 	ret			;af07
 L_AF08:
-	ld de,0181eh		;af08
+	ld de,0181eh		;af08   ; crea la 0x27 en (0x1E, 0x18)
 	ld a,027h		;af0b
 	jp 08334h		;af0d   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_AF10:
-	ld (ix+00ah),019h		;af10   ; la pose de la figura = 0x19
+tipo_39_sale:		; la figura de tipo 39 (0x27): su arranque (tabla de p02:8427)
+	ld (ix+00ah),019h		;af10   ; el tipo 39: la casa de cambio de lo que se tiene; quieto, sin dano
 	xor a			;af14
 	ld (ix+00ch),a		;af15
 	ld (ix+006h),a		;af18   ; guarda la velocidad vertical (parte baja)
@@ -2071,14 +2071,14 @@ L_AF10:
 	ld (ix+008h),a		;af1e   ; guarda la velocidad horizontal (parte baja)
 	ld (ix+009h),a		;af21   ; guarda la velocidad horizontal
 	ld (ix+00fh),a		;af24
-	ld c,0ffh		;af27
+	ld c,0ffh		;af27   ; empieza buscando desde la cosa 0
 	ld hl,0c26fh		;af29
 	ld b,00bh		;af2c
 	call L_AF6F		;af2e
 	ld (ix+001h),000h		;af31   ; el paso en que va la figura = 0x00
 	ret			;af35
-L_AF36:
-	ld a,(ix+001h)		;af36   ; lee el paso en que va la figura
+tipo_39:		; la figura de tipo 39 (0x27), un cuadro (tabla de p02:871C)
+	ld a,(ix+001h)		;af36   ; segun su paso (0xAF3C)
 	call 0408dh		;af39   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -2096,7 +2096,7 @@ DATA_tabla_AF3C:
 
 
 L_AF42:
-	ld a,(0c006h)		;af42   ; lee lo que se acaba de apretar (mando y cursores)
+	ld a,(0c006h)		;af42   ; el primer boton, la siguiente; el segundo, cambiar; con el texto 0x16
 	ld b,a			;af45
 	and 010h		;af46
 	jr nz,L_AF51		;af48
@@ -2110,7 +2110,7 @@ L_AF51:
 	call L_B836		;af56
 	ret			;af59
 L_AF5A:
-	ld (ix+00fh),000h		;af5a
+	ld (ix+00fh),000h		;af5a   ; la siguiente cosa que se tenga, de las 10
 	ld (ix+001h),000h		;af5e   ; el paso en que va la figura = 0x00
 	ld b,009h		;af62
 	ld hl,0cd8ch		;af64
@@ -2128,7 +2128,7 @@ L_AF6F:
 	djnz L_AF6F		;af78
 	jp L_B06B		;af7a
 L_AF7D:
-	ld a,c			;af7d
+	ld a,c			;af7d   ; la marca, en su sitio del marcador (0xB010)
 	ld (0cd8ch),a		;af7e
 	ld de,0b010h		;af81
 	call 04088h		;af84   ; de_mas_a: DE += A
@@ -2143,14 +2143,14 @@ L_AF7D:
 	ld a,(de)			;af95
 	add a,c			;af96
 	ld (ix+005h),a		;af97   ; guarda la x de la figura
-	call 0932ah		;af9a
+	call 0932ah		;af9a   ; lo que vale, de la tabla de precios
 	ld a,(0cd8ch)		;af9d
 	ld b,a			;afa0
 	add a,a			;afa1
 	call 04088h		;afa2   ; de_mas_a: DE += A
 	ex de,hl			;afa5
 	call L_AFBE		;afa6
-	ld hl,0cd87h		;afa9
+	ld hl,0cd87h		;afa9   ; y se pinta en (0x87, 0x60), con la moneda al lado
 	ld de,06087h		;afac
 	ld b,002h		;afaf
 	call 04420h		;afb1   ; pinta_bcd: pinta cifras en BCD
@@ -2159,7 +2159,7 @@ L_AF7D:
 	call 04ef1h		;afba
 	ret			;afbd
 L_AFBE:
-	ld a,b			;afbe
+	ld a,b			;afbe   ; el valor segun las veces que se ha comprado: 0 o 1, la mitad...
 	ld de,0cda0h		;afbf
 	call 04088h		;afc2   ; de_mas_a: DE += A
 	ld a,(de)			;afc5
@@ -2175,7 +2175,7 @@ L_AFBE:
 	dec b			;afd1
 	jr z,L_AFDE		;afd2
 L_AFD4:
-	ld a,l			;afd4
+	ld a,l			;afd4   ; ... 3 o mas, el doble por cada una de mas
 	add a,a			;afd5
 	daa			;afd6
 	ld l,a			;afd7
@@ -2188,7 +2188,7 @@ L_AFDE:
 	ld (0cd86h),hl		;afde
 	ret			;afe1
 L_AFE2:
-	ld de,00000h		;afe2
+	ld de,00000h		;afe2   ; la mitad en BCD: cifra a cifra, con el 5 que baja de la de arriba si era impar
 	ld a,h			;afe5
 	and 0f0h		;afe6
 	call L_B007		;afe8
@@ -2214,7 +2214,7 @@ L_AFF4:
 	ex de,hl			;b004
 	jr L_AFDE		;b005
 L_B007:
-	rra			;b007
+	rra			;b007   ; A / 2 de un nibble BCD (el 8 que baja se corrige a 5)
 	ld b,a			;b008
 	and 008h		;b009
 	ld a,b			;b00b
@@ -2234,7 +2234,7 @@ DATA_diez_B010:
 
 
 L_B01A:
-	ld b,(hl)			;b01a
+	ld b,(hl)			;b01a   ; la x de la marca segun cuantas se tienen (16 por cada una)
 	xor a			;b01b
 L_B01C:
 	add a,010h		;b01c
@@ -2243,30 +2243,30 @@ L_B01C:
 	ld c,a			;b022
 	ret			;b023
 L_B024:
-	ld a,008h		;b024
+	ld a,008h		;b024   ; pasada la cosa 8, vuelta a la 0
 	cp c			;b026
 	ret nc			;b027
 	ld c,000h		;b028
 	ld hl,0c270h		;b02a   ; apunta a las 10 cosas del marcador
 	ret			;b02d
 L_B02E:
-	ld (ix+001h),000h		;b02e   ; el paso en que va la figura = 0x00
+	ld (ix+001h),000h		;b02e   ; cambiar la elegida: si ya se cambio una, nada
 	ld a,(ix+00fh)		;b032
 	or a			;b035
 	ret nz			;b036
-	ld a,(0cd8ch)		;b037
+	ld a,(0cd8ch)		;b037   ; si no se tiene, el texto 0x1A
 	ld hl,0c270h		;b03a   ; apunta a las 10 cosas del marcador
 	call 04083h		;b03d   ; hl_mas_a: HL += A
 	ld a,(hl)			;b040
 	or a			;b041
 	ld a,01ah		;b042
 	jp z,L_B836		;b044
-	ld a,(0cd8ch)		;b047
+	ld a,(0cd8ch)		;b047   ; la cosa 3: ademas da CONTINUAR (p03:B070)
 	cp 003h		;b04a
 	push hl			;b04c
 	call z,L_B070		;b04d
 	pop hl			;b050
-	ld a,(0cd8ch)		;b051
+	ld a,(0cd8ch)		;b051   ; las cosas 1-8 se pierden enteras; la 0 y la 9, una
 	dec a			;b054
 	cp 008h		;b055
 	ld a,000h		;b057
@@ -2275,15 +2275,15 @@ L_B02E:
 	dec a			;b05c
 L_B05D:
 	ld (hl),a			;b05d
-	ld de,(0cd86h)		;b05e
+	ld de,(0cd86h)		;b05e   ; y se cobra lo que vale (0xCD86)
 	call 0592bh		;b062
-	inc (ix+00fh)		;b065
+	inc (ix+00fh)		;b065   ; ya se cambio una: (ix+0x0F) = 1
 	jp 05856h		;b068   ; pinta_las_cosas: pinta las cosas del marcador
 L_B06B:
-	ld (ix+001h),003h		;b06b   ; el paso en que va la figura = 0x03
+	ld (ix+001h),003h		;b06b   ; sin nada que cambiar, paso 3
 	ret			;b06f
 L_B070:
-	ld a,(0c27fh)		;b070   ; lee si se puede continuar
+	ld a,(0c27fh)		;b070   ; si aun no lo tenia: el texto 0x1B y 0xC27F = 1, se puede CONTINUAR
 	or a			;b073
 	ret nz			;b074
 	ld a,01bh		;b075
@@ -2292,10 +2292,10 @@ L_B070:
 	ld (0c27fh),a		;b07c   ; guarda si se puede continuar
 	ret			;b07f
 L_B080:
-	ld de,07058h		;b080
+	ld de,07058h		;b080   ; crea la figura B en (0x58, 0x70)
 	jp 08334h		;b083   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B086:
-	ld (ix+00ah),01ah		;b086   ; la pose de la figura = 0x1A
+tipo_38_sale:		; la figura de tipo 38 (0x26): su arranque (tabla de p02:8427)
+	ld (ix+00ah),01ah		;b086   ; el tipo 38: la marca de si o no; 0xCD82 = 0 (nada elegido); x 0x70 o 0x90 (0xCD93)
 	xor a			;b08a
 	ld (0cd82h),a		;b08b
 	ld (ix+00ch),a		;b08e
@@ -2306,7 +2306,7 @@ L_B086:
 	ld a,090h		;b099
 	ld (0cd93h),a		;b09b
 	ret			;b09e
-L_B09F:
+tipo_38:		; la figura de tipo 38 (0x26), un cuadro (tabla de p02:871C)
 	ld a,(ix+001h)		;b09f   ; lee el paso en que va la figura
 	call 0408dh		;b0a2   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -2326,7 +2326,7 @@ DATA_tabla_B0A5:
 
 
 L_B0AD:
-	ld a,(0c006h)		;b0ad   ; lee lo que se acaba de apretar (mando y cursores)
+	ld a,(0c006h)		;b0ad   ; el primer boton cambia de opcion; el segundo elige
 	ld b,a			;b0b0
 	and 010h		;b0b1
 	jr nz,L_B0BC		;b0b3
@@ -2338,7 +2338,7 @@ L_B0BC:
 	inc (ix+001h)		;b0bc   ; sube el paso en que va la figura
 	ret			;b0bf
 L_B0C0:
-	ld (ix+001h),000h		;b0c0   ; el paso en que va la figura = 0x00
+	ld (ix+001h),000h		;b0c0   ; de una a la otra: x 0x70 o 0xCD93
 	ld a,(ix+005h)		;b0c4   ; lee la x de la figura
 	cp 070h		;b0c7
 	ld a,(0cd93h)		;b0c9
@@ -2348,7 +2348,7 @@ L_B0D0:
 	ld (ix+005h),a		;b0d0   ; guarda la x de la figura
 	ret			;b0d3
 L_B0D4:
-	ld a,(ix+005h)		;b0d4   ; lee la x de la figura
+	ld a,(ix+005h)		;b0d4   ; elegido: 0xCD82 = 1 (la de x 0x70) o 2
 	cp 070h		;b0d7
 	ld a,001h		;b0d9
 	jr z,L_B0DF		;b0db
@@ -2358,18 +2358,18 @@ L_B0DF:
 	inc (ix+001h)		;b0e2   ; sube el paso en que va la figura
 	ret			;b0e5
 L_B0E6:
-	ld a,(0cd91h)		;b0e6
+	ld a,(0cd91h)		;b0e6   ; con 0xCD91 puesto, se va
 	or a			;b0e9
 	ret z			;b0ea
 	xor a			;b0eb
 	ld (0cd91h),a		;b0ec
 	jp 087b7h		;b0ef   ; borra_la_figura: borra la figura
 L_B0F2:
-	ld de,0806dh		;b0f2
+	ld de,0806dh		;b0f2   ; crea la 0x28 en (0x6D, 0x80)
 	ld a,028h		;b0f5
 	jp 08334h		;b0f7   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B0FA:
-	ld (ix+00ah),010h		;b0fa   ; la pose de la figura = 0x10
+tipo_40_sale:		; la figura de tipo 40 (0x28): su arranque (tabla de p02:8427)
+	ld (ix+00ah),010h		;b0fa   ; el tipo 40: quieto, sin dano
 	xor a			;b0fe
 	ld (ix+00ch),a		;b0ff
 	ld (ix+006h),a		;b102   ; guarda la velocidad vertical (parte baja)
@@ -2377,18 +2377,18 @@ L_B0FA:
 	ld (ix+008h),a		;b108   ; guarda la velocidad horizontal (parte baja)
 	ld (ix+009h),a		;b10b   ; guarda la velocidad horizontal
 	ld (0cd82h),a		;b10e
-	ld a,(0c27eh)		;b111
+	ld a,(0c27eh)		;b111   ; con la cosa 0x0A: la marca de si o no (0x26) y los rotulos 0 y 0x19
 	or a			;b114
 	ld a,026h		;b115
 	call nz,0828fh		;b117
-	ld a,(0c27eh)		;b11a
+	ld a,(0c27eh)		;b11a   ; sin ella, los rotulos 0x18 y 0x1C (0x1D en la zona 6)
 	or a			;b11d
 	jp z,L_B1A7		;b11e
 	xor a			;b121
 	call 04280h		;b122   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	ld a,019h		;b125
 	jp 04280h		;b127   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-L_B12A:
+tipo_40:		; la figura de tipo 40 (0x28), un cuadro (tabla de p02:871C)
 	ld a,(ix+001h)		;b12a   ; lee el paso en que va la figura
 	call 0408dh		;b12d   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -2407,7 +2407,7 @@ DATA_tabla_B130:
 
 
 L_B136:
-	ld a,(0cd82h)		;b136
+	ld a,(0cd82h)		;b136   ; elegido: si (1), el texto 0x16 y la figura 0x27; no (2), el texto 0x1A
 	or a			;b139
 	ret z			;b13a
 	cp 002h		;b13b
@@ -2426,7 +2426,7 @@ L_B152:
 	ld (ix+001h),002h		;b157   ; el paso en que va la figura = 0x02
 	ret			;b15b
 L_B15C:
-	ld a,(0cd92h)		;b15c
+	ld a,(0cd92h)		;b15c   ; espera a 0xCD92
 	or a			;b15f
 	ret z			;b160
 	inc (ix+001h)		;b161   ; sube el paso en que va la figura
@@ -2436,8 +2436,8 @@ L_B165:
 L_B166:
 	ld de,08070h		;b166
 	jp 08334h		;b169   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B16C:
-	ld (ix+00ah),010h		;b16c   ; la pose de la figura = 0x10
+tipo_36_sale:		; la figura de tipo 36 (0x24): su arranque (tabla de p02:8427)
+	ld (ix+00ah),010h		;b16c   ; el tipo 36: quieto; con la cosa 0x0A, la marca de si o no y los rotulos 5 y 0
 	xor a			;b170
 	ld (ix+00ch),a		;b171
 	ld (ix+006h),a		;b174   ; guarda la velocidad vertical (parte baja)
@@ -2472,7 +2472,7 @@ L_B1A7:
 	ld a,01dh		;b1b5
 L_B1B7:
 	jp 04280h		;b1b7   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-L_B1BA:
+tipo_36:		; la figura de tipo 36 (0x24), un cuadro (tabla de p02:871C)
 	ld a,(ix+001h)		;b1ba   ; lee el paso en que va la figura
 	call 0408dh		;b1bd   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -2492,14 +2492,14 @@ DATA_tabla_B1C0:
 
 
 L_B1C8:
-	ld a,(0cd82h)		;b1c8
+	ld a,(0cd82h)		;b1c8   ; elegido: si (1) y se puede pagar (p03:B289)...
 	or a			;b1cb
 	ret z			;b1cc
 	cp 002h		;b1cd
 	jp z,L_B25A		;b1cf
 	call L_B289		;b1d2
 	jp c,L_B25A		;b1d5
-	ld a,006h		;b1d8
+	ld a,006h		;b1d8   ; ... el texto 6, el rotulo 1, y las figuras 0x26, 0x29 y 0x2A
 	call L_B836		;b1da
 	ld a,001h		;b1dd
 	call 04280h		;b1df   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
@@ -2516,7 +2516,7 @@ L_B1C8:
 	call 0828fh		;b1fb
 	ret			;b1fe
 L_B1FF:
-	ld a,(0cd82h)		;b1ff
+	ld a,(0cd82h)		;b1ff   ; elegido: (0xCD8F) y la pose siguiente
 	or a			;b202
 	ret z			;b203
 	ld (0cd8fh),a		;b204
@@ -2526,7 +2526,7 @@ L_B1FF:
 	ld (0cd90h),a		;b20f
 	ret			;b212
 L_B213:
-	ld hl,0cd8dh		;b213
+	ld hl,0cd8dh		;b213   ; los dos dados parados (0xCD8D y 0xCD8E)...
 	ld a,(hl)			;b216
 	or a			;b217
 	ret z			;b218
@@ -2536,18 +2536,18 @@ L_B213:
 	ret z			;b21c
 	ld a,001h		;b21d
 	ld (0cd91h),a		;b21f
-	ld a,(hl)			;b222
+	ld a,(hl)			;b222   ; ... la suma, par o impar...
 	inc (ix+001h)		;b223   ; sube el paso en que va la figura
 	dec hl			;b226
 	ld b,(hl)			;b227
 	add a,b			;b228
 	and 001h		;b229
 	ld b,a			;b22b
-	ld a,(0cd8fh)		;b22c
+	ld a,(0cd8fh)		;b22c   ; ... contra lo elegido (0xCD8F: 1 par, 2 impar)
 	dec a			;b22f
 	xor b			;b230
 	jr nz,L_B247		;b231
-	ld de,(0c265h)		;b233   ; lee el DINERO (ryo, BCD)
+	ld de,(0c265h)		;b233   ; acierta: el DINERO SE DOBLA, el texto 8 y el efecto 0x19
 	call 0592bh		;b237
 	ld a,008h		;b23a
 	call L_B836		;b23c
@@ -2555,7 +2555,7 @@ L_B213:
 	ld a,019h		;b242
 	jp 04fe4h		;b244   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_B247:
-	call 0701eh		;b247   ; dinero_a_la_mitad: el dinero (BCD) entre dos
+	call 0701eh		;b247   ; falla: el dinero se queda en la MITAD, el texto 9 y el efecto 0x18
 	call 0593ah		;b24a   ; pinta_el_dinero: pinta el dinero (4 cifras) en (0x70, 8)
 	ld a,009h		;b24d
 	call L_B836		;b24f
@@ -2567,7 +2567,7 @@ L_B25A:
 L_B25E:
 	ret			;b25e
 L_B25F:
-	ld a,(0cd8eh)		;b25f
+	ld a,(0cd8eh)		;b25f   ; los dos dados: sus cifras en (0x70, 0x40) y (0x80, 0x40)...
 	add a,020h		;b262
 	ld de,07040h		;b264
 	call 0491ch		;b267   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
@@ -2575,7 +2575,7 @@ L_B25F:
 	add a,020h		;b26d
 	ld de,08040h		;b26f
 	call 0491ch		;b272   ; letra: pinta la letra A en DE (D = x, E = y), copiandola de la pagina 1; 0 es un hueco
-	ld a,(0cd8dh)		;b275
+	ld a,(0cd8dh)		;b275   ; ... y el rotulo de par (0x0A) o impar (0x0B)
 	ld b,a			;b278
 	ld a,(0cd8eh)		;b279
 	add a,b			;b27c
@@ -2587,7 +2587,7 @@ L_B285:
 	call 04280h		;b285   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	ret			;b288
 L_B289:
-	ld de,(0c265h)		;b289   ; lee el DINERO (ryo, BCD)
+	ld de,(0c265h)		;b289   ; sin dinero no se juega: efecto 0x1B y carry
 	ld a,e			;b28d
 	or d			;b28e
 	ret nz			;b28f
@@ -2597,16 +2597,16 @@ L_B289:
 	scf			;b298
 	ret			;b299
 L_B29A:
-	ld de,0a087h		;b29a
+	ld de,0a087h		;b29a   ; el dado 0x29 en (0x87, 0xA0)
 	ld a,029h		;b29d
 	jp 08334h		;b29f   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
 L_B2A2:
-	ld de,06087h		;b2a2
+	ld de,06087h		;b2a2   ; el dado 0x2A en (0x87, 0x60)
 	ld a,02ah		;b2a5
 	jp 08334h		;b2a7   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B2AA:
-	ld (ix+00ah),013h		;b2aa   ; la pose de la figura = 0x13
-	ld b,(ix+000h)		;b2ae   ; lee el tipo de la figura
+tipos_41_42_sale:		; los tipos 41 y 42 (0x29, 0x2A): su arranque
+	ld (ix+00ah),013h		;b2aa   ; los tipos 41 y 42, los dados: pose 0x13 (el 1)...
+	ld b,(ix+000h)		;b2ae   ; ... y rueda 20-35 cuadros (al azar)
 	ld a,(ix+005h)		;b2b1   ; lee la x de la figura
 	sub b			;b2b4
 	ld h,a			;b2b5
@@ -2625,7 +2625,7 @@ L_B2AA:
 	ld e,a			;b2cb
 	call 087e4h		;b2cc   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	jp 087ebh		;b2cf   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-L_B2D2:
+tipos_41_42:		; los tipos 41 y 42, un cuadro
 	ld a,(ix+001h)		;b2d2   ; lee el paso en que va la figura
 	call 0408dh		;b2d5   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -2644,16 +2644,16 @@ DATA_tabla_B2D8:
 
 
 L_B2DE:
-	ld a,(0cd90h)		;b2de
+	ld a,(0cd90h)		;b2de   ; paso 0: espera a que se elija (0xCD90)
 	or a			;b2e1
 	ret z			;b2e2
 	inc (ix+001h)		;b2e3   ; sube el paso en que va la figura
 	ret			;b2e6
 L_B2E7:
-	ld a,(0c00dh)		;b2e7
+	ld a,(0c00dh)		;b2e7   ; paso 1: rueda, cada 2 cuadros una cara mas, con el efecto 0x0F
 	and 001h		;b2ea
 	ret nz			;b2ec
-	ld a,(ix+000h)		;b2ed   ; lee el tipo de la figura
+	ld a,(ix+000h)		;b2ed   ; el segundo no se para hasta que se pare el primero
 	cp 02ah		;b2f0
 	call z,L_B303		;b2f2
 	dec (ix+00bh)		;b2f5
@@ -2669,7 +2669,7 @@ L_B303:
 	inc (ix+00bh)		;b308
 	ret			;b30b
 L_B30C:
-	ld hl,0cd8dh		;b30c
+	ld hl,0cd8dh		;b30c   ; parado: su cifra (la pose - 0x13 + 1) a 0xCD8D, o a 0xCD8E si ya estaba la otra
 	ld a,(hl)			;b30f
 	or a			;b310
 	jr z,L_B314		;b311
@@ -2684,7 +2684,7 @@ L_B314:
 L_B31F:
 	ret			;b31f
 L_B320:
-	ld b,013h		;b320
+	ld b,013h		;b320   ; la cara siguiente, de 6
 	inc (ix+00ah)		;b322   ; sube la pose de la figura
 	ld a,(ix+00ah)		;b325   ; lee la pose de la figura
 	sub b			;b328
@@ -2693,7 +2693,7 @@ L_B320:
 	ld a,013h		;b32d
 	ld (ix+00ah),a		;b32f   ; guarda la pose de la figura
 L_B332:
-	push ix		;b332
+	push ix		;b332   ; la cara del 1 lleva otro color
 	pop hl			;b334
 	ld a,(ix+00ah)		;b335   ; lee la pose de la figura
 	ld b,002h		;b338
@@ -2705,11 +2705,11 @@ L_B340:
 	ld (ix+025h),a		;b341
 	jp 054e6h		;b344   ; colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 L_B347:
-	ld de,0889ah		;b347
+	ld de,0889ah		;b347   ; crea la 0x2C en (0x9A, 0x88)
 	ld a,02ch		;b34a
 	jp 08334h		;b34c   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B34F:
-	ld (ix+00ah),03eh		;b34f   ; la pose de la figura = 0x3E
+tipo_44_sale:		; la figura de tipo 44 (0x2C): su arranque (tabla de p02:8427)
+	ld (ix+00ah),03eh		;b34f   ; el tipo 44: quieto, pose 0x3E, y el rotulo 2
 	xor a			;b353
 	ld (ix+00ch),a		;b354
 	ld (ix+006h),a		;b357   ; guarda la velocidad vertical (parte baja)
@@ -2720,7 +2720,7 @@ L_B34F:
 	ld (ix+00eh),a		;b364
 	ld a,002h		;b367
 	jp 04280h		;b369   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-L_B36C:
+tipo_44:		; la figura de tipo 44 (0x2C), un cuadro (tabla de p02:871C)
 	ld a,(ix+001h)		;b36c   ; lee el paso en que va la figura
 	call 0408dh		;b36f   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -2743,7 +2743,7 @@ DATA_tabla_B372:
 
 
 L_B37E:
-	ld a,(0cd82h)		;b37e
+	ld a,(0cd82h)		;b37e   ; elegido si y se puede pagar (0xCD86):
 	or a			;b381
 	ret z			;b382
 	cp 002h		;b383
@@ -2751,7 +2751,7 @@ L_B37E:
 	ld de,(0cd86h)		;b387
 	call L_B539		;b38b
 	jr c,L_B3DA		;b38e
-	ld a,007h		;b390
+	ld a,007h		;b390   ; el texto 7, la musica fuera, el tiempo parado (0xCD32)...
 	call L_B836		;b392
 	inc (ix+001h)		;b395   ; sube el paso en que va la figura
 	ld (ix+00bh),000h		;b398
@@ -2761,7 +2761,7 @@ L_B37E:
 	ld a,001h		;b3a5
 	ld (0cd32h),a		;b3a7
 	ld (0cd91h),a		;b3aa
-	ld a,(0c498h)		;b3ad   ; lee la y de los sprites del jugador
+	ld a,(0c498h)		;b3ad   ; ... y el jugador fuera de la pantalla (y 0xF0), quieto
 	ld (0cd33h),a		;b3b0
 	ld a,(0c494h)		;b3b3   ; lee la y del jugador
 	ld (0cd34h),a		;b3b6
@@ -2773,21 +2773,21 @@ L_B37E:
 	ld (0c49dh),hl		;b3c7
 	ret			;b3ca
 L_B3CB:
-	ld a,007h		;b3cb
+	ld a,007h		;b3cb   ; elegido no: el texto 7 y paso 3
 	call L_B836		;b3cd
 	ld a,001h		;b3d0
 	ld (0cd91h),a		;b3d2
 	ld (ix+001h),003h		;b3d5   ; el paso en que va la figura = 0x03
 	ret			;b3d9
 L_B3DA:
-	ld a,001h		;b3da
+	ld a,001h		;b3da   ; sin dinero: el texto 4 y paso 3
 	ld (0cd91h),a		;b3dc
 	ld a,004h		;b3df
 	call L_B836		;b3e1
 	ld (ix+001h),003h		;b3e4   ; el paso en que va la figura = 0x03
 	ret			;b3e8
 L_B3E9:
-	dec (ix+075h)		;b3e9
+	dec (ix+075h)		;b3e9   ; cada 8 cuadros, un paso de la animacion, 8 en total
 	ret nz			;b3ec
 	ld (ix+075h),008h		;b3ed
 	call L_B43F		;b3f1
@@ -2795,7 +2795,7 @@ L_B3E9:
 	ld a,(ix+00bh)		;b3f7
 	cp 008h		;b3fa
 	ret nz			;b3fc
-	call 045eeh		;b3fd   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
+	call 045eeh		;b3fd   ; y luego una pantalla aparte: el dibujo de Goemon (0x90, 0xA0) o de Ebisumaru (0xC8, 0xA0) de la pagina 1 en (0x80, 0x80)
 	call 045cbh		;b400   ; borra_la_pagina: esconde los sprites y pinta del color 0 los 256 x 256 puntos
 	ld a,(0c002h)		;b403   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	rla			;b406
@@ -2808,7 +2808,7 @@ L_B415:
 	ld de,08080h		;b415
 	ld a,001h		;b418
 	call 0476eh		;b41a   ; hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
-	call 04cfch		;b41d   ; paleta_base: pone la paleta base
+	call 04cfch		;b41d   ; sus colores
 	call 04d08h		;b420
 	ld a,005h		;b423
 	ld de,07603h		;b425
@@ -2820,7 +2820,7 @@ L_B415:
 	ld (ix+018h),003h		;b43a
 	ret			;b43e
 L_B43F:
-	ld c,(ix+00bh)		;b43f
+	ld c,(ix+00bh)		;b43f   ; el fundido: los 15 colores de 0xB470, menos el paso (0xC, hasta 0)
 	ld b,00fh		;b442
 L_B444:
 	ld a,b			;b444
@@ -2889,7 +2889,7 @@ DATA_quince_tripletes:
 
 
 L_B49D:
-	ld a,(0c002h)		;b49d   ; lee las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
+	ld a,(0c002h)		;b49d   ; en la posada, las poses del jugador dormido (0x3E Goemon, 0x7E Ebisumaru, + 0xB535)
 	rla			;b4a0
 	ld c,03eh		;b4a1
 	jr nc,L_B4A7		;b4a3
@@ -2905,7 +2905,7 @@ L_B4A7:
 	ld a,(de)			;b4b9
 	add a,c			;b4ba
 	ld (ix+00ah),a		;b4bb   ; guarda la pose de la figura
-	ld a,(ix+018h)		;b4be
+	ld a,(ix+018h)		;b4be   ; con el efecto 0x17
 	cp 002h		;b4c1
 	ld a,017h		;b4c3
 	call z,04fe4h		;b4c5   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -2919,23 +2919,23 @@ L_B4A7:
 	inc (ix+001h)		;b4db   ; sube el paso en que va la figura
 	ret			;b4de
 L_B4DF:
-	dec (ix+00bh)		;b4df
+	dec (ix+00bh)		;b4df   ; al acabar: la musica 0x16, la casilla otra vez...
 	ret nz			;b4e2
 	call 045eeh		;b4e3   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	ld a,096h		;b4e6
 	call 04fe4h		;b4e8   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	call 051edh		;b4eb   ; monta_la_pantalla: monta en 0xD800 la pantalla de la casilla: 8 x 6 bloques de 4 x 4 caracteres
 	call 0534eh		;b4ee   ; pinta_la_pantalla: pinta los caracteres de 0xD800 en la pantalla
-	ld de,00020h		;b4f1
+	ld de,00020h		;b4f1   ; ... y la vida: suma_vida toma A, no DE; A vale 0xD0 (lo que deja pinta_la_pantalla), asi que se llena
 	call 05884h		;b4f4   ; suma_vida: suma A a la vida, hasta la maxima, y la pinta
-	call 043e2h		;b4f7   ; pinta_el_marcador: pinta el marcador entero
+	call 043e2h		;b4f7   ; el marcador y la paleta
 	call 04cfch		;b4fa   ; paleta_base: pone la paleta base
 	call 04d08h		;b4fd
 	inc (ix+001h)		;b500   ; sube el paso en que va la figura
 	ld (ix+00bh),010h		;b503
 	ret			;b507
 L_B508:
-	call 0460ah		;b508   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+	call 0460ah		;b508   ; 16 cuadros sin sprites, y vuelve el jugador a su sitio
 	dec (ix+00bh)		;b50b
 	ret nz			;b50e
 	call 045e1h		;b50f   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
@@ -2945,11 +2945,11 @@ L_B508:
 	ld (0c498h),a		;b519   ; guarda la y de los sprites del jugador
 	ld a,(0cd34h)		;b51c
 	ld (0c494h),a		;b51f   ; guarda la y del jugador
-	ld a,081h		;b522
+	ld a,081h		;b522   ; la musica 0x01...
 	call 04fe4h		;b524   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-	ld a,00fh		;b527
+	ld a,00fh		;b527   ; ... la posada sube de precio (la cosa 15 de 0xCDA0)...
 	call L_AEFC		;b529
-	ld a,003h		;b52c
+	ld a,003h		;b52c   ; ... y el rotulo 3
 	call 04280h		;b52e   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	jp 087b7h		;b531   ; borra_la_figura: borra la figura
 L_B534:
@@ -2968,7 +2968,7 @@ DATA_cuatro_B535:
 
 
 L_B539:
-	ld hl,(0c265h)		;b539   ; lee el DINERO (ryo, BCD)
+	ld hl,(0c265h)		;b539   ; paga DE ryo: si no llega, el efecto 0x1B y carry
 	push de			;b53c
 	rst 20h			;b53d
 	pop de			;b53e
@@ -2978,11 +2978,11 @@ L_B539:
 	scf			;b547
 	ret			;b548
 L_B549:
-	ld de,08070h		;b549
+	ld de,08070h		;b549   ; crea la 0x2B en (0x70, 0x80)
 	ld a,02bh		;b54c
 	jp 08334h		;b54e   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B551:
-	ld (ix+00ah),00eh		;b551   ; la pose de la figura = 0x0E
+tipo_43_sale:		; la figura de tipo 43 (0x2B): su arranque (tabla de p02:8427)
+	ld (ix+00ah),00eh		;b551   ; el tipo 43, el que vende el PLANO: pose 0x0E, los rotulos 0 y 0x71
 	xor a			;b555
 	ld (ix+00ch),a		;b556
 	ld (ix+006h),a		;b559   ; guarda la velocidad vertical (parte baja)
@@ -2996,7 +2996,7 @@ L_B551:
 	ld a,071h		;b56d
 	call 04280h		;b56f   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	ret			;b572
-L_B573:
+tipo_43:		; la figura de tipo 43 (0x2B), un cuadro (tabla de p02:871C)
 	ld a,(ix+001h)		;b573   ; lee el paso en que va la figura
 	call 0408dh		;b576   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -3015,14 +3015,14 @@ DATA_tabla_B579:
 
 
 L_B57F:
-	inc (ix+001h)		;b57f   ; sube el paso en que va la figura
+	inc (ix+001h)		;b57f   ; su precio, en (0x88, 0x38)
 	ld hl,0cd87h		;b582
 	ld de,08838h		;b585
 	ld b,002h		;b588
 	call 04420h		;b58a   ; pinta_bcd: pinta cifras en BCD
 	ret			;b58d
 L_B58E:
-	ld a,(0cd82h)		;b58e
+	ld a,(0cd82h)		;b58e   ; elegido si y pagado: el icono del plano (0x0E, 32 x 32) en (0x30, 0x20)...
 	or a			;b591
 	ret z			;b592
 	ld a,001h		;b593
@@ -3036,13 +3036,13 @@ L_B58E:
 	ld de,03020h		;b5a8
 	ld a,00eh		;b5ab
 	call 04eb9h		;b5ad   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
-	ld a,001h		;b5b0
+	ld a,001h		;b5b0   ; ... 0xCDB0 = 1 (ya se puede ver el plano, p01:7D0D) y la musica 0x11
 	ld (0cdb0h),a		;b5b2
 	ld a,091h		;b5b5
 	call 04fe4h		;b5b7   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	jr L_B5C0		;b5ba
 L_B5BC:
-	ld a,06eh		;b5bc
+	ld a,06eh		;b5bc   ; sin dinero, el texto 0x6E; si no, el 7
 	jr L_B5C2		;b5be
 L_B5C0:
 	ld a,007h		;b5c0
@@ -3052,7 +3052,7 @@ L_B5C2:
 L_B5C8:
 	ret			;b5c8
 L_B5C9:
-	ld a,(0cd5bh)		;b5c9
+	ld a,(0cd5bh)		;b5c9   ; los tipos 7 y 13 salen de tres en tres, en fila
 	or a			;b5cc
 	ret nz			;b5cd
 	ld a,(0cd31h)		;b5ce
@@ -3072,8 +3072,8 @@ L_B5C9:
 	cp b			;b5e7
 	ret nz			;b5e8
 	jp L_B67A		;b5e9
-L_B5EC:
-	ld a,(0cd12h)		;b5ec
+tipos_07_13_sale:		; los tipos 7 y 13: su arranque
+	ld a,(0cd12h)		;b5ec   ; cada uno 24 - (los bits 2-3 de la dificultad) cuadros despues del anterior
 	and 00ch		;b5ef
 	ld b,a			;b5f1
 	ld a,018h		;b5f2
@@ -3087,7 +3087,7 @@ L_B5EC:
 	inc (hl)			;b603
 	ld (ix+00eh),001h		;b604
 	ld (ix+00ch),000h		;b608
-	ld a,(ix+000h)		;b60c   ; lee el tipo de la figura
+	ld a,(ix+000h)		;b60c   ; el 13 sale en (0xB0, 0x58)
 	cp 007h		;b60f
 	jr z,L_B623		;b611
 	ld de,0b058h		;b613
@@ -3096,7 +3096,7 @@ L_B5EC:
 	ld (ix+001h),002h		;b61c   ; el paso en que va la figura = 0x02
 	jp 0893dh		;b620   ; pon_la_pose: pone la pose de la figura
 L_B623:
-	ld (ix+001h),001h		;b623   ; el paso en que va la figura = 0x01
+	ld (ix+001h),001h		;b623   ; el 7 sale donde salio el primero (0xCD4A), con su direccion (0xCD4C)
 	ld de,(0cd4ah)		;b627
 	ld (ix+005h),d		;b62b   ; guarda la x de la figura
 	ld (ix+003h),e		;b62e   ; guarda la y de la figura
@@ -3107,10 +3107,10 @@ L_B623:
 	ld de,00000h		;b63c
 	call 087e4h		;b63f   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	call 087ebh		;b642   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
-	ld a,(0cd14h)		;b645
+	ld a,(0cd14h)		;b645   ; si el primero no pudo salir (0xCD14), los demas tampoco
 	or a			;b648
 	call nz,087b7h		;b649   ; borra_la_figura: borra la figura
-	ld a,(0cd31h)		;b64c
+	ld a,(0cd31h)		;b64c   ; el primero elige por donde sale (p02:9763) y lo apunta para los otros
 	cp 001h		;b64f
 	ret nz			;b651
 	call 09763h		;b652
@@ -3137,11 +3137,11 @@ L_B67A:
 L_B687:
 	ld de,08070h		;b687
 	jp 08334h		;b68a   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
-L_B68D:
-	ld (ix+00ah),010h		;b68d   ; la pose de la figura = 0x10
+tipo_47_sale:		; la figura de tipo 47 (0x2F): su arranque (tabla de p02:8427)
+	ld (ix+00ah),010h		;b68d   ; el tipo 47: la casa de las cosas de tipo 0x14 (0xC340), pose 0x10
 	ret			;b691
-L_B692:
-	ld a,(ix+001h)		;b692   ; lee el paso en que va la figura
+tipo_47:		; la figura de tipo 47 (0x2F), un cuadro (tabla de p02:871C)
+	ld a,(ix+001h)		;b692   ; segun su paso (0xB698)
 	call 0408dh		;b695   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -3163,31 +3163,31 @@ DATA_tabla_B698:
 
 
 L_B6A4:
-	ld a,(0c27eh)		;b6a4
+	ld a,(0c27eh)		;b6a4   ; con la cosa 0x0A, el texto 0x0F
 	or a			;b6a7
 	jr nz,L_B6DD		;b6a8
-	call L_B71D		;b6aa
+	call L_B71D		;b6aa   ; si no: la marca de esta casilla en 0xC340...
 	ld a,(hl)			;b6ad
 	and 080h		;b6ae
 	ld b,004h		;b6b0
 	jr z,L_B6B6		;b6b2
 	ld b,000h		;b6b4
 L_B6B6:
-	ld a,(hl)			;b6b6
+	ld a,(hl)			;b6b6   ; ... elige el texto (0xB716): la marcada (bit 7) y las demas, por lo que lleven
 	and 07fh		;b6b7
 	add a,b			;b6b9
 	ld de,0b716h		;b6ba
 	call 04088h		;b6bd   ; de_mas_a: DE += A
 	ld a,(de)			;b6c0
 	call L_B836		;b6c1
-	call L_B71D		;b6c4
+	call L_B71D		;b6c4   ; con 2 visitas:
 	ld a,(hl)			;b6c7
 	ld b,a			;b6c8
 	and 07fh		;b6c9
 	cp 002h		;b6cb
 	jr z,L_B6E4		;b6cd
 L_B6CF:
-	ld a,000h		;b6cf
+	ld a,000h		;b6cf   ; el rotulo 0 y la marca de si o no
 	call 04280h		;b6d1   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	inc (ix+001h)		;b6d4   ; sube el paso en que va la figura
 	ld a,026h		;b6d7
@@ -3198,7 +3198,7 @@ L_B6DD:
 	call L_B836		;b6df
 	jr L_B6CF		;b6e2
 L_B6E4:
-	ld (ix+00bh),070h		;b6e4
+	ld (ix+00bh),070h		;b6e4   ; ... la marcada: el rotulo 0x1E (0x1F en la zona 6) y la COSA 0x0A (0xC27E = 1)
 	ld a,b			;b6e8
 	and 080h		;b6e9
 	jr z,L_B70A		;b6eb
@@ -3219,7 +3219,7 @@ L_B6F8:
 	ld (0c27eh),a		;b704
 	jp L_B7AB		;b707
 L_B70A:
-	xor a			;b70a
+	xor a			;b70a   ; ... las demas: se queda con TODO el dinero
 	ld (hl),a			;b70b
 	ld de,(0c265h)		;b70c   ; lee el DINERO (ryo, BCD)
 	call 05958h		;b710   ; resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
@@ -3238,7 +3238,7 @@ DATA_siete_B716:
 
 
 L_B71D:
-	ld a,(0c28dh)		;b71d
+	ld a,(0c28dh)		;b71d   ; HL = la marca de esta casilla en la lista de 0xC340 (0xC28D entradas)
 	ld b,a			;b720
 	ld hl,0c340h		;b721
 	ld a,(0c281h)		;b724   ; lee la CASILLA de la zona
@@ -3250,7 +3250,7 @@ L_B727:
 	djnz L_B727		;b72b
 	ret			;b72d
 L_B72E:
-	ld a,(0cd82h)		;b72e
+	ld a,(0cd82h)		;b72e   ; elegido si: un texto al azar (p03:B75E), 128 cuadros...
 	or a			;b731
 	ret z			;b732
 	cp 002h		;b733
@@ -3261,7 +3261,7 @@ L_B72E:
 	call L_B75E		;b740
 	ld (ix+00bh),080h		;b743
 	inc (ix+001h)		;b747   ; sube el paso en que va la figura
-	ld a,(0c27eh)		;b74a
+	ld a,(0c27eh)		;b74a   ; ... y sin la cosa 0x0A, una visita mas (hasta 3)
 	or a			;b74d
 	ret nz			;b74e
 	call L_B71D		;b74f
@@ -3275,7 +3275,7 @@ L_B759:
 	ld (ix+001h),004h		;b759   ; el paso en que va la figura = 0x04
 	ret			;b75d
 L_B75E:
-	ld c,017h		;b75e
+	ld c,017h		;b75e   ; el texto al azar: de los 0x17 primeros; con las cosas 3 y 4, de 0x37; con ellas y la 0x0A, de 0x46
 	ld a,(0c273h)		;b760
 	or a			;b763
 	jr z,L_B776		;b764
@@ -3288,7 +3288,7 @@ L_B75E:
 	jr z,L_B776		;b772
 	ld c,046h		;b774
 L_B776:
-	ld a,(0c28fh)		;b776
+	ld a,(0c28fh)		;b776   ; el anterior + 0-15 (registro R), dando la vuelta
 	cp c			;b779
 	call nc,L_B7A6		;b77a
 	ld b,a			;b77d
@@ -3299,17 +3299,17 @@ L_B776:
 	jr c,L_B787		;b784
 	sub c			;b786
 L_B787:
-	ld hl,0c28fh		;b787
+	ld hl,0c28fh		;b787   ; apuntado en 0xC28F; el rotulo 0x20 + n
 	ld (hl),a			;b78a
 	add a,020h		;b78b
 	jp L_B836		;b78d
 L_B790:
-	dec (ix+00bh)		;b790
+	dec (ix+00bh)		;b790   ; al acabar la espera, el texto 0x11 y se cobra (p03:B7D3)
 	ret nz			;b793
 	ld a,011h		;b794
 	call L_B836		;b796
 	call L_B7D3		;b799
-	jr nc,L_B7AB		;b79c
+	jr nc,L_B7AB		;b79c   ; si no llega, otros 128 cuadros (y luego p03:B7B4)
 	ld (ix+00bh),080h		;b79e
 	inc (ix+001h)		;b7a2   ; sube el paso en que va la figura
 	ret			;b7a5
@@ -3324,7 +3324,7 @@ L_B7AB:
 L_B7B3:
 	ret			;b7b3
 L_B7B4:
-	dec (ix+00bh)		;b7b4
+	dec (ix+00bh)		;b7b4   ; sin dinero para pagar: el texto 0x15, fuera del interior y el jugador al estado 3 (despedido)
 	ret nz			;b7b7
 	ld a,015h		;b7b8
 	call L_B836		;b7ba
@@ -3338,22 +3338,22 @@ L_B7B4:
 	call 067dah		;b7ce   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	jr L_B759		;b7d1
 L_B7D3:
-	ld hl,(0c265h)		;b7d3   ; lee el DINERO (ryo, BCD)
+	ld hl,(0c265h)		;b7d3   ; lo que se cobra: con el dinero acabado en 5, 300 ryo...
 	ld a,l			;b7d6
 	and 00fh		;b7d7
 	cp 005h		;b7d9
 	ld de,00300h		;b7db
 	jr z,L_B803		;b7de
-	ld de,01000h		;b7e0
+	ld de,01000h		;b7e0   ; ... con 1000 o mas, 990...
 	rst 20h			;b7e3
 	ld de,00990h		;b7e4
 	jr nc,L_B803		;b7e7
-	ld hl,(0c265h)		;b7e9   ; lee el DINERO (ryo, BCD)
+	ld hl,(0c265h)		;b7e9   ; ... con menos de 31, 100...
 	ld de,00031h		;b7ec
 	rst 20h			;b7ef
 	ld de,00100h		;b7f0
 	jr c,L_B803		;b7f3
-	ld de,(0c265h)		;b7f5   ; lee el DINERO (ryo, BCD)
+	ld de,(0c265h)		;b7f5   ; ... y si no, el dinero - 30
 	ld a,e			;b7f9
 	sub 030h		;b7fa
 	daa			;b7fc
@@ -3363,12 +3363,12 @@ L_B7D3:
 	daa			;b801
 	ld d,a			;b802
 L_B803:
-	ld (0ee80h),de		;b803
+	ld (0ee80h),de		;b803   ; se pinta en (0x68, 0x40)
 	ld hl,0ee81h		;b807
 	ld de,06840h		;b80a
 	ld b,002h		;b80d
 	call 04420h		;b80f   ; pinta_bcd: pinta cifras en BCD
-	ld de,(0ee80h)		;b812
+	ld de,(0ee80h)		;b812   ; y se cobra: carry si no llegaba
 	ld hl,(0c265h)		;b816   ; lee el DINERO (ryo, BCD)
 	rst 20h			;b819
 	push af			;b81a
@@ -3380,21 +3380,21 @@ L_B824:
 	dec (ix+00bh)		;b824
 	ret nz			;b827
 L_B828:
-	xor a			;b828
+	xor a			;b828   ; se sale del interior (p01:72B8)
 	ld (0cd2eh),a		;b829
 	inc a			;b82c
 	ld (0c4a2h),a		;b82d   ; guarda el lado al que mira el jugador
 	call 045eeh		;b830   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	jp 072b8h		;b833
 L_B836:
-	push af			;b836
+	push af			;b836   ; el texto A: la caja del texto y el rotulo 0x16 delante
 	call 092adh		;b837
 	ld a,016h		;b83a
 	call 04280h		;b83c   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	pop af			;b83f
 	jp 04280h		;b840   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 L_B843:
-	ld de,04030h		;b843
+	ld de,04030h		;b843   ; el plano: los marcos de caracteres en blanco de alrededor
 	ld hl,0a008h		;b846
 	call L_B8A2		;b849
 	ld de,0c830h		;b84c
@@ -3406,7 +3406,7 @@ L_B843:
 	ld de,048a0h		;b85e
 	ld hl,07000h		;b861
 	call L_B8B3		;b864
-	ld hl,0b882h		;b867
+	ld hl,0b882h		;b867   ; y ocho trozos mas (0xB882): [x][y][x][y]
 	ld b,008h		;b86a
 L_B86C:
 	push bc			;b86c
@@ -3447,7 +3447,7 @@ DATA_ocho_B882:
 
 
 L_B8A2:
-	ld b,00eh		;b8a2
+	ld b,00eh		;b8a2   ; 14 caracteres en blanco seguidos, hacia abajo
 L_B8A4:
 	push bc			;b8a4
 	push hl			;b8a5
@@ -3459,7 +3459,7 @@ L_B8A4:
 	djnz L_B8A4		;b8b0
 	ret			;b8b2
 L_B8B3:
-	ld b,010h		;b8b3
+	ld b,010h		;b8b3   ; 16 hacia la derecha
 L_B8B5:
 	push bc			;b8b5
 	push hl			;b8b6
