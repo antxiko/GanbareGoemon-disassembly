@@ -49,7 +49,7 @@ PIE_LEGAL = {
 PORTADA = {
     "es": dict(
         titulo="Ganbare Goemon! - desensamblado comentado",
-        claim="Siete fases de siete zonas, 1.608 pantallas, 21 interiores con "
+        claim="Siete fases de siete zonas, 124 pantallas, 21 interiores con "
               "sus precios y 42 pasadizos secretos en primera persona, todo "
               "dibujado desde la ROM.",
         ficha=["Konami - <b>(c) Konami 1987</b>",
@@ -66,7 +66,7 @@ PORTADA = {
     ),
     "en": dict(
         titulo="Ganbare Goemon! - a commented disassembly",
-        claim="Seven stages of seven areas, 1,608 screens, 21 interiors with "
+        claim="Seven stages of seven areas, 124 screens, 21 interiors with "
               "their prices and 42 first-person secret passages, all drawn "
               "from the ROM.",
         ficha=["Konami - <b>(c) Konami 1987</b>",

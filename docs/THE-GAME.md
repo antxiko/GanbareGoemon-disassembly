@@ -1,7 +1,7 @@
 # The game
 
 Goemon (or Ebisumaru, player 2) crosses **7 stages of 7 areas**: **49 areas and
-1608 screens** (the cells). In each stage, areas 0 to 4 are streets and
+124 different screens**. In each stage, areas 0 to 4 are streets and
 countryside, area 5 is walls and area 6 is the inside of a castle, the
 biggest one (66 to 80 cells).
 

@@ -1,7 +1,7 @@
 # El juego
 
 Goemon (o Ebisumaru, el jugador 2) cruza **7 fases de 7 zonas**: **49 zonas y
-1608 pantallas** (las casillas). En cada fase, las zonas 0 a 4 son calles y
+124 pantallas distintas**. En cada fase, las zonas 0 a 4 son calles y
 campo, la 5 son murallas y la 6 es el interior de un castillo, la más grande
 (de 66 a 80 casillas).
 
