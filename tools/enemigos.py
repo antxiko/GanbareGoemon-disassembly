@@ -22,6 +22,7 @@ LA POSE BASE (p03:AA04). Los tipos 1-0x21 la sacan de 0xAA51; pon_la_pose
 (p02:893D) le suma 2 mirando al otro lado y p02:895B 1 en el paso de andar.
 
 Uso:  enemigos.py           work/enemigos.png: cuatro poses por tipo
+      enemigos.py web       docs/imagenes/enemigos.png: los de las casillas
       enemigos.py coteja    cada figura de los volcados de work/v_zonas
 """
 import glob
@@ -175,6 +176,81 @@ def hoja(cart, ruta):
     return ruta
 
 
+def figuras_de_la_casilla(cart, z, casilla):
+    """p00:5B6D: el conjunto (0-15) de la casilla, un nibble en la tabla de la
+    zona (0x9BF0, banco 14; el de arriba para las pares), y su lista en la
+    tabla del juego de graficos (0x5BB2): [cuantas - 1] y un tipo por figura."""
+    de = cart.palabra(0x9BF0 + 2 * z, G.S13)
+    b = cart.leer(de + casilla // 2, G.S13)
+    n = b >> 4 if casilla % 2 == 0 else b & 15
+    tabla = cart.palabra(0x5BB2 + 2 * G.juego_de_la_zona(cart, z), S1)
+    lista = cart.palabra(tabla + 2 * n, S1)
+    return n, [cart.leer(lista + 1 + k, S1) for k in range(cart.leer(lista, S1) + 1)]
+
+
+def zonas_de_cada_tipo(cart):
+    """{tipo: [zonas]} por las listas de todas las casillas (sin el 0, hueco)."""
+    donde = {}
+    for z in range(G.FASES * G.ZONAS):
+        for c in range(G.casillas(cart, z)):
+            for t in figuras_de_la_casilla(cart, z, c)[1]:
+                if t and z not in donde.setdefault(t, []):
+                    donde[t].append(z)
+    return donde
+
+
+def hoja_web(cart, ruta, columnas=3, escala=2):
+    """docs/imagenes: los tipos que salen en las casillas, la pose base y las
+    tres siguientes, cada uno con la paleta de la primera zona donde sale
+    (p00:4CE3, sitio 0) y sus colores 4 y 6."""
+    donde = zonas_de_cada_tipo(cart)
+    tipos = sorted(t for t in donde if t <= 0x21)
+    celda, filas = 48, (len(tipos) + columnas - 1) // columnas
+    ancho = 4 * celda
+    img = Image.new("RGB", (columnas * ancho, filas * celda))
+    for i, t in enumerate(tipos):
+        cx, cy = (i // filas) * ancho, (i % filas) * celda
+        # gris medio: hay figuras de negro (color 2 = 0x0000 en todas las zonas)
+        img.paste((112, 112, 120) if (i // filas + i % filas) % 2 else (96, 96, 104),
+                  (cx, cy, cx + ancho, cy + celda))
+        poses = []
+        for k in range(4):
+            v = G.Vram()
+            G.pon_la_paleta(cart, G.juego_de_la_zona(cart, donde[t][0]), v)
+            poses.append(dibuja(cart, t, pose_base(cart, t) + k, v=v))
+        # las cuatro poses centradas con la caja de todas (y la misma linea)
+        xs = [x for _v, capa in poses for x, _y in capa]
+        ys = [y for _v, capa in poses for _x, y in capa]
+        y0 = (celda - (max(ys) - min(ys) + 1)) // 2 - min(ys)
+        for k, (v, capa) in enumerate(poses):
+            x0 = (celda - (max(xs) - min(xs) + 1)) // 2 - min(xs)
+            for (x, y), c in capa.items():
+                xx, yy = k * celda + x + x0, y + y0
+                if 0 <= xx < ancho and 0 <= yy < celda:
+                    img.putpixel((cx + xx, cy + yy), G.rgb(v.paleta, c))
+    img = img.resize((img.size[0] * escala, img.size[1] * escala), Image.NEAREST)
+    img.save(ruta)
+    return ruta, tipos
+
+
+def coteja_las_listas(ruta=os.path.join(G.RAIZ, "work", "v_zonas")):
+    """Cada volcado de zona: el conjunto de 0xCD2C y las figuras vivas de
+    0xC600 salen de la lista de su casilla (0xC281)."""
+    cart = G.Cartucho()
+    malos = 0
+    for f in sorted(glob.glob(os.path.join(ruta, "z*.ram"))):
+        ram = open(f, "rb").read()
+        z = int(os.path.basename(f)[1:3])
+        n, lista = figuras_de_la_casilla(cart, z, ram[0x281])
+        vivas = {ram[0x600 + 0x80 * i] for i in range(8)} - {0}
+        if ram[0xD2C] != n or not vivas <= set(lista):
+            malos += 1
+            print("%s: conjunto %d (RAM %d), vivas %s, lista %s" % (os.path.basename(f), n, ram[0xD2C],
+                  sorted(vivas), lista))
+    print("listas de figuras: %d volcados distintos" % malos)
+    return malos
+
+
 def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas"), patron="z*.vram"):
     """Cada figura de 0xC600 en los volcados. La copia de 0xEE20 la rehace
     p01:685F en los cuadros impares y la figura se mueve en todos, asi que la
@@ -245,7 +321,12 @@ def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas"), patron="z*.vram"):
 
 def main():
     if sys.argv[1:] == ["coteja"]:
-        sys.exit(1 if coteja() else 0)
+        sys.exit(1 if coteja() + coteja_las_listas() else 0)
+    if sys.argv[1:] == ["web"]:
+        os.makedirs(G.IMAGENES, exist_ok=True)
+        ruta, tipos = hoja_web(G.Cartucho(), os.path.join(G.IMAGENES, "enemigos.png"))
+        print(ruta, "%d tipos:" % len(tipos), " ".join("%02X" % t for t in tipos))
+        return
     print(hoja(G.Cartucho(), os.path.join(G.RAIZ, "work", "enemigos.png")))
 
 
