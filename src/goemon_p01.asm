@@ -136,10 +136,10 @@ L_60DD:
 	rra			;60e6
 	jr c,L_60F9		;60e7
 	rra			;60e9   ; sin F2, a teclear (las palabras de la pausa)
-	jp nc,0bdf6h		;60ea   ; teclea_palabra: lo que se teclea en la pausa
+	jp nc,0bdf6h		;60ea   ; teclea_palabra: las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
 	ld a,(0c28ch)		;60ed   ; F2 con 0xC28C a cero: al estado 0x0D
 	and a			;60f0
-	jp nz,0bdf6h		;60f1   ; teclea_palabra: lo que se teclea en la pausa
+	jp nz,0bdf6h		;60f1   ; teclea_palabra: las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
 	ld a,00dh		;60f4
 	jp 05e2dh		;60f6   ; cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 L_60F9:
@@ -317,7 +317,7 @@ estado_0e:		; la contrasena
 	ret nc			;625b   ; hasta que se da por acabada (carry)
 	ld a,(0eb82h)		;625c   ; 0xEB82 = 0: no es una contrasena normal; se mira si es una de las claves
 	and a			;625f
-	jp z,0be4eh		;6260   ; claves_secretas: compara lo tecleado con las claves secretas (0xBE8A)
+	jp z,0be4eh		;6260   ; claves_secretas: las cuatro claves de 9 letras (0xBE8A) en vez de la contrasena
 	ld a,040h		;6263   ; una contrasena buena: partida de un jugador...
 	ld (0c002h),a		;6265   ; guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 	call 04351h		;6268   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
@@ -1093,7 +1093,7 @@ borra_las_de_0xcc00:		; 0xCC00-0xCCFF a cero
 	ret			;6801
 cuadro_del_juego:		; un cuadro del juego: el jugador en los pares, las figuras en los impares
 	call 05b09h		;6802   ; un cuadro del juego (estado 5) y de la demostracion
-	ld a,(0cdb1h)		;6805   ; con el plano en pantalla, solo F1 y p02:987A
+	ld a,(0cdb1h)		;6805   ; dentro del laberinto, solo F1 y p02:987A
 	or a			;6808
 	jr z,L_6815		;6809
 	call 049d2h		;680b   ; lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
@@ -1116,7 +1116,7 @@ L_682D:
 	call 04cabh		;682d   ; el jugador: sus sprites, sus mandos y su movimiento
 	call el_jugador		;6830   ; el_jugador: el jugador, un cuadro: mandos y su estado (tabla de 0x6D4C)
 	call bordes		;6833   ; bordes: por los lados se sale de la casilla; puertas e interiores
-	ld a,(0cdb1h)		;6836   ; con el plano o saliendo de la casilla, nada mas
+	ld a,(0cdb1h)		;6836   ; en el laberinto o saliendo de la casilla, nada mas
 	or a			;6839
 	ret nz			;683a
 	ld a,(0c283h)		;683b   ; lee por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
@@ -1937,7 +1937,7 @@ jugador_en_el_suelo:		; estado 0: andar, saltar, el golpe, los hoyos
 	ret nz			;6d5f
 	ld a,(0cdb0h)		;6d60
 	and a			;6d63
-	call nz,sitio_del_plano		;6d64   ; sitio_del_plano: con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
+	call nz,entrada_del_laberinto		;6d64
 	call en_un_hoyo		;6d67   ; con carry de p01:7763 (los dos caracteres bajo los pies), a morir (estado 2)
 	jr c,cae_al_hoyo		;6d6a
 	call sin_vida_o_tiempo		;6d6c   ; sin_vida_o_tiempo: sin vida (y sin la cosa 7) o sin tiempo: estado 3
@@ -4338,8 +4338,8 @@ L_7D00:
 L_7D08:
 	ld (ix+00dh),001h		;7d08
 	ret			;7d0c
-sitio_del_plano:		; con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
-	ld a,(0c494h)		;7d0d   ; con 0xCDB0 puesto: en (0x30-0x50, 0x40-0x46) con arriba, el plano de la zona
+entrada_del_laberinto:		; con 0xCDB0, arriba en (0x30-0x50, 0x40) se entra en el laberinto
+	ld a,(0c494h)		;7d0d   ; con 0xCDB0 puesto: en (0x30-0x50, 0x40-0x46) con arriba, se entra en el laberinto de la zona
 	sub 040h		;7d10
 	cp 006h		;7d12
 	ret nc			;7d14
@@ -4352,7 +4352,7 @@ sitio_del_plano:		; con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
 	ret nc			;7d21
 	call esconde_los_sprites_de_ram		;7d22   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	call 05b1dh		;7d25   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
-	call 05969h		;7d28   ; ensena_el_plano: pasa a la pantalla del plano de la zona
+	call 05969h		;7d28   ; entra_en_el_laberinto: pasa al laberinto de la zona, en primera persona
 	ld a,088h		;7d2b   ; con la musica 0x08
 	jp 04fe4h		;7d2d   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 cerca_de_la_figura:		; carry si el jugador esta a menos de 32 de la figura

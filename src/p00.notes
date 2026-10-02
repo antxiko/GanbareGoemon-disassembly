@@ -416,10 +416,10 @@ C 0x4AF5 cuatro: dos de 0x92D9 y dos de 0x92F9
 C 0x4B0B el siguiente, 8 puntos a la derecha
 C 0x4B15 el juego 3: seis tandas, unas tal cual y otras dadas la vuelta
 C 0x4B57 y lo comun a todos
-C 0x4B60 los dibujos del plano, del banco 7
+C 0x4B60 los dibujos del laberinto, del banco 7
 C 0x4B6B y los que van dados la vuelta
 C 0x4B7C con su paleta
-C 0x4B85 y los patrones de sprite del plano, del banco 11, a 0xF9C0
+C 0x4B85 y los patrones de sprite del laberinto, del banco 11, a 0xF9C0
 C 0x4B94 46 dibujos del titulo, del banco 6
 C 0x4B9F y los patrones de sus sprites, a 0xF800
 C 0x4BB1 46 dibujos a la pagina 1, del banco 8
@@ -700,12 +700,12 @@ C 0x593A cuatro cifras, en (0x70, 8)
 C 0x5945 DE segundos mas, en BCD...
 C 0x594B ... hasta 5000
 C 0x595B por debajo de 0 se queda en 0
-C 0x5972 el banco 9 en 0xA000: los planos
+C 0x5972 el banco 9 en 0xA000: los laberintos
 C 0x59A9 fase * 7 + zona
 C 0x59B6 la entrada de la zona en la tabla de 0xA575 (banco 9)
 C 0x59BC su primer byte: cual de los dibujos de 0xA86D
-C 0x59C5 [ancho][alto] y los bits del plano
-C 0x59D0 el plano, un byte por casilla, en 0xD800
+C 0x59C5 [ancho][alto] y los bits del laberinto (1 pared, 0 paso)
+C 0x59D0 el laberinto, un byte por casilla, en 0xD800
 C 0x59D4 y encima las marcas de la entrada de 0xA575
 C 0x59DA (ancho + 7) / 8 bytes por fila
 C 0x59F6 cada bit, un byte (1 o 0)
@@ -1117,7 +1117,7 @@ L 0x4A37 lee_f1_f3 A = F1, F2 y F3 en los bits 0-2
 L 0x4A43 dibujos_de_konami sube los dibujos del logotipo de Konami
 L 0x4A6D letras_del_texto sube las letras de los textos
 L 0x4A96 caracteres_del_juego sube los caracteres del juego de graficos de la zona
-L 0x4B5D dibujos_del_plano los dibujos, la paleta y los sprites del plano
+L 0x4B5D dibujos_del_laberinto los dibujos, la paleta y los sprites del laberinto
 L 0x4B91 caracteres_del_titulo sube los caracteres del titulo
 L 0x4C0E vueltos_del_juego de la tabla de 0x4C57: DE el sitio, B cuantos y HL de donde, de los dibujos que van dados la vuelta
 L 0x4C75 sube_dibujos_vueltos sube dibujos dados la vuelta
@@ -1167,15 +1167,15 @@ L 0x5929 suma_dinero suma E ryo (BCD) al dinero, hasta 9999
 L 0x593A pinta_el_dinero pinta el dinero (4 cifras) en (0x70, 8)
 L 0x5945 suma_tiempo suma DE (BCD) al tiempo, hasta 5000
 L 0x5958 resta_dinero resta DE ryo (BCD) al dinero, hasta 0
-L 0x5969 ensena_el_plano pasa a la pantalla del plano de la zona
-L 0x598D pinta_lo_del_plano lo que va encima del plano y el marcador
-L 0x59A9 dibuja_el_plano monta en 0xD800 el plano de la zona (tablas 0xA575 y 0xA86D, banco 9)
-L 0x59D7 plano_de_bits los bits del plano (A de ancho, B de alto), un byte por casilla en 0xD800
-L 0x5A10 marcas_del_plano las marcas de la lista de DE en el plano
+L 0x5969 entra_en_el_laberinto pasa al laberinto de la zona, en primera persona
+L 0x598D pinta_el_laberinto la vista del laberinto y el marcador
+L 0x59A9 monta_el_laberinto monta en 0xD800 el laberinto de la zona (tablas 0xA575 y 0xA86D, banco 9)
+L 0x59D7 laberinto_de_bits los bits del laberinto (A de ancho, B de alto), un byte por casilla en 0xD800
+L 0x5A10 marcas_del_laberinto lo que hay en el laberinto (lista de DE), salvo lo ya cogido (0xC290)
 L 0x5A35 pon_si_no_esta pone C en (HL) si HL no esta entre las 11 palabras de 0xC290
 L 0x5A4C por_28 HL = A * 28
 L 0x5A59 ocho_bits_a_bytes hasta 8 bits de A a bytes 1/0 en HL; C cuenta lo que queda de fila
-L 0x5A6A sitio_en_el_plano HL = 0xD800 + H * 28 + L
+L 0x5A6A sitio_en_el_laberinto HL = 0xD800 + H * 28 + L
 L 0x5A81 prepara_el_titulo borra, letras, caracteres y paleta del titulo
 L 0x5A93 pantalla_del_titulo pinta el titulo: dibujo de 20 x 12, 23 sprites, el marco y el menu
 L 0x5B09 franja_a_la_pagina_1 con el jugador en el estado 0-1, copia la franja de y 0xE8 a la pagina 1; si no, los colores de los sprites
@@ -1578,19 +1578,17 @@ C 0x5948 suma_bcd: (HL) += DE, dos bytes en BCD
 C 0x5952 guarda el TIEMPO (BCD)
 C 0x5958 apunta a el DINERO (ryo, BCD)
 C 0x5963 guarda el DINERO (ryo, BCD)
-C 0x596B guarda si se esta viendo el plano
+C 0x596B guarda si se esta en el laberinto
 C 0x596E esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x5974 el mapper: pone en 0xA000 el banco de A
 C 0x5977 guarda la copia del banco de 0xA000
-C 0x597B dibuja_el_plano: monta en 0xD800 el plano de la zona (tablas 0xA575 y 0xA86D, banco 9)
 C 0x597E bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x5981 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-C 0x5984 dibujos_del_plano: los dibujos, la paleta y los sprites del plano
-C 0x5987 pinta_lo_del_plano: lo que va encima del plano y el marcador
 C 0x598A enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0x5993 pinta_las_cosas: pinta las cosas del marcador
 C 0x5996 pinta_el_marcador: pinta el marcador entero
 C 0x5999 pinta_la_vida: pinta la barra de vida
+C 0x599F flecha_de_direccion: los sprites de la flecha hacia donde se mira
 C 0x59B2 lee la ZONA (0-6)
 C 0x59B9 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0x59C2 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
@@ -1646,6 +1644,7 @@ C 0x5EA0 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x5EA8 apunta a la espera del estado, en cuadros
 C 0x5EAD borra_la_pantalla: borra la pantalla
 C 0x5EB3 pinta_el_marcador: pinta el marcador entero
+C 0x5EBD secreto_del_menu: el bit 6 de 0xEF80
 C 0x5EC7 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x5ECA sprites_del_jugador: sube los sprites del jugador
 C 0x5ED0 el mapper: pone en 0xA000 el banco de A
@@ -1672,7 +1671,7 @@ C 0x5F80 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa,
 C 0x5F83 siguiente_estado: el estado siguiente, paso 0, con 0x20 cuadros de espera
 C 0x5F9B borra_rotulo: borra un rotulo ([x][y] y el texto)
 C 0x5FA3 lee si se puede continuar
-C 0x5FC0 guarda los SECRETOS que ponen las claves
+C 0x5FC0 guarda los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 C 0x5FD2 rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 C 0x5FDE rotulo: pinta un rotulo: [x][y] y el texto; 0xFE otra posicion, 0xFF acaba
 C 0x5FE1 pinta_el_marcador: pinta el marcador entero

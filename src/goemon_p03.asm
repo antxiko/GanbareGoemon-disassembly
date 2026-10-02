@@ -2982,7 +2982,7 @@ L_B549:
 	ld a,02bh		;b54c
 	jp 08334h		;b54e   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
 tipo_43_sale:		; la figura de tipo 43 (0x2B): su arranque (tabla de p02:8427)
-	ld (ix+00ah),00eh		;b551   ; el tipo 43, el que vende el PLANO: pose 0x0E, los rotulos 0 y 0x71
+	ld (ix+00ah),00eh		;b551   ; el tipo 43, el que cobra la entrada al LABERINTO: pose 0x0E, los rotulos 0 y 0x71
 	xor a			;b555
 	ld (ix+00ch),a		;b556
 	ld (ix+006h),a		;b559   ; guarda la velocidad vertical (parte baja)
@@ -3022,7 +3022,7 @@ L_B57F:
 	call 04420h		;b58a   ; pinta_bcd: pinta cifras en BCD
 	ret			;b58d
 L_B58E:
-	ld a,(0cd82h)		;b58e   ; elegido si y pagado: el icono del plano (0x0E, 32 x 32) en (0x30, 0x20)...
+	ld a,(0cd82h)		;b58e   ; elegido si y pagado: el icono 0x0E (32 x 32) en (0x30, 0x20)...
 	or a			;b591
 	ret z			;b592
 	ld a,001h		;b593
@@ -3036,7 +3036,7 @@ L_B58E:
 	ld de,03020h		;b5a8
 	ld a,00eh		;b5ab
 	call 04eb9h		;b5ad   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
-	ld a,001h		;b5b0   ; ... 0xCDB0 = 1 (ya se puede ver el plano, p01:7D0D) y la musica 0x11
+	ld a,001h		;b5b0   ; ... 0xCDB0 = 1 (ya se puede entrar en el laberinto, p01:7D0D) y la musica 0x11
 	ld (0cdb0h),a		;b5b2
 	ld a,091h		;b5b5
 	call 04fe4h		;b5b7   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -3394,7 +3394,7 @@ L_B836:
 	pop af			;b83f
 	jp 04280h		;b840   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 L_B843:
-	ld de,04030h		;b843   ; el plano: los marcos de caracteres en blanco de alrededor
+	ld de,04030h		;b843   ; el laberinto: los marcos de caracteres en blanco de alrededor
 	ld hl,0a008h		;b846
 	call L_B8A2		;b849
 	ld de,0c830h		;b84c
@@ -3425,7 +3425,7 @@ L_B86C:
 	pop hl			;b87b
 	pop bc			;b87c
 	djnz L_B86C		;b87d
-	jp L_BC43		;b87f
+	jp iconos_del_laberinto		;b87f   ; iconos_del_laberinto: los iconos de lo cogido en el laberinto
 
 ; ----------------------------------------------------------------------
 ; DATOS ocho_B882: ocho fichas de 4 bytes [x][y][dibujo de dos bytes] que
@@ -3471,39 +3471,39 @@ L_B8B5:
 	ld d,a			;b8bf
 	djnz L_B8B5		;b8c0
 	ret			;b8c2
-L_B8C3:
-	ld a,001h		;b8c3
+anda_por_el_laberinto:		; arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+	ld a,001h		;b8c3   ; el laberinto, un cuadro: 0xCDC5 = 1 si hay que repintar
 	ld (0cdc5h),a		;b8c5
-	ld a,(0c006h)		;b8c8   ; lee lo que se acaba de apretar (mando y cursores)
+	ld a,(0c006h)		;b8c8   ; arriba: un paso adelante
 	ld b,a			;b8cb
 	and 001h		;b8cc
 	jr nz,L_B8EA		;b8ce
-	ld a,b			;b8d0
+	ld a,b			;b8d0   ; izquierda: gira a la izquierda
 	and 004h		;b8d1
 	jr nz,L_B92D		;b8d3
-	ld a,b			;b8d5
+	ld a,b			;b8d5   ; derecha: gira a la derecha
 	and 008h		;b8d6
 	jr nz,L_B927		;b8d8
-	ld a,b			;b8da
+	ld a,b			;b8da   ; abajo: media vuelta
 	and 002h		;b8db
 	jr nz,L_B920		;b8dd
-	ld a,b			;b8df
+	ld a,b			;b8df   ; el primer boton: el mapa del laberinto (p03:BAF1)
 	and 010h		;b8e0
-	jp nz,L_BAF1		;b8e2
+	jp nz,mapa_del_laberinto		;b8e2   ; mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
 L_B8E5:
 	xor a			;b8e5
 	ld (0cdc5h),a		;b8e6
 	ret			;b8e9
 L_B8EA:
-	ld a,(0cdcch)		;b8ea
+	ld a,(0cdcch)		;b8ea   ; con una salida delante (0xCDCC)...
 	or a			;b8ed
 	jr nz,L_B913		;b8ee
-	ld hl,0cdb2h		;b8f0
+	ld hl,0cdb2h		;b8f0   ; ... si hay pared justo delante (0xCDB2 = 1), no se mueve
 	ld a,(hl)			;b8f3
 	cp 001h		;b8f4
 	jr z,L_B8E5		;b8f6
 L_B8F8:
-	ld a,(0cdc4h)		;b8f8
+	ld a,(0cdc4h)		;b8f8   ; un paso hacia donde mira (0xCDC4): el vector de 0xBAD9
 	add a,a			;b8fb
 	ld hl,0bad9h		;b8fc
 	call 04083h		;b8ff   ; hl_mas_a: HL += A
@@ -3520,29 +3520,29 @@ L_B8F8:
 	ld (0cdc6h),hl		;b90e
 	jr L_B936		;b911
 L_B913:
-	ld hl,0cdb2h		;b913
+	ld hl,0cdb2h		;b913   ; con la salida justo delante, se sale (p03:BC6F con 6)
 	ld a,(hl)			;b916
 	cp 001h		;b917
 	jr nz,L_B8F8		;b919
 	ld a,006h		;b91b
 	jp L_BC6F		;b91d
 L_B920:
-	ld a,(0cdc4h)		;b920
+	ld a,(0cdc4h)		;b920   ; media vuelta: la direccion + 2
 	inc a			;b923
 	inc a			;b924
 	jr L_B931		;b925
 L_B927:
-	ld a,(0cdc4h)		;b927
+	ld a,(0cdc4h)		;b927   ; a la derecha: + 1
 	inc a			;b92a
 	jr L_B931		;b92b
 L_B92D:
-	ld a,(0cdc4h)		;b92d
+	ld a,(0cdc4h)		;b92d   ; a la izquierda: - 1
 	dec a			;b930
 L_B931:
 	and 003h		;b931
 	ld (0cdc4h),a		;b933
 L_B936:
-	ld hl,0cdb3h		;b936
+	ld hl,0cdb3h		;b936   ; la vista: 0xCDB3-0xCDC3 a cero, y lo de los lados (0xCDC9) tambien
 	ld de,0cdb4h		;b939
 	xor a			;b93c
 	ld (hl),a			;b93d
@@ -3555,18 +3555,18 @@ L_B936:
 	ld (hl),a			;b949
 	inc hl			;b94a
 	ld (hl),a			;b94b
-	call L_B955		;b94c
-	call L_BA47		;b94f
-	jp L_BA62		;b952
-L_B955:
-	xor a			;b955
+	call lo_de_delante		;b94c   ; lo de delante, el lado izquierdo y el derecho
+	call lado_izquierdo		;b94f   ; lado_izquierdo: las paredes del lado izquierdo de la vista
+	jp lado_derecho		;b952   ; lado_derecho: las paredes del lado derecho de la vista
+lo_de_delante:		; hasta 4 casillas hacia delante: la pared y lo que hay
+	xor a			;b955   ; lo de delante: si se esta sobre una salida (6) y detras no hay pared, 0xCDCC = 1
 	ld (0cdcch),a		;b956
 	ld hl,(0cdc6h)		;b959
-	call 05a6ah		;b95c   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b95c   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b95f
 	cp 006h		;b960
 	call z,L_B9AB		;b962
-	ld a,(0cdc4h)		;b965
+	ld a,(0cdc4h)		;b965   ; hasta 4 casillas hacia delante...
 	ld de,0bad9h		;b968
 	call 0447ch		;b96b   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;b96e
@@ -3577,14 +3577,14 @@ L_B975:
 	push hl			;b978
 	exx			;b979
 	pop hl			;b97a
-	call 05a6ah		;b97b   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b97b   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b97e
 	exx			;b97f
-	cp 001h		;b980
+	cp 001h		;b980   ; ... hasta una pared (1)...
 	jr z,L_B997		;b982
-	cp 006h		;b984
+	cp 006h		;b984   ; ... o una salida (6)
 	jr z,L_B99C		;b986
-	or a			;b988
+	or a			;b988   ; lo que haya en ellas, a 0xCDC9 (para pintarlo)
 	push de			;b989
 	push hl			;b98a
 	push bc			;b98b
@@ -3596,7 +3596,7 @@ L_B975:
 	djnz L_B975		;b993
 	ld c,000h		;b995
 L_B997:
-	ld a,c			;b997
+	ld a,c			;b997   ; 0xCDB2 = a cuantas casillas esta la pared (0: ninguna en 4)
 	ld (0cdb2h),a		;b998
 	ret			;b99b
 L_B99C:
@@ -3617,15 +3617,15 @@ L_B9AB:
 	call 0447ch		;b9b5   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;b9b8
 	call hl_mas_de		;b9bb   ; hl_mas_de: HL += DE
-	call 05a6ah		;b9be   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;b9be   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;b9c1
 	cp 001h		;b9c2
 	ret z			;b9c4
 	ld a,001h		;b9c5
 	ld (0cdcch),a		;b9c7
 	ret			;b9ca
-L_B9CB:
-	ld a,(0cdc4h)		;b9cb
+flecha_de_direccion:		; los sprites de la flecha hacia donde se mira
+	ld a,(0cdc4h)		;b9cb   ; los dos sprites de la flecha que dice hacia donde se mira...
 	rr a		;b9ce
 	jr nc,L_BA09		;b9d0
 	ld hl,0d830h		;b9d2
@@ -3644,7 +3644,7 @@ L_B9E5:
 	ld l,0f0h		;b9eb
 	ld h,b			;b9ed
 	ld (0ee06h),hl		;b9ee
-	ld hl,0ec00h		;b9f1
+	ld hl,0ec00h		;b9f1   ; ... y sus colores
 	ld de,0ee03h		;b9f4
 	ld c,002h		;b9f7
 L_B9F9:
@@ -3686,7 +3686,7 @@ L_BA2E:
 	djnz L_BA2E		;ba30
 	ret			;ba32
 L_BA33:
-	ex af,af'			;ba33
+	ex af,af'			;ba33   ; lo de la casilla C de delante, a 0xCDC9 + C - 1 (la 4 no)
 	ld a,004h		;ba34
 	cp c			;ba36
 	ret z			;ba37
@@ -3702,8 +3702,8 @@ L_BA33:
 	pop de			;ba44
 	pop hl			;ba45
 	ret			;ba46
-L_BA47:
-	ld a,(0cdc4h)		;ba47
+lado_izquierdo:		; las paredes del lado izquierdo de la vista
+	ld a,(0cdc4h)		;ba47   ; el lado izquierdo (0xBAE1): 5 casillas, a 0xCDB3 y su dibujo a 0xCDBB
 	ld de,0bae1h		;ba4a
 	call 0447ch		;ba4d   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;ba50
@@ -3714,8 +3714,8 @@ L_BA47:
 	ld de,0cdbbh		;ba5c
 	exx			;ba5f
 	jr L_BA7B		;ba60
-L_BA62:
-	ld a,(0cdc4h)		;ba62
+lado_derecho:		; las paredes del lado derecho de la vista
+	ld a,(0cdc4h)		;ba62   ; el derecho (0xBAE9), a 0xCDB7 y 0xCDBF
 	ld de,0bae9h		;ba65
 	call 0447ch		;ba68   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	ld hl,(0cdc6h)		;ba6b
@@ -3736,12 +3736,12 @@ L_BA7B:
 	jr nz,L_BA8E		;ba8a
 	ld a,004h		;ba8c
 L_BA8E:
-	ld b,a			;ba8e
+	ld b,a			;ba8e   ; tantas casillas como haya hasta la pared de delante (4 si no hay)
 L_BA8F:
 	push bc			;ba8f
 	push de			;ba90
 	push hl			;ba91
-	call 05a6ah		;ba92   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+	call 05a6ah		;ba92   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;ba95
 	pop hl			;ba96
 	pop de			;ba97
@@ -3754,7 +3754,7 @@ L_BA8F:
 	djnz L_BA8F		;baa2
 	ret			;baa4
 L_BAA5:
-	ld b,a			;baa5
+	ld b,a			;baa5   ; el dibujo de cada una: pared (1) o hueco, segun la profundidad
 	cp 001h		;baa6
 	ld a,000h		;baa8
 	jr z,L_BAAE		;baaa
@@ -3777,7 +3777,7 @@ L_BAAE:
 	dec a			;babe
 	and 003h		;babf
 	ld b,a			;bac1
-	ld a,(0cdb2h)		;bac2
+	ld a,(0cdb2h)		;bac2   ; la de la pared de delante, con su esquina
 	dec a			;bac5
 	cp b			;bac6
 	ld a,c			;bac7
@@ -3823,13 +3823,13 @@ DATA_tres_tablas_BAD9:
 ; ======================================================================
 
 
-L_BAF1:
-	xor a			;baf1
+mapa_del_laberinto:		; el mapa entero, si se tiene (0xC27A)
+	xor a			;baf1   ; el mapa del laberinto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
 	ld (0cdc5h),a		;baf2
 	ld a,(0c27ah)		;baf5
 	or a			;baf8
 	ret z			;baf9
-	inc a			;bafa
+	inc a			;bafa   ; 0xCDC8 = mapa en pantalla; el efecto 0x1A
 	ld (0cdc8h),a		;bafb
 	ld a,01ah		;bafe
 	call 04fe4h		;bb00   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -3838,11 +3838,11 @@ L_BAF1:
 	call 05856h		;bb09   ; pinta_las_cosas: pinta las cosas del marcador
 	call 043e2h		;bb0c   ; pinta_el_marcador: pinta el marcador entero
 	call 05890h		;bb0f   ; pinta_la_vida: pinta la barra de vida
-	call L_BB1B		;bb12
-	call L_BBAA		;bb15
+	call pinta_el_mapa		;bb12   ; pinta_el_mapa: el laberinto en piezas de 8 x 8, centrado
+	call donde_se_esta		;bb15   ; donde_se_esta: la marca del jugador en el mapa
 	jp 045e1h		;bb18   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-L_BB1B:
-	ld a,(0cdd3h)		;bb1b
+pinta_el_mapa:		; el laberinto en piezas de 8 x 8, centrado
+	ld a,(0cdd3h)		;bb1b   ; el mapa, centrado: x = (20 - ancho) / 2 * 8 + 0x20...
 	ld b,a			;bb1e
 	ld a,014h		;bb1f
 	sub b			;bb21
@@ -3852,7 +3852,7 @@ L_BB1B:
 	add a,a			;bb26
 	add a,020h		;bb27
 	ld l,a			;bb29
-	ld a,(0cdd4h)		;bb2a
+	ld a,(0cdd4h)		;bb2a   ; ... y = (28 - alto) / 2 * 8 + 8
 	ld b,a			;bb2d
 	ld a,01ch		;bb2e
 	sub b			;bb30
@@ -3869,7 +3869,7 @@ L_BB1B:
 	add a,a			;bb41
 	add a,h			;bb42
 	ld h,a			;bb43
-	ld (0ee00h),hl		;bb44
+	ld (0ee00h),hl		;bb44   ; un sprite marca donde se esta
 	ld a,0f4h		;bb47
 	ld (0ee02h),a		;bb49
 	ld a,0e0h		;bb4c
@@ -3880,7 +3880,7 @@ L_BB1B:
 	ld a,00eh		;bb5a
 	ld (hl),a			;bb5c
 	ldir		;bb5d
-	ld a,(0cdd3h)		;bb5f
+	ld a,(0cdd3h)		;bb5f   ; cada casilla, su pieza de 8 x 8 (0xBC1B segun lo que sea)
 	ld c,a			;bb62
 	ld de,0d800h		;bb63
 	ld hl,(0cdd5h)		;bb66
@@ -3896,7 +3896,7 @@ L_BB6F:
 	push de			;bb72
 	jr z,L_BB8E		;bb73
 	push hl			;bb75
-	cp 006h		;bb76
+	cp 006h		;bb76   ; la salida (6), aparte
 	jr z,L_BBCD		;bb78
 	dec a			;bb7a
 	add a,a			;bb7b
@@ -3929,8 +3929,8 @@ L_BB8E:
 	dec c			;bba6
 	jr nz,L_BB69		;bba7
 	ret			;bba9
-L_BBAA:
-	ld hl,(0cdc6h)		;bbaa
+donde_se_esta:		; la marca del jugador en el mapa
+	ld hl,(0cdc6h)		;bbaa   ; el sitio del jugador en el mapa
 	sla h		;bbad
 	sla h		;bbaf
 	sla h		;bbb1
@@ -3950,13 +3950,13 @@ L_BBAA:
 	ld hl,06098h		;bbc7
 	jp 04ef1h		;bbca
 L_BBCD:
-	ld a,(0ef80h)		;bbcd   ; lee los SECRETOS que ponen las claves
+	ld a,(0ef80h)		;bbcd   ; la salida se ve en el mapa solo con el bit 6 de 0xEF80 y la cosa 0x0A...
 	and 040h		;bbd0
 	jr z,L_BC15		;bbd2
 	ld a,(0c27eh)		;bbd4
 	or a			;bbd7
 	jr z,L_BC15		;bbd8
-	dec de			;bbda
+	dec de			;bbda   ; ... y entonces con una flecha hacia el lado abierto
 	ld h,d			;bbdb
 	ld l,e			;bbdc
 	dec de			;bbdd
@@ -4009,24 +4009,24 @@ DATA_seis_BC1B:
 ; ======================================================================
 
 
-L_BC27:
-	ld a,(0c006h)		;bc27   ; lee lo que se acaba de apretar (mando y cursores)
+sale_del_mapa:		; el boton vuelve a la vista
+	ld a,(0c006h)		;bc27   ; en el mapa: el primer boton vuelve a la vista
 	and 010h		;bc2a
 	ret z			;bc2c
 	xor a			;bc2d
 	ld (0cdc8h),a		;bc2e
 	call 045eeh		;bc31   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call 0598dh		;bc34   ; pinta_lo_del_plano: lo que va encima del plano y el marcador
+	call 0598dh		;bc34   ; pinta_el_laberinto: la vista del laberinto y el marcador
 	jp 045e1h		;bc37   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 L_BC3A:
-	ld bc,000d4h		;bc3a
+	ld bc,000d4h		;bc3a   ; borra la pantalla y los sprites
 	call 045fbh		;bc3d   ; pinta_de_color_0: rellena del color 0 B x C puntos desde (0, 0) y pone el scroll a 0
 	jp 0460ah		;bc40   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-L_BC43:
-	ld a,(0c27ah)		;bc43
+iconos_del_laberinto:		; los iconos de lo cogido en el laberinto
+	ld a,(0c27ah)		;bc43   ; los iconos de lo cogido en el laberinto: el mapa (0xC27A)...
 	or a			;bc46
 	call nz,L_BCA5		;bc47
-	ld a,(0c27bh)		;bc4a
+	ld a,(0c27bh)		;bc4a   ; ... y uno por cada moneda (0xC27B)
 	or a			;bc4d
 	ret z			;bc4e
 	ld b,a			;bc4f
@@ -4040,20 +4040,20 @@ L_BC51:
 	inc a			;bc58
 	djnz L_BC51		;bc59
 	ret			;bc5b
-L_BC5C:
-	ld hl,(0cdc6h)		;bc5c
-	call 05a6ah		;bc5f   ; sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+coge_en_el_laberinto:		; lo que hay en la casilla, una vez
+	ld hl,(0cdc6h)		;bc5c   ; al pisar una casilla con algo (2-5): se coge una vez (0xC290) y la casilla queda vacia
+	call 05a6ah		;bc5f   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 	ld a,(hl)			;bc62
 	or a			;bc63
 	ret z			;bc64
 	cp 006h		;bc65
 	ret z			;bc67
-	call L_BCD3		;bc68
+	call apunta_lo_cogido		;bc68   ; apunta_lo_cogido: la casilla, a la lista de 0xC290
 	ld c,000h		;bc6b
 	ld a,(hl)			;bc6d
 	ld (hl),c			;bc6e
 L_BC6F:
-	dec a			;bc6f
+	dec a			;bc6f   ; segun lo que sea (tabla de 0xBC74)
 	dec a			;bc70
 	call 0408dh		;bc71   ; despacha: salta a la entrada A de la tabla que va detras del call
 
@@ -4074,13 +4074,13 @@ DATA_tabla_BC74:
 
 
 L_BC7E:
-	ld de,00200h		;bc7e
+	ld de,00200h		;bc7e   ; 2: 200 ryo y un icono mas
 	call 0592bh		;bc81
 	ld hl,0c27bh		;bc84
 	ld a,(hl)			;bc87
 	inc (hl)			;bc88
 L_BC89:
-	ld d,028h		;bc89
+	ld d,028h		;bc89   ; el icono 0x10 en (0x28, 0x40 + n * 16)
 	add a,a			;bc8b
 	add a,a			;bc8c
 	add a,a			;bc8d
@@ -4090,19 +4090,19 @@ L_BC89:
 	ld a,010h		;bc92
 	jp 04eb9h		;bc94   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_BC97:
-	ld hl,0c279h		;bc97
+	ld hl,0c279h		;bc97   ; 3: una cosa 9 mas
 	inc (hl)			;bc9a
 	ld a,009h		;bc9b
 	jp 057fah		;bc9d   ; pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 L_BCA0:
-	ld a,001h		;bca0
+	ld a,001h		;bca0   ; 4: el MAPA del laberinto (0xC27A = 1), y su icono
 	ld (0c27ah),a		;bca2
 L_BCA5:
 	ld a,011h		;bca5
 	ld de,02830h		;bca7
 	jp 04eb9h		;bcaa   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 L_BCAD:
-	ld hl,0c260h		;bcad   ; apunta a las vidas
+	ld hl,0c260h		;bcad   ; 5: una vida (hasta 99)
 	ld a,(hl)			;bcb0
 	add a,001h		;bcb1
 	daa			;bcb3
@@ -4113,7 +4113,7 @@ L_BCBA:
 	ld (hl),a			;bcba
 	jp 043e2h		;bcbb   ; pinta_el_marcador: pinta el marcador entero
 L_BCBE:
-	xor a			;bcbe
+	xor a			;bcbe   ; 6: la salida: 0xCDCD = 1, 15 cuadros y la musica 0x00
 	ld (0cdd2h),a		;bcbf
 	ld (0cdc5h),a		;bcc2
 	inc a			;bcc5
@@ -4122,8 +4122,8 @@ L_BCBE:
 	ld (0cdceh),a		;bccb
 	ld a,080h		;bcce
 	jp 04fe4h		;bcd0   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
-L_BCD3:
-	ld de,0c290h		;bcd3
+apunta_lo_cogido:		; la casilla, a la lista de 0xC290
+	ld de,0c290h		;bcd3   ; apunta la casilla en el primer hueco de las 11 de 0xC290: ya no vuelve a salir
 	ld b,00bh		;bcd6
 L_BCD8:
 	ld a,(de)			;bcd8
@@ -4148,8 +4148,8 @@ L_BCE3:
 	call 04fe4h		;bced   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	pop hl			;bcf0
 	ret			;bcf1
-L_BCF2:
-	ld hl,0c290h		;bcf2
+laberinto_a_cero:		; lo cogido y el mapa, a cero
+	ld hl,0c290h		;bcf2   ; al entrar en la zona: lo cogido en el laberinto, el mapa y 0xC28E a cero
 	xor a			;bcf5
 	ld b,016h		;bcf6
 L_BCF8:
@@ -4160,8 +4160,8 @@ L_BCF8:
 	ld (0c27ah),hl		;bcff
 	ld (0c28eh),a		;bd02
 	ret			;bd05
-L_BD06:
-	ld a,(0cdd2h)		;bd06
+salida_del_laberinto:		; la puerta, el premio y fuera
+	ld a,(0cdd2h)		;bd06   ; la salida del laberinto, paso a paso (0xCDD2)
 	call 0408dh		;bd09   ; despacha: salta a la entrada A de la tabla que va detras del call
 
 ; ----------------------------------------------------------------------
@@ -4179,7 +4179,7 @@ DATA_tabla_BD0C:
 
 
 L_BD12:
-	ld de,04c30h		;bd12
+	ld de,04c30h		;bd12   ; paso 0: se abre la puerta (p03:BD48 y p03:BD57) durante 15 cuadros
 	ld hl,03870h		;bd15
 	ld a,004h		;bd18
 	ld c,00eh		;bd1a
@@ -4192,27 +4192,27 @@ L_BD12:
 	ld (hl),a			;bd29
 	ld hl,0cdd2h		;bd2a
 	inc (hl)			;bd2d
-	ld de,07848h		;bd2e
+	ld de,07848h		;bd2e   ; y aparecen los iconos 0x13 y 0x14
 	ld a,013h		;bd31
 	call 04eb9h		;bd33   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 	ld de,08848h		;bd36
 	ld a,014h		;bd39
 	call 04eb9h		;bd3b   ; pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
-	ld a,(0c28eh)		;bd3e
+	ld a,(0c28eh)		;bd3e   ; si ya se salio una vez en esta zona (0xC28E), sin premio
 	or a			;bd41
 	ret z			;bd42
 	ld hl,0cdd2h		;bd43
 	inc (hl)			;bd46
 	ret			;bd47
 L_BD48:
-	ld (0cd08h),de		;bd48
+	ld (0cd08h),de		;bd48   ; 0xCD08 el sitio, 0xCD0A el tamano, 0xCD0C el paso, 0xCD0D cuantos
 	ld (0cd0ah),hl		;bd4c
 	ld (0cd0ch),a		;bd4f
 	ld a,c			;bd52
 	ld (0cd0dh),a		;bd53
 	ret			;bd56
 L_BD57:
-	ld de,(0cd08h)		;bd57
+	ld de,(0cd08h)		;bd57   ; la puerta que se abre: trozos que se corren con HMMM y el hueco en negro
 	ld a,(0cd0ch)		;bd5b
 	ld l,000h		;bd5e
 	ld h,a			;bd60
@@ -4263,7 +4263,7 @@ L_BD7F:
 	ld d,a			;bdae
 	jp 04732h		;bdaf   ; hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; color A)
 L_BDB2:
-	ld hl,0cdceh		;bdb2
+	ld hl,0cdceh		;bdb2   ; paso 1: el rotulo 0x0E, 10000 PUNTOS (C = 1)...
 	dec (hl)			;bdb5
 	ret nz			;bdb6
 	ld a,0a0h		;bdb7
@@ -4275,27 +4275,27 @@ L_BDB2:
 	call 04380h		;bdc4
 	ld hl,0cdd2h		;bdc7
 	inc (hl)			;bdca
-	ld a,001h		;bdcb
+	ld a,001h		;bdcb   ; ... 0xC28E = 1 y la musica 0x13
 	ld (0c28eh),a		;bdcd
 	ld a,093h		;bdd0
 	jp 04fe4h		;bdd2   ; sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 L_BDD5:
-	ld hl,0cdceh		;bdd5
+	ld hl,0cdceh		;bdd5   ; paso 2: fuera del laberinto, la entrada se gasta (0xCDB0 = 0) y sube de precio
 	dec (hl)			;bdd8
 	ret nz			;bdd9
 	call 045eeh		;bdda   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 072b8h		;bddd
 	xor a			;bde0
 	ld (0cdb0h),a		;bde1
-	ld (0cdb1h),a		;bde4   ; guarda si se esta viendo el plano
+	ld (0cdb1h),a		;bde4   ; guarda si se esta en el laberinto
 	ld (0cdcdh),a		;bde7
 	inc a			;bdea
 	ld (0c4a2h),a		;bdeb   ; guarda el lado al que mira el jugador
 	ld a,00eh		;bdee
 	call L_AEFC		;bdf0
 	jp 04a96h		;bdf3   ; caracteres_del_juego: sube los caracteres del juego de graficos de la zona
-teclea_palabra:		; lo que se teclea en la pausa
-	call 06cd8h		;bdf6   ; lee_el_teclado: lee una tecla
+teclea_palabra:		; las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
+	call 06cd8h		;bdf6   ; en la pausa: las teclas, hasta 5, en 0xC580
 	ld a,(0eb81h)		;bdf9   ; lee la tecla
 	and a			;bdfc
 	ret z			;bdfd
@@ -4312,23 +4312,23 @@ teclea_palabra:		; lo que se teclea en la pausa
 	ld a,(hl)			;be0f
 	cp 005h		;be10
 	ret nz			;be12
-	ld a,(0cdb1h)		;be13   ; lee si se esta viendo el plano
+	ld a,(0cdb1h)		;be13   ; con 5 tecleadas: dentro del laberinto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
 	and a			;be16
 	jr z,L_BE2C		;be17
 	ld de,0be44h		;be19
 	ld c,001h		;be1c
 	call L_BE31		;be1e
-	ld a,(0ef80h)		;be21   ; lee los SECRETOS que ponen las claves
+	ld a,(0ef80h)		;be21   ; ... y con el, el mapa (0xC27A = 1)
 	rra			;be24
 	ret nc			;be25
 	ld a,001h		;be26
 	ld (0c27ah),a		;be28
 	ret			;be2b
 L_BE2C:
-	ld de,0be49h		;be2c
+	ld de,0be49h		;be2c   ; fuera, la segunda (0xBE49) pone el bit 1
 	ld c,002h		;be2f
 L_BE31:
-	ld hl,0c580h		;be31   ; apunta a lo tecleado en la pausa
+	ld hl,0c580h		;be31   ; si las 5 letras son las de DE, el bit C en 0xEF80
 	ld b,005h		;be34
 L_BE36:
 	ld a,(de)			;be36
@@ -4337,7 +4337,7 @@ L_BE36:
 	inc hl			;be39
 	inc de			;be3a
 	djnz L_BE36		;be3b
-	ld hl,0ef80h		;be3d   ; apunta a los SECRETOS que ponen las claves
+	ld hl,0ef80h		;be3d   ; apunta a los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 	ld a,(hl)			;be40
 	or c			;be41
 	ld (hl),a			;be42
@@ -4357,8 +4357,8 @@ DATA_dos_nombres:
 ; ======================================================================
 
 
-claves_secretas:		; compara lo tecleado con las claves secretas (0xBE8A)
-	ld bc,00420h		;be4e
+claves_secretas:		; las cuatro claves de 9 letras (0xBE8A) en vez de la contrasena
+	ld bc,00420h		;be4e   ; las cuatro claves de 9 letras de la contrasena (0xBE8A): bits 5, 4, 3 y 2
 L_BE51:
 	ld a,b			;be51
 	dec a			;be52
@@ -4376,16 +4376,16 @@ L_BE51:
 	pop bc			;be67
 	rrc c		;be68
 	djnz L_BE51		;be6a
-	ld a,(0ef80h)		;be6c   ; lee los SECRETOS que ponen las claves
+	ld a,(0ef80h)		;be6c   ; ninguna: vuelta al titulo
 	and 03ch		;be6f
 	jr nz,L_BE7A		;be71
 	ld hl,00000h		;be73
 	ld (0c000h),hl		;be76   ; guarda el estado (0xC000) y el paso (0xC001) de un tiron
 	ret			;be79
 L_BE7A:
-	call 04351h		;be7a   ; empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
+	call 04351h		;be7a   ; alguna: partida nueva con lo que de la clave, y al estado 4
 	call 0662ch		;be7d   ; prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
-	call L_BEAE		;be80
+	call lo_que_da_la_clave		;be80   ; lo_que_da_la_clave: jugador 2, vida 0x20, 2000 ryo o continuar
 	ld hl,00004h		;be83
 	ld (0c000h),hl		;be86   ; guarda el estado (0xC000) y el paso (0xC001) de un tiron
 	ret			;be89
@@ -4405,19 +4405,19 @@ DATA_cuatro_claves:
 ; ======================================================================
 
 
-L_BEAE:
-	ld a,040h		;beae
+lo_que_da_la_clave:		; jugador 2, vida 0x20, 2000 ryo o continuar
+	ld a,040h		;beae   ; lo que da: el bit 2, jugar con Ebisumaru...
 	ld (0c002h),a		;beb0   ; guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-	ld a,(0ef80h)		;beb3   ; lee los SECRETOS que ponen las claves
+	ld a,(0ef80h)		;beb3   ; lee los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 	rra			;beb6
 	rra			;beb7
 	rra			;beb8
 	jr c,L_BEC4		;beb9
-	rra			;bebb
+	rra			;bebb   ; ... el 3, la vida maxima a 0x20...
 	jr c,L_BECA		;bebc
-	rra			;bebe
+	rra			;bebe   ; ... el 4, 2000 ryo...
 	jr c,L_BED0		;bebf
-	rra			;bec1
+	rra			;bec1   ; ... el 5, continuar
 	jr L_BED7		;bec2
 L_BEC4:
 	ld hl,0c002h		;bec4   ; apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
@@ -4435,8 +4435,8 @@ L_BED7:
 	ld a,001h		;bed7
 	ld (0c27fh),a		;bed9   ; guarda si se puede continuar
 	ret			;bedc
-L_BEDD:
-	ld hl,0ef80h		;bedd   ; apunta a los SECRETOS que ponen las claves
+secreto_del_menu:		; el bit 6 de 0xEF80
+	ld hl,0ef80h		;bedd   ; cambiar la opcion del menu del titulo 6 o 7 veces (p00:5EB6) pone el bit 6 de 0xEF80
 	ld a,(hl)			;bee0
 	or 040h		;bee1
 	ld (hl),a			;bee3

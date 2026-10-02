@@ -310,10 +310,10 @@ C 0xB527 ... la posada sube de precio (la cosa 15 de 0xCDA0)...
 C 0xB52C ... y el rotulo 3
 C 0xB539 paga DE ryo: si no llega, el efecto 0x1B y carry
 C 0xB549 crea la 0x2B en (0x70, 0x80)
-C 0xB551 el tipo 43, el que vende el PLANO: pose 0x0E, los rotulos 0 y 0x71
+C 0xB551 el tipo 43, el que cobra la entrada al LABERINTO: pose 0x0E, los rotulos 0 y 0x71
 C 0xB57F su precio, en (0x88, 0x38)
-C 0xB58E elegido si y pagado: el icono del plano (0x0E, 32 x 32) en (0x30, 0x20)...
-C 0xB5B0 ... 0xCDB0 = 1 (ya se puede ver el plano, p01:7D0D) y la musica 0x11
+C 0xB58E elegido si y pagado: el icono 0x0E (32 x 32) en (0x30, 0x20)...
+C 0xB5B0 ... 0xCDB0 = 1 (ya se puede entrar en el laberinto, p01:7D0D) y la musica 0x11
 C 0xB5BC sin dinero, el texto 0x6E; si no, el 7
 C 0xB5C9 los tipos 7 y 13 salen de tres en tres, en fila
 C 0xB5EC cada uno 24 - (los bits 2-3 de la dificultad) cuadros despues del anterior
@@ -347,10 +347,85 @@ C 0xB803 se pinta en (0x68, 0x40)
 C 0xB812 y se cobra: carry si no llegaba
 C 0xB828 se sale del interior (p01:72B8)
 C 0xB836 el texto A: la caja del texto y el rotulo 0x16 delante
-C 0xB843 el plano: los marcos de caracteres en blanco de alrededor
+C 0xB843 el laberinto: los marcos de caracteres en blanco de alrededor
 C 0xB867 y ocho trozos mas (0xB882): [x][y][x][y]
 C 0xB8A2 14 caracteres en blanco seguidos, hacia abajo
 C 0xB8B3 16 hacia la derecha
+C 0xB8C3 el laberinto, un cuadro: 0xCDC5 = 1 si hay que repintar
+C 0xB8C8 arriba: un paso adelante
+C 0xB8D0 izquierda: gira a la izquierda
+C 0xB8D5 derecha: gira a la derecha
+C 0xB8DA abajo: media vuelta
+C 0xB8DF el primer boton: el mapa del laberinto (p03:BAF1)
+C 0xB8EA con una salida delante (0xCDCC)...
+C 0xB8F0 ... si hay pared justo delante (0xCDB2 = 1), no se mueve
+C 0xB8F8 un paso hacia donde mira (0xCDC4): el vector de 0xBAD9
+C 0xB913 con la salida justo delante, se sale (p03:BC6F con 6)
+C 0xB920 media vuelta: la direccion + 2
+C 0xB927 a la derecha: + 1
+C 0xB92D a la izquierda: - 1
+C 0xB936 la vista: 0xCDB3-0xCDC3 a cero, y lo de los lados (0xCDC9) tambien
+C 0xB94C lo de delante, el lado izquierdo y el derecho
+C 0xB955 lo de delante: si se esta sobre una salida (6) y detras no hay pared, 0xCDCC = 1
+C 0xB965 hasta 4 casillas hacia delante...
+C 0xB980 ... hasta una pared (1)...
+C 0xB984 ... o una salida (6)
+C 0xB988 lo que haya en ellas, a 0xCDC9 (para pintarlo)
+C 0xB997 0xCDB2 = a cuantas casillas esta la pared (0: ninguna en 4)
+C 0xB9CB los dos sprites de la flecha que dice hacia donde se mira...
+C 0xB9F1 ... y sus colores
+C 0xBA33 lo de la casilla C de delante, a 0xCDC9 + C - 1 (la 4 no)
+C 0xBA47 el lado izquierdo (0xBAE1): 5 casillas, a 0xCDB3 y su dibujo a 0xCDBB
+C 0xBA62 el derecho (0xBAE9), a 0xCDB7 y 0xCDBF
+C 0xBA8E tantas casillas como haya hasta la pared de delante (4 si no hay)
+C 0xBAA5 el dibujo de cada una: pared (1) o hueco, segun la profundidad
+C 0xBAC2 la de la pared de delante, con su esquina
+C 0xBAF1 el mapa del laberinto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
+C 0xBAFA 0xCDC8 = mapa en pantalla; el efecto 0x1A
+C 0xBB1B el mapa, centrado: x = (20 - ancho) / 2 * 8 + 0x20...
+C 0xBB2A ... y = (28 - alto) / 2 * 8 + 8
+C 0xBB44 un sprite marca donde se esta
+C 0xBB5F cada casilla, su pieza de 8 x 8 (0xBC1B segun lo que sea)
+C 0xBB76 la salida (6), aparte
+C 0xBBAA el sitio del jugador en el mapa
+C 0xBBCD la salida se ve en el mapa solo con el bit 6 de 0xEF80 y la cosa 0x0A...
+C 0xBBDA ... y entonces con una flecha hacia el lado abierto
+C 0xBC27 en el mapa: el primer boton vuelve a la vista
+C 0xBC3A borra la pantalla y los sprites
+C 0xBC43 los iconos de lo cogido en el laberinto: el mapa (0xC27A)...
+C 0xBC4A ... y uno por cada moneda (0xC27B)
+C 0xBC5C al pisar una casilla con algo (2-5): se coge una vez (0xC290) y la casilla queda vacia
+C 0xBC6F segun lo que sea (tabla de 0xBC74)
+C 0xBC7E 2: 200 ryo y un icono mas
+C 0xBC89 el icono 0x10 en (0x28, 0x40 + n * 16)
+C 0xBC97 3: una cosa 9 mas
+C 0xBCA0 4: el MAPA del laberinto (0xC27A = 1), y su icono
+C 0xBCAD 5: una vida (hasta 99)
+C 0xBCBE 6: la salida: 0xCDCD = 1, 15 cuadros y la musica 0x00
+C 0xBCD3 apunta la casilla en el primer hueco de las 11 de 0xC290: ya no vuelve a salir
+C 0xBCF2 al entrar en la zona: lo cogido en el laberinto, el mapa y 0xC28E a cero
+C 0xBD06 la salida del laberinto, paso a paso (0xCDD2)
+C 0xBD12 paso 0: se abre la puerta (p03:BD48 y p03:BD57) durante 15 cuadros
+C 0xBD2E y aparecen los iconos 0x13 y 0x14
+C 0xBD3E si ya se salio una vez en esta zona (0xC28E), sin premio
+C 0xBD48 0xCD08 el sitio, 0xCD0A el tamano, 0xCD0C el paso, 0xCD0D cuantos
+C 0xBD57 la puerta que se abre: trozos que se corren con HMMM y el hueco en negro
+C 0xBDB2 paso 1: el rotulo 0x0E, 10000 PUNTOS (C = 1)...
+C 0xBDCB ... 0xC28E = 1 y la musica 0x13
+C 0xBDD5 paso 2: fuera del laberinto, la entrada se gasta (0xCDB0 = 0) y sube de precio
+C 0xBDF6 en la pausa: las teclas, hasta 5, en 0xC580
+C 0xBE13 con 5 tecleadas: dentro del laberinto, la primera palabra (0xBE44) pone el bit 0 de 0xEF80...
+C 0xBE21 ... y con el, el mapa (0xC27A = 1)
+C 0xBE2C fuera, la segunda (0xBE49) pone el bit 1
+C 0xBE31 si las 5 letras son las de DE, el bit C en 0xEF80
+C 0xBE4E las cuatro claves de 9 letras de la contrasena (0xBE8A): bits 5, 4, 3 y 2
+C 0xBE6C ninguna: vuelta al titulo
+C 0xBE7A alguna: partida nueva con lo que de la clave, y al estado 4
+C 0xBEAE lo que da: el bit 2, jugar con Ebisumaru...
+C 0xBEBB ... el 3, la vida maxima a 0x20...
+C 0xBEBE ... el 4, 2000 ryo...
+C 0xBEC1 ... el 5, continuar
+C 0xBEDD cambiar la opcion del menu del titulo 6 o 7 veces (p00:5EB6) pone el bit 6 de 0xEF80
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
@@ -440,9 +515,25 @@ L 0xB573 tipo_43 la figura de tipo 43 (0x2B), un cuadro (tabla de p02:871C)
 L 0xB5EC tipos_07_13_sale los tipos 7 y 13: su arranque
 L 0xB68D tipo_47_sale la figura de tipo 47 (0x2F): su arranque (tabla de p02:8427)
 L 0xB692 tipo_47 la figura de tipo 47 (0x2F), un cuadro (tabla de p02:871C)
+L 0xB8C3 anda_por_el_laberinto arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+L 0xB955 lo_de_delante hasta 4 casillas hacia delante: la pared y lo que hay
+L 0xB9CB flecha_de_direccion los sprites de la flecha hacia donde se mira
+L 0xBA47 lado_izquierdo las paredes del lado izquierdo de la vista
+L 0xBA62 lado_derecho las paredes del lado derecho de la vista
 L 0xBAD2 hl_mas_de HL += DE
-L 0xBDF6 teclea_palabra lo que se teclea en la pausa
-L 0xBE4E claves_secretas compara lo tecleado con las claves secretas (0xBE8A)
+L 0xBAF1 mapa_del_laberinto el mapa entero, si se tiene (0xC27A)
+L 0xBB1B pinta_el_mapa el laberinto en piezas de 8 x 8, centrado
+L 0xBBAA donde_se_esta la marca del jugador en el mapa
+L 0xBC27 sale_del_mapa el boton vuelve a la vista
+L 0xBC43 iconos_del_laberinto los iconos de lo cogido en el laberinto
+L 0xBC5C coge_en_el_laberinto lo que hay en la casilla, una vez
+L 0xBCD3 apunta_lo_cogido la casilla, a la lista de 0xC290
+L 0xBCF2 laberinto_a_cero lo cogido y el mapa, a cero
+L 0xBD06 salida_del_laberinto la puerta, el premio y fuera
+L 0xBDF6 teclea_palabra las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
+L 0xBE4E claves_secretas las cuatro claves de 9 letras (0xBE8A) en vez de la contrasena
+L 0xBEAE lo_que_da_la_clave jugador 2, vida 0x20, 2000 ryo o continuar
+L 0xBEDD secreto_del_menu el bit 6 de 0xEF80
 C 0xA046 niega_de: DE = -DE
 C 0xA04D niega_de: DE = -DE
 C 0xA055 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
@@ -895,48 +986,51 @@ C 0xB82D guarda el lado al que mira el jugador
 C 0xB830 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xB83C rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB840 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
+C 0xB87F iconos_del_laberinto: los iconos de lo cogido en el laberinto
 C 0xB8AD de_mas_a: DE += A
-C 0xB8C8 lee lo que se acaba de apretar (mando y cursores)
+C 0xB8E2 mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
 C 0xB8FF hl_mas_a: HL += A
-C 0xB95C sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+C 0xB94F lado_izquierdo: las paredes del lado izquierdo de la vista
+C 0xB952 lado_derecho: las paredes del lado derecho de la vista
+C 0xB95C sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 C 0xB96B palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xB975 hl_mas_de: HL += DE
-C 0xB97B sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+C 0xB97B sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 C 0xB9B5 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xB9BB hl_mas_de: HL += DE
-C 0xB9BE sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+C 0xB9BE sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 C 0xBA02 de_mas_a: DE += A
 C 0xBA4D palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA53 hl_mas_de: HL += DE
 C 0xBA68 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA6E hl_mas_de: HL += DE
 C 0xBA82 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
-C 0xBA92 sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+C 0xBA92 sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
 C 0xBA9E hl_mas_de: HL += DE
 C 0xBB00 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBB03 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xBB09 pinta_las_cosas: pinta las cosas del marcador
 C 0xBB0C pinta_el_marcador: pinta el marcador entero
 C 0xBB0F pinta_la_vida: pinta la barra de vida
+C 0xBB12 pinta_el_mapa: el laberinto en piezas de 8 x 8, centrado
+C 0xBB15 donde_se_esta: la marca del jugador en el mapa
 C 0xBB18 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xBB7F de_mas_a: DE += A
 C 0xBB91 hl_mas_de: HL += DE
 C 0xBB9B de_mas_a: DE += A
 C 0xBBA2 hl_mas_de: HL += DE
-C 0xBBCD lee los SECRETOS que ponen las claves
 C 0xBBF8 de_mas_a: DE += A
-C 0xBC27 lee lo que se acaba de apretar (mando y cursores)
 C 0xBC31 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-C 0xBC34 pinta_lo_del_plano: lo que va encima del plano y el marcador
+C 0xBC34 pinta_el_laberinto: la vista del laberinto y el marcador
 C 0xBC37 enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0xBC3D pinta_de_color_0: rellena del color 0 B x C puntos desde (0, 0) y pone el scroll a 0
 C 0xBC40 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-C 0xBC5F sitio_en_el_plano: HL = 0xD800 + H * 28 + L
+C 0xBC5F sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
+C 0xBC68 apunta_lo_cogido: la casilla, a la lista de 0xC290
 C 0xBC71 despacha: salta a la entrada A de la tabla que va detras del call
 C 0xBC94 pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 C 0xBC9D pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 C 0xBCAA pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
-C 0xBCAD apunta a las vidas
 C 0xBCBB pinta_el_marcador: pinta el marcador entero
 C 0xBCD0 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBCED sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -949,28 +1043,22 @@ C 0xBDAF hmmv: orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x 
 C 0xBDBC rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xBDD2 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBDDA apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-C 0xBDE4 guarda si se esta viendo el plano
+C 0xBDE4 guarda si se esta en el laberinto
 C 0xBDEB guarda el lado al que mira el jugador
 C 0xBDF3 caracteres_del_juego: sube los caracteres del juego de graficos de la zona
-C 0xBDF6 lee_el_teclado: lee una tecla
 C 0xBDF9 lee la tecla
 C 0xBDFF apunta a lo tecleado en la pausa
 C 0xBE09 de_mas_a: DE += A
-C 0xBE13 lee si se esta viendo el plano
-C 0xBE21 lee los SECRETOS que ponen las claves
-C 0xBE31 apunta a lo tecleado en la pausa
-C 0xBE3D apunta a los SECRETOS que ponen las claves
+C 0xBE3D apunta a los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 C 0xBE5B de_mas_a: DE += A
-C 0xBE6C lee los SECRETOS que ponen las claves
 C 0xBE76 guarda el estado (0xC000) y el paso (0xC001) de un tiron
-C 0xBE7A empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
 C 0xBE7D prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
+C 0xBE80 lo_que_da_la_clave: jugador 2, vida 0x20, 2000 ryo o continuar
 C 0xBE86 guarda el estado (0xC000) y el paso (0xC001) de un tiron
 C 0xBEB0 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
-C 0xBEB3 lee los SECRETOS que ponen las claves
+C 0xBEB3 lee los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 C 0xBEC4 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xBECC guarda la vida maxima
 C 0xBED3 guarda el DINERO (ryo, BCD)
 C 0xBED9 guarda si se puede continuar
-C 0xBEDD apunta a los SECRETOS que ponen las claves
 # --- fin de las anotaciones de anota.py ---

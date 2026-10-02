@@ -1868,9 +1868,9 @@ L_4B15:
 	call sube_dibujos_vueltos		;4b54   ; sube_dibujos_vueltos: sube dibujos dados la vuelta
 	call bancos_1_2_3		;4b57   ; y lo comun a todos
 	jp L_4ACA		;4b5a
-dibujos_del_plano:		; los dibujos, la paleta y los sprites del plano
+dibujos_del_laberinto:		; los dibujos, la paleta y los sprites del laberinto
 	call bancos_7_8_9		;4b5d   ; bancos_7_8_9: pone los bancos 7, 8 y 9
-	ld hl,06820h		;4b60   ; los dibujos del plano, del banco 7
+	ld hl,06820h		;4b60   ; los dibujos del laberinto, del banco 7
 	ld de,08004h		;4b63
 	ld b,03bh		;4b66
 	call sube_dibujos		;4b68   ; sube_dibujos: B dibujos de 8x8 seguidos a la VRAM, 32 por fila
@@ -1883,7 +1883,7 @@ dibujos_del_plano:		; los dibujos, la paleta y los sprites del plano
 	ld hl,0a438h		;4b7c   ; con su paleta
 	call pon_paleta		;4b7f   ; pon_paleta: pone una lista de colores en la paleta
 	call bancos_10_11_12		;4b82   ; bancos_10_11_12: pone los bancos 10, 11 y 12
-	ld hl,0f9c0h		;4b85   ; y los patrones de sprite del plano, del banco 11, a 0xF9C0
+	ld hl,0f9c0h		;4b85   ; y los patrones de sprite del laberinto, del banco 11, a 0xF9C0
 	ld de,084aah		;4b88
 	call rle_a_la_vram		;4b8b   ; rle_a_la_vram: descomprime un rle a la VRAM
 	jp bancos_1_2_3		;4b8e   ; bancos_1_2_3: pone los bancos 1, 2 y 3
@@ -3537,33 +3537,33 @@ resta_dinero:		; resta DE ryo (BCD) al dinero, hasta 0
 	ld de,00000h		;5960
 	ld (0c265h),de		;5963   ; guarda el DINERO (ryo, BCD)
 	jr pinta_el_dinero		;5967
-ensena_el_plano:		; pasa a la pantalla del plano de la zona
+entra_en_el_laberinto:		; pasa al laberinto de la zona, en primera persona
 	ld a,001h		;5969
-	ld (0cdb1h),a		;596b   ; guarda si se esta viendo el plano
+	ld (0cdb1h),a		;596b   ; guarda si se esta en el laberinto
 	call 067dah		;596e   ; esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 	di			;5971
-	ld a,009h		;5972   ; el banco 9 en 0xA000: los planos
+	ld a,009h		;5972   ; el banco 9 en 0xA000: los laberintos
 	ld (0a000h),a		;5974   ; el mapper: pone en 0xA000 el banco de A
 	ld (0f0f3h),a		;5977   ; guarda la copia del banco de 0xA000
 	ei			;597a
-	call dibuja_el_plano		;597b   ; dibuja_el_plano: monta en 0xD800 el plano de la zona (tablas 0xA575 y 0xA86D, banco 9)
+	call monta_el_laberinto		;597b
 	call bancos_1_2_3		;597e   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 	call apaga_la_pantalla		;5981   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
-	call dibujos_del_plano		;5984   ; dibujos_del_plano: los dibujos, la paleta y los sprites del plano
-	call pinta_lo_del_plano		;5987   ; pinta_lo_del_plano: lo que va encima del plano y el marcador
+	call dibujos_del_laberinto		;5984
+	call pinta_el_laberinto		;5987
 	jp enciende_la_pantalla		;598a   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
-pinta_lo_del_plano:		; lo que va encima del plano y el marcador
+pinta_el_laberinto:		; la vista del laberinto y el marcador
 	call 0b936h		;598d
 	call 0bc3ah		;5990
 	call pinta_las_cosas		;5993   ; pinta_las_cosas: pinta las cosas del marcador
 	call pinta_el_marcador		;5996   ; pinta_el_marcador: pinta el marcador entero
 	call pinta_la_vida		;5999   ; pinta_la_vida: pinta la barra de vida
 	call 098beh		;599c
-	call 0b9cbh		;599f
+	call 0b9cbh		;599f   ; flecha_de_direccion: los sprites de la flecha hacia donde se mira
 	call 0b843h		;59a2
 	call 098e3h		;59a5
 	ret			;59a8
-dibuja_el_plano:		; monta en 0xD800 el plano de la zona (tablas 0xA575 y 0xA86D, banco 9)
+monta_el_laberinto:		; monta en 0xD800 el laberinto de la zona (tablas 0xA575 y 0xA86D, banco 9)
 	ld a,(0c288h)		;59a9   ; fase * 7 + zona
 	ld b,a			;59ac
 	add a,a			;59ad
@@ -3580,17 +3580,17 @@ dibuja_el_plano:		; monta en 0xD800 el plano de la zona (tablas 0xA575 y 0xA86D,
 	push de			;59be
 	ld de,0a86dh		;59bf
 	call palabra_de_tabla_de		;59c2   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
-	ld a,(de)			;59c5   ; [ancho][alto] y los bits del plano
+	ld a,(de)			;59c5   ; [ancho][alto] y los bits del laberinto (1 pared, 0 paso)
 	ld (0cdd3h),a		;59c6
 	ld b,a			;59c9
 	inc de			;59ca
 	ld a,(de)			;59cb
 	ld (0cdd4h),a		;59cc
 	inc de			;59cf
-	call plano_de_bits		;59d0   ; el plano, un byte por casilla, en 0xD800
+	call laberinto_de_bits		;59d0   ; el laberinto, un byte por casilla, en 0xD800
 	pop de			;59d3
-	jp marcas_del_plano		;59d4   ; y encima las marcas de la entrada de 0xA575
-plano_de_bits:		; los bits del plano (A de ancho, B de alto), un byte por casilla en 0xD800
+	jp marcas_del_laberinto		;59d4   ; y encima las marcas de la entrada de 0xA575
+laberinto_de_bits:		; los bits del laberinto (A de ancho, B de alto), un byte por casilla en 0xD800
 	ld (0ee80h),a		;59d7
 	add a,007h		;59da   ; (ancho + 7) / 8 bytes por fila
 	srl a		;59dc
@@ -3624,7 +3624,7 @@ L_59F2:
 	ld (0cdc6h),a		;5a09
 	ld (0cdc7h),a		;5a0c
 	ret			;5a0f
-marcas_del_plano:		; las marcas de la lista de DE en el plano
+marcas_del_laberinto:		; lo que hay en el laberinto (lista de DE), salvo lo ya cogido (0xC290)
 	ld a,(de)			;5a10   ; dos bytes por marca: [lo que es (bits 5-7) y x (bits 0-4)][y]; 0 acaba
 	inc de			;5a11
 	or a			;5a12
@@ -3637,7 +3637,7 @@ marcas_del_plano:		; las marcas de la lista de DE en el plano
 	ld h,a			;5a1a
 	push bc			;5a1b
 	push de			;5a1c
-	call sitio_en_el_plano		;5a1d   ; HL = su sitio en 0xD800
+	call sitio_en_el_laberinto		;5a1d   ; HL = su sitio en 0xD800
 	pop de			;5a20
 	pop bc			;5a21
 	ld a,c			;5a22   ; C = lo que es (0-7)
@@ -3650,7 +3650,7 @@ marcas_del_plano:		; las marcas de la lista de DE en el plano
 	push de			;5a2e
 	call pon_si_no_esta		;5a2f   ; pon_si_no_esta: pone C en (HL) si HL no esta entre las 11 palabras de 0xC290
 	pop de			;5a32
-	jr marcas_del_plano		;5a33
+	jr marcas_del_laberinto		;5a33
 pon_si_no_esta:		; pone C en (HL) si HL no esta entre las 11 palabras de 0xC290
 	ld de,0c290h		;5a35   ; las 11 palabras de 0xC290
 	ld b,00bh		;5a38
@@ -3697,7 +3697,7 @@ L_5A62:
 	djnz L_5A5B		;5a66
 	ld a,c			;5a68
 	ret			;5a69
-sitio_en_el_plano:		; HL = 0xD800 + H * 28 + L
+sitio_en_el_laberinto:		; HL = 0xD800 + H * 28 + L
 	ld b,h			;5a6a   ; HL = 0xD800 + H * 28 + L
 	ld a,b			;5a6b
 	or a			;5a6c
@@ -4685,7 +4685,7 @@ estado_4:		; la entrada en la zona
 	ld a,(0ef81h)		;5eb6   ; con 0xEF81 a 6 o 7, p03:BEDD
 	sub 006h		;5eb9
 	cp 002h		;5ebb
-	call c,0beddh		;5ebd
+	call c,0beddh		;5ebd   ; secreto_del_menu: el bit 6 de 0xEF80
 	ld hl,0c263h		;5ec0   ; 0xC263 = 1
 	ld (hl),001h		;5ec3
 	ld a,095h		;5ec5   ; la musica 0x15
@@ -4813,7 +4813,7 @@ L_5FAF:
 	ld (hl),a			;5fbb
 	xor a			;5fbc   ; ... y los secretos de las claves a cero
 	ld (0cd2fh),a		;5fbd
-	ld (0ef80h),a		;5fc0   ; guarda los SECRETOS que ponen las claves
+	ld (0ef80h),a		;5fc0   ; guarda los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 	ld (0ef81h),a		;5fc3
 	ld (0cd60h),a		;5fc6
 	jp L_5E2C		;5fc9

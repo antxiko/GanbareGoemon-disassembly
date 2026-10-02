@@ -192,13 +192,13 @@ C 0x67DA la copia de los atributos de sprite (0xEE00): y = 0xE0 en los 32
 C 0x67E8 las dos de 0xC4D3 y 0xC4E3
 C 0x67F4 0xCC00-0xCCFF a cero: las cuatro fichas de 0x40
 C 0x6802 un cuadro del juego (estado 5) y de la demostracion
-C 0x6805 con el plano en pantalla, solo F1 y p02:987A
+C 0x6805 dentro del laberinto, solo F1 y p02:987A
 C 0x6815 los cuadros pares, una mitad; los impares, la otra
 C 0x681B 0xC00D cuenta los cuadros pares
 C 0x6822 en el estado 3 del jugador F1 no vale
 C 0x6829 F1: la pausa
 C 0x682D el jugador: sus sprites, sus mandos y su movimiento
-C 0x6836 con el plano o saliendo de la casilla, nada mas
+C 0x6836 en el laberinto o saliendo de la casilla, nada mas
 C 0x6846 el banco 9
 C 0x6856 y las figuras
 C 0x685F los cuadros impares: las figuras, el tiempo y el orden de los sprites
@@ -600,7 +600,7 @@ C 0x7C97 ... y la musica 0x10
 C 0x7C9C los tipos 8 y mas: con el bit 0 y en el suelo, a menos de 12...
 C 0x7CC8 ... (ix+0x0D) = 1 y el efecto 0x1E (0x14 el tipo 0x0A)
 C 0x7CDB el golpe contra el tipo 0x0E de 0xCC00: (ix+0x0D) = 1
-C 0x7D0D con 0xCDB0 puesto: en (0x30-0x50, 0x40-0x46) con arriba, el plano de la zona
+C 0x7D0D con 0xCDB0 puesto: en (0x30-0x50, 0x40-0x46) con arriba, se entra en el laberinto de la zona
 C 0x7D2B con la musica 0x08
 C 0x7D30 NC si el jugador esta a menos de 32 de (x - 16, y - 24)
 C 0x7D4A una caja de 8 x 8 en la figura
@@ -816,7 +816,7 @@ L 0x7BAA toca_lo_lanzado carry si la caja toca alguno de los dos lanzados
 L 0x7BBC toca_al_lanzado carry si la caja toca el lanzado IY
 L 0x7BDA lo_del_suelo las cosas de 0xCC00: se cogen, o una boca de pasadizo
 L 0x7CDB golpe_al_0e el golpe contra el tipo 0x0E de 0xCC00
-L 0x7D0D sitio_del_plano con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
+L 0x7D0D entrada_del_laberinto con 0xCDB0, arriba en (0x30-0x50, 0x40) se entra en el laberinto
 L 0x7D30 cerca_de_la_figura carry si el jugador esta a menos de 32 de la figura
 L 0x7D4A toca_de_8 carry si el jugador toca la caja de 8 x 8 de la figura
 L 0x7D56 coge lo que da el tipo 1 (la cosa 1) o el 2 (la cosa 0), o 10 ryo
@@ -866,8 +866,8 @@ C 0x60C3 musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x
 C 0x60C7 guarda por donde se sale de la casilla (1-4 arriba, abajo, izquierda, derecha; 5 y 6 otros; 0 nada)
 C 0x60CC cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x60E0 lee_los_mandos: en partida: F1-F3 a 0xC00C/0xC00B y el mando 1 con el teclado a 0xC007/0xC006
-C 0x60EA teclea_palabra: lo que se teclea en la pausa
-C 0x60F1 teclea_palabra: lo que se teclea en la pausa
+C 0x60EA teclea_palabra: las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
+C 0x60F1 teclea_palabra: las palabras de la pausa: 5 letras, comparadas con las de 0xBE44 y 0xBE49
 C 0x60F6 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x60FD quita_la_ventana: devuelve lo que tapaba la ventana de la pausa
 C 0x6102 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
@@ -908,7 +908,7 @@ C 0x6245 cambia_de_estado: pasa al estado A, paso 0, con 0x20 cuadros de espera
 C 0x624B ensena_la_contrasena: F2 en la pausa: la contrasena del sitio donde se esta
 C 0x6253 siguiente_paso: pasa al paso siguiente (0xC001)
 C 0x6258 teclea_la_contrasena: una letra mas de la contrasena; con 9, la deshace y mira la suma: carry al acabar, 0xEB82 = 1 si vale
-C 0x6260 claves_secretas: compara lo tecleado con las claves secretas (0xBE8A)
+C 0x6260 claves_secretas: las cuatro claves de 9 letras (0xBE8A) en vez de la contrasena
 C 0x6265 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0x6268 empieza_la_partida: la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
 C 0x626B prepara_la_partida: letras, dibujos de siempre y la vida a 0x10
@@ -1138,7 +1138,6 @@ C 0x6D3D baja_0xc4a7: 0xC4A7 cuenta hasta 0
 C 0x6D40 direccion_que_vale: 0xC485 = la direccion apretada
 C 0x6D43 prisas: por debajo de 50 segundos, su musica
 C 0x6D49 despacha: salta a la entrada A de la tabla que va detras del call
-C 0x6D64 sitio_del_plano: con 0xCDB0, arriba en (0x30-0x50, 0x40) ensena el plano
 C 0x6D6C sin_vida_o_tiempo: sin vida (y sin la cosa 7) o sin tiempo: estado 3
 C 0x6D6F lee el estado del jugador
 C 0x6D75 salidas_especiales: las puertas de 0xC28A: la de la zona (3 cosas 9) y la de la fase
@@ -1430,7 +1429,7 @@ C 0x7D15 lee la x del jugador
 C 0x7D1D lee lo apretado: bits 0-3 arriba, abajo, izquierda, derecha; 4 y 5 los botones
 C 0x7D22 esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x7D25 gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
-C 0x7D28 ensena_el_plano: pasa a la pantalla del plano de la zona
+C 0x7D28 entra_en_el_laberinto: pasa al laberinto de la zona, en primera persona
 C 0x7D2D sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x7D36 lee la x del jugador
 C 0x7D3D lee la y de la figura

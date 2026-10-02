@@ -332,7 +332,7 @@ C 0x97F9 una fila libre al azar
 C 0x9809 si el jugador esta a menos de 32 de ese borde y de 64 en vertical, no sale (0xCD14 = 1)
 C 0x9833 una de las filas libres al azar (registro R y 0xC00D)
 C 0x9858 las filas libres de (HL), sus y (desde 0x58, de 16 en 16) a 0xCD00; D = cuantas
-C 0x987A con el plano en pantalla, un cuadro
+C 0x987A dentro del laberinto, un cuadro
 C 0x9881 segun 0xCDCD, 0xCDC8 o lo normal (p03:B8C3 y p03:BC5C)
 C 0x9895 con 0xCDC5, se repinta todo
 C 0x98AF los sprites desde el 2 (0xEE08), fuera
@@ -653,6 +653,7 @@ C 0x8F40 borra_la_figura: borra la figura
 C 0x8F65 hl_mas_a: HL += A
 C 0x8F6D lee la x de la figura
 C 0x8F74 lee la y de la figura
+C 0x8F92 laberinto_a_cero: lo cogido y el mapa, a cero
 C 0x8FA6 lee el paso en que va la figura
 C 0x8FA9 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8FB9 sube el paso en que va la figura
@@ -742,8 +743,13 @@ C 0x9824 lee la y de la figura
 C 0x9830 borra_la_figura: borra la figura
 C 0x9853 hl_mas_a: HL += A
 C 0x987D gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
+C 0x9885 salida_del_laberinto: la puerta, el premio y fuera
+C 0x988C sale_del_mapa: el boton vuelve a la vista
+C 0x988F anda_por_el_laberinto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+C 0x9892 coge_en_el_laberinto: lo que hay en la casilla, una vez
 C 0x989D apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0x98A0 esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
+C 0x98A3 flecha_de_direccion: los sprites de la flecha hacia donde se mira
 C 0x98AC enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 C 0x98C7 dibujo_de_caracteres: pinta un dibujo hecho de caracteres
 C 0x98D1 dibujo_de_caracteres: pinta un dibujo hecho de caracteres

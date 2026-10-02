@@ -2404,7 +2404,7 @@ L_8F8E:
 	ld (hl),a			;8f8e
 	inc hl			;8f8f
 	djnz L_8F8E		;8f90
-	call 0bcf2h		;8f92
+	call 0bcf2h		;8f92   ; laberinto_a_cero: lo cogido y el mapa, a cero
 	xor a			;8f95
 	ld (0cd4eh),a		;8f96
 	ret			;8f99
@@ -3761,25 +3761,25 @@ L_9876:
 	inc d			;9878
 	ret			;9879
 L_987A:
-	call L_9881		;987a   ; con el plano en pantalla, un cuadro
+	call L_9881		;987a   ; dentro del laberinto, un cuadro
 	call 05b1dh		;987d   ; gira_los_sprites: gira el orden de los sprites (0xC25F) y los sube a 0x7400/0x7600
 	ret			;9880
 L_9881:
 	ld a,(0cdcdh)		;9881   ; segun 0xCDCD, 0xCDC8 o lo normal (p03:B8C3 y p03:BC5C)
 	or a			;9884
-	jp nz,0bd06h		;9885
+	jp nz,0bd06h		;9885   ; salida_del_laberinto: la puerta, el premio y fuera
 	ld a,(0cdc8h)		;9888
 	or a			;988b
-	jp nz,0bc27h		;988c
-	call 0b8c3h		;988f
-	call 0bc5ch		;9892
+	jp nz,0bc27h		;988c   ; sale_del_mapa: el boton vuelve a la vista
+	call 0b8c3h		;988f   ; anda_por_el_laberinto: arriba avanza, izquierda y derecha giran, abajo da media vuelta, el boton el mapa
+	call 0bc5ch		;9892   ; coge_en_el_laberinto: lo que hay en la casilla, una vez
 	ld a,(0cdc5h)		;9895   ; con 0xCDC5, se repinta todo
 	or a			;9898
 	ret z			;9899
 	call L_98AF		;989a
 	call 045eeh		;989d   ; apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 	call 0460ah		;98a0   ; esconde_los_sprites: y = 0xE0 a los 32 sprites de la VRAM (0xF600 y 0x7600) y de la RAM
-	call 0b9cbh		;98a3
+	call 0b9cbh		;98a3   ; flecha_de_direccion: los sprites de la flecha hacia donde se mira
 	call L_98BE		;98a6
 	call L_98E3		;98a9
 	jp 045e1h		;98ac   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
