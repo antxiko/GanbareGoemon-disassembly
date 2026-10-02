@@ -113,7 +113,6 @@ C 0xA567 (ix+0x1A): 8 (arriba) si el jugador esta mas arriba, 4 (abajo) si no
 C 0xA579 las dos direcciones que prefiere, al reves
 C 0xA58A A = la direccion (0: hacia el jugador en vertical)
 C 0xA592 la velocidad segun la dificultad: cuatro tandas de 0xA5D1...
-C 0xA5A0 ... cuatro bytes por direccion: [vertical][horizontal]
 C 0xA5B8 hacia el jugador: arriba (8) si esta mas arriba, abajo (4) si mas abajo, 2 si a su altura
 C 0xA5C8 el lado al que mira: el bit 0 de la direccion horizontal
 C 0xA611 la direccion contraria
@@ -273,7 +272,6 @@ C 0xB1FF elegido: (0xCD8F) y la pose siguiente
 C 0xB213 los dos dados parados (0xCD8D y 0xCD8E)...
 C 0xB222 ... la suma, par o impar...
 C 0xB22C ... contra lo elegido (0xCD8F: 1 par, 2 impar)
-C 0xB233 acierta: el DINERO SE DOBLA, el texto 8 y el efecto 0x19
 C 0xB247 falla: el dinero se queda en la MITAD, el texto 9 y el efecto 0x18
 C 0xB25F los dos dados: sus cifras en (0x70, 0x40) y (0x80, 0x40)...
 C 0xB275 ... y el rotulo de par (0x0A) o impar (0x0B)
@@ -292,7 +290,6 @@ C 0xB347 crea la 0x2C en (0x9A, 0x88)
 C 0xB34F el tipo 44: quieto, pose 0x3E, y el rotulo 2
 C 0xB37E elegido si y se puede pagar (0xCD86):
 C 0xB390 el texto 7, la musica fuera, el tiempo parado (0xCD32)...
-C 0xB3AD ... y el jugador fuera de la pantalla (y 0xF0), quieto
 C 0xB3CB elegido no: el texto 7 y paso 3
 C 0xB3DA sin dinero: el texto 4 y paso 3
 C 0xB3E9 cada 8 cuadros, un paso de la animacion, 8 en total
@@ -327,7 +324,6 @@ C 0xB6A4 con la cosa 0x0A, el texto 0x0F
 C 0xB6AA si no: la marca de esta casilla en 0xC340...
 C 0xB6B6 ... elige el texto (0xB716): la marcada (bit 7) y las demas, por lo que lleven
 C 0xB6C4 con 2 visitas:
-C 0xB6E4 ... la marcada: el rotulo 0x1E (0x1F en la zona 6) y la COSA 0x0A (0xC27E = 1)
 C 0xB70A ... las demas: se queda con TODO el dinero
 C 0xB6CF el rotulo 0 y la marca de si o no
 C 0xB71D HL = la marca de esta casilla en la lista de 0xC340 (0xC28D entradas)
@@ -426,6 +422,400 @@ C 0xBEDD cambiar la opcion del menu del titulo 6 o 7 veces (p00:5EB6) pone el bi
 C 0xB8A2 el caracter de HL, 14 veces hacia abajo
 C 0xB8B3 el caracter de HL, 16 veces hacia la derecha
 C 0xB843 el laberinto: el marco de alrededor, con los caracteres de la pagina 1
+C 0xA5BB FALLO: quiere apuntar a la y del jugador (ld hl,0xC494) pero lee la palabra de 0xC494 (su y y la fraccion de su x)...
+C 0xA5BE ... y compara con el byte de esa direccion: la decision es casi al azar
+C 0xA02D HL = (ix+0x1E) * 0x80
+C 0xA034 + 0x80 cada vez
+C 0xA03E en horizontal, 0x80 mas
+C 0xA133 hasta su y de llegada
+C 0xA187 hacia la izquierda (bits de la velocidad), las poses 0x4E-0x4F; a la derecha, 0x50-0x51
+C 0xA18F cada 16 cuadros...
+C 0xA196 ... una de dos
+C 0xA309 (ix+0x71) = 1: ya ha pasado por encima del jugador
+C 0xA322 DE = la gravedad
+C 0xA325 se suma a la velocidad
+C 0xA32B la velocidad de salida
+C 0xA332 aun no: sigue
+C 0xA333 la gravedad al reves
+C 0xA33C y la velocidad de salida tambien
+C 0xA36E un numero al azar...
+C 0xA371 ... de 0 a 3
+C 0xA377 la velocidad horizontal...
+C 0xA37A ... hacia el lado del jugador
+C 0xA385 la vertical
+C 0xA38C (ix+0x11) la gravedad
+C 0xA391 (ix+0x12) la parte alta
+C 0xA39A R xor la cuenta de 0xC00D
+C 0xA3A9 el jugador a la derecha (x >= 0x80): sale a su izquierda
+C 0xA3B2 a la izquierda: sale a su derecha
+C 0xA41C (ix+0x1F) la direccion
+C 0xA442 la x (8 o 0xF8)
+C 0xA449 el jugador muy arriba...
+C 0xA44F ... o muy abajo: la fila de en medio (0x68 o 0xBE)
+C 0xA46E / 4
+C 0xA473 * 3
+C 0xA47B DE = la velocidad
+C 0xA47F A = el tercer byte
+C 0xA4E6 sale en un sitio al azar y su ficha
+C 0xA511 en horizontal...
+C 0xA515 en vertical: la horizontal que prefiere
+C 0xA51E no choca: por ahi
+C 0xA520 carry: choca tambien
+C 0xA524 choca?
+C 0xA52A no: por ahi
+C 0xA530 se puede saltar: salta (p02:9FCA)
+C 0xA533 si no, prueba la otra direccion
+C 0xA536 sin choque: ya esta
+C 0xA53E la horizontal al reves...
+C 0xA544 ... y la vertical al reves
+C 0xA54A guarda la direccion
+C 0xA550 y prueba
+C 0xA554 choca tambien: vuelven las preferencias y da media vuelta
+C 0xA55A iba en horizontal: se quedan las nuevas
+C 0xA560 las preferencias de antes
+C 0xA574 (ix+0x1A) la vertical que prefiere
+C 0xA57C arriba y abajo cambiados
+C 0xA584 derecha e izquierda cambiadas
+C 0xA58E la direccion
+C 0xA597 16 bytes por tanda
+C 0xA5A0 el bit de la direccion...
+C 0xA5A3 ... 4 bytes por direccion
+C 0xA5A9 la vertical
+C 0xA5B0 la horizontal
+C 0xA5B6 NC
+C 0xA5C1 menor: arriba (8)
+C 0xA5C4 mayor: abajo (4)
+C 0xA5C5 igual: 2
+C 0xA5CA vertical: nada
+C 0xA5CD 1 derecha, 0 izquierda
+C 0xA614 iba en vertical...
+C 0xA618 en horizontal: al reves
+C 0xA620 iba en vertical: al reves
+C 0xA628 sin salto (0), no puede
+C 0xA631 el bit de la direccion: 2 bytes por direccion
+C 0xA638 H = dx, L = dy del paso
+C 0xA63C la x y la y de ahora, guardadas
+C 0xA644 (ix+0x1E) pasos
+C 0xA648 x + dx...
+C 0xA64B ... sin acercarse a los bordes (16 puntos)
+C 0xA651 y + dy...
+C 0xA654 ... entre 0x50 y 0xD0
+C 0xA663 un paso mas alla y se mira si choca
+C 0xA669 y vuelve donde estaba
+C 0xA671 se sale: carry, no puede
+C 0xA686 la direccion de ahora
+C 0xA68A la de B...
+C 0xA68D ... se prueba...
+C 0xA691 ... y vuelve la de antes
+C 0xA6C1 D = el numero del bit (0 derecha, 1 izquierda, 2 abajo, 3 arriba)
+C 0xA6CE segun cual
+C 0xA6EE 8 a la izquierda, sin salir de la pantalla
+C 0xA6F4 en el suelo...
+C 0xA6F9 ... y 3 mas arriba
+C 0xA704 a la izquierda...
+C 0xA70E ... y a la derecha
+C 0xA717 pasado de 0xC8, choca
+C 0xA72E sigue en su direccion
+C 0xA739 se ve otra vez
+C 0xA73C vuelve al paso de antes
+C 0xA743 y su ficha otra vez
+C 0xA75A tres disparos (ix+0x72)
+C 0xA75E (ix+0x70) = 1
+C 0xA79A el jugador detras: no
+C 0xA79B a 32 o mas: no
+C 0xA7A4 |dy|
+C 0xA7A8 menos de 16: carry
+C 0xA7B9 su pose
+C 0xA7BF el paso de la figura (ix+0x73), de la tabla del lado
+C 0xA7D3 la direccion de ese paso
+C 0xA7D7 el siguiente, de 8 en rueda
+C 0xA7F4 (ix+0x74) = 1: haciendo la figura
+C 0xA7FA (ix+0x74) = 0: no
+C 0xA821 el lado y la pose
+C 0xA82B en el paso 1, no se cuenta
+C 0xA841 puede saltar?
+C 0xA847 no: se para y salta
+C 0xA84A (ix+0x76) = 0: no ha chocado
+C 0xA855 la espera: 0-31 al azar...
+C 0xA85D ... + la de su ficha
+C 0xA866 ya iba hacia el jugador?
+C 0xA86D (ix+0x70) = 1
+C 0xA871 mas lejos en horizontal o en vertical?
+C 0xA87E 0xCD20 = 1: el jugador esta arriba
+C 0xA884 su velocidad
+C 0xA88C 0xCD21 = 1: el jugador esta a la izquierda
+C 0xA897 parado: nada
+C 0xA89C iba en vertical: ahora en horizontal
+C 0xA8A0 iba en horizontal: ahora en vertical
+C 0xA8A5 los choques seguidos
+C 0xA8B0 la primera vez, media vuelta
+C 0xA8CC 0xCD21 = 0: a la derecha
+C 0xA8D9 a la izquierda: 0xCD21 = 1
+C 0xA8EE hacia abajo
+C 0xA8F3 se ve
+C 0xA8F6 hace dano y se le puede dar
+C 0xA91B en el paso 1, no
+C 0xA923 la cuenta
+C 0xA92C los que le quedan
+C 0xA935 la espera, segun la dificultad
+C 0xA93A la espera de su ficha
+C 0xA957 en el paso 2 no cambia
+C 0xA95F en vertical tampoco
+C 0xA9DE una mas...
+C 0xA9E2 ... sin pasar de 255
+C 0xAA07 de 0x22 en adelante no lleva ficha
+C 0xAA0A 4 bytes por tipo
+C 0xAA2A los bits 6-7, a 0-3
+C 0xAA38 el primer disparo a los 8 cuadros
+C 0xAA41 la dificultad * 6
+C 0xAA4B si no llega, el minimo
+C 0xAB28 chocado
+C 0xAB5A media vuelta
+C 0xAB6E la velocidad hacia el jugador
+C 0xAB80 el lado
+C 0xAB83 32 cuadros, y al paso 0
+C 0xAB9C saltando, no dispara
+C 0xABB5 aun en el aire
+C 0xABBA 32 cuadros
+C 0xABE7 cada cuanto se lanza
+C 0xABED 63 cuadros de espera
+C 0xABF1 64 en (ix+0x75)
+C 0xABFA sale por un lado
+C 0xABFD en la primera tanda, en un sitio al azar
+C 0xAC15 mira al jugador
+C 0xAC18 si choca...
+C 0xAC1B ... media vuelta
+C 0xAC1E lanzarse
+C 0xAC28 8-39 cuadros
+C 0xAC4D mira a la izquierda: 2
+C 0xAC56 a la derecha: 1
+C 0xAC7F el lado
+C 0xAC89 la cuenta
+C 0xAC91 otra vez
+C 0xACBD la cuenta
+C 0xACCA iba a la derecha?
+C 0xACD1 si no, hacia arriba
+C 0xAD88 el primer boton: paso 1
+C 0xAD8C el segundo: paso 2
+C 0xAD9D la cosa siguiente...
+C 0xADA2 ... de tres, en rueda
+C 0xADA8 si tiene algo a la venta...
+C 0xADB2 ... si no, la siguiente
+C 0xADB4 los sitios de la marca ([y][x] por cosa); son datos, pero si no hay nada a la venta el djnz de 0xADB2 cae aqui y se EJECUTAN
+C 0xADCD con la 3, vuelta a la 0
+C 0xAE0A sin dinero, el texto
+C 0xAE0D una mas
+C 0xAE9B sin dinero, el texto
+C 0xAEA6 sin dinero, el texto
+C 0xAEB2 B = la vida
+C 0xAEB7 sin dinero, el texto
+C 0xAEBD fuera de la tienda...
+C 0xAEC0 ... y sube de precio
+C 0xAEFF las de esa cosa
+C 0xAF03 hasta 4
+C 0xAF46 el primer boton: paso 1
+C 0xAF4A el segundo: paso 2
+C 0xAF54 y el texto 0x16
+C 0xAF6F la cosa siguiente
+C 0xAF71 pasada la 8, vuelta a la 0
+C 0xAF74 si se tiene...
+C 0xAF78 ... si no, la siguiente
+C 0xAF7A ninguna: paso 3
+C 0xAF7E 0xCD8C = la elegida
+C 0xAF88 la 0 y la 9 se cuentan: la marca en la ultima que se tiene
+C 0xAF95 su x
+C 0xAF9D su precio en la tabla
+C 0xAFC5 B = las veces que se ha comprado
+C 0xAFC7 HL = el precio
+C 0xAFCE una vez: la mitad
+C 0xAFD1 dos: tal cual
+C 0xAFD5 * 2 en BCD
+C 0xAFDE el valor, a 0xCD86
+C 0xAFE5 la cifra de los miles / 2
+C 0xAFEC la de las centenas / 2...
+C 0xAFF2 ... si era impar, 50 para las decenas
+C 0xAFF6 las decenas / 2
+C 0xAFFE las unidades / 2
+C 0xB008 el bit que bajo de la cifra de arriba (8)...
+C 0xB00C ... se corrige a 5
+C 0xB01C 16 por cada una que se tiene...
+C 0xB020 ... menos 16: el sitio de la ultima
+C 0xB032 (ix+0x0F) = ya se cambio
+C 0xB040 cuantas tiene
+C 0xB04A la cosa 3
+C 0xB054 de 1 a 8...
+C 0xB057 ... todas fuera
+C 0xB05B la 0 y la 9: una menos
+C 0xB073 ya podia: nada
+C 0xB08A nada elegido
+C 0xB08E no hace dano
+C 0xB091 quieta
+C 0xB099 la otra opcion, en x 0x90
+C 0xB0B1 el primer boton: paso 2
+C 0xB0B5 el segundo: paso 1
+C 0xB0D7 en x 0x70: 1
+C 0xB0DD en la otra: 2
+C 0xB139 aun nada
+C 0xB13F 0xCD91 = 1: la marca se va
+C 0xB144 si
+C 0xB14C la casa de cambio (0x27)
+C 0xB152 no: el texto 0x1A
+C 0xB170 quieto, sin dano
+C 0xB180 nada elegido, los dados a cero
+C 0xB18C con la cosa 0x0A, la marca de si o no
+C 0xB195 la caja del texto
+C 0xB1A7 sin ella: el rotulo 0x18...
+C 0xB1AC ... y el 0x1C (0x1D en la zona 6)
+C 0xB1CB nada aun
+C 0xB1CD no: paso 3
+C 0xB1D2 sin dinero: paso 3
+C 0xB1E4 la marca se va
+C 0xB1EA otra marca (para par o impar)...
+C 0xB1EF ... con la segunda opcion en x 0x90
+C 0xB1F4 y los dos dados
+C 0xB216 el primero parado?
+C 0xB21A el segundo?
+C 0xB21F la marca se va
+C 0xB226 la suma...
+C 0xB229 ... par (0) o impar (1)
+C 0xB233 DE = todo el dinero, que se suma a si mismo
+C 0xB262 la cifra (letra 0x20 + n)
+C 0xB27C la suma: par o impar
+C 0xB28D con algo de dinero, NC
+C 0xB290 sin nada: la caja del texto...
+C 0xB2B1 una direccion cualquiera: x - tipo y la cuenta de cuadros...
+C 0xB2BA ... y el byte que haya alli, mas R: al azar
+C 0xB2C1 20-35 cuadros
+C 0xB2C6 sin dano, quieto
+C 0xB2EA cada 2 cuadros
+C 0xB303 el primer dado (0x2A) espera a que el otro tenga cifra
+C 0xB308 un cuadro mas
+C 0xB30F el primero ya esta: a 0xCD8E
+C 0xB335 la cara
+C 0xB338 el color 2...
+C 0xB33E ... o el 3 en la cara del 1
+C 0xB381 nada aun
+C 0xB383 no: paso 3
+C 0xB387 se paga lo que cuesta
+C 0xB395 el paso siguiente: la animacion desde 0
+C 0xB3A5 el tiempo parado...
+C 0xB3AA ... y la marca se va
+C 0xB3AD se guarda la y del jugador
+C 0xB3C1 quieto
+C 0xB3ED cada 8 cuadros
+C 0xB3F1 el fundido, un paso mas
+C 0xB3F4 8 pasos
+C 0xB415 en (0x80, 0x80) de la pagina 0
+C 0xB423 el color 5, (7, 6, 3)
+C 0xB42B se ve
+C 0xB436 20 cuadros por pose
+C 0xB43A 3 poses
+C 0xB444 el color B: tres bytes en 0xB470 + (B - 1) * 3 - 1
+C 0xB44F rojo - el paso, no menos de 0
+C 0xB459 en el nibble de arriba
+C 0xB45A azul - el paso
+C 0xB462 verde - el paso
+C 0xB46D los 15 colores, del 15 al 1
+C 0xB4A7 cada 20 cuadros
+C 0xB4AF la pose de este paso (0xB535)
+C 0xB4C8 4 poses por vuelta
+C 0xB4D0 y (ix+0x0B) vueltas
+C 0xB4D4 10 cuadros, y dos pasos mas alla
+C 0xB591 nada aun
+C 0xB595 la marca se va
+C 0xB59B no
+C 0xB59F se paga
+C 0xB5C0 el texto 7
+C 0xB5CD en la primera tanda no
+C 0xB5CE ni si ya hay una fila
+C 0xB5D3 las cuentas a cero
+C 0xB5D7 tres del tipo B
+C 0xB5E5 con el 7, las cuentas otra vez a cero
+C 0xB5F6 la espera, despues de la del anterior
+C 0xB600 uno mas en la fila
+C 0xB604 no se ve ni hace dano hasta que le toca
+C 0xB67B ninguna fila, nadie fuera
+C 0xB681 la espera desde 16
+C 0xB6AD la marcada (bit 7): los textos desde 0; las demas, desde 4
+C 0xB6B7 + las visitas
+C 0xB6C1 el texto
+C 0xB6C9 las visitas
+C 0xB6DD el texto 0x0F
+C 0xB6E4 128 cuadros... (0x70)
+C 0xB6E9 no es la marcada: se queda el dinero
+C 0xB6FF marcada y vista: 0x80
+C 0xB702 la cosa 0x0A
+C 0xB707 y fuera
+C 0xB727 la casilla...
+C 0xB729 ... encontrada: HL = su marca
+C 0xB72A la siguiente
+C 0xB731 nada aun
+C 0xB733 no: fuera
+C 0xB73A la marca se va
+C 0xB740 el texto
+C 0xB743 128 cuadros
+C 0xB753 hasta 3
+C 0xB756 una visita mas
+C 0xB760 con la cosa 3...
+C 0xB768 ... y la 4...
+C 0xB76E ... y la 0x0A
+C 0xB779 si se pasa, se recorta
+C 0xB77E + 0-15 al azar
+C 0xB784 dando la vuelta
+C 0xB7A6 A mod C
+C 0xB7D6 las unidades: 5
+C 0xB7E3 RST 0x20: HL contra 1000
+C 0xB7EF contra 31
+C 0xB7F9 dinero - 30 en BCD
+C 0xB824 espera
+C 0xB846 el caracter de (0xA0, 0x08), hacia abajo desde (0x30, 0x40)
+C 0xB84F el de (0xF0, 0x10), hacia abajo desde (0x30, 0xC8)
+C 0xB858 el de (0x78, 0x00), a la derecha desde (0x28, 0x48)
+C 0xB861 el de (0x70, 0x00), a la derecha desde (0xA0, 0x48)
+C 0xB86D el sitio
+C 0xB871 el caracter
+C 0xB87F y los iconos
+C 0xB8A6 copia el caracter
+C 0xB8AB 8 mas abajo
+C 0xB8BC 8 a la derecha
+C 0xB8E5 nada que repintar
+C 0xB8ED con salida delante
+C 0xB8FB dos bytes por direccion
+C 0xB902 [dx][dy]
+C 0xB905 la casilla donde se esta (0xCDC6: x, 0xCDC7: y)
+C 0xB90E un paso
+C 0xB911 y la vista nueva
+C 0xB919 si no esta pegada, se avanza
+C 0xB931 de 0 a 3
+C 0xB93E 17 bytes
+C 0xB943 las tres de delante
+C 0xB978 la casilla siguiente hacia delante
+C 0xB98C algo (2-5): se apunta
+C 0xB992 C = la profundidad
+C 0xB995 sin pared en 4: 0
+C 0xB99C la salida, como una pared mas alla...
+C 0xB9A2 ... (la 5 es 0)
+C 0xB9A4 0xCDCC = 1: hay salida
+C 0xB9AB lo de detras (media vuelta)...
+C 0xB9C2 ... si es pared, nada
+C 0xB9C5 si no, 0xCDCC = 1
+C 0xB9CE mirando a izquierda o derecha (bit 0)...
+C 0xB9D2 ... los dos sprites en (0x30, 0xD8)
+C 0xB9DB patrones 0x0C y 0x03 (al reves segun el lado)
+C 0xB9E5 el primero con color 0xEC...
+C 0xB9EB ... el segundo con 0xF0
+C 0xB9F9 16 lineas de color por sprite
+C 0xBA09 arriba o abajo: un sprite en (0x30, 0xD8)
+C 0xBA14 patron 0xE8; el segundo, fuera
+C 0xBA1E los dos colores, al reves segun el lado
+C 0xBA28 8 lineas de un color
+C 0xBA2E y 8 del otro
+C 0xBA34 la cuarta no se pinta
+C 0xBA3B 0xCDC9 + C - 1
+C 0xBA4A la casilla de la izquierda, segun la direccion
+C 0xBA56 5 de profundidad
+C 0xBA59 a 0xCDB3 lo que hay, a 0xCDBB el dibujo
+C 0xBA7C hacia delante, desde alli
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
@@ -638,7 +1028,6 @@ C 0xA40F pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = D
 C 0xA424 borra_la_figura: borra la figura
 C 0xA427 lee la x del jugador
 C 0xA42E borra_la_figura: borra la figura
-C 0xA442 guarda la x de la figura
 C 0xA459 guarda la y de la figura
 C 0xA468 borra_la_figura: borra la figura
 C 0xA478 hl_mas_a: HL += A
@@ -654,8 +1043,6 @@ C 0xA56B compara con la y de la figura
 C 0xA59C hl_mas_a: HL += A
 C 0xA5AD pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xA5B3 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-C 0xA5BB lee la y del jugador
-C 0xA63C lee la x de la figura
 C 0xA63F lee la y de la figura
 C 0xA660 guarda la y de la figura
 C 0xA66A guarda la x de la figura
@@ -673,14 +1060,12 @@ C 0xA6C8 lee la x de la figura
 C 0xA6CB lee la y de la figura
 C 0xA6E1 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA6EA no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
-C 0xA6F4 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA6FD no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA709 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA712 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA71E no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA727 no_se_puede_estar: carry si en (D, E) no se puede estar: hoyo o pared (0xC4F1, 0xC4F0)
 C 0xA736 guarda la pose de la figura
-C 0xA73C baja el paso en que va la figura
 C 0xA74D pon_la_pose: pone la pose de la figura
 C 0xA76A lee el paso en que va la figura
 C 0xA76D despacha: salta a la entrada A de la tabla que va detras del call
@@ -802,7 +1187,6 @@ C 0xAEBA suma_vida: suma A a la vida, hasta la maxima, y la pinta
 C 0xAED2 suma_tiempo: suma DE (BCD) al tiempo, hasta 5000
 C 0xAEE5 de_mas_a: DE += A
 C 0xAEE9 de_mas_a: DE += A
-C 0xAEFF hl_mas_a: HL += A
 C 0xAF0D crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xAF18 guarda la velocidad vertical (parte baja)
 C 0xAF1B guarda la velocidad vertical
@@ -846,7 +1230,6 @@ C 0xB122 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB127 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB12A lee el paso en que va la figura
 C 0xB12D despacha: salta a la entrada A de la tabla que va detras del call
-C 0xB144 sube el paso en que va la figura
 C 0xB157 el paso en que va la figura = 0x02
 C 0xB161 sube el paso en que va la figura
 C 0xB169 crea_figura: crea una figura en el primer hueco libre de 0xC600
@@ -857,7 +1240,6 @@ C 0xB17D guarda la velocidad horizontal
 C 0xB1A0 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB1A4 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB1A9 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-C 0xB1AC lee la ZONA (0-6)
 C 0xB1B7 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB1BA lee el paso en que va la figura
 C 0xB1BD despacha: salta a la entrada A de la tabla que va detras del call
@@ -876,7 +1258,6 @@ C 0xB285 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB295 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB29F crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB2A7 crea_figura: crea una figura en el primer hueco libre de 0xC600
-C 0xB2B1 lee la x de la figura
 C 0xB2CC pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0xB2CF pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0xB2D2 lee el paso en que va la figura
@@ -888,7 +1269,6 @@ C 0xB31B sube el paso en que va la figura
 C 0xB322 sube la pose de la figura
 C 0xB325 lee la pose de la figura
 C 0xB32F guarda la pose de la figura
-C 0xB335 lee la pose de la figura
 C 0xB344 colores_de_la_figura: los 16 colores de cada sprite de la figura, con la lista de su pose (0x554E)
 C 0xB34C crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB357 guarda la velocidad vertical (parte baja)
@@ -898,7 +1278,6 @@ C 0xB360 guarda la velocidad horizontal
 C 0xB369 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB36C lee el paso en que va la figura
 C 0xB36F despacha: salta a la entrada A de la tabla que va detras del call
-C 0xB395 sube el paso en que va la figura
 C 0xB3A2 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB3B3 lee la y del jugador
 C 0xB3BB guarda la y de los sprites del jugador
@@ -945,7 +1324,6 @@ C 0xB58A pinta_bcd: pinta cifras en BCD
 C 0xB5AD pinta_icono: pinta en DE el icono A de la pagina 1 (tabla 0x4EFC); 0xFF lo borra
 C 0xB5B7 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB5C5 sube el paso en que va la figura
-C 0xB5D7 crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB5DC crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB5E1 crea_figura: crea una figura en el primer hueco libre de 0xC600
 C 0xB616 guarda la x de la figura
@@ -969,7 +1347,7 @@ C 0xB6D1 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB6D4 sube el paso en que va la figura
 C 0xB6ED lee la ZONA (0-6)
 C 0xB6FA rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
-C 0xB70C lee el DINERO (ryo, BCD)
+C 0xB70C lee el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0xB710 resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 C 0xB724 lee la CASILLA de la zona
 C 0xB747 sube el paso en que va la figura
@@ -981,15 +1359,13 @@ C 0xB7C6 guarda el estado del jugador
 C 0xB7CB sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xB7CE esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0xB80F pinta_bcd: pinta cifras en BCD
-C 0xB816 lee el DINERO (ryo, BCD)
+C 0xB816 lee el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0xB81F resta_dinero: resta DE ryo (BCD) al dinero, hasta 0
 C 0xB82D guarda el lado al que mira el jugador
 C 0xB830 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xB83C rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB840 rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 C 0xB878 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
-C 0xB87F iconos_del_laberinto: los iconos de lo cogido en el laberinto
-C 0xB8A6 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB8AD de_mas_a: DE += A
 C 0xB8B7 copia_caracter: el caracter de (H, L) de la pagina 1 en (D, E) de la 0 (LMMM IMP)
 C 0xB8E2 mapa_del_laberinto: el mapa entero, si se tiene (0xC27A)
@@ -1065,6 +1441,6 @@ C 0xBEB0 guarda las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xBEB3 lee los SECRETOS: bit 0 y 1 las palabras de la pausa, 2-5 las claves, 6 el menu
 C 0xBEC4 apunta a las banderas de la partida (bit 7 jugador 2, bit 6 en juego)
 C 0xBECC guarda la vida maxima
-C 0xBED3 guarda el DINERO (ryo, BCD)
+C 0xBED3 guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0xBED9 guarda si se puede continuar
 # --- fin de las anotaciones de anota.py ---

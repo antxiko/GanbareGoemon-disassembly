@@ -2432,10 +2432,10 @@ calla_la_musica:		; sin musica ni efecto: los cuatro manejadores a canal_en_repo
 	ld (0c0a0h),a		;4fce
 	ld (0c0ach),a		;4fd1
 	ld hl,06067h		;4fd4   ; los cuatro manejadores, a canal_en_reposo (p10:6067)
-	ld (0c010h),hl		;4fd7   ; guarda el manejador del canal A del sonido
-	ld (0c012h),hl		;4fda   ; guarda el manejador del canal B del sonido
-	ld (0c014h),hl		;4fdd   ; guarda el manejador del canal C del sonido
-	ld (0c016h),hl		;4fe0   ; guarda el manejador del efecto de sonido
+	ld (0c010h),hl		;4fd7   ; guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
+	ld (0c012h),hl		;4fda   ; guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
+	ld (0c014h),hl		;4fdd   ; guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
+	ld (0c016h),hl		;4fe0   ; guarda el manejador del efecto de sonido y el byte siguiente (16 bits)
 	ret			;4fe3
 sonido:		; A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 	push hl			;4fe4
@@ -2520,11 +2520,11 @@ L_5064:
 	ld d,(hl)			;5076
 	ld (0c04eh),de		;5077
 	ld hl,060f4h		;507b   ; y sus tres manejadores
-	ld (0c010h),hl		;507e   ; guarda el manejador del canal A del sonido
+	ld (0c010h),hl		;507e   ; guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
 	ld hl,060fbh		;5081
-	ld (0c012h),hl		;5084   ; guarda el manejador del canal B del sonido
+	ld (0c012h),hl		;5084   ; guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
 	ld hl,06102h		;5087
-	ld (0c014h),hl		;508a   ; guarda el manejador del canal C del sonido
+	ld (0c014h),hl		;508a   ; guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
 L_508D:
 	xor a			;508d   ; sin fundido y sin pausa
 	ld (0c0a9h),a		;508e
@@ -2581,7 +2581,7 @@ L_50E7:
 	ld d,(hl)			;50e9
 	ld (0c074h),de		;50ea
 	ld hl,06449h		;50ee   ; y su manejador
-	ld (0c016h),hl		;50f1   ; guarda el manejador del efecto de sonido
+	ld (0c016h),hl		;50f1   ; guarda el manejador del efecto de sonido y el byte siguiente (16 bits)
 	jp L_509C		;50f4
 L_50F7:
 	call calla_la_musica		;50f7   ; calla_la_musica: sin musica ni efecto: los cuatro manejadores a canal_en_reposo
@@ -2634,7 +2634,7 @@ L_510D:
 	ld a,004h		;516c   ; 0xC09D = 4
 	ld (0c09dh),a		;516e
 	ld hl,060edh		;5171   ; y suena la musica de la pausa, en la ficha 0xC082, con la partitura de 0x6B74
-	ld (0c018h),hl		;5174   ; guarda el manejador del segundo efecto
+	ld (0c018h),hl		;5174   ; guarda el manejador del segundo efecto y el byte siguiente (16 bits)
 	ld de,0c082h		;5177
 	ld hl,050a3h		;517a
 	ld bc,0001ah		;517d
@@ -3516,7 +3516,7 @@ L_592B:
 	call suma_bcd		;592e   ; suma_bcd: (HL) += DE, dos bytes en BCD
 	jr nc,pinta_el_dinero		;5931   ; pasado de 9999 se queda en 9999
 	ld de,09999h		;5933
-	ld (0c265h),de		;5936   ; guarda el DINERO (ryo, BCD)
+	ld (0c265h),de		;5936   ; guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 pinta_el_dinero:		; pinta el dinero (4 cifras) en (0x70, 8)
 	ld hl,0c266h		;593a   ; cuatro cifras, en (0x70, 8)
 	ld de,07008h		;593d
@@ -3528,14 +3528,14 @@ suma_tiempo:		; suma DE (BCD) al tiempo, hasta 5000
 	cp 050h		;594b   ; ... hasta 5000
 	jr c,pinta_el_tiempo		;594d
 	ld de,05000h		;594f
-	ld (0c4b0h),de		;5952   ; guarda el TIEMPO (BCD)
+	ld (0c4b0h),de		;5952   ; guarda el TIEMPO (BCD) y el byte siguiente (16 bits)
 	jr pinta_el_tiempo		;5956
 resta_dinero:		; resta DE ryo (BCD) al dinero, hasta 0
 	ld hl,0c265h		;5958   ; apunta a el DINERO (ryo, BCD)
 	call resta_bcd		;595b   ; por debajo de 0 se queda en 0
 	jr nc,pinta_el_dinero		;595e
 	ld de,00000h		;5960
-	ld (0c265h),de		;5963   ; guarda el DINERO (ryo, BCD)
+	ld (0c265h),de		;5963   ; guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 	jr pinta_el_dinero		;5967
 entra_en_el_laberinto:		; pasa al laberinto de la zona, en primera persona
 	ld a,001h		;5969

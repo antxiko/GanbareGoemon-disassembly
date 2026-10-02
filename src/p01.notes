@@ -969,7 +969,7 @@ C 0x6613 guarda la CASILLA de la zona
 C 0x661A lee la CASILLA de la zona
 C 0x662C letras_del_texto: sube las letras de los textos
 C 0x662F dibujos_de_siempre: los dibujos de la pagina 1 que estan en todas las zonas (bancos 7 y 8)
-C 0x6635 guarda la vida maxima
+C 0x6635 guarda la vida maxima y el byte siguiente (16 bits)
 C 0x663D el mapper: pone en 0xA000 el banco de A
 C 0x6640 guarda la copia del banco de 0xA000
 C 0x6644 indice_de_la_zona: A = (fase * 7 + zona) * 2
@@ -997,7 +997,7 @@ C 0x66B6 guarda los colores del sitio
 C 0x66B9 bancos_1_2_3: pone los bancos 1, 2 y 3
 C 0x66BC topes_del_juego: pared y hoyos del juego de graficos, a 0xC4F0
 C 0x66C2 guarda la VIDA del jugador
-C 0x66C8 guarda el TIEMPO (BCD)
+C 0x66C8 guarda el TIEMPO (BCD) y el byte siguiente (16 bits)
 C 0x66E3 hmmm: orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 C 0x66ED enlaces_de_la_zona: copia los enlaces entre casillas de la zona a 0xE780
 C 0x66F3 las_del_tipo_14: las cosas de tipo 0x14 de la zona a 0xC340; una al azar marcada
@@ -1063,7 +1063,7 @@ C 0x68C4 guarda los colores del sitio
 C 0x68C9 guarda la CASILLA de la zona
 C 0x68CC carga_la_zona: carga la zona de 0xC280: graficos, pantallas, bloques, casillas, vida y tiempo, y entra en la casilla
 C 0x68D1 guarda las vidas
-C 0x68D7 guarda el DINERO (ryo, BCD)
+C 0x68D7 guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0x68DE apunta a las 10 cosas del marcador
 C 0x68E6 pinta_el_marcador: pinta el marcador entero
 C 0x6903 lee si esta en un pasadizo
@@ -1205,7 +1205,7 @@ C 0x70E2 guarda la y del jugador
 C 0x70E7 guarda la y de los sprites del jugador
 C 0x710B lmmm: orden LMMM del V9938: copia un rectangulo con operacion logica
 C 0x712F musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
-C 0x7134 lee el TIEMPO (BCD)
+C 0x7134 lee el TIEMPO (BCD) y el byte siguiente (16 bits)
 C 0x7153 lee si esta en un pasadizo
 C 0x715A sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0x7175 lee la vida maxima

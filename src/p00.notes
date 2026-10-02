@@ -1493,10 +1493,10 @@ C 0x4FA3 guarda la marca que se pone en 0xD800
 C 0x4FA6 pinta_pieza: pinta la pieza de 16x16 de (B, C) de la pagina 1 en (D, E) + (0xCD28, 0xCD27) y la marca en 0xD800
 C 0x4FB7 guarda la copia del registro 7 del PSG (el mezclador)
 C 0x4FCB guarda la musica que suena
-C 0x4FD7 guarda el manejador del canal A del sonido
-C 0x4FDA guarda el manejador del canal B del sonido
-C 0x4FDD guarda el manejador del canal C del sonido
-C 0x4FE0 guarda el manejador del efecto de sonido
+C 0x4FD7 guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
+C 0x4FDA guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
+C 0x4FDD guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
+C 0x4FE0 guarda el manejador del efecto de sonido y el byte siguiente (16 bits)
 C 0x4FEB el mapper: pone en 0x6000 el banco de A
 C 0x4FEE guarda la copia del banco de 0x6000
 C 0x4FF5 el mapper: pone en 0x8000 el banco de A
@@ -1505,17 +1505,17 @@ C 0x4FFF el mapper: pone en 0xA000 el banco de A
 C 0x5002 guarda la copia del banco de 0xA000
 C 0x501E lee la musica que suena
 C 0x5038 lee la musica que suena
-C 0x507E guarda el manejador del canal A del sonido
-C 0x5084 guarda el manejador del canal B del sonido
-C 0x508A guarda el manejador del canal C del sonido
+C 0x507E guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
+C 0x5084 guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
+C 0x508A guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
 C 0x5099 guarda los canales que suenan
-C 0x50F1 guarda el manejador del efecto de sonido
+C 0x50F1 guarda el manejador del efecto de sonido y el byte siguiente (16 bits)
 C 0x50F7 calla_la_musica: sin musica ni efecto: los cuatro manejadores a canal_en_reposo
 C 0x511E lee la copia del registro 7 del PSG (el mezclador)
 C 0x5124 lee los canales que suenan
 C 0x512B guarda los canales que suenan
 C 0x5130 guarda la copia del registro 7 del PSG (el mezclador)
-C 0x5174 guarda el manejador del segundo efecto
+C 0x5174 guarda el manejador del segundo efecto y el byte siguiente (16 bits)
 C 0x519E guarda la copia del registro 7 del PSG (el mezclador)
 C 0x51A4 guarda los canales que suenan
 C 0x51E0 lee la musica que suena
@@ -1573,12 +1573,12 @@ C 0x58FD pinta_bcd: pinta cifras en BCD
 C 0x5912 pinta_cosa_del_marcador: pinta la cosa A del marcador (0-9; la 0x0A va aparte)
 C 0x592B apunta a el DINERO (ryo, BCD)
 C 0x592E suma_bcd: (HL) += DE, dos bytes en BCD
-C 0x5936 guarda el DINERO (ryo, BCD)
+C 0x5936 guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0x5942 pinta_bcd: pinta cifras en BCD
 C 0x5948 suma_bcd: (HL) += DE, dos bytes en BCD
-C 0x5952 guarda el TIEMPO (BCD)
+C 0x5952 guarda el TIEMPO (BCD) y el byte siguiente (16 bits)
 C 0x5958 apunta a el DINERO (ryo, BCD)
-C 0x5963 guarda el DINERO (ryo, BCD)
+C 0x5963 guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 C 0x596B guarda si se esta en el laberinto
 C 0x596E esconde_los_sprites_de_ram: y = 0xE0 en los 32 sprites de la copia de 0xEE00
 C 0x5974 el mapper: pone en 0xA000 el banco de A

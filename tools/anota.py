@@ -705,6 +705,8 @@ def comentario(b, filas, k, fichas):
         v = int(m16.group(2) or m16.group(3), 16)
         if v in RAM16:
             return ("lee " if m16.group(1) else "guarda ") + RAM16[v]
+        if v in RAM:
+            return ("lee " if m16.group(1) else "guarda ") + RAM[v][0] + " y el byte siguiente (16 bits)"
     for x in re.findall(r"\b0([c-f][0-9a-f]{3})h\b", t):
         v = int(x, 16)
         if v in RAM:

@@ -147,20 +147,20 @@ L 0x631B silencio una pausa de la partitura
 L 0x6341 orden_de_la_partitura las ordenes 0xD0-0xFF
 L 0x6449 el_efecto un cuadro del efecto (ficha 0xC068)
 L 0x6454 cuadro_del_efecto un cuadro del efecto de sonido
-C 0x6029 guarda el manejador del canal A del sonido
-C 0x602C guarda el manejador del canal B del sonido
-C 0x602F guarda el manejador del canal C del sonido
+C 0x6029 guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
+C 0x602C guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
+C 0x602F guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
 C 0x6033 guarda los canales que suenan
-C 0x6040 lee el manejador del canal A del sonido
+C 0x6040 lee el manejador del canal A del sonido y el byte siguiente (16 bits)
 C 0x6043 al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
-C 0x6049 lee el manejador del canal B del sonido
+C 0x6049 lee el manejador del canal B del sonido y el byte siguiente (16 bits)
 C 0x604C al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
-C 0x6052 lee el manejador del canal C del sonido
+C 0x6052 lee el manejador del canal C del sonido y el byte siguiente (16 bits)
 C 0x6055 al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
-C 0x605C lee el manejador del efecto de sonido
+C 0x605C lee el manejador del efecto de sonido y el byte siguiente (16 bits)
 C 0x6077 apunta a el manejador del canal A del sonido
 C 0x6087 pon_el_volumen: escribe el volumen del canal en el PSG
-C 0x608B lee el manejador del segundo efecto
+C 0x608B lee el manejador del segundo efecto y el byte siguiente (16 bits)
 C 0x60CB guarda la copia del registro 7 del PSG (el mezclador)
 C 0x60F1 un_canal: un cuadro del canal de la ficha IX
 C 0x60F8 un_canal: un cuadro del canal de la ficha IX

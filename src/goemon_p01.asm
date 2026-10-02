@@ -878,7 +878,7 @@ prepara_la_partida:		; letras, dibujos de siempre y la vida a 0x10
 	call 04a6dh		;662c   ; letras_del_texto: sube las letras de los textos
 	call 04da4h		;662f   ; dibujos_de_siempre: los dibujos de la pagina 1 que estan en todas las zonas (bancos 7 y 8)
 	ld de,01010h		;6632   ; la vida y la vida maxima, 0x10
-	ld (0c480h),de		;6635   ; guarda la vida maxima
+	ld (0c480h),de		;6635   ; guarda la vida maxima y el byte siguiente (16 bits)
 	ret			;6639
 carga_la_zona:		; carga la zona de 0xC280: graficos, pantallas, bloques, casillas, vida y tiempo, y entra en la casilla
 	di			;663a
@@ -943,7 +943,7 @@ L_66BC:
 	ld a,(0c480h)		;66bf   ; la vida llena
 	ld (0c481h),a		;66c2   ; guarda la VIDA del jugador
 	ld de,00700h		;66c5   ; 700 segundos
-	ld (0c4b0h),de		;66c8   ; guarda el TIEMPO (BCD)
+	ld (0c4b0h),de		;66c8   ; guarda el TIEMPO (BCD) y el byte siguiente (16 bits)
 	ld a,001h		;66cc   ; el primero se cuenta enseguida
 	ld (0c4b2h),a		;66ce
 	ld a,(0c280h)		;66d1   ; en la zona 6, el dibujo de (0x00, 0x80) de la pagina 1 se copia a (0x30, 0x80)
@@ -1191,7 +1191,7 @@ L_689E:
 	ld a,099h		;68cf   ; con 99 vidas...
 	ld (0c260h),a		;68d1   ; guarda las vidas
 	ld de,00999h		;68d4   ; ... 999 ryo...
-	ld (0c265h),de		;68d7   ; guarda el DINERO (ryo, BCD)
+	ld (0c265h),de		;68d7   ; guarda el DINERO (ryo, BCD) y el byte siguiente (16 bits)
 	ld hl,068e9h		;68db   ; ... y las cosas del marcador de 0x68E9
 	ld de,0c270h		;68de   ; apunta a las 10 cosas del marcador
 	ld bc,0000ah		;68e1
@@ -2481,7 +2481,7 @@ prisas:		; por debajo de 50 segundos, su musica
 	jp 0416fh		;712f   ; musica_de_la_zona: la musica del juego de graficos de la zona (tabla 0x4182)
 L_7132:
 	ld b,000h		;7132   ; justo en 50 segundos...
-	ld de,(0c4b0h)		;7134   ; lee el TIEMPO (BCD)
+	ld de,(0c4b0h)		;7134   ; lee el TIEMPO (BCD) y el byte siguiente (16 bits)
 	ld a,d			;7138
 	and a			;7139
 	jr nz,L_7143		;713a

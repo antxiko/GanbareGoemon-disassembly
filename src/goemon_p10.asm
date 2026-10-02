@@ -32,9 +32,9 @@ sonido_del_cuadro:		; un cuadro de sonido: musica y efectos
 	cp 0f0h		;6021   ; ... y a -16, todo callado
 	jp nz,L_6039		;6023
 	ld hl,canal_en_reposo		;6026
-	ld (0c010h),hl		;6029   ; guarda el manejador del canal A del sonido
-	ld (0c012h),hl		;602c   ; guarda el manejador del canal B del sonido
-	ld (0c014h),hl		;602f   ; guarda el manejador del canal C del sonido
+	ld (0c010h),hl		;6029   ; guarda el manejador del canal A del sonido y el byte siguiente (16 bits)
+	ld (0c012h),hl		;602c   ; guarda el manejador del canal B del sonido y el byte siguiente (16 bits)
+	ld (0c014h),hl		;602f   ; guarda el manejador del canal C del sonido y el byte siguiente (16 bits)
 	xor a			;6032
 	ld (0c0abh),a		;6033   ; guarda los canales que suenan
 	jp L_603B		;6036
@@ -45,19 +45,19 @@ L_603B:
 L_603E:
 	xor a			;603e   ; los tres canales y el efecto: B = el canal, 0xC09C el del PSG
 	ld b,a			;603f
-	ld hl,(0c010h)		;6040   ; lee el manejador del canal A del sonido
+	ld hl,(0c010h)		;6040   ; lee el manejador del canal A del sonido y el byte siguiente (16 bits)
 	call al_manejador		;6043   ; al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 	ld a,001h		;6046
 	ld b,a			;6048
-	ld hl,(0c012h)		;6049   ; lee el manejador del canal B del sonido
+	ld hl,(0c012h)		;6049   ; lee el manejador del canal B del sonido y el byte siguiente (16 bits)
 	call al_manejador		;604c   ; al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 	ld a,002h		;604f
 	ld b,a			;6051
-	ld hl,(0c014h)		;6052   ; lee el manejador del canal C del sonido
+	ld hl,(0c014h)		;6052   ; lee el manejador del canal C del sonido y el byte siguiente (16 bits)
 	call al_manejador		;6055   ; al_manejador: 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 	ld a,002h		;6058   ; el efecto suena por el canal C del PSG
 	ld b,003h		;605a
-	ld hl,(0c016h)		;605c   ; lee el manejador del efecto de sonido
+	ld hl,(0c016h)		;605c   ; lee el manejador del efecto de sonido y el byte siguiente (16 bits)
 al_manejador:		; 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 	ld (0c09ch),a		;605f   ; 0xC09C = el canal del PSG, 0xC09D = la ficha (0-3); salta al manejador
 	ld a,b			;6062
@@ -87,7 +87,7 @@ L_607F:
 L_608A:
 	ret			;608a
 L_608B:
-	ld hl,(0c018h)		;608b   ; lee el manejador del segundo efecto
+	ld hl,(0c018h)		;608b   ; lee el manejador del segundo efecto y el byte siguiente (16 bits)
 	jp (hl)			;608e
 pon_el_tono:		; escribe el tono del canal en el PSG
 	ld a,(0c09ch)		;608f   ; el tono DE en los registros 2 * canal y 2 * canal + 1
