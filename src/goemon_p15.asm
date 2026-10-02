@@ -798,7 +798,7 @@ DATA_cosas_fijas_B132:
 ;   7-3 (179 bytes)
 ;   0xb170..0xb223  (179 bytes)
 DATA_cosas_fijas_B170:
-	defb 03bh,001h,086h,027h,001h,092h,080h,002h,060h,025h,002h,0a0h,044h,002h,0b6h,0c7h	; b170  ;..'....`%..D...
+	defb 03bh,001h,086h,027h,001h,092h,080h,002h,060h,025h,002h,0a0h,044h,002h,0b6h,0c7h	; b170  ...'....`%..D...
 	defb 003h,060h,095h,003h,060h,0b5h,003h,0a0h,094h,003h,074h,0e1h,003h,094h,0e1h,003h	; b180  .`..`.....t.....
 	defb 0b4h,0e1h,004h,081h,090h,005h,080h,046h,006h,072h,070h,006h,090h,056h,008h,0a6h	; b190  .......F.rp..V..
 	defb 027h,00ah,076h,067h,00bh,060h,075h,00bh,084h,0b1h,00bh,094h,0c1h,00ch,086h,027h	; b1a0  '.vg.`u........'
@@ -1107,7 +1107,7 @@ DATA_huecos_B57A:
 ;   0xb596..0xb5bc  (38 bytes)
 DATA_huecos_B596:
 	defb 068h,010h,027h,058h,057h,060h,07bh,0c8h,08dh,050h,087h,0e8h,067h,0c8h,027h,088h	; b596  h.'XW`{..P..g.'.
-	defb 097h,050h,03dh,0c8h,057h,030h,05eh,080h,05eh,090h,058h,0c8h,03bh,060h,067h,0c8h	; b5a6  .P=.W0^.^.X.;`g.
+	defb 097h,050h,03dh,0c8h,057h,030h,05eh,080h,05eh,090h,058h,0c8h,03bh,060h,067h,0c8h	; b5a6  .P=.W0^.^.X..`g.
 	defb 049h,030h,09eh,098h,017h,0bch	; b5b6
 
 ; ----------------------------------------------------------------------
@@ -1261,7 +1261,7 @@ DATA_huecos_B7B6:
 ;   0xb7d8..0xb804  (44 bytes)
 DATA_huecos_B7D8:
 	defb 018h,020h,087h,0c8h,08eh,050h,02eh,070h,017h,0a0h,029h,0e8h,057h,088h,087h,050h	; b7d8  . ...P.p..).W..P
-	defb 02bh,0b8h,027h,030h,038h,080h,01eh,0b0h,09eh,0b8h,03bh,040h,027h,098h,027h,058h	; b7e8  +.'08.....;@'.'X
+	defb 02bh,0b8h,027h,030h,038h,080h,01eh,0b0h,09eh,0b8h,03bh,040h,027h,098h,027h,058h	; b7e8  +.'08......@'.'X
 	defb 017h,020h,069h,098h,017h,020h,058h,0a8h,06dh,060h,097h,0dch	; b7f8  . i.. X.m`..
 
 ; ----------------------------------------------------------------------
@@ -1306,7 +1306,7 @@ DATA_huecos_B85A:
 ;   0xb88e..0xb8ae  (32 bytes)
 DATA_huecos_B88E:
 	defb 077h,068h,04bh,088h,037h,040h,02dh,0c0h,07ch,0e8h,06eh,070h,06eh,080h,067h,0c8h	; b88e  whK.7@-.|.npn.g.
-	defb 02ch,020h,077h,048h,027h,0c0h,08eh,0c0h,09eh,0c8h,03bh,030h,078h,0e8h,027h,0bch	; b89e  , wH'.....;0x.'.
+	defb 02ch,020h,077h,048h,027h,0c0h,08eh,0c0h,09eh,0c8h,03bh,030h,078h,0e8h,027h,0bch	; b89e  , wH'......0x.'.
 
 ; ----------------------------------------------------------------------
 ; DATOS huecos_B8AE: parejas [x | figura][y | banderas] que p02:9239 copia a
@@ -1352,7 +1352,7 @@ DATA_huecos_B90C:
 DATA_huecos_B93E:
 	defb 047h,030h,05eh,090h,05eh,0a0h,05eh,0b8h,088h,020h,06eh,070h,047h,0c0h,09ah,0e8h	; b93e  G0^.^.^.. npG...
 	defb 057h,020h,02fh,078h,088h,020h,087h,048h,068h,030h,027h,078h,06bh,040h,077h,098h	; b94e  W /x. .Hh0'xk@w.
-	defb 048h,020h,087h,050h,04ah,0c8h,06dh,060h,017h,0a8h,03bh,010h,017h,068h,087h,070h	; b95e  H .PJ.m`..;..h.p
+	defb 048h,020h,087h,050h,04ah,0c8h,06dh,060h,017h,0a8h,03bh,010h,017h,068h,087h,070h	; b95e  H .PJ.m`.....h.p
 	defb 048h,0dch	; b96e
 
 ; ----------------------------------------------------------------------
@@ -1420,7 +1420,7 @@ DATA_huecos_BA30:
 ;   0xba54..0xba7c  (40 bytes)
 DATA_huecos_BA54:
 	defb 017h,020h,049h,070h,088h,0d8h,04eh,060h,097h,088h,05dh,020h,057h,0d8h,000h,008h	; ba54  . Ip..N`..] W...
-	defb 03bh,030h,037h,0c8h,077h,0a8h,097h,020h,02eh,0b0h,03eh,0c8h,09bh,040h,037h,0a8h	; ba64  ;07.w.. ..>..@7.
+	defb 03bh,030h,037h,0c8h,077h,0a8h,097h,020h,02eh,0b0h,03eh,0c8h,09bh,040h,037h,0a8h	; ba64  .07.w.. ..>..@7.
 	defb 027h,020h,09dh,098h,098h,060h,077h,0bch	; ba74  ' ...`w.
 
 ; ----------------------------------------------------------------------
@@ -1527,7 +1527,7 @@ DATA_textos_de_cada_zona:
 ;   bytes)
 ;   0xbc5c..0xbc6c  (16 bytes)
 DATA_texto_BC5C:
-	defb 04eh,03ch,063h,049h,000h,04dh,05dh,048h,000h,039h,042h,03bh,056h,04ch,063h,0ffh	; bc5c  N<cI.M]H.9B;VLc.
+	defb 04eh,03ch,063h,049h,000h,04dh,05dh,048h,000h,039h,042h,03bh,056h,04ch,063h,0ffh	; bc5c  N<cI.M]H.9B.VLc.
 
 ; ----------------------------------------------------------------------
 ; DATOS texto_BC6C: texto que p00:42F1 escribe letra a letra (0xFF o 0xE0
@@ -1535,7 +1535,7 @@ DATA_texto_BC5C:
 ;   bytes)
 ;   0xbc6c..0xbc7f  (19 bytes)
 DATA_texto_BC6C:
-	defb 041h,035h,05eh,042h,000h,04ch,063h,05dh,057h,044h,000h,03bh,063h,061h,032h,04dh	; bc6c  A5^B.Lc]WD.;ca2M
+	defb 041h,035h,05eh,042h,000h,04ch,063h,05dh,057h,044h,000h,03bh,063h,061h,032h,04dh	; bc6c  A5^B.Lc]WD..ca2M
 	defb 032h,053h,0ffh	; bc7c
 
 ; ----------------------------------------------------------------------
@@ -1544,7 +1544,7 @@ DATA_texto_BC6C:
 ;   bytes)
 ;   0xbc7f..0xbc92  (19 bytes)
 DATA_texto_BC7F:
-	defb 034h,04eh,052h,057h,030h,058h,043h,000h,03bh,063h,061h,032h,04dh,032h,000h,04bh	; bc7f  4NRW0XC.;ca2M2.K
+	defb 034h,04eh,052h,057h,030h,058h,043h,000h,03bh,063h,061h,032h,04dh,032h,000h,04bh	; bc7f  4NRW0XC..ca2M2.K
 	defb 033h,058h,0ffh	; bc8f
 
 ; ----------------------------------------------------------------------
@@ -1553,7 +1553,7 @@ DATA_texto_BC7F:
 ;   bytes)
 ;   0xbc92..0xbca6  (20 bytes)
 DATA_texto_BC92:
-	defb 047h,039h,045h,000h,039h,049h,063h,05dh,000h,04bh,063h,03fh,045h,000h,03bh,05dh	; bc92  G9E.9Ic].Kc?E.;]
+	defb 047h,039h,045h,000h,039h,049h,063h,05dh,000h,04bh,063h,03fh,045h,000h,03bh,05dh	; bc92  G9E.9Ic].Kc?E..]
 	defb 03bh,063h,060h,0ffh	; bca2
 
 ; ----------------------------------------------------------------------
@@ -1562,7 +1562,7 @@ DATA_texto_BC92:
 ;   bytes)
 ;   0xbca6..0xbcb8  (18 bytes)
 DATA_texto_BCA6:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,026h,03fh,063h,000h,054h,038h	; bca6  A6cI.<Bf;c&?c.T8
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,026h,03fh,063h,000h,054h,038h	; bca6  A6cI.<Bf.c&?c.T8
 	defb 05eh,0ffh	; bcb6
 
 ; ----------------------------------------------------------------------
@@ -1571,7 +1571,7 @@ DATA_texto_BCA6:
 ;   bytes)
 ;   0xbcb8..0xbcca  (18 bytes)
 DATA_texto_BCB8:
-	defb 03fh,05dh,049h,063h,03ah,03ah,053h,04eh,000h,031h,048h,03bh,03bh,000h,032h,04eh	; bcb8  ?]Ic::SN.1H;;.2N
+	defb 03fh,05dh,049h,063h,03ah,03ah,053h,04eh,000h,031h,048h,03bh,03bh,000h,032h,04eh	; bcb8  ?]Ic::SN.1H...2N
 	defb 031h,0ffh	; bcc8
 
 ; ----------------------------------------------------------------------
@@ -1607,7 +1607,7 @@ DATA_texto_BCEE:
 ;   bytes)
 ;   0xbd00..0xbd13  (19 bytes)
 DATA_texto_BD00:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,021h,023h,03fh,063h,000h,03eh	; bd00  A6cI.<Bf;c!#?c.>
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,021h,023h,03fh,063h,000h,03eh	; bd00  A6cI.<Bf.c!#?c.>
 	defb 059h,05eh,0ffh	; bd10
 
 ; ----------------------------------------------------------------------
@@ -1634,7 +1634,7 @@ DATA_texto_BD25:
 ;   bytes)
 ;   0xbd36..0xbd49  (19 bytes)
 DATA_texto_BD36:
-	defb 043h,036h,051h,036h,048h,000h,03ch,042h,066h,03bh,063h,037h,057h,030h,000h,03bh	; bd36  C6Q6H.<Bf;c7W0.;
+	defb 043h,036h,051h,036h,048h,000h,03ch,042h,066h,03bh,063h,037h,057h,030h,000h,03bh	; bd36  C6Q6H.<Bf.c7W0..
 	defb 063h,05fh,0ffh	; bd46
 
 ; ----------------------------------------------------------------------
@@ -1652,7 +1652,7 @@ DATA_texto_BD49:
 ;   bytes)
 ;   0xbd5c..0xbd6f  (19 bytes)
 DATA_texto_BD5C:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,022h,020h,03fh,063h,000h,043h	; bd5c  A6cI.<Bf;c" ?c.C
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,022h,020h,03fh,063h,000h,043h	; bd5c  A6cI.<Bf.c" ?c.C
 	defb 034h,05eh,0ffh	; bd6c
 
 ; ----------------------------------------------------------------------
@@ -1661,7 +1661,7 @@ DATA_texto_BD5C:
 ;   bytes)
 ;   0xbd6f..0xbd83  (20 bytes)
 DATA_texto_BD6F:
-	defb 053h,059h,049h,063h,000h,053h,058h,04dh,043h,063h,000h,030h,03bh,063h,035h,063h	; bd6f  SYIc.SXMCc.0;c5c
+	defb 053h,059h,049h,063h,000h,053h,058h,04dh,043h,063h,000h,030h,03bh,063h,035h,063h	; bd6f  SYIc.SXMCc.0.c5c
 	defb 042h,063h,058h,0ffh	; bd7f
 
 ; ----------------------------------------------------------------------
@@ -1697,7 +1697,7 @@ DATA_texto_BDA8:
 ;   bytes)
 ;   0xbdba..0xbdcd  (19 bytes)
 DATA_texto_BDBA:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,022h,027h,03fh,063h,000h,053h	; bdba  A6cI.<Bf;c"'?c.S
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,022h,027h,03fh,063h,000h,053h	; bdba  A6cI.<Bf.c"'?c.S
 	defb 030h,05eh,0ffh	; bdca
 
 ; ----------------------------------------------------------------------
@@ -1706,7 +1706,7 @@ DATA_texto_BDBA:
 ;   bytes)
 ;   0xbdcd..0xbde0  (19 bytes)
 DATA_texto_BDCD:
-	defb 044h,03eh,063h,051h,037h,000h,03bh,035h,038h,045h,000h,040h,035h,063h,03ah,05bh	; bdcd  D>cQ7.;58E.@5c:[
+	defb 044h,03eh,063h,051h,037h,000h,03bh,035h,038h,045h,000h,040h,035h,063h,03ah,05bh	; bdcd  D>cQ7..58E.@5c:[
 	defb 037h,063h,0ffh	; bddd
 
 ; ----------------------------------------------------------------------
@@ -1715,7 +1715,7 @@ DATA_texto_BDCD:
 ;   bytes)
 ;   0xbde0..0xbdf0  (16 bytes)
 DATA_texto_BDE0:
-	defb 039h,039h,056h,042h,063h,000h,03ch,039h,03bh,000h,053h,03ch,04eh,05dh,035h,0ffh	; bde0  99VBc.<9;.S<N]5.
+	defb 039h,039h,056h,042h,063h,000h,03ch,039h,03bh,000h,053h,03ch,04eh,05dh,035h,0ffh	; bde0  99VBc.<9..S<N]5.
 
 ; ----------------------------------------------------------------------
 ; DATOS texto_BDF0: texto que p00:42F1 escribe letra a letra (0xFF o 0xE0
@@ -1723,7 +1723,7 @@ DATA_texto_BDE0:
 ;   bytes)
 ;   0xbdf0..0xbe02  (18 bytes)
 DATA_texto_BDF0:
-	defb 03ch,042h,066h,03bh,063h,037h,057h,030h,03fh,063h,000h,04dh,04dh,031h,048h,04dh	; bdf0  <Bf;c7W0?c.MM1HM
+	defb 03ch,042h,066h,03bh,063h,037h,057h,030h,03fh,063h,000h,04dh,04dh,031h,048h,04dh	; bdf0  <Bf.c7W0?c.MM1HM
 	defb 031h,0ffh	; be00
 
 ; ----------------------------------------------------------------------
@@ -1732,7 +1732,7 @@ DATA_texto_BDF0:
 ;   bytes)
 ;   0xbe02..0xbe16  (20 bytes)
 DATA_texto_BE02:
-	defb 041h,035h,05eh,042h,000h,04ch,063h,05dh,057h,044h,000h,035h,037h,03bh,039h,04eh	; be02  A5^B.Lc]WD.57;9N
+	defb 041h,035h,05eh,042h,000h,04ch,063h,05dh,057h,044h,000h,035h,037h,03bh,039h,04eh	; be02  A5^B.Lc]WD.57.9N
 	defb 05dh,043h,063h,0ffh	; be12
 
 ; ----------------------------------------------------------------------
@@ -1741,7 +1741,7 @@ DATA_texto_BE02:
 ;   bytes)
 ;   0xbe16..0xbe29  (19 bytes)
 DATA_texto_BE16:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,023h,024h,03fh,063h,000h,04dh	; be16  A6cI.<Bf;c#$?c.M
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,023h,024h,03fh,063h,000h,04dh	; be16  A6cI.<Bf.c#$?c.M
 	defb 057h,05fh,0ffh	; be26
 
 ; ----------------------------------------------------------------------
@@ -1759,7 +1759,7 @@ DATA_texto_BE29:
 ;   bytes)
 ;   0xbe3d..0xbe4f  (18 bytes)
 DATA_texto_BE3D:
-	defb 035h,037h,03bh,039h,04eh,05dh,043h,063h,049h,000h,04fh,041h,035h,05eh,03fh,035h	; be3d  57;9N]CcI.OA5^?5
+	defb 035h,037h,03bh,039h,04eh,05dh,043h,063h,049h,000h,04fh,041h,035h,05eh,03fh,035h	; be3d  57.9N]CcI.OA5^?5
 	defb 044h,0ffh	; be4d
 
 ; ----------------------------------------------------------------------
@@ -1768,7 +1768,7 @@ DATA_texto_BE3D:
 ;   bytes)
 ;   0xbe4f..0xbe63  (20 bytes)
 DATA_texto_BE4F:
-	defb 036h,061h,03fh,063h,031h,044h,000h,032h,051h,04dh,063h,03bh,000h,04eh,058h,035h	; be4f  6a?c1D.2QMc;.NX5
+	defb 036h,061h,03fh,063h,031h,044h,000h,032h,051h,04dh,063h,03bh,000h,04eh,058h,035h	; be4f  6a?c1D.2QMc..NX5
 	defb 03bh,063h,057h,0ffh	; be5f
 
 ; ----------------------------------------------------------------------
@@ -1786,7 +1786,7 @@ DATA_texto_BE63:
 ;   bytes)
 ;   0xbe7a..0xbe8d  (19 bytes)
 DATA_texto_BE7A:
-	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,024h,021h,03fh,063h,000h,03fh	; be7a  A6cI.<Bf;c$!?c.?
+	defb 041h,036h,063h,049h,000h,03ch,042h,066h,03bh,063h,024h,021h,03fh,063h,000h,03fh	; be7a  A6cI.<Bf.c$!?c.?
 	defb 030h,05eh,0ffh	; be8a
 
 ; ----------------------------------------------------------------------
@@ -1813,7 +1813,7 @@ DATA_texto_BEA4:
 ;   bytes)
 ;   0xbeb9..0xbecc  (19 bytes)
 DATA_texto_BEB9:
-	defb 035h,037h,03bh,039h,04eh,05dh,043h,063h,000h,036h,04fh,040h,05fh,05dh,038h,063h	; beb9  57;9N]Cc.6O@_]8c
+	defb 035h,037h,03bh,039h,04eh,05dh,043h,063h,000h,036h,04fh,040h,05fh,05dh,038h,063h	; beb9  57.9N]Cc.6O@_]8c
 	defb 05dh,036h,0ffh	; bec9
 
 ; ----------------------------------------------------------------------
@@ -1831,7 +1831,7 @@ DATA_texto_BECC:
 ;   bytes)
 ;   0xbee0..0xbef9  (25 bytes)
 DATA_texto_BEE0:
-	defb 041h,036h,063h,049h,000h,033h,043h,063h,03bh,063h,061h,032h,000h,043h,041h,045h	; bee0  A6cI.3Cc;ca2.CAE
+	defb 041h,036h,063h,049h,000h,033h,043h,063h,03bh,063h,061h,032h,000h,043h,041h,045h	; bee0  A6cI.3Cc.ca2.CAE
 	defb 060h,032h,03fh,063h,000h,05bh,034h,05eh,0ffh	; bef0  `2?c.[4^.
 
 ; ----------------------------------------------------------------------

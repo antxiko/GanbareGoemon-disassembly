@@ -4398,7 +4398,7 @@ DATA_cuatro_claves:
 	defb 037h,058h,037h,058h,042h,05dh,042h,05dh,01fh	; be8a  7X7XB]B].
 	defb 036h,04fh,040h,053h,05dh,038h,063h,05dh,036h	; be93  6O@S]8c]6
 	defb 030h,038h,04fh,03ah,05dh,048h,03ah,031h,04bh	; be9c  08O:]H:1K
-	defb 041h,041h,063h,036h,035h,063h,03bh,03fh,031h	; bea5  AAc65c;?1
+	defb 041h,041h,063h,036h,035h,063h,03bh,03fh,031h	; bea5  AAc65c.?1
 
 ; ======================================================================
 ; CODIGO 0xbeae..0xbee5  (55 bytes)

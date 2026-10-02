@@ -25,7 +25,7 @@ DATA_figura_1E_cola:
 	defb 0d8h,03dh,03fh,007h,000h,000h,07ch,082h,0fah,0f6h,07ch,003h,000h,002h,0ffh,083h	; a070  .=?...|...|.....
 	defb 00fh,01fh,03fh,004h,0ffh,08dh,00fh,084h,044h,022h,042h,08ch,0ffh,0cch,0e4h,0e4h	; a080  ..?.....D"B.....
 	defb 0fch,0feh,0c3h,003h,0ffh,0a1h,0feh,07ch,060h,040h,020h,020h,0feh,07fh,000h,0f7h	; a090  .......|`@  ....
-	defb 0efh,0dfh,000h,060h,0ffh,00fh,0f0h,07bh,03bh,01dh,03dh,073h,000h,030h,0d8h,0d8h	; a0a0  ...`...{;.=s.0..
+	defb 0efh,0dfh,000h,060h,0ffh,00fh,0f0h,07bh,03bh,01dh,03dh,073h,000h,030h,0d8h,0d8h	; a0a0  ...`...{..=s.0..
 	defb 0c0h,000h,03ch,0c2h,0dah,0b6h,03ch,003h,080h,002h,0c0h,081h,000h,000h	; a0b0  ..<...<.......
 
 ; ----------------------------------------------------------------------
@@ -308,7 +308,7 @@ DATA_rotulo_3:
 ;   acaba (0x48F3); lo leen p00:428F (33 bytes)
 ;   0xaae3..0xab04  (33 bytes)
 DATA_rotulo_4:
-	defb 068h,038h,039h,059h,05eh,04dh,062h,05eh,040h,048h,000h,034h,035h,047h,03bh,063h	; aae3  h89Y^Mb^@H.45G;c
+	defb 068h,038h,039h,059h,05eh,04dh,062h,05eh,040h,048h,000h,034h,035h,047h,03bh,063h	; aae3  h89Y^Mb^@H.45G.c
 	defb 05fh,0feh,068h,040h,043h,051h,058h,05bh,038h,045h,000h,031h,035h,044h,031h,047h	; aaf3  _.h@CQX[8E.15D1G
 	defb 0ffh	; ab03
 
@@ -342,7 +342,7 @@ DATA_rotulo_7:
 ;   acaba (0x48F3); lo leen p00:428F (31 bytes)
 ;   0xab5b..0xab7a  (31 bytes)
 DATA_rotulo_8:
-	defb 068h,038h,042h,063h,04eh,03bh,03fh,0feh,068h,040h,000h,000h,048h,000h,042h,063h	; ab5b  h8BcN;?.h@..H.Bc
+	defb 068h,038h,042h,063h,04eh,03bh,03fh,0feh,068h,040h,000h,000h,048h,000h,042h,063h	; ab5b  h8BcN.?.h@..H.Bc
 	defb 0feh,068h,048h,052h,05eh,042h,038h,000h,043h,063h,05ah,04dh,063h,032h,0ffh	; ab6b  .hHR^B8.CcZMc2.
 
 ; ----------------------------------------------------------------------
@@ -350,7 +350,7 @@ DATA_rotulo_8:
 ;   acaba (0x48F3); lo leen p00:428F (27 bytes)
 ;   0xab7a..0xab95  (27 bytes)
 DATA_rotulo_9:
-	defb 068h,038h,042h,063h,04eh,03bh,03fh,0feh,068h,040h,000h,000h,048h,000h,042h,063h	; ab7a  h8BcN;?.h@..H.Bc
+	defb 068h,038h,042h,063h,04eh,03bh,03fh,0feh,068h,040h,000h,000h,048h,000h,042h,063h	; ab7a  h8BcN.?.h@..H.Bc
 	defb 0feh,068h,048h,04eh,03fh,000h,036h,044h,049h,059h,0ffh	; ab8a  .hHN?.6DIY.
 
 ; ----------------------------------------------------------------------
@@ -403,14 +403,14 @@ DATA_rotulo_14:
 ;   acaba (0x48F3); lo leen p00:428F (13 bytes)
 ;   0xac5b..0xac68  (13 bytes)
 DATA_rotulo_15:
-	defb 068h,038h,044h,045h,035h,000h,034h,03bh,033h,055h,032h,035h,0ffh	; ac5b  h8DE5.4;3U25.
+	defb 068h,038h,044h,045h,035h,000h,034h,03bh,033h,055h,032h,035h,0ffh	; ac5b  h8DE5.4.3U25.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_16: rotulo 16: [x][y] y caracteres, 0xFE otra posicion, 0xFF
 ;   acaba (0x48F3); lo leen p00:428F (24 bytes)
 ;   0xac68..0xac80  (24 bytes)
 DATA_rotulo_16:
-	defb 068h,038h,039h,059h,042h,063h,034h,03bh,04eh,031h,03fh,063h,0feh,088h,040h,06ah	; ac68  h89YBc4;N1?c..@j
+	defb 068h,038h,039h,059h,042h,063h,034h,03bh,04eh,031h,03fh,063h,0feh,088h,040h,06ah	; ac68  h89YBc4.N1?c..@j
 	defb 031h,03fh,03fh,063h,037h,03dh,063h,0ffh	; ac78  1??c7=c.
 
 ; ----------------------------------------------------------------------
@@ -418,7 +418,7 @@ DATA_rotulo_16:
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xac80..0xac9d  (29 bytes)
 DATA_rotulo_18:
-	defb 068h,038h,05bh,035h,031h,048h,000h,043h,063h,032h,03bh,03fh,0feh,068h,040h,04eh	; ac80  h8[51H.Cc2;?.h@N
+	defb 068h,038h,05bh,035h,031h,048h,000h,043h,063h,032h,03bh,03fh,0feh,068h,040h,04eh	; ac80  h8[51H.Cc2.?.h@N
 	defb 03fh,000h,044h,045h,035h,000h,036h,036h,03fh,031h,048h,035h,0ffh	; ac90  ?.DE5.66?1H5.
 
 ; ----------------------------------------------------------------------
@@ -426,7 +426,7 @@ DATA_rotulo_18:
 ;   acaba (0x48F3); lo leen p00:428F (35 bytes)
 ;   0xac9d..0xacc0  (35 bytes)
 DATA_rotulo_19:
-	defb 068h,038h,05bh,035h,031h,048h,000h,03bh,041h,039h,031h,03dh,063h,0feh,068h,040h	; ac9d  h8[51H.;A91=c.h@
+	defb 068h,038h,05bh,035h,031h,048h,000h,03bh,041h,039h,031h,03dh,063h,0feh,068h,040h	; ac9d  h8[51H..A91=c.h@
 	defb 030h,057h,035h,063h,047h,000h,034h,031h,042h,0feh,068h,048h,042h,063h,042h,031h	; acad  0W5cG.41B.hHBcB1
 	defb 036h,044h,0ffh	; acbd
 
@@ -444,8 +444,8 @@ DATA_rotulo_20:
 ;   acaba (0x48F3); lo leen p00:428F (28 bytes)
 ;   0xaced..0xad09  (28 bytes)
 DATA_rotulo_21:
-	defb 068h,038h,035h,047h,035h,063h,03fh,057h,047h,033h,03dh,063h,0feh,068h,040h,03bh	; aced  h85G5c?WG3=c.h@;
-	defb 05dh,042h,063h,052h,056h,032h,03bh,035h,047h,033h,044h,0ffh	; acfd  ]BcRV2;5G3D.
+	defb 068h,038h,035h,047h,035h,063h,03fh,057h,047h,033h,03dh,063h,0feh,068h,040h,03bh	; aced  h85G5c?WG3=c.h@.
+	defb 05dh,042h,063h,052h,056h,032h,03bh,035h,047h,033h,044h,0ffh	; acfd  ]BcRV2.5G3D.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_22: rotulo 22: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -477,7 +477,7 @@ DATA_rotulo_24:
 ;   acaba (0x48F3); lo leen p00:428F (26 bytes)
 ;   0xad52..0xad6c  (26 bytes)
 DATA_rotulo_25:
-	defb 068h,038h,032h,040h,049h,000h,03bh,040h,053h,000h,03fh,063h,03ch,0feh,068h,040h	; ad52  h82@I.;@S.?c<.h@
+	defb 068h,038h,032h,040h,049h,000h,03bh,040h,053h,000h,03fh,063h,03ch,0feh,068h,040h	; ad52  h82@I..@S.?c<.h@
 	defb 044h,045h,035h,000h,032h,057h,04eh,03ch,035h,0ffh	; ad62  DE5.2WN<5.
 
 ; ----------------------------------------------------------------------
@@ -530,14 +530,14 @@ DATA_rotulo_31:
 ;   acaba (0x48F3); lo leen p00:428F (16 bytes)
 ;   0xadcc..0xaddc  (16 bytes)
 DATA_rotulo_32:
-	defb 068h,038h,044h,05dh,03bh,063h,000h,03bh,063h,03bh,05dh,05ch,03bh,059h,064h,0ffh	; adcc  h8D];c.;c;]\;Yd.
+	defb 068h,038h,044h,05dh,03bh,063h,000h,03bh,063h,03bh,05dh,05ch,03bh,059h,064h,0ffh	; adcc  h8D].c..c.]\.Yd.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_33: rotulo 33: [x][y] y caracteres, 0xFE otra posicion, 0xFF
 ;   acaba (0x48F3); lo leen p00:428F (28 bytes)
 ;   0xaddc..0xadf8  (28 bytes)
 DATA_rotulo_33:
-	defb 068h,038h,042h,041h,035h,063h,037h,049h,000h,03ah,031h,03bh,063h,061h,032h,048h	; addc  h8BA5c7I.:1;ca2H
+	defb 068h,038h,042h,041h,035h,063h,037h,049h,000h,03ah,031h,03bh,063h,061h,032h,048h	; addc  h8BA5c7I.:1.ca2H
 	defb 0feh,068h,040h,034h,05dh,035h,063h,037h,044h,057h,064h,0ffh	; adec  .h@4]5c7DWd.
 
 ; ----------------------------------------------------------------------
@@ -553,7 +553,7 @@ DATA_rotulo_34:
 ;   acaba (0x48F3); lo leen p00:428F (22 bytes)
 ;   0xae12..0xae28  (22 bytes)
 DATA_rotulo_35:
-	defb 068h,038h,05bh,03fh,03bh,049h,000h,03bh,061h,032h,057h,05ch,0feh,068h,040h,046h	; ae12  h8[?;I.;a2W\.h@F
+	defb 068h,038h,05bh,03fh,03bh,049h,000h,03bh,061h,032h,057h,05ch,0feh,068h,040h,046h	; ae12  h8[?.I..a2W\.h@F
 	defb 03ch,04eh,044h,031h,064h,0ffh	; ae22
 
 ; ----------------------------------------------------------------------
@@ -561,8 +561,8 @@ DATA_rotulo_35:
 ;   acaba (0x48F3); lo leen p00:428F (34 bytes)
 ;   0xae28..0xae4a  (34 bytes)
 DATA_rotulo_36:
-	defb 068h,038h,03bh,05dh,048h,000h,055h,05eh,036h,060h,032h,000h,044h,037h,03bh,042h	; ae28  h8;]H.U^6`2.D7;B
-	defb 0feh,068h,040h,03bh,05dh,048h,000h,04eh,05dh,03eh,063h,037h,049h,000h,044h,031h	; ae38  .h@;]H.N]>c7I.D1
+	defb 068h,038h,03bh,05dh,048h,000h,055h,05eh,036h,060h,032h,000h,044h,037h,03bh,042h	; ae28  h8.]H.U^6`2.D7.B
+	defb 0feh,068h,040h,03bh,05dh,048h,000h,04eh,05dh,03eh,063h,037h,049h,000h,044h,031h	; ae38  .h@.]H.N]>c7I.D1
 	defb 064h,0ffh	; ae48
 
 ; ----------------------------------------------------------------------
@@ -578,7 +578,7 @@ DATA_rotulo_37:
 ;   acaba (0x48F3); lo leen p00:428F (25 bytes)
 ;   0xae62..0xae7b  (25 bytes)
 DATA_rotulo_38:
-	defb 068h,038h,044h,05dh,03bh,063h,000h,048h,000h,036h,061h,032h,049h,0feh,068h,040h	; ae62  h8D];c.H.6a2I.h@
+	defb 068h,038h,044h,05dh,03bh,063h,000h,048h,000h,036h,061h,032h,049h,0feh,068h,040h	; ae62  h8D].c.H.6a2I.h@
 	defb 033h,031h,033h,05dh,000h,044h,057h,064h,0ffh	; ae72  313].DWd.
 
 ; ----------------------------------------------------------------------
@@ -586,7 +586,7 @@ DATA_rotulo_38:
 ;   acaba (0x48F3); lo leen p00:428F (25 bytes)
 ;   0xae7b..0xae94  (25 bytes)
 DATA_rotulo_39:
-	defb 068h,038h,044h,037h,039h,043h,052h,000h,031h,05eh,03bh,060h,048h,0feh,068h,040h	; ae7b  h8D79CR.1^;`H.h@
+	defb 068h,038h,044h,037h,039h,043h,052h,000h,031h,05eh,03bh,060h,048h,0feh,068h,040h	; ae7b  h8D79CR.1^.`H.h@
 	defb 035h,031h,056h,037h,000h,044h,057h,064h,0ffh	; ae8b  51V7.DWd.
 
 ; ----------------------------------------------------------------------
@@ -595,7 +595,7 @@ DATA_rotulo_39:
 ;   0xae94..0xaeb1  (29 bytes)
 DATA_rotulo_40:
 	defb 068h,038h,045h,05dh,038h,063h,05dh,049h,0feh,068h,040h,035h,05dh,035h,063h,033h	; ae94  h8E]8c]I.h@5]5c3
-	defb 058h,000h,030h,03bh,0feh,068h,048h,042h,063h,030h,058h,064h,0ffh	; aea4  X.0;.hHBc0Xd.
+	defb 058h,000h,030h,03bh,0feh,068h,048h,042h,063h,030h,058h,064h,0ffh	; aea4  X.0..hHBc0Xd.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_41: rotulo 41: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -610,8 +610,8 @@ DATA_rotulo_41:
 ;   acaba (0x48F3); lo leen p00:428F (26 bytes)
 ;   0xaec6..0xaee0  (26 bytes)
 DATA_rotulo_42:
-	defb 068h,038h,039h,039h,05ah,049h,000h,031h,05eh,03bh,060h,048h,0feh,068h,040h,038h	; aec6  h899ZI.1^;`H.h@8
-	defb 063h,036h,03bh,063h,061h,032h,03fh,063h,064h,0ffh	; aed6  c6;ca2?cd.
+	defb 068h,038h,039h,039h,05ah,049h,000h,031h,05eh,03bh,060h,048h,0feh,068h,040h,038h	; aec6  h899ZI.1^.`H.h@8
+	defb 063h,036h,03bh,063h,061h,032h,03fh,063h,064h,0ffh	; aed6  c6.ca2?cd.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_43: rotulo 43: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -619,14 +619,14 @@ DATA_rotulo_42:
 ;   0xaee0..0xaeff  (31 bytes)
 DATA_rotulo_43:
 	defb 068h,038h,042h,041h,035h,063h,037h,048h,0feh,068h,040h,03fh,063h,031h,031h,05eh	; aee0  h8BA5c7H.h@?c11^
-	defb 04dh,062h,049h,0feh,068h,048h,04bh,03bh,05dh,000h,045h,030h,058h,064h,0ffh	; aef0  MbI.hHK;].E0Xd.
+	defb 04dh,062h,049h,0feh,068h,048h,04bh,03bh,05dh,000h,045h,030h,058h,064h,0ffh	; aef0  MbI.hHK.].E0Xd.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_44: rotulo 44: [x][y] y caracteres, 0xFE otra posicion, 0xFF
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xaeff..0xaf1c  (29 bytes)
 DATA_rotulo_44:
-	defb 068h,038h,05bh,03fh,03bh,048h,000h,033h,05dh,05ch,0feh,068h,040h,04fh,03fh,063h	; aeff  h8[?;H.3]\.h@O?c
+	defb 068h,038h,05bh,03fh,03bh,048h,000h,033h,05dh,05ch,0feh,068h,040h,04fh,03fh,063h	; aeff  h8[?.H.3]\.h@O?c
 	defb 03ah,044h,031h,042h,063h,000h,037h,03fh,063h,03ah,031h,064h,0ffh	; af0f  :D1Bc.7?c:1d.
 
 ; ----------------------------------------------------------------------
@@ -634,14 +634,14 @@ DATA_rotulo_44:
 ;   acaba (0x48F3); lo leen p00:428F (15 bytes)
 ;   0xaf1c..0xaf2b  (15 bytes)
 DATA_rotulo_45:
-	defb 068h,038h,03bh,045h,05dh,000h,045h,000h,037h,063h,040h,044h,03bh,064h,0ffh	; af1c  h8;E].E.7c@D;d.
+	defb 068h,038h,03bh,045h,05dh,000h,045h,000h,037h,063h,040h,044h,03bh,064h,0ffh	; af1c  h8.E].E.7c@D.d.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_46: rotulo 46: [x][y] y caracteres, 0xFE otra posicion, 0xFF
 ;   acaba (0x48F3); lo leen p00:428F (14 bytes)
 ;   0xaf2b..0xaf39  (14 bytes)
 DATA_rotulo_46:
-	defb 068h,038h,03bh,056h,046h,035h,063h,000h,043h,04dh,063h,038h,064h,0ffh	; af2b  h8;VF5c.CMc8d.
+	defb 068h,038h,03bh,056h,046h,035h,063h,000h,043h,04dh,063h,038h,064h,0ffh	; af2b  h8.VF5c.CMc8d.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_47: rotulo 47: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -679,8 +679,8 @@ DATA_rotulo_50:
 ;   acaba (0x48F3); lo leen p00:428F (30 bytes)
 ;   0xaf98..0xafb6  (30 bytes)
 DATA_rotulo_51:
-	defb 068h,038h,03fh,048h,03bh,036h,043h,000h,034h,052h,032h,035h,063h,0feh,068h,040h	; af98  h8?H;6C.4R25c.h@
-	defb 03fh,048h,03bh,036h,000h,03bh,05dh,03ch,063h,031h,044h,057h,064h,0ffh	; afa8  ?H;6.;]<c1DWd.
+	defb 068h,038h,03fh,048h,03bh,036h,043h,000h,034h,052h,032h,035h,063h,0feh,068h,040h	; af98  h8?H.6C.4R25c.h@
+	defb 03fh,048h,03bh,036h,000h,03bh,05dh,03ch,063h,031h,044h,057h,064h,0ffh	; afa8  ?H.6..]<c1DWd.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_52: rotulo 52: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -689,7 +689,7 @@ DATA_rotulo_51:
 DATA_rotulo_52:
 	defb 068h,038h,038h,063h,066h,050h,043h,049h,000h,031h,036h,03fh,0feh,068h,040h,03eh	; afb6  h88cfPCI.16?.h@>
 	defb 032h,039h,063h,032h,042h,063h,030h,057h,0feh,068h,048h,031h,03fh,063h,031h,044h	; afc6  29c2Bc0W.hH1?c1D
-	defb 000h,03fh,05dh,03bh,063h,060h,05dh,0ffh	; afd6  .?];c`].
+	defb 000h,03fh,05dh,03bh,063h,060h,05dh,0ffh	; afd6  .?].c`].
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_AFDE: un rotulo con el formato de 0x48F3 en (0x68, 0x50) entre
@@ -713,8 +713,8 @@ DATA_rotulo_53:
 ;   acaba (0x48F3); lo leen p00:428F (48 bytes)
 ;   0xb010..0xb040  (48 bytes)
 DATA_rotulo_54:
-	defb 068h,038h,03dh,031h,03bh,05dh,042h,036h,000h,045h,049h,0feh,068h,040h,030h,04eh	; b010  h8=1;]B6.EI.h@0N
-	defb 040h,060h,030h,000h,042h,063h,0feh,068h,048h,036h,063h,03bh,063h,060h,041h,042h	; b020  @`0.Bc.hH6c;c`AB
+	defb 068h,038h,03dh,031h,03bh,05dh,042h,036h,000h,045h,049h,0feh,068h,040h,030h,04eh	; b010  h8=1.]B6.EI.h@0N
+	defb 040h,060h,030h,000h,042h,063h,0feh,068h,048h,036h,063h,03bh,063h,060h,041h,042h	; b020  @`0.Bc.hH6c.c`AB
 	defb 036h,000h,045h,049h,0feh,068h,050h,04bh,062h,05ah,042h,063h,030h,059h,064h,0ffh	; b030  6.EI.hPKbZBc0Yd.
 
 ; ----------------------------------------------------------------------
@@ -722,7 +722,7 @@ DATA_rotulo_54:
 ;   acaba (0x48F3); lo leen p00:428F (24 bytes)
 ;   0xb040..0xb058  (24 bytes)
 DATA_rotulo_55:
-	defb 068h,038h,032h,04fh,048h,049h,03bh,0feh,068h,040h,043h,04ch,063h,049h,063h,0feh	; b040  h82OHI;.h@CLcIc.
+	defb 068h,038h,032h,04fh,048h,049h,03bh,0feh,068h,040h,043h,04ch,063h,049h,063h,0feh	; b040  h82OHI..h@CLcIc.
 	defb 068h,048h,04ah,055h,057h,030h,057h,0ffh	; b050  hHJUW0W.
 
 ; ----------------------------------------------------------------------
@@ -795,7 +795,7 @@ DATA_rotulo_63:
 ;   0xb13e..0xb15f  (33 bytes)
 DATA_rotulo_64:
 	defb 068h,038h,04ah,061h,032h,03fh,05dh,042h,063h,0feh,068h,040h,03fh,031h,057h,061h	; b13e  h8Ja2?]Bc.h@?1Wa
-	defb 037h,000h,04fh,044h,036h,063h,058h,0feh,068h,048h,04bh,03bh,036h,063h,035h,044h	; b14e  7.OD6cX.hHK;6c5D
+	defb 037h,000h,04fh,044h,036h,063h,058h,0feh,068h,048h,04bh,03bh,036h,063h,035h,044h	; b14e  7.OD6cX.hHK.6c5D
 	defb 0ffh	; b15e
 
 ; ----------------------------------------------------------------------
@@ -812,7 +812,7 @@ DATA_rotulo_65:
 ;   0xb17b..0xb199  (30 bytes)
 DATA_rotulo_66:
 	defb 068h,038h,03ch,044h,043h,063h,038h,031h,0feh,068h,040h,043h,036h,048h,000h,04ah	; b17b  h8<DCc81.h@C6H.J
-	defb 062h,05dh,040h,045h,0feh,068h,048h,040h,061h,032h,04dh,032h,03bh,0ffh	; b18b  b]@E.hH@a2M2;.
+	defb 062h,05dh,040h,045h,0feh,068h,048h,040h,061h,032h,04dh,032h,03bh,0ffh	; b18b  b]@E.hH@a2M2..
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_67: rotulo 67: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -820,7 +820,7 @@ DATA_rotulo_66:
 ;   0xb199..0xb1b5  (28 bytes)
 DATA_rotulo_67:
 	defb 068h,038h,034h,04eh,052h,057h,045h,0feh,068h,040h,04ah,036h,05fh,037h,048h,000h	; b199  h84NRWE.h@J6_7H.
-	defb 030h,03bh,048h,0feh,068h,048h,043h,034h,048h,038h,057h,0ffh	; b1a9  0;H.hHC4H8W.
+	defb 030h,03bh,048h,0feh,068h,048h,043h,034h,048h,038h,057h,0ffh	; b1a9  0.H.hHC4H8W.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_68: rotulo 68: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -835,8 +835,8 @@ DATA_rotulo_68:
 ;   acaba (0x48F3); lo leen p00:428F (31 bytes)
 ;   0xb1d0..0xb1ef  (31 bytes)
 DATA_rotulo_69:
-	defb 068h,038h,04ah,044h,05bh,03bh,063h,060h,032h,0feh,068h,040h,055h,05ah,031h,035h	; b1d0  h8JD[;c`2.h@UZ15
-	defb 063h,000h,030h,059h,049h,063h,0feh,068h,048h,032h,059h,031h,044h,03bh,0ffh	; b1e0  c.0YIc.hH2Y1D;.
+	defb 068h,038h,04ah,044h,05bh,03bh,063h,060h,032h,0feh,068h,040h,055h,05ah,031h,035h	; b1d0  h8JD[.c`2.h@UZ15
+	defb 063h,000h,030h,059h,049h,063h,0feh,068h,048h,032h,059h,031h,044h,03bh,0ffh	; b1e0  c.0YIc.hH2Y1D..
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_70: rotulo 70: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -859,7 +859,7 @@ DATA_rotulo_71:
 ;   acaba (0x48F3); lo leen p00:428F (32 bytes)
 ;   0xb229..0xb249  (32 bytes)
 DATA_rotulo_72:
-	defb 068h,038h,031h,03bh,035h,063h,036h,045h,0feh,068h,040h,030h,058h,049h,03ch,063h	; b229  h81;5c6E.h@0XI<c
+	defb 068h,038h,031h,03bh,035h,063h,036h,045h,0feh,068h,040h,030h,058h,049h,03ch,063h	; b229  h81.5c6E.h@0XI<c
 	defb 044h,035h,05ah,032h,0feh,068h,048h,041h,032h,039h,032h,042h,035h,063h,03fh,0ffh	; b239  D5Z2.hHA292B5c?.
 
 ; ----------------------------------------------------------------------
@@ -907,7 +907,7 @@ DATA_rotulo_77:
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xb2e4..0xb301  (29 bytes)
 DATA_rotulo_78:
-	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,034h,035h,047h,000h	; b2e4  h8;ca2M2S.h@45G.
+	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,034h,035h,047h,000h	; b2e4  h8.ca2M2S.h@45G.
 	defb 043h,056h,059h,042h,0feh,068h,048h,052h,056h,031h,044h,036h,0ffh	; b2f4  CVYB.hHRV1D6.
 
 ; ----------------------------------------------------------------------
@@ -915,7 +915,7 @@ DATA_rotulo_78:
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xb301..0xb31e  (29 bytes)
 DATA_rotulo_79:
-	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,03dh,031h,035h,037h	; b301  h8;ca2M2S.h@=157
+	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,03dh,031h,035h,037h	; b301  h8.ca2M2S.h@=157
 	defb 000h,05bh,035h,058h,0feh,068h,048h,03ah,05dh,035h,031h,051h,0ffh	; b311  .[5X.hH:]51Q.
 
 ; ----------------------------------------------------------------------
@@ -923,15 +923,15 @@ DATA_rotulo_79:
 ;   acaba (0x48F3); lo leen p00:428F (32 bytes)
 ;   0xb31e..0xb33e  (32 bytes)
 DATA_rotulo_80:
-	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,03dh,031h,035h,037h	; b31e  h8;ca2M2S.h@=157
-	defb 000h,05bh,035h,058h,0feh,068h,048h,042h,05dh,048h,000h,030h,058h,044h,03bh,0ffh	; b32e  .[5X.hHB]H.0XD;.
+	defb 068h,038h,03bh,063h,061h,032h,04dh,032h,053h,0feh,068h,040h,03dh,031h,035h,037h	; b31e  h8.ca2M2S.h@=157
+	defb 000h,05bh,035h,058h,0feh,068h,048h,042h,05dh,048h,000h,030h,058h,044h,03bh,0ffh	; b32e  .[5X.hHB]H.0XD..
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_81: rotulo 81: [x][y] y caracteres, 0xFE otra posicion, 0xFF
 ;   acaba (0x48F3); lo leen p00:428F (31 bytes)
 ;   0xb33e..0xb35d  (31 bytes)
 DATA_rotulo_81:
-	defb 068h,038h,033h,059h,036h,035h,063h,045h,0feh,068h,040h,03fh,031h,03bh,063h,048h	; b33e  h83Y65cE.h@?1;cH
+	defb 068h,038h,033h,059h,036h,035h,063h,045h,0feh,068h,040h,03fh,031h,03bh,063h,048h	; b33e  h83Y65cE.h@?1.cH
 	defb 000h,049h,053h,031h,0feh,068h,048h,039h,049h,063h,05dh,044h,038h,063h,0ffh	; b34e  .IS1.hH9Ic]D8c.
 
 ; ----------------------------------------------------------------------
@@ -948,7 +948,7 @@ DATA_rotulo_82:
 ;   0xb37c..0xb399  (29 bytes)
 DATA_rotulo_83:
 	defb 068h,038h,039h,032h,038h,063h,036h,045h,0feh,068h,040h,04ah,063h,037h,043h,052h	; b37c  h8928c6E.h@Jc7CR
-	defb 03bh,044h,031h,0feh,068h,048h,039h,051h,03fh,063h,05bh,056h,0ffh	; b38c  ;D1.hH9Q?c[V.
+	defb 03bh,044h,031h,0feh,068h,048h,039h,051h,03fh,063h,05bh,056h,0ffh	; b38c  .D1.hH9Q?c[V.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_84: rotulo 84: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -979,8 +979,8 @@ DATA_rotulo_86:
 ;   acaba (0x48F3); lo leen p00:428F (34 bytes)
 ;   0xb3f1..0xb413  (34 bytes)
 DATA_rotulo_87:
-	defb 068h,038h,036h,060h,032h,049h,063h,066h,043h,0feh,068h,040h,03bh,063h,060h,032h	; b3f1  h86`2IcfC.h@;c`2
-	defb 049h,063h,031h,000h,03fh,048h,03bh,050h,0feh,068h,048h,04ch,063h,05dh,057h,03ah	; b401  Ic1.?H;P.hHLc]W:
+	defb 068h,038h,036h,060h,032h,049h,063h,066h,043h,0feh,068h,040h,03bh,063h,060h,032h	; b3f1  h86`2IcfC.h@.c`2
+	defb 049h,063h,031h,000h,03fh,048h,03bh,050h,0feh,068h,048h,04ch,063h,05dh,057h,03ah	; b401  Ic1.?H.P.hHLc]W:
 	defb 055h,0ffh	; b411
 
 ; ----------------------------------------------------------------------
@@ -996,7 +996,7 @@ DATA_rotulo_88:
 ;   acaba (0x48F3); lo leen p00:428F (28 bytes)
 ;   0xb42f..0xb44b  (28 bytes)
 DATA_rotulo_89:
-	defb 068h,038h,030h,056h,04bh,03bh,036h,063h,0feh,068h,040h,031h,059h,042h,000h,041h	; b42f  h80VK;6c.h@1YB.A
+	defb 068h,038h,030h,056h,04bh,03bh,036h,063h,0feh,068h,040h,031h,059h,042h,000h,041h	; b42f  h80VK.6c.h@1YB.A
 	defb 04dh,040h,047h,0feh,068h,048h,037h,03dh,05bh,033h,034h,0ffh	; b43f  M@G.hH7=[34.
 
 ; ----------------------------------------------------------------------
@@ -1012,7 +1012,7 @@ DATA_rotulo_90:
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xb468..0xb485  (29 bytes)
 DATA_rotulo_91:
-	defb 068h,038h,043h,05dh,042h,063h,054h,037h,0feh,068h,040h,04bh,03bh,036h,063h,000h	; b468  h8C]BcT7.h@K;6c.
+	defb 068h,038h,043h,05dh,042h,063h,054h,037h,0feh,068h,040h,04bh,03bh,036h,063h,000h	; b468  h8C]BcT7.h@K.6c.
 	defb 036h,040h,05dh,038h,0feh,068h,048h,058h,030h,04eh,032h,033h,0ffh	; b478  6@]8.hHX0N23.
 
 ; ----------------------------------------------------------------------
@@ -1028,7 +1028,7 @@ DATA_rotulo_92:
 ;   acaba (0x48F3); lo leen p00:428F (29 bytes)
 ;   0xb4a1..0xb4be  (29 bytes)
 DATA_rotulo_93:
-	defb 068h,038h,032h,059h,03bh,031h,05bh,0feh,068h,040h,04fh,057h,061h,037h,048h,000h	; b4a1  h82Y;1[.h@OWa7H.
+	defb 068h,038h,032h,059h,03bh,031h,05bh,0feh,068h,040h,04fh,057h,061h,037h,048h,000h	; b4a1  h82Y.1[.h@OWa7H.
 	defb 048h,051h,043h,049h,0feh,068h,048h,045h,041h,031h,031h,034h,0ffh	; b4b1  HQCI.hHEA114.
 
 ; ----------------------------------------------------------------------
@@ -1078,7 +1078,7 @@ DATA_rotulo_98:
 ;   0xb54f..0xb56e  (31 bytes)
 DATA_rotulo_99:
 	defb 068h,038h,039h,05dh,042h,045h,060h,032h,0feh,068h,040h,041h,041h,063h,036h,035h	; b54f  h89]BE`2.h@AAc65
-	defb 063h,03bh,03fh,031h,000h,043h,0feh,068h,048h,031h,048h,057h,04eh,03ch,0ffh	; b55f  c;?1.C.hH1HWN<.
+	defb 063h,03bh,03fh,031h,000h,043h,0feh,068h,048h,031h,048h,057h,04eh,03ch,0ffh	; b55f  c.?1.C.hH1HWN<.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_100: rotulo 100: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -1101,7 +1101,7 @@ DATA_rotulo_101:
 ;   acaba (0x48F3); lo leen p00:428F (30 bytes)
 ;   0xb5a6..0xb5c4  (30 bytes)
 DATA_rotulo_102:
-	defb 068h,038h,05bh,035h,031h,048h,000h,043h,063h,032h,03bh,03fh,0feh,068h,040h,04eh	; b5a6  h8[51H.Cc2;?.h@N
+	defb 068h,038h,05bh,035h,031h,048h,000h,043h,063h,032h,03bh,03fh,0feh,068h,040h,04eh	; b5a6  h8[51H.Cc2.?.h@N
 	defb 03fh,063h,000h,044h,045h,035h,000h,036h,036h,03fh,031h,048h,035h,0ffh	; b5b6  ?c.DE5.66?1H5.
 
 ; ----------------------------------------------------------------------
@@ -1109,7 +1109,7 @@ DATA_rotulo_102:
 ;   acaba (0x48F3); lo leen p00:428F (26 bytes)
 ;   0xb5c4..0xb5de  (26 bytes)
 DATA_rotulo_103:
-	defb 068h,038h,031h,056h,05eh,03bh,05fh,031h,04eh,03dh,0feh,068h,040h,04ah,043h,041h	; b5c4  h81V^;_1N=.h@JCA
+	defb 068h,038h,031h,056h,05eh,03bh,05fh,031h,04eh,03dh,0feh,068h,040h,04ah,043h,041h	; b5c4  h81V^._1N=.h@JCA
 	defb 000h,043h,063h,044h,031h,042h,063h,03ch,035h,0ffh	; b5d4  .CcD1Bc<5.
 
 ; ----------------------------------------------------------------------
@@ -1117,7 +1117,7 @@ DATA_rotulo_103:
 ;   acaba (0x48F3); lo leen p00:428F (11 bytes)
 ;   0xb5de..0xb5e9  (11 bytes)
 DATA_rotulo_104:
-	defb 068h,038h,04ch,031h,000h,055h,032h,034h,039h,03bh,0ffh	; b5de  h8L1.U249;.
+	defb 068h,038h,04ch,031h,000h,055h,032h,034h,039h,03bh,0ffh	; b5de  h8L1.U249..
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_105: rotulo 105: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -1133,7 +1133,7 @@ DATA_rotulo_105:
 ;   0xb606..0xb620  (26 bytes)
 DATA_rotulo_106:
 	defb 068h,038h,045h,031h,03ah,05dh,000h,04eh,031h,043h,063h,0feh,068h,040h,044h,045h	; b606  h8E1:].N1Cc.h@DE
-	defb 000h,03ah,03bh,030h,038h,063h,04eh,03bh,061h,0ffh	; b616  .:;08cN;a.
+	defb 000h,03ah,03bh,030h,038h,063h,04eh,03bh,061h,0ffh	; b616  .:.08cN.a.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_107: rotulo 107: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -1157,7 +1157,7 @@ DATA_rotulo_108:
 ;   0xb64c..0xb667  (27 bytes)
 DATA_rotulo_109:
 	defb 068h,038h,035h,047h,052h,044h,031h,048h,045h,000h,04fh,03dh,045h,0feh,068h,040h	; b64c  h85GRD1HE.O=E.h@
-	defb 037h,058h,05dh,03bh,063h,05fh,044h,031h,03dh,063h,0ffh	; b65c  7X];c_D1=c.
+	defb 037h,058h,05dh,03bh,063h,05fh,044h,031h,03dh,063h,0ffh	; b65c  7X].c_D1=c.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_110: rotulo 110: [x][y] y caracteres, 0xFE otra posicion, 0xFF
@@ -1189,7 +1189,7 @@ DATA_rotulo_112:
 DATA_rotulo_113:
 	defb 068h,038h,045h,031h,03ah,05dh,000h,000h,000h,000h,06ah,03fh,063h,03dh,049h,063h	; b6a5  h8E1:]....j?c=Ic
 	defb 0feh,068h,040h,039h,048h,034h,037h,048h,000h,04ah,04fh,041h,048h,041h,032h,05ah	; b6b5  .h@9H47H.JOAHA2Z
-	defb 045h,0feh,068h,048h,030h,05dh,044h,031h,000h,03bh,055h,032h,0ffh	; b6c5  E.hH0]D1.;U2.
+	defb 045h,0feh,068h,048h,030h,05dh,044h,031h,000h,03bh,055h,032h,0ffh	; b6c5  E.hH0]D1..U2.
 
 ; ----------------------------------------------------------------------
 ; DATOS poses_de_figura: 150 punteros, uno por pose de figura (ix+0x0A), a su
@@ -1204,7 +1204,7 @@ DATA_poses_de_figura:
 	defb 056h,0b8h,05dh,0b8h,064h,0b8h,06bh,0b8h,0dbh,0b8h,0e2h,0b8h,0e9h,0b8h,0f0h,0b8h	; b722  V.].d.k.........
 	defb 0f7h,0b8h,0fah,0b8h,0fdh,0b8h,000h,0b9h,003h,0b9h,006h,0b9h,003h,0b9h,006h,0b9h	; b732  ................
 	defb 009h,0b9h,00eh,0b9h,013h,0b9h,018h,0b9h,01dh,0b9h,020h,0b9h,023h,0b9h,026h,0b9h	; b742  .......... .#.&.
-	defb 029h,0b9h,02ch,0b9h,031h,0b9h,036h,0b9h,03bh,0b9h,040h,0b9h,045h,0b9h,04ah,0b9h	; b752  ).,.1.6.;.@.E.J.
+	defb 029h,0b9h,02ch,0b9h,031h,0b9h,036h,0b9h,03bh,0b9h,040h,0b9h,045h,0b9h,04ah,0b9h	; b752  ).,.1.6...@.E.J.
 	defb 04dh,0b9h,050h,0b9h,053h,0b9h,05ah,0b9h,053h,0b9h,05ah,0b9h,061h,0b9h,06ah,0b9h	; b762  M.P.S.Z.S.Z.a.j.
 	defb 073h,0b9h,07ch,0b9h,088h,0b9h,085h,0b9h,08bh,0b9h,092h,0b9h,099h,0b9h,0a0h,0b9h	; b772  s.|.............
 	defb 0a7h,0b9h,0aah,0b9h,0adh,0b9h,0b0h,0b9h,0b3h,0b9h,0bah,0b9h,0c1h,0b9h,0c8h,0b9h	; b782  ................
@@ -1279,7 +1279,7 @@ DATA_fichas_de_pose:
 DATA_desplazamientos_de_pose:
 	defb 043h,0bbh,03fh,0bbh,04fh,0bbh,0b7h,0bbh,093h,0bbh,0abh,0bbh,087h,0bbh,09fh,0bbh	; baf3  C.?.O...........
 	defb 0c7h,0bbh,0bbh,0bbh,0d3h,0bbh,0dfh,0bbh,063h,0bbh,06fh,0bbh,057h,0bbh,07bh,0bbh	; bb03  ........c.o.W.{.
-	defb 0f7h,0bbh,0ebh,0bbh,053h,0bbh,003h,0bch,007h,0bch,017h,0bch,023h,0bch,03bh,0bch	; bb13  ....S.......#.;.
+	defb 0f7h,0bbh,0ebh,0bbh,053h,0bbh,003h,0bch,007h,0bch,017h,0bch,023h,0bch,03bh,0bch	; bb13  ....S.......#...
 	defb 047h,0bch,02fh,0bch,053h,0bch,05fh,0bch,06bh,0bch,09bh,0bch,0a3h,0bch,0abh,0bch	; bb23  G./.S._.k.......
 	defb 077h,0bch,087h,0bch,097h,0bch,0b3h,0bch,0c3h,0bch,013h,0bch	; bb33  w...........
 
@@ -1328,7 +1328,7 @@ DATA_palabras:
 ;   con ldir); lo leen p01:6571 (17 bytes)
 ;   0xbce1..0xbcf2  (17 bytes)
 DATA_palabra_0:
-	defb 010h,034h,046h,03bh,049h,000h,03fh,031h,03bh,03fh,000h,052h,048h,055h,048h,032h	; bce1  .4F;I.?1;?.RHUH2
+	defb 010h,034h,046h,03bh,049h,000h,03fh,031h,03bh,03fh,000h,052h,048h,055h,048h,032h	; bce1  .4F.I.?1.?.RHUH2
 	defb 064h	; bcf1
 
 ; ----------------------------------------------------------------------
@@ -1336,7 +1336,7 @@ DATA_palabra_0:
 ;   con ldir); lo leen p01:6571 (30 bytes)
 ;   0xbcf2..0xbd10  (30 bytes)
 DATA_palabra_1:
-	defb 01dh,034h,046h,03bh,000h,055h,037h,053h,05eh,03fh,064h,0feh,0feh,043h,057h,030h	; bcf2  .4F;.U7S^?d..CW0
+	defb 01dh,034h,046h,03bh,000h,055h,037h,053h,05eh,03fh,064h,0feh,0feh,043h,057h,030h	; bcf2  .4F..U7S^?d..CW0
 	defb 033h,03ch,063h,049h,000h,04dh,051h,042h,000h,041h,035h,05bh,03ch,064h	; bd02  3<cI.MQB.A5[<d
 
 ; ----------------------------------------------------------------------
@@ -1345,13 +1345,13 @@ DATA_palabra_1:
 ;   0xbd10..0xbd98  (136 bytes)
 DATA_palabra_2:
 	defb 087h,039h,059h,042h,063h,000h,055h,048h,044h,035h,052h,000h,04ch,031h,05bh,043h	; bd10  .9YBc.UHD5R.L1[C
-	defb 044h,057h,000h,03bh,061h,04fh,05dh,048h,0feh,0feh,037h,056h,03bh,052h,000h,055h	; bd20  DW.;aO]H..7V;R.U
-	defb 037h,044h,058h,042h,063h,000h,030h,05ah,032h,064h,0feh,0feh,03bh,035h,03bh,000h	; bd30  7DXBc.0Z2d..;5;.
+	defb 044h,057h,000h,03bh,061h,04fh,05dh,048h,0feh,0feh,037h,056h,03bh,052h,000h,055h	; bd20  DW..aO]H..7V.R.U
+	defb 037h,044h,058h,042h,063h,000h,030h,05ah,032h,064h,0feh,0feh,03bh,035h,03bh,000h	; bd30  7DXBc.0Z2d...5..
 	defb 031h,041h,04eh,03fh,000h,043h,063h,039h,035h,042h,063h,000h,05bh,058h,031h,000h	; bd40  1AN?.Cc95Bc.[X1.
 	defb 043h,048h,03ah,04eh,035h,063h,0feh,0feh,030h,056h,05bh,059h,058h,035h,000h,05bh	; bd50  CH:N5c..0V[YX5.[
 	defb 035h,057h,05fh,03dh,05dh,064h,0feh,0feh,03eh,048h,043h,036h,045h,049h,000h,04bh	; bd60  5W_=]d..>HC6EI.K
-	defb 03fh,03fh,04ah,063h,000h,034h,046h,03bh,048h,000h,035h,041h,053h,037h,045h,0feh	; bd70  ??Jc.4F;H.5AS7E.
-	defb 0feh,03bh,061h,04fh,05dh,048h,000h,047h,035h,063h,031h,05ch,000h,03fh,037h,03ch	; bd80  .;aO]H.G5c1\.?7<
+	defb 03fh,03fh,04ah,063h,000h,034h,046h,03bh,048h,000h,035h,041h,053h,037h,045h,0feh	; bd70  ??Jc.4F.H.5AS7E.
+	defb 0feh,03bh,061h,04fh,05dh,048h,000h,047h,035h,063h,031h,05ch,000h,03fh,037h,03ch	; bd80  ..aO]H.G5c1\.?7<
 	defb 039h,043h,045h,000h,044h,05ah,032h,064h	; bd90  9CE.DZ2d
 
 ; ----------------------------------------------------------------------
@@ -1359,14 +1359,14 @@ DATA_palabra_2:
 ;   con ldir); lo leen p01:6571 (150 bytes)
 ;   0xbd98..0xbe2e  (150 bytes)
 DATA_palabra_3:
-	defb 095h,03bh,035h,03bh,000h,03ch,04ch,063h,042h,048h,000h,037h,045h,048h,000h,043h	; bd98  .;5;.<LcBH.7EH.C
-	defb 048h,03ah,04eh,035h,063h,000h,055h,031h,0feh,0feh,03dh,031h,03bh,063h,05ch,000h	; bda8  H:N5c.U1..=1;c\.
-	defb 053h,037h,03eh,037h,000h,03bh,042h,037h,059h,03fh,000h,05bh,038h,042h,063h,049h	; bdb8  S7>7.;B7Y?.[8BcI
+	defb 095h,03bh,035h,03bh,000h,03ch,04ch,063h,042h,048h,000h,037h,045h,048h,000h,043h	; bd98  ..5..<LcBH.7EH.C
+	defb 048h,03ah,04eh,035h,063h,000h,055h,031h,0feh,0feh,03dh,031h,03bh,063h,05ch,000h	; bda8  H:N5c.U1..=1.c\.
+	defb 053h,037h,03eh,037h,000h,03bh,042h,037h,059h,03fh,000h,05bh,038h,042h,063h,049h	; bdb8  S7>7..B7Y?.[8BcI
 	defb 000h,044h,031h,064h,0feh,0feh,039h,059h,042h,063h,049h,000h,03ch,04ch,063h,042h	; bdc8  .D1d..9YBcI.<LcB
-	defb 048h,000h,03bh,061h,04fh,05dh,048h,000h,037h,056h,03bh,035h,063h,000h,055h,037h	; bdd8  H.;aO]H.7V;5c.U7
+	defb 048h,000h,03bh,061h,04fh,05dh,048h,000h,037h,056h,03bh,035h,063h,000h,055h,037h	; bdd8  H..aO]H.7V.5c.U7
 	defb 0feh,0feh,044h,05eh,03fh,043h,049h,000h,031h,031h,035h,063h,03fh,031h,064h,0feh	; bde8  ..D^?CI.115c?1d.
-	defb 0feh,031h,04eh,031h,040h,043h,063h,000h,03bh,061h,039h,037h,045h,000h,052h,043h	; bdf8  .1N1@Cc.;a97E.RC
-	defb 063h,057h,000h,04bh,03fh,03fh,04ah,063h,0feh,0feh,055h,044h,034h,03bh,05ch,000h	; be08  cW.K??Jc..UD4;\.
+	defb 0feh,031h,04eh,031h,040h,043h,063h,000h,03bh,061h,039h,037h,045h,000h,052h,043h	; bdf8  .1N1@Cc..a97E.RC
+	defb 063h,057h,000h,04bh,03fh,03fh,04ah,063h,0feh,0feh,055h,044h,034h,03bh,05ch,000h	; be08  cW.K??Jc..UD4.\.
 	defb 053h,05eh,042h,037h,059h,064h,0feh,0feh,038h,05dh,043h,032h,05ch,000h,031h,048h	; be18  S^B7Yd..8]C2\.1H
 	defb 05eh,043h,058h,03eh,063h,064h	; be28
 
@@ -1385,8 +1385,8 @@ DATA_palabra_4:
 DATA_palabra_5:
 	defb 03eh,043h,039h,05ah,042h,063h,000h,041h,036h,063h,045h,042h,063h,058h,000h,039h	; be44  >C9ZBc.A6cEBcX.9
 	defb 044h,04fh,048h,000h,038h,063h,066h,050h,049h,0feh,0feh,04ah,048h,043h,057h,000h	; be54  DOH.8cfPI..JHCW.
-	defb 043h,000h,04eh,03bh,063h,061h,032h,042h,063h,05dh,03dh,041h,022h,000h,03bh,063h	; be64  C.N;ca2Bc]=A".;c
-	defb 05fh,064h,0feh,0feh,055h,05ah,03bh,037h,000h,03fh,048h,050h,03eh,063h,064h	; be74  _d..UZ;7.?HP>cd
+	defb 043h,000h,04eh,03bh,063h,061h,032h,042h,063h,05dh,03dh,041h,022h,000h,03bh,063h	; be64  C.N.ca2Bc]=A"..c
+	defb 05fh,064h,0feh,0feh,055h,05ah,03bh,037h,000h,03fh,048h,050h,03eh,063h,064h	; be74  _d..UZ.7.?HP>cd
 
 ; ----------------------------------------------------------------------
 ; DATOS palabra_6: trozo de texto 6: [n] y n caracteres (p01:6573 los copia
@@ -1394,9 +1394,9 @@ DATA_palabra_5:
 ;   0xbe83..0xbec0  (61 bytes)
 DATA_palabra_6:
 	defb 03ch,043h,039h,05ah,042h,063h,000h,039h,048h,041h,036h,063h,049h,000h,021h,020h	; be83  <C9ZBc.9HA6cI.!
-	defb 049h,063h,031h,03fh,048h,03bh,050h,000h,035h,066h,043h,0feh,0feh,057h,05eh,03bh	; be93  Ic1?H;P.5fC..W^;
-	defb 063h,05ch,041h,035h,05bh,03ch,063h,045h,000h,055h,044h,034h,03bh,05ch,000h,053h	; bea3  c\A5[<cE.UD4;\.S
-	defb 05eh,042h,04dh,03bh,031h,0feh,0feh,052h,048h,055h,048h,032h,064h	; beb3  ^BM;1..RHUH2d
+	defb 049h,063h,031h,03fh,048h,03bh,050h,000h,035h,066h,043h,0feh,0feh,057h,05eh,03bh	; be93  Ic1?H.P.5fC..W^.
+	defb 063h,05ch,041h,035h,05bh,03ch,063h,045h,000h,055h,044h,034h,03bh,05ch,000h,053h	; bea3  c\A5[<cE.UD4.\.S
+	defb 05eh,042h,04dh,03bh,031h,0feh,0feh,052h,048h,055h,048h,032h,064h	; beb3  ^BM.1..RHUH2d
 
 ; ----------------------------------------------------------------------
 ; DATOS relleno_12: 320 bytes 0xFF hasta el final del banco: relleno, no lo

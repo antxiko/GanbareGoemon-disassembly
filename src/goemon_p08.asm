@@ -416,7 +416,7 @@ DATA_sprites_jugador_2:
 ;   0x9369..0x9385  (28 bytes)
 DATA_rle_9369:
 	defb 083h,01fh,07fh,01fh,00dh,000h,083h,0f8h,0feh,0f8h,00dh,000h,088h,078h,0ech,0dah	; 9369  .............x..
-	defb 0f7h,05dh,03bh,01fh,00fh,00ch,000h,003h,080h,009h,000h,000h	; 9379  .];.........
+	defb 0f7h,05dh,03bh,01fh,00fh,00ch,000h,003h,080h,009h,000h,000h	; 9379  .]..........
 
 ; ----------------------------------------------------------------------
 ; DATOS sprites_9385: los sprites de una pose del jugador 1, en rle a 0xF800
@@ -581,7 +581,7 @@ DATA_sprites_98CC:
 	defb 000h,084h,0f0h,0fch,0feh,0feh,003h,0ffh,002h,0feh,002h,0ffh,087h,03fh,060h,080h	; 98dc  .............?`.
 	defb 0c4h,084h,089h,07eh,003h,010h,095h,020h,027h,021h,021h,041h,09fh,07eh,007h,001h	; 98ec  ...~... '!!A.~..
 	defb 001h,002h,0f2h,00ch,004h,034h,042h,0f2h,0fah,0fah,07ah,03ch,003h,000h,081h,040h	; 98fc  .....4B...z<...@
-	defb 01eh,000h,087h,007h,01fh,03fh,03bh,07bh,076h,001h,003h,00fh,091h,01fh,018h,01eh	; 990c  .....?;{v.......
+	defb 01eh,000h,087h,007h,01fh,03fh,03bh,07bh,076h,001h,003h,00fh,091h,01fh,018h,01eh	; 990c  .....?.{v.......
 	defb 01eh,03eh,060h,0c0h,0f8h,0feh,0feh,0fch,00ch,0f0h,0f8h,0c8h,0bch,00ch,003h,004h	; 991c  .>`.............
 	defb 002h,000h,081h,003h,004h,004h,081h,003h,00ah,000h,087h,080h,040h,020h,020h,090h	; 992c  ............@  .
 	defb 0d0h,050h,00ah,000h,004h,003h,00ch,000h,086h,080h,0c0h,0c0h,060h,020h,020h,009h	; 993c  .P..........`  .
@@ -594,7 +594,7 @@ DATA_sprites_98CC:
 DATA_sprites_994E:
 	defb 0c0h,005h,01fh,03fh,03fh,07eh,03ch,060h,03fh,030h,073h,076h,075h,060h,030h,010h	; 994e  ...??~<`?0svu`0.
 	defb 009h,0d0h,0fch,0feh,07eh,03fh,01eh,003h,0feh,006h,067h,037h,057h,003h,006h,004h	; 995e  ....~?....g7W...
-	defb 0c8h,016h,029h,045h,044h,03bh,022h,034h,03fh,017h,010h,010h,008h,004h,004h,008h	; 996e  ..)ED;"4?.......
+	defb 0c8h,016h,029h,045h,044h,03bh,022h,034h,03fh,017h,010h,010h,008h,004h,004h,008h	; 996e  ..)ED."4?.......
 	defb 007h,034h,0cah,051h,091h,02eh,041h,086h,0feh,0fah,004h,004h,008h,008h,010h,060h	; 997e  .4.Q..A........`
 	defb 080h,040h,000h,000h	; 998e
 
@@ -775,7 +775,7 @@ DATA_sprites_9EEE:
 DATA_sprites_9F6C:
 	defb 0c0h,007h,018h,00fh,000h,003h,00fh,01fh,03fh,03fh,078h,071h,072h,070h,071h,05ah	; 9f6c  ........??xqrpqZ
 	defb 05ch,0f0h,00ch,0f8h,000h,0e0h,0f8h,0fch,0feh,0feh,00fh,047h,027h,007h,047h,02dh	; 9f7c  \..........G'.G-
-	defb 01dh,027h,020h,011h,00eh,007h,01fh,03fh,03bh,031h,033h,01fh,03fh,03ch,03eh,01eh	; 9f8c  .' ....?;13.?<>.
+	defb 01dh,027h,020h,011h,00eh,007h,01fh,03fh,03bh,031h,033h,01fh,03fh,03ch,03eh,01eh	; 9f8c  .' ....?.13.?<>.
 	defb 03ch,0f2h,002h,0c4h,038h,0f0h,07ch,0feh,0eeh,0c6h,0e6h,0fch,0feh,01eh,03eh,03ch	; 9f9c  <...8.|.......><
 	defb 01eh,040h,000h,000h	; 9fac
 

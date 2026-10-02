@@ -389,7 +389,9 @@ def fila_datos(data, org, i, fin, palabras, names, notes=None):
         if len(row) % 2:                 # byte suelto al final del rango
             out.append(f"\tdefb 0{row[-1]:02x}h\t; {i + len(vals) * 2:04x}")
         return out
-    txt = "".join(chr(c) if 32 <= c < 127 else "." for c in row)
+    # el ";" de los datos se pinta "." como lo no imprimible: con ";" y cuatro
+    # cifras hexadecimales detras, los medidores toman la linea por codigo
+    txt = "".join(chr(c) if 32 <= c < 127 and c != 0x3B else "." for c in row)
     cmt = f"; {i:04x}" + (f"  {txt}" if len(row) >= 8 else "")
     if propio:
         cmt = cmt.rstrip() + "\t" + propio

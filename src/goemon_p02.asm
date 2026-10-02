@@ -1961,7 +1961,7 @@ L_8C2D:
 ;   0x8c30..0x8c70  (64 bytes)
 DATA_arcotangente:
 	defb 020h,008h,004h,003h,002h,002h,001h,001h,038h,020h,015h,00fh,00ch,009h,008h,007h	; 8c30   .......8 ......
-	defb 03bh,02bh,020h,019h,014h,010h,00eh,00ch,03dh,031h,027h,020h,01ah,016h,013h,011h	; 8c40  ;+ .....=1' ....
+	defb 03bh,02bh,020h,019h,014h,010h,00eh,00ch,03dh,031h,027h,020h,01ah,016h,013h,011h	; 8c40  .+ .....=1' ....
 	defb 03dh,034h,02ch,025h,020h,01ch,018h,015h,03eh,036h,02fh,029h,024h,020h,01ch,019h	; 8c50  =4,% ...>6/)$ ..
 	defb 03eh,038h,032h,02ch,028h,023h,020h,01dh,03eh,039h,034h,02fh,02ah,026h,023h,020h	; 8c60  >82,(# .>94/*&#
 
@@ -4524,33 +4524,33 @@ DATA_textos_9E0B:
 ;   fila, 0xE1-0xFD dejan hueco y 0xFF o 0xE0 acaban (433 bytes)
 ;   0x9e19..0x9fca  (433 bytes)
 DATA_textos:
-	defb 034h,046h,03bh,048h,000h,031h,05bh,05dh,043h,000h,03ch,058h,039h,043h,049h,0feh	; 9e19  4F;H.1[]C.<X9CI.
+	defb 034h,046h,03bh,048h,000h,031h,05bh,05dh,043h,000h,03ch,058h,039h,043h,049h,0feh	; 9e19  4F.H.1[]C.<X9CI.
 	defb 055h,066h,037h,000h,05bh,035h,05eh,03fh,064h,000h,039h,039h,05ah,000h,030h,056h	; 9e29  Uf7.[5^?d.99Z.0V
 	defb 03fh,051h,0feh,055h,031h,000h,043h,048h,045h,000h,044h,058h,03eh,063h,064h,0ffh	; 9e39  ?Q.U1.CHE.DX>cd.
-	defb 044h,058h,04dh,043h,063h,000h,034h,046h,03bh,049h,000h,033h,056h,031h,064h,0feh	; 9e49  DXMCc.4F;I.3V1d.
-	defb 04fh,030h,038h,063h,03fh,000h,052h,05dh,03bh,063h,05fh,064h,000h,04dh,032h,04ah	; 9e59  O08c?.R];c_d.M2J
+	defb 044h,058h,04dh,043h,063h,000h,034h,046h,03bh,049h,000h,033h,056h,031h,064h,0feh	; 9e49  DXMCc.4F.I.3V1d.
+	defb 04fh,030h,038h,063h,03fh,000h,052h,05dh,03bh,063h,05fh,064h,000h,04dh,032h,04ah	; 9e59  O08c?.R].c_d.M2J
 	defb 063h,045h,0feh,03fh,05dh,049h,063h,048h,000h,042h,042h,032h,040h,037h,063h,057h	; 9e69  cE.?]IcH.BB2@7cW
 	defb 05ch,000h,043h,056h,03dh,058h,03eh,063h,0ffh,044h,058h,04dh,043h,063h,03ah,063h	; 9e79  \.CV=X>c.DXMCc:c
 	defb 000h,05bh,058h,035h,05eh,03fh,043h,063h,064h,030h,053h,04eh,058h,064h,0feh,047h	; 9e89  .[X5^?Ccd0SNXd.G
 	defb 05dh,037h,063h,049h,000h,04bh,053h,03ah,05dh,064h,04dh,063h,032h,033h,031h,04ah	; 9e99  ]7cI.KS:]dMc231J
 	defb 000h,052h,0feh,038h,03ch,063h,058h,064h,000h,039h,032h,053h,037h,000h,049h,000h	; 9ea9  .R.8<cXd.92S7.I.
-	defb 04eh,052h,058h,03eh,063h,064h,0ffh,031h,04eh,048h,000h,034h,046h,03bh,048h,039h	; 9eb9  NRX>cd.1NH.4F;H9
-	defb 043h,049h,063h,042h,063h,0feh,05bh,03bh,052h,000h,051h,035h,063h,03ah,051h,03fh	; 9ec9  CIcBc.[;R.Q5c:Q?
+	defb 04eh,052h,058h,03eh,063h,064h,0ffh,031h,04eh,048h,000h,034h,046h,03bh,048h,039h	; 9eb9  NRX>cd.1NH.4F.H9
+	defb 043h,049h,063h,042h,063h,0feh,05bh,03bh,052h,000h,051h,035h,063h,03ah,051h,03fh	; 9ec9  CIcBc.[.R.Q5c:Q?
 	defb 064h,0feh,034h,049h,055h,032h,000h,044h,05dh,040h,05fh,05eh,042h,064h,0ffh,031h	; 9ed9  d.4IU2.D]@_^Bd.1
-	defb 04eh,04eh,042h,063h,048h,05bh,03bh,049h,000h,031h,048h,044h,035h,048h,000h,034h	; 9ee9  NNBcH[;I.1HD5H.4
+	defb 04eh,04eh,042h,063h,048h,05bh,03bh,049h,000h,031h,048h,044h,035h,048h,000h,034h	; 9ee9  NNBcH[.I.1HD5H.4
 	defb 035h,03ch,063h,0feh,031h,053h,000h,035h,05bh,03ch,063h,042h,063h,000h,030h,05eh	; 9ef9  5<c.1S.5[<cBc.0^
-	defb 03fh,064h,0feh,052h,05eh,043h,03bh,061h,04fh,05dh,048h,03fh,051h,048h,03dh,031h	; 9f09  ?d.R^C;aO]H?QH=1
-	defb 03bh,063h,05ch,03ch,058h,03eh,063h,064h,0ffh,03bh,061h,04fh,05dh,048h,000h,037h	; 9f19  ;c\<X>cd.;aO]H.7
-	defb 058h,03bh,04fh,000h,055h,066h,037h,000h,05bh,035h,05eh,03fh,064h,0feh,052h,032h	; 9f29  X;O.Uf7.[5^?d.R2
+	defb 03fh,064h,0feh,052h,05eh,043h,03bh,061h,04fh,05dh,048h,03fh,051h,048h,03dh,031h	; 9f09  ?d.R^C.aO]H?QH=1
+	defb 03bh,063h,05ch,03ch,058h,03eh,063h,064h,0ffh,03bh,061h,04fh,05dh,048h,000h,037h	; 9f19  .c\<X>cd..aO]H.7
+	defb 058h,03bh,04fh,000h,055h,066h,037h,000h,05bh,035h,05eh,03fh,064h,0feh,052h,032h	; 9f29  X.O.Uf7.[5^?d.R2
 	defb 000h,044h,045h,052h,000h,031h,032h,042h,063h,044h,031h,064h,0feh,055h,031h,000h	; 9f39  .DER.12BcD1d.U1.
-	defb 03dh,031h,03bh,063h,05ch,000h,053h,037h,03eh,037h,000h,03ch,058h,03eh,063h,064h	; 9f49  =1;c\.S7>7.<X>cd
-	defb 0ffh,04ah,03ah,03bh,031h,048h,032h,064h,041h,031h,045h,039h,039h,04eh,042h,063h	; 9f59  .J:;1H2dA1E99NBc
-	defb 036h,034h,05eh,03fh,035h,0feh,034h,046h,03bh,052h,000h,03dh,031h,040h,061h,032h	; 9f69  64^?5.4F;R.=1@a2
-	defb 03bh,03fh,064h,0feh,034h,046h,03bh,048h,000h,03bh,05dh,038h,063h,05dh,000h,036h	; 9f79  ;?d.4F;H.;]8c].6
-	defb 036h,031h,059h,055h,032h,03eh,063h,064h,0ffh,034h,046h,03bh,000h,05bh,03bh,048h	; 9f89  61YU2>cd.4F;.[;H
-	defb 03dh,031h,03bh,063h,045h,038h,040h,05ch,041h,038h,058h,035h,064h,0feh,031h,031h	; 9f99  =1;cE8@\A8X5d.11
+	defb 03dh,031h,03bh,063h,05ch,000h,053h,037h,03eh,037h,000h,03ch,058h,03eh,063h,064h	; 9f49  =1.c\.S7>7.<X>cd
+	defb 0ffh,04ah,03ah,03bh,031h,048h,032h,064h,041h,031h,045h,039h,039h,04eh,042h,063h	; 9f59  .J:.1H2dA1E99NBc
+	defb 036h,034h,05eh,03fh,035h,0feh,034h,046h,03bh,052h,000h,03dh,031h,040h,061h,032h	; 9f69  64^?5.4F.R.=1@a2
+	defb 03bh,03fh,064h,0feh,034h,046h,03bh,048h,000h,03bh,05dh,038h,063h,05dh,000h,036h	; 9f79  .?d.4F.H..]8c].6
+	defb 036h,031h,059h,055h,032h,03eh,063h,064h,0ffh,034h,046h,03bh,000h,05bh,03bh,048h	; 9f89  61YU2>cd.4F..[.H
+	defb 03dh,031h,03bh,063h,045h,038h,040h,05ch,041h,038h,058h,035h,064h,0feh,031h,031h	; 9f99  =1.cE8@\A8X5d.11
 	defb 000h,043h,063h,036h,061h,032h,03fh,063h,064h,0feh,041h,036h,063h,048h,03ch,042h	; 9fa9  .Cc6a2?cd.A6cH<B
-	defb 066h,03bh,063h,000h,034h,04dh,063h,033h,042h,034h,037h,035h,063h,031h,031h,064h	; 9fb9  f;c.4Mc3B475c11d
+	defb 066h,03bh,063h,000h,034h,04dh,063h,033h,042h,034h,037h,035h,063h,031h,031h,064h	; 9fb9  f.c.4Mc3B475c11d
 	defb 0ffh	; 9fc9
 
 ; ======================================================================

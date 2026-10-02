@@ -500,7 +500,7 @@ DATA_rotulo_639B:
 	defb 050h,010h,069h,02ah,02bh,02ch,02dh,02eh,02fh,000h,021h,029h,028h,027h,0feh,048h	; 639b  P.i*+,-./.!)('.H
 	defb 098h,043h,063h,05eh,040h,042h,063h,000h,030h,03eh,04ah,063h,04eh,05eh,035h,067h	; 63ab  .Cc^@Bc.0>JcN^5g
 	defb 0feh,058h,0a8h,04ah,043h,057h,042h,063h,000h,035h,063h,05dh,049h,063h,058h,0feh	; 63bb  .X.JCWBc.5c]IcX.
-	defb 058h,0b0h,04bh,03fh,057h,042h,063h,000h,03fh,048h,03bh,050h,0ffh	; 63cb  X.K?WBc.?H;P.
+	defb 058h,0b0h,04bh,03fh,057h,042h,063h,000h,03fh,048h,03bh,050h,0ffh	; 63cb  X.K?WBc.?H.P.
 
 ; ----------------------------------------------------------------------
 ; DATOS rotulo_63D8: rotulo sin posicion delante (0x48FD); lo leen p00:4479 (3
@@ -4726,7 +4726,7 @@ ventana_con_marco:		; rellena y le pone marco
 ;   0x7f41..0x7f83  (66 bytes)
 DATA_rotulo_7F41:
 	defb 058h,098h,066h,066h,066h,03dh,05dh,03fh,037h,066h,066h,066h,0feh,024h,0a8h,0bch	; 7f41  X.fff=]?7fff.$..
-	defb 0bdh,0feh,040h,0a8h,055h,044h,034h,03bh,000h,049h,03bh,063h,051h,058h,0feh,040h	; 7f51  ..@.UD4;.I;cQX.@
+	defb 0bdh,0feh,040h,0a8h,055h,044h,034h,03bh,000h,049h,03bh,063h,051h,058h,0feh,040h	; 7f51  ..@.UD4..I.cQX.@
 	defb 0b0h,037h,045h,048h,000h,049h,063h,05dh,039h,063h,032h,05ch,000h,035h,033h,058h	; 7f61  .7EH.Ic]9c2\.53X
 	defb 0feh,040h,0b8h,039h,063h,033h,052h,05dh,048h,035h,03ch,063h,05ch,000h,035h,033h	; 7f71  .@.9c3R]H5<c\.53
 	defb 058h,0ffh	; 7f81
