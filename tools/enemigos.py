@@ -43,10 +43,23 @@ def ficha(cart, tipo):
     return [cart.leer(a + i, S10) for i in range(10)]
 
 
+def carga_lo_del_interior(cart, v, jugador=1, interior=None):
+    """p00:53E3: los patrones de las figuras de los interiores sin ficha
+    (0x25-0x2F): 0xA783 (0xA7DD con el jugador 2, banco 12) a 0xF9C0 y 0x9F76
+    (banco 14) a 0xFAC0."""
+    G.rle_a_la_vram(cart, S10, 0xF9C0, 0xA783 if jugador == 1 else 0xA7DD, v)
+    G.rle_a_la_vram(cart, G.S13, 0xFAC0, 0x9F76, v)
+    if interior is not None:                          # p00:5409: la figura de 0x54B8
+        t = cart.leer(cart.palabra(0x54B8 + 2 * interior, S1), S1)
+        if t:
+            carga_los_dibujos(cart, t, v)
+
+
 def carga_los_dibujos(cart, tipo, v):
     """p00:542F con un solo tipo: sus patrones y sus colores 4 y 6."""
     if tipo > 0x24:
-        return False
+        carga_lo_del_interior(cart, v)
+        return True
     for i in range(8):                                  # 0xA998
         a = 0xA998 + 5 * i
         if cart.leer(a, S10) == tipo:
@@ -162,7 +175,7 @@ def hoja(cart, ruta):
     return ruta
 
 
-def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas")):
+def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas"), patron="z*.vram"):
     """Cada figura de 0xC600 en los volcados. La copia de 0xEE20 la rehace
     p01:685F en los cuadros impares y la figura se mueve en todos, asi que la
     copia puede ser de un cuadro antes: se busca la pose y el sitio que dan
@@ -170,7 +183,7 @@ def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas")):
     sus patrones en la VRAM y sus 16 colores por sprite en 0xEC80."""
     cart = G.Cartucho()
     malos = vistos = otra = medias = 0
-    for f in sorted(glob.glob(os.path.join(ruta, "z*.vram"))):
+    for f in sorted(glob.glob(os.path.join(ruta, patron))):
         d = open(f, "rb").read()
         ram = open(f[:-5] + ".ram", "rb").read()
         for i in range(8):
@@ -207,7 +220,10 @@ def coteja(ruta=os.path.join(G.RAIZ, "work", "v_zonas")):
                         hallada, mezcla = pose, True
                         break
             v = G.Vram()
-            carga_los_dibujos(cart, tipo, v)
+            if tipo > 0x24:
+                carga_lo_del_interior(cart, v, interior=ram[0xD5F] if ram[0x482] else None)
+            else:
+                carga_los_dibujos(cart, tipo, v)
             dp = sum(1 for (_y, _x, p) in suyo for a in range(0xF800 + 8 * (p & 0xFC), 0xF800 + 8 * (p & 0xFC) + 32)
                      if v.v[a] != d[a])
             base = [ram[o + 0x25 + 5 * k] for k in range(n)]

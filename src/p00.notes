@@ -941,9 +941,9 @@ D 0x4C4B 0x4C57 caracteres_de_cada_juego  6 punteros, uno por juego de graficos 
 F 0x4C4B 16
 D 0x4C57 0x4C75 caracteres_vueltos_de_cada_juego  6 fichas de 5 bytes, una por juego de graficos: [VRAM][n][fuente en 0xD000] de los caracteres que p00:4AC7 sube dados la vuelta (0x4C75); los juegos 2 y 3 van a cero; lo leen p00:4C15 (30 bytes)
 F 0x4C57 16
-D 0x54B8 0x54E2 jefe_de_cada_fase  21 punteros (p00:5409, el numero lo da p02:9282) a la figura del jefe: un solo tipo; lo leen p00:540C (42 bytes)
+D 0x54B8 0x54E2 figura_de_cada_interior  21 punteros, uno por interior (p00:5409, el numero lo da p02:9282), al tipo cuyos patrones se suben: el tendero (0x22 o 0x23), el de los dados (0x24) o ninguno; lo leen p00:540C (42 bytes)
 F 0x54B8 16
-D 0x54E2 0x54E6 jefes  los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno); lo leen p00:542F (4 bytes)
+D 0x54E2 0x54E6 figuras_de_interior  los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno); lo leen p00:542F (4 bytes)
 F 0x54E2 16
 D 0x554E 0x5626 colores_de_cada_pose  108 punteros, dos por cada uno de los 54 juegos de color (0xCD37 - 1), el segundo para la figura mirando al otro lado (bit 0 de ix+0x0A) (p00:54E7); lo leen p00:54E7 (216 bytes)
 F 0x554E 16

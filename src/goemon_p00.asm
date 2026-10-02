@@ -3126,19 +3126,20 @@ L_54AF:
 	jp bancos_1_2_3		;54b5   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 
 ; ----------------------------------------------------------------------
-; DATOS jefe_de_cada_fase: 21 punteros (p00:5409, el numero lo da p02:9282) a
-;   la figura del jefe: un solo tipo; lo leen p00:540C (42 bytes)
+; DATOS figura_de_cada_interior: 21 punteros, uno por interior (p00:5409, el
+;   numero lo da p02:9282), al tipo cuyos patrones se suben: el tendero (0x22
+;   o 0x23), el de los dados (0x24) o ninguno; lo leen p00:540C (42 bytes)
 ;   0x54b8..0x54e2  (42 bytes)
-DATA_jefe_de_cada_fase:
+DATA_figura_de_cada_interior:
 	defb 0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h,0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h	; 54b8  .T.T.T.T.T.T.T.T
 	defb 0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h,0e2h,054h,0e3h,054h,0e3h,054h,0e2h,054h	; 54c8  .T.T.T.T.T.T.T.T
 	defb 0e5h,054h,0e4h,054h,0e5h,054h,0e2h,054h,0e4h,054h	; 54d8  .T.T.T.T.T
 
 ; ----------------------------------------------------------------------
-; DATOS jefes: los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0
-;   (ninguno); lo leen p00:542F (4 bytes)
+; DATOS figuras_de_interior: los cuatro tipos a los que apunta 0x54B8: 0x22,
+;   0x23, 0x24 y 0 (ninguno); lo leen p00:542F (4 bytes)
 ;   0x54e2..0x54e6  (4 bytes)
-DATA_jefes:
+DATA_figuras_de_interior:
 	defb 022h,023h,024h,000h	; 54e2
 
 ; ======================================================================

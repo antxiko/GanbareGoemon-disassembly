@@ -615,12 +615,12 @@ def figuras(rom, t, bl):
         bl.anota(S1, a, a + 2 + n, "figuras_%04X" % a,
                  "un conjunto de figuras: [n] y n+1 tipos (0 es ninguno) que p00:5413 sube a la VRAM",
                  "p00:5416")
-    bl.anota(S1, 0x54B8, 0x54E2, "jefe_de_cada_fase",
-             "21 punteros (p00:5409, el numero lo da p02:9282) a la figura del jefe: un solo tipo",
+    bl.anota(S1, 0x54B8, 0x54E2, "figura_de_cada_interior",
+             "21 punteros, uno por interior (p00:5409, el numero lo da p02:9282), al tipo cuyos patrones se suben: el tendero (0x22 o 0x23), el de los dados (0x24) o ninguno",
              "p00:540C")
     for a in range(0x54E2, 0x54E6):
         tipos.add(byte(rom, S1, a))
-    bl.anota(S1, 0x54E2, 0x54E6, "jefes",
+    bl.anota(S1, 0x54E2, 0x54E6, "figuras_de_interior",
              "los cuatro tipos a los que apunta 0x54B8: 0x22, 0x23, 0x24 y 0 (ninguno)", "p00:542F")
     bl.anota(S12, 0xA830, 0xA830 + 10 * N_TIPOS, "fichas_de_figura",
              "36 fichas de 10 bytes, una por tipo de figura 1-0x24 (p00:5465): el dibujo en rle, "

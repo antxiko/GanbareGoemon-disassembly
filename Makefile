@@ -172,6 +172,7 @@ coteja: $(ROM)
 	$(PYIMG) tools/titulo.py coteja
 	$(PYIMG) tools/figuras.py coteja
 	$(PYIMG) tools/enemigos.py coteja
+	$(PYIMG) tools/interiores.py coteja
 
 # La web: las paginas se escriben en markdown y se convierten con md2html.py;
 # la portada la monta make_web.py con lo de tools/contenido_web.py.

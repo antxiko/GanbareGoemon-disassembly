@@ -5,9 +5,12 @@
 # p00:5F23 pasa al estado 9 y p01:609C llama a p01:672F, que monta la
 # pantalla especial y, con p02:925D, lo que hay en el interior. Al volver al
 # estado 5 espera y vuelca VRAM, paleta y RAM.
+# GO_TIEMPO (opcional): lo que se pone en 0xC4B0 antes de entrar (las tiendas
+# abren segun las decenas del tiempo, p03:AD57).
 #   GO_OUT=<dir> GO_INTERIORES="0 1 2" openmsx -machine C-BIOS_MSX2_JP -cart goemon.rom -script este.tcl
 set OUT $::env(GO_OUT)
 set LISTA $::env(GO_INTERIORES)
+if {[info exists ::env(GO_TIEMPO)]} { set ::TIEMPO $::env(GO_TIEMPO) } else { set ::TIEMPO "" }
 file mkdir $OUT
 set LOG [open "$OUT/interiores.log" w]
 proc say {m} { global LOG; puts $LOG "t=[format %7.2f [machine_info time]]  $m"; flush $LOG }
@@ -32,6 +35,7 @@ proc siguiente {} {
     if {$::i >= [llength $LISTA]} { say "fin" ; exit 0 }
     set k [lindex $LISTA $::i]
     incr ::i
+    if {$::TIEMPO ne ""} { debug write memory 0xC4B0 $::TIEMPO }
     debug write memory 0xC500 [expr {0x80 | $k}]
     debug write memory 0xC501 0x80
     debug write memory 0xC502 0x80
