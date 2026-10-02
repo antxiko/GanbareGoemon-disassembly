@@ -65,7 +65,7 @@ L_404D:
 	xor a			;407d   ; semaforo libre
 	ld (0c005h),a		;407e   ; guarda el semaforo de la interrupcion
 L_4081:
-	ei			;4081
+	ei			;4081   ; sin correr el juego
 	ret			;4082
 hl_mas_a:		; HL += A
 	add a,l			;4083   ; suma A a la parte baja
@@ -74,10 +74,10 @@ hl_mas_a:		; HL += A
 	inc h			;4086   ; con acarreo, sube la parte alta
 	ret			;4087
 de_mas_a:		; DE += A
-	add a,e			;4088
+	add a,e			;4088   ; suma A a la parte baja
 	ld e,a			;4089
-	ret nc			;408a
-	inc d			;408b
+	ret nc			;408a   ; sin acarreo, ya esta
+	inc d			;408b   ; con acarreo, sube la parte alta
 	ret			;408c
 despacha:		; salta a la entrada A de la tabla que va detras del call
 	pop hl			;408d   ; HL = la direccion de vuelta: alli empieza la tabla
@@ -307,10 +307,10 @@ L_41EF:
 indice_de_la_zona:		; A = (fase * 7 + zona) * 2
 	ld a,(0c288h)		;41f6   ; la fase por 7
 	ld b,a			;41f9
-	add a,a			;41fa
+	add a,a			;41fa   ; * 2
 	ld c,a			;41fb
-	add a,a			;41fc
-	add a,b			;41fd
+	add a,a			;41fc   ; * 4
+	add a,b			;41fd   ; + 1 + 2: * 7
 	add a,c			;41fe
 	ld c,a			;41ff
 	ld a,(0c280h)		;4200   ; mas la zona
@@ -431,10 +431,10 @@ bloques_de_la_zona:		; descomprime los bloques de la zona a 0xE100
 	call rle_a_la_ram		;42bd   ; rle_a_la_ram: descomprime un rle a la RAM
 	jp bancos_1_2_3		;42c0   ; bancos_1_2_3: pone los bancos 1, 2 y 3
 rle_a_la_ram:		; descomprime un rle a la RAM
-	ld a,(de)			;42c3   ; el byte de control: 0 acaba
+	ld a,(de)			;42c3   ; lee el byte de control
 	and a			;42c4
 	ret z			;42c5
-	inc de			;42c6
+	inc de			;42c6   ; el siguiente
 	ld b,a			;42c7   ; sin el bit 7, una racha de B bytes iguales; con el, una tira de n - 0x80 bytes sueltos
 	and 07fh		;42c8
 	cp b			;42ca
@@ -442,7 +442,7 @@ rle_a_la_ram:		; descomprime un rle a la RAM
 	and a			;42cd   ; un 0x80 solo no copia nada
 	jr z,rle_a_la_ram		;42ce
 	ex de,hl			;42d0   ; copia A bytes tal cual
-	ld b,000h		;42d1
+	ld b,000h		;42d1   ; BC = n
 	ld c,a			;42d3
 	ldir		;42d4
 	ex de,hl			;42d6
@@ -453,7 +453,7 @@ L_42D9:
 L_42DB:
 	ld (hl),a			;42db   ; repetido
 	inc hl			;42dc
-	djnz L_42DB		;42dd
+	djnz L_42DB		;42dd   ; B veces
 	jr rle_a_la_ram		;42df
 empieza_texto:		; empieza un texto letra a letra: HL el texto, DE el sitio (0xCD61-0xCD67)
 	ld (0cd61h),de		;42e1   ; la posicion de la letra siguiente
@@ -502,11 +502,11 @@ L_432D:
 	ret			;4332
 L_4333:
 	ld de,(0cd63h)		;4333   ; renglon nuevo: 8 puntos mas abajo que el principio del anterior
-	ld a,008h		;4337
+	ld a,008h		;4337   ; 8 mas abajo
 	add a,e			;4339
 	ld e,a			;433a
 	ld (0cd63h),de		;433b
-	ld (0cd61h),de		;433f
+	ld (0cd61h),de		;433f   ; y la x vuelve al principio del renglon
 	jr sigue_texto		;4343
 L_4345:
 	sub 0e0h		;4345   ; 0xE0 tambien acaba
@@ -519,14 +519,14 @@ L_4345:
 empieza_la_partida:		; la RAM de la partida a cero desde 0xC25A, y vidas de 0x437B
 	ld hl,0c25ah		;4351   ; 0xDA7 bytes a cero, de 0xC25A a 0xD000: la partida entera
 	ld bc,00da6h		;4354
-	ld d,h			;4357
+	ld d,h			;4357   ; DE = HL + 1
 	ld e,l			;4358
 	inc e			;4359
 	ld (hl),000h		;435a
 	ldir		;435c
 	ld hl,0437bh		;435e   ; 0x437B: 3 vidas, 0xC261 = 1 y la proxima vida a los 100.000 (0x10)
 	ld de,0c260h		;4361   ; apunta a las vidas
-	ld bc,00003h		;4364
+	ld bc,00003h		;4364   ; 3 bytes
 	ldir		;4367
 	ld a,(0c002h)		;4369   ; el bit 5: partida de dos jugadores
 	and 020h		;436c
@@ -564,13 +564,13 @@ L_438C:
 	add a,e			;438d   ; los dos digitos de abajo
 	daa			;438e
 	ld (hl),a			;438f
-	inc l			;4390
+	inc l			;4390   ; el byte del medio
 	ld a,(hl)			;4391
 	adc a,d			;4392   ; los dos del medio, con el acarreo
 	daa			;4393
 	ld (hl),a			;4394
 	inc hl			;4395
-	ld a,(hl)			;4396
+	ld a,(hl)			;4396   ; el de arriba
 	adc a,c			;4397   ; los dos de arriba
 	daa			;4398
 	ld (hl),a			;4399
@@ -612,8 +612,8 @@ L_43CD:
 	djnz L_43CD		;43d5
 L_43D7:
 	ld bc,00003h		;43d7   ; los tres bytes al record
-	ld e,056h		;43da
-	ld l,059h		;43dc
+	ld e,056h		;43da   ; DE = el record (0xC256 abajo)
+	ld l,059h		;43dc   ; HL = los puntos (0xC259 abajo)
 	lddr		;43de
 	jr pinta_los_puntos		;43e0
 pinta_el_marcador:		; pinta el marcador entero
@@ -678,15 +678,15 @@ L_443E:
 	ret			;4448
 intercambia:		; intercambia los bytes de (HL) y (DE)
 	push bc			;4449   ; BC bytes
-	ld c,(hl)			;444a
+	ld c,(hl)			;444a   ; C = (HL)
 	ld a,(de)			;444b
-	ld (hl),a			;444c
+	ld (hl),a			;444c   ; (HL) = (DE)
 	ld a,c			;444d
-	ld (de),a			;444e
+	ld (de),a			;444e   ; (DE) = C
 	inc hl			;444f
 	inc de			;4450
 	pop bc			;4451
-	dec bc			;4452
+	dec bc			;4452   ; uno menos
 	ld a,b			;4453
 	or c			;4454
 	jr nz,intercambia		;4455
@@ -715,7 +715,7 @@ marca_de_opcion:		; pinta (C = 0xFF) o borra (C = 0) la marca de 0x63D8 en DE
 palabra_de_tabla_de:		; DE = la palabra A de la tabla de DE
 	ld l,a			;447c   ; DE += A * 2
 	ld h,000h		;447d
-	add hl,hl			;447f
+	add hl,hl			;447f   ; A * 2
 	add hl,de			;4480
 	ld e,(hl)			;4481   ; la palabra
 	inc hl			;4482
@@ -740,9 +740,9 @@ lee_de_la_vram:		; copia BC bytes de la VRAM de HL a DE
 	ex af,af'			;44a1
 L_44A2:
 	inir		;44a2   ; lee de la VRAM
-	dec a			;44a4
+	dec a			;44a4   ; otra vuelta de 256
 	jr nz,L_44A2		;44a5
-	ex de,hl			;44a7
+	ex de,hl			;44a7   ; HL = el destino al final
 	ret			;44a8
 vueltas_de_bc:		; de BC, las vueltas de un bucle de inir/otir (B y A); cambia HL y DE
 	ex de,hl			;44a9   ; HL = el destino; de BC, B = lo que sobra de 256 y A = cuantas vueltas
@@ -763,7 +763,7 @@ copia_a_la_vram:		; copia BC bytes de HL a la VRAM de DE
 	ex af,af'			;44bd
 L_44BE:
 	otir		;44be   ; escribe en la VRAM
-	dec a			;44c0
+	dec a			;44c0   ; otra vuelta de 256
 	jr nz,L_44BE		;44c1
 	ret			;44c3
 rellena_la_vram:		; llena BC bytes de la VRAM de HL con A
@@ -776,14 +776,14 @@ rellena_la_vram:		; llena BC bytes de la VRAM de HL con A
 	jr z,L_44CF		;44cc
 	inc b			;44ce
 L_44CF:
-	ld a,(00007h)		;44cf
+	ld a,(00007h)		;44cf   ; C = el puerto de escritura
 	ld c,a			;44d2
 	pop af			;44d3
 L_44D4:
 	out (c),a		;44d4   ; escribe el byte
-	dec d			;44d6
+	dec d			;44d6   ; la vuelta corta
 	jr nz,L_44D4		;44d7
-	djnz L_44D4		;44d9
+	djnz L_44D4		;44d9   ; y las largas
 	pop de			;44db
 	ret			;44dc
 lee_un_byte_de_la_vram:		; A = el byte de la VRAM de HL
@@ -798,22 +798,22 @@ escribe_un_byte_en_la_vram:		; escribe A en la VRAM de HL
 	push bc			;44e9   ; escribe UN byte (A) en la VRAM de HL
 	push af			;44ea
 	call vram_para_escribir		;44eb   ; vram_para_escribir: prepara el V9938 para escribir en la VRAM
-	ld a,(00007h)		;44ee
+	ld a,(00007h)		;44ee   ; el puerto de escritura
 	ld c,a			;44f1
-	pop af			;44f2
+	pop af			;44f2   ; el byte
 	out (c),a		;44f3
 	pop bc			;44f5
 	ret			;44f6
 vram_para_escribir:		; prepara el V9938 para escribir en la VRAM
 	push bc			;44f7
 	ld a,(00007h)		;44f8   ; 0x0007 + 1: el puerto de control del VDP
-	inc a			;44fb
+	inc a			;44fb   ; el de control es el siguiente
 	ld c,a			;44fc
 	ld a,h			;44fd   ; los dos bits de arriba de los 16 de la direccion...
 	rlca			;44fe
 	rlca			;44ff
 	and 003h		;4500
-	di			;4502
+	di			;4502   ; sin interrupciones mientras se escribe en el VDP
 	out (c),a		;4503
 	ld a,08eh		;4505   ; ... al registro 14 (la VRAM de 128 KB va por tramos de 16 KB)
 	out (c),a		;4507
@@ -828,18 +828,18 @@ vram_para_escribir:		; prepara el V9938 para escribir en la VRAM
 	ret			;4515
 vram_para_leer:		; prepara el V9938 para leer de la VRAM de HL
 	push bc			;4516   ; igual que vram_para_escribir, para LEER
-	ld a,(00007h)		;4517
+	ld a,(00007h)		;4517   ; el puerto de control
 	inc a			;451a
 	ld c,a			;451b
 	ld a,h			;451c
-	rlca			;451d
+	rlca			;451d   ; los dos bits de arriba...
 	rlca			;451e
 	and 003h		;451f
 	di			;4521
 	out (c),a		;4522
-	ld a,08eh		;4524
+	ld a,08eh		;4524   ; ... al registro 14
 	out (c),a		;4526
-	ld a,l			;4528
+	ld a,l			;4528   ; los 8 de abajo
 	out (c),a		;4529
 	ld a,h			;452b
 	and 03fh		;452c   ; los 6 del medio sin el bit 6: leer
@@ -849,11 +849,11 @@ vram_para_leer:		; prepara el V9938 para leer de la VRAM de HL
 	ret			;4532
 rle_con_destino:		; descomprime a la VRAM un rle que lleva el destino delante
 	ex de,hl			;4533   ; los dos primeros bytes del rle: la VRAM de destino
-	ld e,(hl)			;4534
+	ld e,(hl)			;4534   ; E y D: el destino
 	inc hl			;4535
 	ld d,(hl)			;4536
 	inc hl			;4537
-	ex de,hl			;4538
+	ex de,hl			;4538   ; HL = el destino, DE = el rle
 rle_a_la_vram:		; descomprime un rle a la VRAM
 	call vram_para_escribir		;4539   ; vram_para_escribir: prepara el V9938 para escribir en la VRAM
 	ld a,(00007h)		;453c
@@ -875,15 +875,15 @@ L_4540:
 	ex de,hl			;4551
 	jr L_4540		;4552
 L_4554:
-	ld a,(de)			;4554
-	inc de			;4555
+	ld a,(de)			;4554   ; la racha: el byte
+	inc de			;4555   ; el byte siguiente
 L_4556:
 	out (c),a		;4556   ; la racha
 	djnz L_4556		;4558
 	jr L_4540		;455a
 rle_vuelto_con_destino:		; como rle_vuelto, con la VRAM de destino delante del rle
 	ex de,hl			;455c
-	ld e,(hl)			;455d
+	ld e,(hl)			;455d   ; el destino
 	inc hl			;455e
 	ld d,(hl)			;455f
 	inc hl			;4560
@@ -895,17 +895,17 @@ rle_vuelto:		; descomprime sprites de 16x16 dados la vuelta (espejo) y los sube 
 	ld hl,00000h		;4569   ; HL' cuenta los bytes
 	exx			;456c
 L_456D:
-	ld a,(de)			;456d
+	ld a,(de)			;456d   ; el byte de control
 	and a			;456e
-	jr z,L_45B2		;456f
+	jr z,L_45B2		;456f   ; 0 acaba: a la VRAM
 	inc de			;4571
-	ld b,a			;4572
+	ld b,a			;4572   ; B = n
 	and 07fh		;4573
 	cp b			;4575
 	jr z,L_458A		;4576   ; sin el bit 7, una racha
 	and a			;4578
 	jr z,rle_vuelto_con_destino		;4579   ; 0x80: otro destino
-	ld b,a			;457b
+	ld b,a			;457b   ; B = n - 0x80
 L_457C:
 	ld a,(de)			;457c
 	call bits_al_reves		;457d   ; cada fila con los bits al reves: el espejo
@@ -919,11 +919,11 @@ L_458A:
 	ld a,(de)			;458a
 	call bits_al_reves		;458b   ; la racha, tambien al reves
 L_458E:
-	ld (hl),a			;458e
+	ld (hl),a			;458e   ; el byte (vuelto)
 	inc hl			;458f
 	call sitio_del_byte_vuelto		;4590   ; sitio_del_byte_vuelto: el sitio del byte siguiente al dar la vuelta a un sprite de 16x16
 	djnz L_458E		;4593
-	inc de			;4595
+	inc de			;4595   ; el byte siguiente del rle
 	jr L_456D		;4596
 sitio_del_byte_vuelto:		; el sitio del byte siguiente al dar la vuelta a un sprite de 16x16
 	push af			;4598   ; un sprite de 16x16 son dos columnas de 16 bytes: al darle la vuelta se cambian
@@ -1024,13 +1024,13 @@ sprites_dentro:		; enciende los sprites (bit 1 del registro 8 del VDP a cero)
 pon_un_color:		; color A de la paleta = DE
 	push bc			;463c
 	push hl			;463d
-	ld b,a			;463e
-	ld a,(00007h)		;463f
+	ld b,a			;463e   ; B = el color
+	ld a,(00007h)		;463f   ; el puerto de control
 	inc a			;4642
 	ld c,a			;4643
 	di			;4644
 	out (c),b		;4645   ; el registro 16 = el color
-	ld a,090h		;4647
+	ld a,090h		;4647   ; al registro 16
 	out (c),a		;4649
 	inc c			;464b
 	out (c),d		;464c   ; el puerto de la paleta: D (rojo y azul) y E (verde)
@@ -1039,12 +1039,12 @@ pon_un_color:		; color A de la paleta = DE
 	out (c),e		;4650
 	dec c			;4652
 	ld hl,0f680h		;4653   ; la paleta tambien se guarda en la VRAM, en 0xF680 + color * 2
-	ld a,b			;4656
+	ld a,b			;4656   ; color * 2
 	add a,a			;4657
 	add a,l			;4658
 	ld l,a			;4659
 	call vram_para_escribir		;465a   ; vram_para_escribir: prepara el V9938 para escribir en la VRAM
-	dec c			;465d
+	dec c			;465d   ; el puerto de datos
 	out (c),d		;465e
 	out (c),e		;4660
 	pop hl			;4662
@@ -1056,10 +1056,10 @@ pon_paleta:		; pone una lista de colores en la paleta
 	inc hl			;4667
 	inc a			;4668
 	ret z			;4669
-	dec a			;466a
-	ld d,(hl)			;466b
+	dec a			;466a   ; el color
+	ld d,(hl)			;466b   ; RB
 	inc hl			;466c
-	ld e,(hl)			;466d
+	ld e,(hl)			;466d   ; G
 	inc hl			;466e
 	call pon_un_color		;466f   ; pon_un_color: color A de la paleta = DE
 	jr pon_paleta		;4672
@@ -1073,7 +1073,7 @@ lee_estado_del_vdp:		; lee un registro de estado del V9938
 	push bc			;467d
 	push hl			;467e
 	ld hl,(00006h)		;467f   ; H = el puerto de control, L = el de estado
-	inc h			;4682
+	inc h			;4682   ; + 1: los de la BIOS son los de datos
 	inc l			;4683
 	ld c,h			;4684
 	di			;4685
@@ -1089,7 +1089,7 @@ lee_estado_del_vdp:		; lee un registro de estado del V9938
 	ld a,08fh		;4694
 	out (c),a		;4696
 	pop af			;4698
-	pop hl			;4699
+	pop hl			;4699   ; A = el estado
 	pop bc			;469a
 	ei			;469b
 	ret			;469c
@@ -1128,33 +1128,33 @@ linea_horizontal:		; orden LINE: B puntos desde (H, L) a la derecha, del color C
 linea_vertical:		; orden LINE: B puntos desde (H, L) hacia abajo, del color C
 	call espera_al_vdp		;46d0   ; la orden LINE en vertical: H = x, L = y, B = largo, C = el color
 	push bc			;46d3
-	ld a,(00007h)		;46d4
+	ld a,(00007h)		;46d4   ; el puerto de control
 	inc a			;46d7
 	ld c,a			;46d8
-	ld a,024h		;46d9
+	ld a,024h		;46d9   ; desde el registro 36
 	di			;46db
 	out (c),a		;46dc
 	ld a,091h		;46de
 	out (c),a		;46e0
-	inc c			;46e2
+	inc c			;46e2   ; el de los registros indirectos
 	inc c			;46e3
-	out (c),h		;46e4
+	out (c),h		;46e4   ; DX
 	xor a			;46e6
 	out (c),a		;46e7
-	out (c),l		;46e9
+	out (c),l		;46e9   ; DY
 	out (c),a		;46eb
 	pop hl			;46ed
 	dec h			;46ee
-	out (c),h		;46ef
+	out (c),h		;46ef   ; NX = largo - 1
 	xor a			;46f1
 	out (c),a		;46f2
-	xor a			;46f4
+	xor a			;46f4   ; NY = 0
 	out (c),a		;46f5
 	out (c),a		;46f7
-	out (c),l		;46f9
+	out (c),l		;46f9   ; el color
 	inc a			;46fb   ; ARG = 1: el lado largo es el vertical
 	out (c),a		;46fc
-	ld a,070h		;46fe
+	ld a,070h		;46fe   ; LINE
 	out (c),a		;4700
 	ei			;4702
 	ret			;4703
@@ -1178,20 +1178,20 @@ marco:		; pinta un marco: (H, L), D de ancho, E de alto, color C
 	ld b,e			;471a
 	jp linea_vertical_guardando		;471b   ; linea_vertical_guardando: linea_vertical sin perder HL, DE ni BC
 linea_vertical_guardando:		; linea_vertical sin perder HL, DE ni BC
-	push hl			;471e
+	push hl			;471e   ; guarda HL, DE y BC...
 	push de			;471f
 	push bc			;4720
 	call linea_vertical		;4721   ; linea_vertical: orden LINE: B puntos desde (H, L) hacia abajo, del color C
-	pop bc			;4724
+	pop bc			;4724   ; ... y los devuelve
 	pop de			;4725
 	pop hl			;4726
 	ret			;4727
 linea_horizontal_guardando:		; linea_horizontal sin perder HL, DE ni BC
-	push hl			;4728
+	push hl			;4728   ; guarda HL, DE y BC...
 	push de			;4729
 	push bc			;472a
 	call linea_horizontal		;472b   ; linea_horizontal: orden LINE: B puntos desde (H, L) a la derecha, del color C
-	pop bc			;472e
+	pop bc			;472e   ; ... y los devuelve
 	pop de			;472f
 	pop hl			;4730
 	ret			;4731
@@ -1220,41 +1220,41 @@ hmmv:		; orden HMMV del V9938: rellena un rectangulo (H, L, pagina D; B x C; col
 	jr nz,L_4757		;4754   ; 0 es 256
 	inc a			;4756
 L_4757:
-	out (c),a		;4757
+	out (c),a		;4757   ; el byte alto de NX: 1 si es 256
 	xor a			;4759
 	out (c),l		;475a   ; NY = C
-	cp l			;475c
+	cp l			;475c   ; el alto 0...
 	jr nz,L_4760		;475d
-	inc a			;475f
+	inc a			;475f   ; ... es 256
 L_4760:
-	out (c),a		;4760
+	out (c),a		;4760   ; el byte alto de NY
 	ex af,af'			;4762
 	out (c),a		;4763   ; CLR: en SCREEN 5, dos puntos por byte
 	xor a			;4765
-	out (c),a		;4766
+	out (c),a		;4766   ; ARG = 0
 	ld a,0c0h		;4768   ; 0xC0: HMMV
 	out (c),a		;476a
-	ei			;476c
+	ei			;476c   ; fin
 	ret			;476d
 hmmm:		; orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; paginas en A
 	ex af,af'			;476e   ; H, L = origen; D, E = destino; B = ancho, C = alto; A: bits 0-1 pagina de origen, 2-3 de destino
 	call espera_al_vdp		;476f   ; espera_al_vdp: espera a que el V9938 acabe la orden
 	push bc			;4772
-	ld a,(00007h)		;4773
+	ld a,(00007h)		;4773   ; el puerto de control
 	inc a			;4776
 	ld c,a			;4777
 	ld a,020h		;4778   ; desde el registro 32 (SX)
 	di			;477a
 	out (c),a		;477b
-	ld a,091h		;477d
+	ld a,091h		;477d   ; al registro 17, con autoincremento
 	out (c),a		;477f
-	inc c			;4781
+	inc c			;4781   ; el de los registros indirectos
 	inc c			;4782
 	out (c),h		;4783   ; SX = H
 	xor a			;4785
 	out (c),a		;4786
 	out (c),l		;4788   ; SY = L
-	ex af,af'			;478a
+	ex af,af'			;478a   ; las paginas
 	ld l,a			;478b
 	and 003h		;478c   ; y su pagina
 	out (c),a		;478e
@@ -1273,7 +1273,7 @@ hmmm:		; orden HMMM del V9938: copia el rectangulo de (H, L) a (D, E), B x C; pa
 	out (c),a		;47a2
 	out (c),l		;47a4   ; NY = C
 	out (c),a		;47a6
-	out (c),a		;47a8
+	out (c),a		;47a8   ; CLR y ARG a 0
 	out (c),a		;47aa
 	ld a,0d0h		;47ac   ; 0xD0: HMMM
 	out (c),a		;47ae
@@ -1283,13 +1283,13 @@ hmmc:		; orden HMMC del V9938: los puntos de HL a (D, E), B x C; pagina A
 	ex af,af'			;47b2   ; D, E = destino, A = su pagina, B = ancho, C = alto, HL = los puntos
 	call espera_al_vdp		;47b3   ; espera_al_vdp: espera a que el V9938 acabe la orden
 	push bc			;47b6
-	ld a,(00007h)		;47b7
+	ld a,(00007h)		;47b7   ; el puerto de control
 	inc a			;47ba
 	ld c,a			;47bb
-	ld a,024h		;47bc
+	ld a,024h		;47bc   ; desde el registro 36 (DX)
 	di			;47be
 	out (c),a		;47bf
-	ld a,091h		;47c1
+	ld a,091h		;47c1   ; al registro 17
 	out (c),a		;47c3
 	inc c			;47c5
 	inc c			;47c6

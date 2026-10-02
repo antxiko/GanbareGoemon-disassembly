@@ -39,9 +39,9 @@ sonido_del_cuadro:		; un cuadro de sonido: musica y efectos
 	ld (0c0abh),a		;6033   ; guarda los canales que suenan
 	jp L_603B		;6036
 L_6039:
-	ld a,03ah		;6039
+	ld a,03ah		;6039   ; la cuenta del fundido otra vez, 0x3A
 L_603B:
-	ld (0c0a9h),a		;603b
+	ld (0c0a9h),a		;603b   ; 0xC0A9 = la cuenta
 L_603E:
 	xor a			;603e   ; los tres canales y el efecto: B = el canal, 0xC09C el del PSG
 	ld b,a			;603f
@@ -60,32 +60,32 @@ L_603E:
 	ld hl,(0c016h)		;605c   ; lee el manejador del efecto de sonido y el byte siguiente (16 bits)
 al_manejador:		; 0xC09C el canal del PSG, 0xC09D la ficha; salta a HL
 	ld (0c09ch),a		;605f   ; 0xC09C = el canal del PSG, 0xC09D = la ficha (0-3); salta al manejador
-	ld a,b			;6062
+	ld a,b			;6062   ; la ficha (B)
 	ld (0c09dh),a		;6063
-	jp (hl)			;6066
+	jp (hl)			;6066   ; al manejador del canal
 canal_en_reposo:		; el canal que no suena
 	ld a,(0c09dh)		;6067   ; el canal se acabo: el manejador pasa a un ret...
 	cp 003h		;606a   ; ... y si era el efecto, 0xC09E = 0 (ninguno)
-	jp nz,L_6076		;606c
-	xor a			;606f
+	jp nz,L_6076		;606c   ; la musica: nada mas
+	xor a			;606f   ; el efecto: ya no hay ninguno
 	ld (0c09eh),a		;6070
 	ld a,(0c09dh)		;6073
 L_6076:
-	rlca			;6076
+	rlca			;6076   ; 2 bytes por manejador
 	ld hl,0c010h		;6077   ; apunta a el manejador del canal A del sonido
 	add a,l			;607a
 	ld l,a			;607b
 	jr nc,L_607F		;607c
 	inc h			;607e
 L_607F:
-	ld de,L_608A		;607f
-	ld (hl),e			;6082
+	ld de,L_608A		;607f   ; el manejador de este canal...
+	ld (hl),e			;6082   ; ... a un ret: ya no suena
 	inc hl			;6083
 	ld (hl),d			;6084
 	ld e,000h		;6085   ; y su volumen a 0
 	jp pon_el_volumen		;6087   ; pon_el_volumen: escribe el volumen del canal en el PSG
 L_608A:
-	ret			;608a
+	ret			;608a   ; un canal callado no hace nada
 L_608B:
 	ld hl,(0c018h)		;608b   ; lee el manejador del segundo efecto y el byte siguiente (16 bits)
 	jp (hl)			;608e
@@ -93,7 +93,7 @@ pon_el_tono:		; escribe el tono del canal en el PSG
 	ld a,(0c09ch)		;608f   ; el tono DE en los registros 2 * canal y 2 * canal + 1
 	rlca			;6092
 	call 00093h		;6093   ; BIOS WRTPSG - Writes data to PSG-register
-	inc a			;6096
+	inc a			;6096   ; el registro de la parte alta
 	ld e,d			;6097
 	jp 00093h		;6098   ; BIOS WRTPSG - Writes data to PSG-register
 pon_el_volumen:		; escribe el volumen del canal en el PSG
@@ -102,22 +102,22 @@ pon_el_volumen:		; escribe el volumen del canal en el PSG
 	jp 00093h		;60a0   ; BIOS WRTPSG - Writes data to PSG-register
 mezclador_nada:		; el canal, ni tono ni ruido
 	push hl			;60a3   ; el mezclador del canal, con una de cuatro mascaras (0x60D5-0x60EC): tono, ruido, los dos o nada
-	ld hl,060e7h		;60a4
+	ld hl,060e7h		;60a4   ; la pareja de 0x60E7
 	jp L_60BC		;60a7
 mezclador_ruido:		; el canal, con ruido
 	push hl			;60aa
-	ld hl,060e1h		;60ab
+	ld hl,060e1h		;60ab   ; la de 0x60E1
 	jp L_60BC		;60ae
 mezclador_tono_y_ruido:		; el canal, con tono y ruido
 	push hl			;60b1
-	ld hl,060dbh		;60b2
+	ld hl,060dbh		;60b2   ; la de 0x60DB
 	jp L_60BC		;60b5
 mezclador_tono:		; el canal, con tono
 	push hl			;60b8
-	ld hl,060d5h		;60b9
+	ld hl,060d5h		;60b9   ; la de 0x60D5
 L_60BC:
 	ld a,(0c09ch)		;60bc
-	rlca			;60bf
+	rlca			;60bf   ; 2 bytes por canal
 	add a,l			;60c0
 	ld l,a			;60c1
 	jr nc,L_60C5		;60c2
@@ -129,7 +129,7 @@ L_60C5:
 	or (hl)			;60ca
 	ld (0c09fh),a		;60cb   ; guarda la copia del registro 7 del PSG (el mezclador)
 	pop hl			;60ce
-	ld e,a			;60cf
+	ld e,a			;60cf   ; y al registro 7
 	ld a,007h		;60d0
 	jp 00093h		;60d2   ; BIOS WRTPSG - Writes data to PSG-register
 
@@ -163,9 +163,9 @@ canal_c:		; la ficha 0xC04E
 	ld ix,0c04eh		;6102   ; el C, 0xC04E
 un_canal:		; un cuadro del canal de la ficha IX
 	ld a,(0c09dh)		;6106   ; con un efecto sonando, el canal C de la musica se calla (bit 5)
-	cp 002h		;6109
+	cp 002h		;6109   ; el canal C...
 	jp nz,L_6119		;610b
-	ld a,(0c09eh)		;610e
+	ld a,(0c09eh)		;610e   ; ... con un efecto
 	or a			;6111
 	jp z,L_6119		;6112
 	set 5,(ix+002h)		;6115
@@ -173,14 +173,14 @@ L_6119:
 	ld a,(0c0b0h)		;6119   ; con 0xC0B0 (las musicas de las zonas con prisas): cada 5 cuadros un paso de mas, mas deprisa
 	or a			;611c
 	jr z,L_6134		;611d
-	ld a,(0c0b1h)		;611f
+	ld a,(0c0b1h)		;611f   ; cada 5 cuadros...
 	inc a			;6122
 	ld (0c0b1h),a		;6123
 	cp 005h		;6126
 	jr nz,L_6134		;6128
 	xor a			;612a
 	ld (0c0b1h),a		;612b
-	dec (ix+009h)		;612e
+	dec (ix+009h)		;612e   ; ... un cuadro de mas: la nota acaba antes
 	call z,lee_la_partitura		;6131   ; lee_la_partitura: lee la nota siguiente de la partitura
 L_6134:
 	dec (ix+009h)		;6134   ; la nota sigue: cuando acaba, la siguiente
@@ -196,25 +196,25 @@ L_6134:
 	ret nc			;6154
 L_6155:
 	ld e,(ix+00ah)		;6155   ; ... un punto menos, hasta 0
-	dec e			;6158
-	ret m			;6159
+	dec e			;6158   ; un punto menos...
+	ret m			;6159   ; ... hasta 0
 	ld (ix+00ah),e		;615a
-	bit 5,(ix+002h)		;615d
+	bit 5,(ix+002h)		;615d   ; callado: no se escribe
 	ret nz			;6161
 	jp pon_el_volumen		;6162   ; pon_el_volumen: escribe el volumen del canal en el PSG
 vibrato:		; el vibrato del canal
 	bit 0,(ix+014h)		;6165   ; el vibrato: espera 10 pasos...
 	jr nz,L_617B		;6169
-	ld a,(ix+015h)		;616b
+	ld a,(ix+015h)		;616b   ; 10 pasos de espera
 	inc a			;616e
 	cp 00ah		;616f
 	jp c,L_61BA		;6171
-	inc (ix+014h)		;6174
+	inc (ix+014h)		;6174   ; empieza (bit 0)
 	xor a			;6177
 	jp L_61BA		;6178
 L_617B:
 	ld a,(ix+019h)		;617b   ; ... y luego, cada (ix+0x19 / 16) pasos, el tono sube o baja (ix+0x19 mod 16)
-	and 0f0h		;617e
+	and 0f0h		;617e   ; cada cuantos pasos (nibble de arriba)
 	rrca			;6180
 	rrca			;6181
 	rrca			;6182
@@ -224,39 +224,39 @@ L_617B:
 	inc a			;6188
 	cp e			;6189
 	jp c,L_61BA		;618a
-	ld e,(ix+017h)		;618d
+	ld e,(ix+017h)		;618d   ; el tono de ahora
 	ld d,(ix+018h)		;6190
-	ld a,(ix+019h)		;6193
+	ld a,(ix+019h)		;6193   ; cuanto se mueve (nibble de abajo)
 	and 00fh		;6196
 	ld b,a			;6198
-	ld a,(ix+016h)		;6199
+	ld a,(ix+016h)		;6199   ; una vez arriba y otra abajo (0xFF / 0)
 	cpl			;619c
 	ld (ix+016h),a		;619d
 	and a			;61a0
 	ld a,e			;61a1
 	jr nz,L_61AB		;61a2
-	add a,b			;61a4
+	add a,b			;61a4   ; + el paso
 	ld e,a			;61a5
 	jr nc,L_61B0		;61a6
 	inc d			;61a8
 	jr L_61B0		;61a9
 L_61AB:
-	sub b			;61ab
+	sub b			;61ab   ; - el paso
 	ld e,a			;61ac
 	jr nc,L_61B0		;61ad
 	dec d			;61af
 L_61B0:
-	ld (ix+017h),e		;61b0
+	ld (ix+017h),e		;61b0   ; el tono nuevo
 	ld (ix+018h),d		;61b3
 	call pon_el_tono		;61b6   ; pon_el_tono: escribe el tono del canal en el PSG
-	xor a			;61b9
+	xor a			;61b9   ; la cuenta a 0
 L_61BA:
-	ld (ix+015h),a		;61ba
+	ld (ix+015h),a		;61ba   ; la cuenta del vibrato
 	ret			;61bd
 L_61BE:
 	bit 5,(ix+002h)		;61be   ; el tono + 1 si el bit 6 lo pide
 	ret nz			;61c2
-	ld e,(ix+017h)		;61c3
+	ld e,(ix+017h)		;61c3   ; el tono
 	ld d,(ix+018h)		;61c6
 	bit 6,(ix+002h)		;61c9
 	jp z,L_61D1		;61cd
@@ -267,12 +267,12 @@ L_61D1:
 	jp pon_el_tono		;61d7   ; pon_el_tono: escribe el tono del canal en el PSG
 L_61DA:
 	bit 5,(ix+002h)		;61da   ; un canal de efecto: su cuadro, y al acabar, callado
-	ret nz			;61de
+	ret nz			;61de   ; callado: nada
 	bit 7,(ix+002h)		;61df
-	ret nz			;61e3
+	ret nz			;61e3   ; acabado: nada
 	call cuadro_del_efecto		;61e4   ; cuadro_del_efecto: un cuadro del efecto de sonido
 	ret nc			;61e7
-	set 7,(ix+002h)		;61e8
+	set 7,(ix+002h)		;61e8   ; acabado
 	ld e,000h		;61ec
 	jp pon_el_volumen		;61ee   ; pon_el_volumen: escribe el volumen del canal en el PSG
 lee_la_partitura:		; lee la nota siguiente de la partitura
@@ -281,17 +281,17 @@ lee_la_partitura:		; lee la nota siguiente de la partitura
 L_61F7:
 	ld a,(hl)			;61f7
 	inc hl			;61f8
-	ld c,a			;61f9
+	ld c,a			;61f9   ; C = el byte
 	cp 0d0h		;61fa   ; 0xD0 o mas: una orden
 	jp nc,orden_de_la_partitura		;61fc   ; orden_de_la_partitura: las ordenes 0xD0-0xFF
-	ld (ix+000h),l		;61ff
+	ld (ix+000h),l		;61ff   ; la partitura sigue en el byte siguiente
 	ld (ix+001h),h		;6202
 	cp 0c0h		;6205   ; 0xC0-0xCF: otra cosa (p10:631B)
 	jp nc,silencio		;6207   ; silencio: una pausa de la partitura
 	and 00fh		;620a   ; una nota: el nibble de abajo + 1, la duracion en pasos de (ix+3)
 	inc a			;620c
 	ld b,a			;620d
-	ld e,(ix+003h)		;620e
+	ld e,(ix+003h)		;620e   ; (ix+3): el paso
 	xor a			;6211   ; sin vibrato aun
 	ld (ix+015h),a		;6212
 	ld (ix+016h),a		;6215
@@ -299,44 +299,44 @@ L_61F7:
 L_621C:
 	add a,e			;621c   ; la duracion = (n + 1) * (ix+3) cuadros
 	djnz L_621C		;621d
-	ld (ix+009h),a		;621f
+	ld (ix+009h),a		;621f   ; (ix+9): cuantos cuadros dura
 	ld a,(0c09dh)		;6222   ; el canal C de la musica vuelve si ya no hay efecto
 	cp 002h		;6225
-	jp nz,L_6235		;6227
-	ld a,(0c09eh)		;622a
+	jp nz,L_6235		;6227   ; los canales A y B: nada
+	ld a,(0c09eh)		;622a   ; el C, si no hay efecto...
 	or a			;622d
 	jp nz,L_6235		;622e
-	res 5,(ix+002h)		;6231
+	res 5,(ix+002h)		;6231   ; ... vuelve a sonar
 L_6235:
 	bit 0,(ix+002h)		;6235   ; en un canal de tono:
 	jp z,L_628F		;6239
 	ld a,(ix+009h)		;623c   ; cuando empieza a bajar el volumen: la duracion - (ix+5)
 	sub (ix+005h)		;623f
 	ld (ix+00bh),a		;6242
-	bit 5,(ix+002h)		;6245
+	bit 5,(ix+002h)		;6245   ; callado: no se escribe nada
 	ret nz			;6249
 	ld a,c			;624a   ; el nibble de arriba: la nota (tabla de 0x6303)...
 	and 0f0h		;624b
 	rrca			;624d
 	rrca			;624e
 	rrca			;624f
-	ld hl,06303h		;6250
+	ld hl,06303h		;6250   ; 2 bytes por nota
 	add a,l			;6253
 	ld l,a			;6254
 	jr nc,L_6258		;6255
 	inc h			;6257
 L_6258:
-	ld e,(hl)			;6258
+	ld e,(hl)			;6258   ; el periodo de la nota en la octava mas grave
 	inc hl			;6259
 	ld d,(hl)			;625a
 	ld b,(ix+007h)		;625b   ; ... bajada (ix+7) octavas
 L_625E:
-	srl d		;625e
+	srl d		;625e   ; / 2 por cada octava
 	rr e		;6260
 	djnz L_625E		;6262
-	ld (ix+017h),e		;6264
+	ld (ix+017h),e		;6264   ; (ix+0x17, 0x18) el tono
 	ld (ix+018h),d		;6267
-	bit 6,(ix+002h)		;626a
+	bit 6,(ix+002h)		;626a   ; con el bit 6, un poco mas grave
 	jp z,L_6272		;626e
 	inc de			;6271
 L_6272:
@@ -348,13 +348,13 @@ L_6272:
 	jp p,L_6285		;6281
 	xor a			;6284
 L_6285:
-	ld (ix+00ah),a		;6285
+	ld (ix+00ah),a		;6285   ; el volumen
 	ld e,a			;6288
 	call pon_el_volumen		;6289   ; pon_el_volumen: escribe el volumen del canal en el PSG
 	jp mezclador_tono		;628c   ; y el mezclador con tono
 L_628F:
 	ld a,(ix+008h)		;628f   ; en un canal de ruido, segun su clase (ix+8)
-	cp 000h		;6292
+	cp 000h		;6292   ; la clase 0, 0x8051
 	jr z,L_62C4		;6294
 	cp 001h		;6296
 	jr z,L_62E5		;6298
@@ -366,7 +366,7 @@ L_628F:
 	jr z,L_62F7		;62a4
 	cp 005h		;62a6
 	jr z,L_62FD		;62a8
-	cp 006h		;62aa
+	cp 006h		;62aa   ; la 6, 0x80ED; la 7, 0x8107
 	jr z,L_62BE		;62ac
 	cp 007h		;62ae
 	jr z,L_62B8		;62b0
@@ -382,7 +382,7 @@ L_62C4:
 	ld hl,08051h		;62c4
 L_62C7:
 	ld a,c			;62c7   ; el nibble de arriba de la nota elige la envolvente de la clase...
-	and 0f0h		;62c8
+	and 0f0h		;62c8   ; 2 bytes por envolvente
 	rrca			;62ca
 	rrca			;62cb
 	rrca			;62cc
@@ -392,12 +392,12 @@ L_62C7:
 	inc h			;62d1
 L_62D2:
 	ld a,(hl)			;62d2   ; ... (ix+0x0C, 0x0D), que lee p10:6454 cuadro a cuadro
-	ld (ix+00ch),a		;62d3
+	ld (ix+00ch),a		;62d3   ; la envolvente de volumen y tono
 	inc hl			;62d6
 	ld a,(hl)			;62d7
 	ld (ix+00dh),a		;62d8
 	res 7,(ix+002h)		;62db   ; y empieza: el bit 7 a cero, la primera ya
-	ld a,001h		;62df
+	ld a,001h		;62df   ; el primer paso enseguida
 	ld (ix+00eh),a		;62e1
 	ret			;62e4
 L_62E5:
@@ -445,19 +445,19 @@ silencio:		; una pausa de la partitura
 	and 00fh		;631b   ; 0xC0-0xCF: un silencio de (n + 1) pasos
 	inc a			;631d
 	ld b,a			;631e
-	ld e,(ix+003h)		;631f
+	ld e,(ix+003h)		;631f   ; en pasos de (ix+3)
 	xor a			;6322
 L_6323:
 	add a,e			;6323
 	djnz L_6323		;6324
-	ld (ix+009h),a		;6326
-	res 0,(ix+005h)		;6329
-	xor a			;632d
+	ld (ix+009h),a		;6326   ; la duracion
+	res 0,(ix+005h)		;6329   ; sin caida
+	xor a			;632d   ; ni vibrato
 	ld (ix+015h),a		;632e
 	ld (ix+016h),a		;6331
 	bit 5,(ix+002h)		;6334   ; volumen 0
 	ret nz			;6338
-	ld e,000h		;6339
+	ld e,000h		;6339   ; el volumen a 0
 	ld (ix+00ah),e		;633b
 	jp pon_el_volumen		;633e   ; pon_el_volumen: escribe el volumen del canal en el PSG
 orden_de_la_partitura:		; las ordenes 0xD0-0xFF
@@ -472,47 +472,47 @@ orden_de_la_partitura:		; las ordenes 0xD0-0xFF
 	jp z,L_6434		;6352
 	cp 00eh		;6355   ; 0xFE [veces][direccion]: repetir desde la direccion, (ix+0x10) cuenta las veces
 	jp nz,L_637A		;6357
-	ld a,(ix+010h)		;635a
+	ld a,(ix+010h)		;635a   ; las veces que quedan
 	dec a			;635d
-	jp z,L_6371		;635e
-	jp p,L_6366		;6361
-	ld a,(hl)			;6364
+	jp z,L_6371		;635e   ; la ultima: sigue
+	jp p,L_6366		;6361   ; en marcha: una menos
+	ld a,(hl)			;6364   ; la primera vez: las veces del byte - 1
 	dec a			;6365
 L_6366:
 	inc hl			;6366
 	ld (ix+010h),a		;6367
-	ld a,(hl)			;636a
+	ld a,(hl)			;636a   ; la direccion: vuelta alli
 	inc hl			;636b
 	ld h,(hl)			;636c
 	ld l,a			;636d
 	jp L_61F7		;636e
 L_6371:
 	ld (ix+010h),a		;6371   ; hechas todas, sigue
-	inc hl			;6374
+	inc hl			;6374   ; se saltan los 3 bytes
 	inc hl			;6375
 	inc hl			;6376
 	jp L_61F7		;6377
 L_637A:
 	ld c,a			;637a   ; 0xF0-0xFD: el volumen (n + 2; 0 con 0xC0B2) y un byte [caida][duracion]
-	ld a,(0c0b2h)		;637b
+	ld a,(0c0b2h)		;637b   ; con 0xC0B2 puesto, callado
 	or a			;637e
 	jp z,L_6386		;637f
 	ld a,000h		;6382
 	jr L_6389		;6384
 L_6386:
-	ld a,c			;6386
+	ld a,c			;6386   ; si no, n + 2
 	inc a			;6387
 	inc a			;6388
 L_6389:
-	ld (ix+004h),a		;6389
-	ld a,(hl)			;638c
+	ld (ix+004h),a		;6389   ; el volumen
+	ld a,(hl)			;638c   ; el nibble de arriba
 	rrca			;638d
 	rrca			;638e
 	rrca			;638f
 	rrca			;6390
 	and 00fh		;6391
 	ld (ix+005h),a		;6393   ; cuando empieza a caer (ix+5) y cada cuanto (ix+6)
-	ld a,(hl)			;6396
+	ld a,(hl)			;6396   ; el de abajo + 1
 	inc hl			;6397
 	and 00fh		;6398
 	inc a			;639a
@@ -525,7 +525,7 @@ L_63A1:
 	jp L_61F7		;63a7
 L_63AA:
 	ld a,c			;63aa   ; 0xE0-0xE5: la octava (6 - n)
-	and 00fh		;63ab
+	and 00fh		;63ab   ; n
 	cp 006h		;63ad
 	jp c,L_63F6		;63af
 	jp z,L_6400		;63b2   ; 0xE6: 0xC0AC = 1
@@ -541,7 +541,7 @@ L_63AA:
 	jp z,L_642B		;63cb
 	cp 008h		;63ce   ; 0xE8 [clase]: canal de ruido, con la clase (ix+8)
 	jp z,L_63E3		;63d0
-	cp 00ch		;63d3
+	cp 00ch		;63d3   ; 0xEC
 	jr nz,L_63EF		;63d5
 	set 2,(ix+014h)		;63d7   ; 0xEC [vibrato]: vibrato (ix+0x19)
 	ld a,(hl)			;63db
@@ -549,60 +549,60 @@ L_63AA:
 	ld (ix+019h),a		;63dd
 	jp L_61F7		;63e0
 L_63E3:
-	res 0,(ix+002h)		;63e3
-	ld a,(hl)			;63e7
+	res 0,(ix+002h)		;63e3   ; sin tono: ruido
+	ld a,(hl)			;63e7   ; la clase
 	inc hl			;63e8
 	ld (ix+008h),a		;63e9
 	jp L_61F7		;63ec
 L_63EF:
-	set 0,(ix+002h)		;63ef   ; 0xE9: canal de tono
+	set 0,(ix+002h)		;63ef   ; 0xE9 y las demas: tono
 	jp L_61F7		;63f3
 L_63F6:
-	neg		;63f6
+	neg		;63f6   ; 6 - n: cuantas octavas se baja
 	add a,006h		;63f8
 	ld (ix+007h),a		;63fa
 	jp L_61F7		;63fd
 L_6400:
 	ld a,001h		;6400
-	ld (0c0ach),a		;6402
-	jp L_61F7		;6405
+	ld (0c0ach),a		;6402   ; 0xC0AC = 1
+	jp L_61F7		;6405   ; sigue con la partitura
 L_6408:
 	xor a			;6408
-	ld (0c0ach),a		;6409
-	jp L_61F7		;640c
+	ld (0c0ach),a		;6409   ; 0xC0AC = 0
+	jp L_61F7		;640c   ; sigue
 L_640F:
-	set 6,(ix+002h)		;640f
+	set 6,(ix+002h)		;640f   ; un poco mas grave
 	jp L_61F7		;6413
 L_6416:
-	ld a,(hl)			;6416
+	ld a,(hl)			;6416   ; la direccion nueva
 	inc hl			;6417
-	ld h,(hl)			;6418
+	ld h,(hl)			;6418   ; HL = la direccion
 	ld l,a			;6419
 	jp L_61F7		;641a
 L_641D:
-	ld e,(hl)			;641d
+	ld e,(hl)			;641d   ; la direccion de la subrutina
 	inc hl			;641e
-	ld d,(hl)			;641f
+	ld d,(hl)			;641f   ; DE = la subrutina
 	inc hl			;6420
-	ld (ix+012h),l		;6421
+	ld (ix+012h),l		;6421   ; la vuelta, en (ix+0x12, 0x13)
 	ld (ix+013h),h		;6424
-	ex de,hl			;6427
+	ex de,hl			;6427   ; alli
 	jp L_61F7		;6428
 L_642B:
-	ld l,(ix+012h)		;642b
-	ld h,(ix+013h)		;642e
+	ld l,(ix+012h)		;642b   ; la vuelta
+	ld h,(ix+013h)		;642e   ; HL = la vuelta
 	jp L_61F7		;6431
 L_6434:
 	ld a,(0c09dh)		;6434   ; el canal acabado: fuera su bit de 0xC0AB
-	inc a			;6437
+	inc a			;6437   ; el bit de la ficha (n + 1 vueltas del 0x7F)...
 	ld b,a			;6438
 	ld a,07fh		;6439
 L_643B:
-	rlca			;643b
+	rlca			;643b   ; rlca n + 1 veces: el bit de la ficha a 0
 	djnz L_643B		;643c
 	ld b,a			;643e
 	ld a,(0c0abh)		;643f   ; lee los canales que suenan
-	and b			;6442
+	and b			;6442   ; fuera de los que suenan
 	ld (0c0abh),a		;6443   ; guarda los canales que suenan
 	jp canal_en_reposo		;6446   ; canal_en_reposo: el canal que no suena
 el_efecto:		; un cuadro del efecto (ficha 0xC068)
@@ -613,15 +613,15 @@ el_efecto:		; un cuadro del efecto (ficha 0xC068)
 cuadro_del_efecto:		; un cuadro del efecto de sonido
 	dec (ix+00eh)		;6454   ; un cuadro de envolvente: cada (ix+0x0F) cuadros, el paso siguiente
 	jp nz,L_654E		;6457
-	ld a,(ix+00fh)		;645a
+	ld a,(ix+00fh)		;645a   ; la duracion de cada paso
 	ld (ix+00eh),a		;645d
-	ld l,(ix+00ch)		;6460
+	ld l,(ix+00ch)		;6460   ; donde va
 	ld h,(ix+00dh)		;6463
 L_6466:
 	ld a,(hl)			;6466   ; 0xFF acaba (carry)
-	cp 0ffh		;6467
+	cp 0ffh		;6467   ; 0xFF?
 	jp z,L_6550		;6469
-	inc hl			;646c
+	inc hl			;646c   ; C = el byte
 	ld c,a			;646d
 	cp 0feh		;646e   ; 0xFE: repetir
 	jp z,L_64D5		;6470

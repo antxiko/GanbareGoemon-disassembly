@@ -108,7 +108,6 @@ C 0x42A3 a 0xD000: las pantallas de la zona, 8x6 bloques cada una
 C 0x42AF tambien por juego de graficos
 C 0x42B3 la tabla de punteros de los bloques, en el banco 13
 C 0x42BA a 0xE100: los bloques, 4x4 caracteres cada uno
-C 0x42C3 el byte de control: 0 acaba
 C 0x42C7 sin el bit 7, una racha de B bytes iguales; con el, una tira de n - 0x80 bytes sueltos
 C 0x42CD un 0x80 solo no copia nada
 C 0x42D0 copia A bytes tal cual
@@ -816,6 +815,92 @@ C 0x5FEE carry si no esta apretada
 C 0x5FF1 continuar: 3 vidas...
 C 0x5FF9 ... y los puntos a cero
 C 0x4DAA DE = 0xC000 de la VRAM: la pagina 1, y 0x80
+C 0x4081 sin correr el juego
+C 0x4088 suma A a la parte baja
+C 0x408A sin acarreo, ya esta
+C 0x408B con acarreo, sube la parte alta
+C 0x41FA * 2
+C 0x41FC * 4
+C 0x41FD + 1 + 2: * 7
+C 0x42C3 lee el byte de control
+C 0x42C6 el siguiente
+C 0x42D1 BC = n
+C 0x42DD B veces
+C 0x4337 8 mas abajo
+C 0x433F y la x vuelve al principio del renglon
+C 0x4357 DE = HL + 1
+C 0x4364 3 bytes
+C 0x4390 el byte del medio
+C 0x4396 el de arriba
+C 0x43DA DE = el record (0xC256 abajo)
+C 0x43DC HL = los puntos (0xC259 abajo)
+C 0x444A C = (HL)
+C 0x444C (HL) = (DE)
+C 0x444E (DE) = C
+C 0x4452 uno menos
+C 0x447F A * 2
+C 0x44A4 otra vuelta de 256
+C 0x44A7 HL = el destino al final
+C 0x44C0 otra vuelta de 256
+C 0x44CF C = el puerto de escritura
+C 0x44D6 la vuelta corta
+C 0x44D9 y las largas
+C 0x44EE el puerto de escritura
+C 0x44F2 el byte
+C 0x44FB el de control es el siguiente
+C 0x4502 sin interrupciones mientras se escribe en el VDP
+C 0x4517 el puerto de control
+C 0x451D los dos bits de arriba...
+C 0x4524 ... al registro 14
+C 0x4528 los 8 de abajo
+C 0x4534 E y D: el destino
+C 0x4538 HL = el destino, DE = el rle
+C 0x4554 la racha: el byte
+C 0x4555 el byte siguiente
+C 0x455D el destino
+C 0x456D el byte de control
+C 0x456F 0 acaba: a la VRAM
+C 0x4572 B = n
+C 0x457B B = n - 0x80
+C 0x458E el byte (vuelto)
+C 0x4595 el byte siguiente del rle
+C 0x463E B = el color
+C 0x463F el puerto de control
+C 0x4647 al registro 16
+C 0x4656 color * 2
+C 0x465D el puerto de datos
+C 0x466A el color
+C 0x466B RB
+C 0x466D G
+C 0x4682 + 1: los de la BIOS son los de datos
+C 0x4699 A = el estado
+C 0x46D4 el puerto de control
+C 0x46D9 desde el registro 36
+C 0x46E2 el de los registros indirectos
+C 0x46E4 DX
+C 0x46E9 DY
+C 0x46EF NX = largo - 1
+C 0x46F4 NY = 0
+C 0x46F9 el color
+C 0x46FE LINE
+C 0x471E guarda HL, DE y BC...
+C 0x4724 ... y los devuelve
+C 0x4728 guarda HL, DE y BC...
+C 0x472E ... y los devuelve
+C 0x4757 el byte alto de NX: 1 si es 256
+C 0x475C el alto 0...
+C 0x475F ... es 256
+C 0x4760 el byte alto de NY
+C 0x4766 ARG = 0
+C 0x476C fin
+C 0x4773 el puerto de control
+C 0x477D al registro 17, con autoincremento
+C 0x4781 el de los registros indirectos
+C 0x478A las paginas
+C 0x47A8 CLR y ARG a 0
+C 0x47B7 el puerto de control
+C 0x47C1 al registro 17
+C 0x47BC desde el registro 36 (DX)
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x4000 0x4010 cabecera_ab  la cabecera del cartucho: 'AB', INIT (0x4097) y STATEMENT, DEVICE y TEXT a cero; lo leen la BIOS (16 bytes)

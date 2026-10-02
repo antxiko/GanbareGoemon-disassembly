@@ -56,23 +56,23 @@ L_8006:
 	ret			;8026
 L_8027:
 	ld hl,0ef0fh		;8027   ; el numero de 0xEF0F, de BCD a binario, a 0xEF0E
-	ld a,(hl)			;802a
+	ld a,(hl)			;802a   ; el numero, en BCD
 	ld c,a			;802b
 	rrca			;802c   ; las decenas...
 	rrca			;802d
 	rrca			;802e
 	rrca			;802f
-	and 00fh		;8030
+	and 00fh		;8030   ; de 0 a 9
 	add a,a			;8032   ; ... por 10 (2 + 8)
 	ld b,a			;8033
-	add a,a			;8034
+	add a,a			;8034   ; * 8
 	add a,a			;8035
-	add a,b			;8036
+	add a,b			;8036   ; + * 2
 	ld b,a			;8037
 	ld a,c			;8038   ; mas las unidades
 	and 00fh		;8039
 	add a,b			;803b
-	ld (0ef0eh),a		;803c
+	ld (0ef0eh),a		;803c   ; a 0xEF0E
 	ret			;803f
 L_8040:
 	ld a,007h		;8040   ; RETURN (fila 7, bit 7) recien apretada
@@ -119,7 +119,7 @@ L_807E:
 	jr c,L_8089		;8086
 	xor a			;8088
 L_8089:
-	ld (0c261h),a		;8089
+	ld (0c261h),a		;8089   ; 0xC261 = lo elegido
 L_808C:
 	pop af			;808c   ; bit 1: las vidas (0xEF07)
 	rra			;808d
@@ -335,8 +335,8 @@ L_81B6:
 	add a,b			;81b7
 	add a,b			;81b8
 	add a,b			;81b9
-	ld (de),a			;81ba
-	inc de			;81bb
+	ld (de),a			;81ba   ; el patron
+	inc de			;81bb   ; el siguiente sprite (4 bytes)
 	inc de			;81bc
 	dec hl			;81bd   ; los dos en el mismo sitio
 	dec hl			;81be
@@ -542,14 +542,14 @@ DATA_tabla_8294:
 
 L_82F2:
 	ld a,(0cd12h)		;82f2   ; la espera: 0xE0 - (los bits 2-3 de 0xCD12) * 8
-	and 00ch		;82f5
-	add a,a			;82f7
+	and 00ch		;82f5   ; los bits 2-3
+	add a,a			;82f7   ; * 8
 	add a,a			;82f8
 	add a,a			;82f9
 	ld c,a			;82fa
 	ld a,0e0h		;82fb
 	sub c			;82fd   ; menos que 0xE0
-	ld (0cd16h),a		;82fe
+	ld (0cd16h),a		;82fe   ; la espera
 	ret			;8301
 L_8302:
 	ld hl,0c600h		;8302   ; cuantas figuras hay en 0xC600
@@ -637,7 +637,7 @@ L_836C:
 L_8391:
 	inc d			;8391   ; ocupado: dos huecos mas alla
 	inc d			;8392
-	inc hl			;8393
+	inc hl			;8393   ; 8 bytes de la copia: dos sprites
 	inc hl			;8394
 	inc hl			;8395
 	inc hl			;8396
@@ -659,16 +659,16 @@ L_83AE:
 	ld a,(hl)			;83ae   ; el numero de hueco
 	push hl			;83af
 	ld hl,0ee20h		;83b0
-	add a,a			;83b3
+	add a,a			;83b3   ; * 4
 	add a,a			;83b4
 	call 04083h		;83b5   ; hl_mas_a: HL += A
 	ld a,0e0h		;83b8   ; libre otra vez
 	ld (hl),a			;83ba
 	pop hl			;83bb
-	add hl,de			;83bc
+	add hl,de			;83bc   ; el siguiente sprite de la figura
 	djnz L_83AE		;83bd
 	ld a,(0cd39h)		;83bf   ; el tipo 7: 0xCD14 = 0, 0xCD31 = 0 y 0xCD30 = 16
-	cp 007h		;83c2
+	cp 007h		;83c2   ; el tipo 7
 	ret nz			;83c4
 	xor a			;83c5
 	ld (0cd14h),a		;83c6
@@ -680,14 +680,14 @@ L_83D2:
 	push hl			;83d2   ; los 32 primeros bytes de la figura a cero
 	push bc			;83d3
 	push de			;83d4
-	ld hl,(0cd3ch)		;83d5
+	ld hl,(0cd3ch)		;83d5   ; la figura nueva (0xCD3C)
 	ld d,h			;83d8
 	ld e,l			;83d9
 	inc de			;83da
 	ld bc,0001fh		;83db   ; 32 bytes
 	xor a			;83de
-	ld (hl),a			;83df
-	ldir		;83e0
+	ld (hl),a			;83df   ; el primero, a 0
+	ldir		;83e0   ; y el resto
 	pop de			;83e2
 	pop bc			;83e3
 	pop hl			;83e4
@@ -1330,7 +1330,7 @@ L_8848:
 	ret nc			;8850
 L_8851:
 	dec l			;8851   ; ... ese sprite no se ve (0xE1 en su y)
-	ld a,0e1h		;8852
+	ld a,0e1h		;8852   ; 0xE1
 	ld (hl),a			;8854
 	inc l			;8855
 	ret			;8856
@@ -1352,12 +1352,12 @@ L_8869:
 	pop bc			;8872
 	pop de			;8873
 	pop hl			;8874
-	add hl,de			;8875
+	add hl,de			;8875   ; la siguiente
 	djnz L_8869		;8876
 	ret			;8878
 L_8879:
 	ld a,(hl)			;8879   ; NC si la figura existe, (+0x0E) es cero y lleva sprites
-	or a			;887a
+	or a			;887a   ; sin tipo: carry
 	jr z,L_8891		;887b
 	push hl			;887d
 	ld a,00eh		;887e   ; (+0x0E) puesto: no se ve
@@ -1373,7 +1373,7 @@ L_8879:
 	pop hl			;888b
 	or a			;888c
 	jr z,L_8891		;888d
-	or a			;888f
+	or a			;888f   ; NC
 	ret			;8890
 L_8891:
 	scf			;8891   ; carry: nada que subir
@@ -1384,10 +1384,10 @@ L_8893:
 	inc l			;8896
 L_8897:
 	ld a,(hl)			;8897   ; el hueco: su sitio en 0xEE20
-	inc l			;8898
+	inc l			;8898   ; al byte siguiente del sprite
 	add a,a			;8899
 	add a,a			;889a
-	ld de,0ee20h		;889b
+	ld de,0ee20h		;889b   ; la copia de los sprites de las figuras
 	add a,e			;889e
 	ld e,a			;889f
 	ld a,(hl)			;88a0   ; la y
@@ -1459,7 +1459,7 @@ disparo_1:		; el disparo 1, un cuadro
 	ret nc			;88fc
 L_88FD:
 	inc (ix+001h)		;88fd   ; ... y se para
-	ld de,00000h		;8900
+	ld de,00000h		;8900   ; parado
 	call pon_velocidad_x		;8903   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 	jp pon_velocidad_y		;8906   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_8909:
@@ -1473,7 +1473,7 @@ disparo_2:		; el disparo 2, un cuadro
 	ld b,058h		;8918   ; pose 0x58 + (0xC00D / 4) mod 4: cuatro poses en rueda
 L_891A:
 	ld a,(0c00dh)		;891a   ; cada 4 cuadros...
-	rrca			;891d
+	rrca			;891d   ; / 4
 	rrca			;891e
 	and 003h		;891f   ; ... una de cuatro poses
 	add a,b			;8921
@@ -1833,10 +1833,10 @@ DATA_y_de_cada_disparo:
 
 L_8B76:
 	ld e,(ix+003h)		;8b76   ; la velocidad hacia el jugador: el modulo es A + la dificultad * 8
-	ld d,(ix+005h)		;8b79   ; lee la x de la figura
+	ld d,(ix+005h)		;8b79   ; la x
 	ld c,a			;8b7c   ; C = la velocidad
 	ld a,(0cd12h)		;8b7d
-	add a,a			;8b80
+	add a,a			;8b80   ; la dificultad * 8
 	add a,a			;8b81
 	add a,a			;8b82
 	add a,c			;8b83
@@ -1844,7 +1844,7 @@ L_8B76:
 	call L_8BC2		;8b87   ; el angulo, de la tabla de 0x8C30
 	ld a,(0cd1eh)		;8b8a   ; el angulo...
 	ld e,a			;8b8d
-	ld d,000h		;8b8e
+	ld d,000h		;8b8e   ; D = 0
 	sub 03fh		;8b90   ; ... y su complementario (0x3F - angulo)
 	neg		;8b92
 	ld hl,08c70h		;8b94   ; el seno y el coseno, de 0x8C70
@@ -1852,7 +1852,7 @@ L_8B76:
 	add hl,de			;8b98
 	ld c,(hl)			;8b99   ; C = el seno
 	pop hl			;8b9a
-	ld e,a			;8b9b
+	ld e,a			;8b9b   ; E = el angulo complementario
 	add hl,de			;8b9c
 	ld a,(hl)			;8b9d   ; el coseno, a 0xCD1F
 	ld (0cd1fh),a		;8b9e
@@ -1863,12 +1863,12 @@ L_8B76:
 	call nz,niega_de		;8ba9   ; niega_de: DE = -DE
 	ld (0cd22h),de		;8bac   ; 0xCD22 = la vertical
 	ld a,(0cd1fh)		;8bb0
-	ld e,a			;8bb3
+	ld e,a			;8bb3   ; E = el coseno
 	call L_8C12		;8bb4   ; ... y la horizontal; HL = la vertical, DE = la horizontal
 	ld a,(0cd21h)		;8bb7   ; con el signo de dx
 	and a			;8bba
 	call nz,niega_de		;8bbb   ; niega_de: DE = -DE
-	ld hl,(0cd22h)		;8bbe
+	ld hl,(0cd22h)		;8bbe   ; HL = la vertical
 	ret			;8bc1
 L_8BC2:
 	ld hl,0cd20h		;8bc2   ; |dy| / 32 y |dx| / 32, con su signo en 0xCD20 y 0xCD21
@@ -1880,7 +1880,7 @@ L_8BC2:
 	inc (hl)			;8bcf   ; hacia arriba: 0xCD20 = 1
 L_8BD0:
 	inc hl			;8bd0
-	ld (hl),000h		;8bd1
+	ld (hl),000h		;8bd1   ; 0xCD21 = 0
 	rra			;8bd3   ; |dy| / 32, por 8: la fila
 	rra			;8bd4
 	and 038h		;8bd5
@@ -1901,7 +1901,7 @@ L_8BE1:
 	ld hl,08c30h		;8be9   ; 8 x 8 casos: el angulo (0-0x3F) en 0xCD1E
 	call 04083h		;8bec   ; hl_mas_a: HL += A
 	ld a,(hl)			;8bef
-	ld (0cd1eh),a		;8bf0
+	ld (0cd1eh),a		;8bf0   ; el angulo
 	ld c,a			;8bf3
 	ld hl,(0cd20h)		;8bf4   ; H = signo de x, L = signo de y
 	ld a,h			;8bf7
@@ -1916,7 +1916,7 @@ L_8BFF:
 	neg		;8c03
 L_8C05:
 	add a,b			;8c05
-	ld (0cd24h),a		;8c06
+	ld (0cd24h),a		;8c06   ; el rumbo
 	ret			;8c09
 niega_de:		; DE = -DE
 	ld a,d			;8c0a   ; el complemento a uno...
@@ -1929,10 +1929,10 @@ niega_de:		; DE = -DE
 	ret			;8c11
 L_8C12:
 	ld a,(0cd1dh)		;8c12   ; DE = (0xCD1D * E) / 32: la componente
-	ld h,a			;8c15
+	ld h,a			;8c15   ; H = el modulo
 	call L_8C24		;8c16   ; HL = modulo * E
 	xor a			;8c19   ; / 32: A:H
-	add hl,hl			;8c1a
+	add hl,hl			;8c1a   ; * 8 (con lo que sale de H en A)
 	adc a,a			;8c1b
 	add hl,hl			;8c1c
 	adc a,a			;8c1d
@@ -1943,8 +1943,8 @@ L_8C12:
 	ex de,hl			;8c22
 	ret			;8c23
 L_8C24:
-	ld b,008h		;8c24   ; HL = H * E (multiplica de 8 bits)
-	ld l,000h		;8c26
+	ld b,008h		;8c24   ; 8 bits
+	ld l,000h		;8c26   ; L = 0, D = 0
 	ld d,l			;8c28
 L_8C29:
 	add hl,hl			;8c29   ; HL * 2...
@@ -2112,16 +2112,16 @@ L_8D40:
 	jp L_8D8F		;8d79
 L_8D7C:
 	call L_8D89		;8d7c   ; cae (0x40) hasta su y de partida y se borra
-	ld a,(ix+010h)		;8d7f
+	ld a,(ix+010h)		;8d7f   ; su y de partida
 	cp (ix+003h)		;8d82   ; compara con la y de la figura
 	ret nc			;8d85
-	jp borra_la_figura		;8d86   ; borra_la_figura: borra la figura
+	jp borra_la_figura		;8d86   ; alli: se va
 L_8D89:
 	ld de,00040h		;8d89   ; la gravedad de la moneda: 0x40
-	jp 0a13bh		;8d8c
+	jp 0a13bh		;8d8c   ; la gravedad
 L_8D8F:
 	ld de,0fc00h		;8d8f   ; hacia arriba: 0xFC00
-	jp pon_velocidad_y		;8d92   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
+	jp pon_velocidad_y		;8d92   ; la velocidad
 L_8D95:
 	ld hl,0c4b0h		;8d95   ; 5 ryo...
 	ld b,005h		;8d98   ; B = 5 ryo (BCD)
@@ -2162,27 +2162,27 @@ DATA_tabla_8DB9:
 
 L_8DC3:
 	call L_8E99		;8dc3   ; se rompe: sale algo que va hacia el lado contrario al jugador...
-	ld (ix+00ch),000h		;8dc6
-	ld de,00080h		;8dca
+	ld (ix+00ch),000h		;8dc6   ; ya no se le puede dar
+	ld de,00080h		;8dca   ; 0x80 hacia...
 	ld a,(0c49ah)		;8dcd   ; lee la x de los sprites del jugador
-	cp (ix+005h)		;8dd0   ; compara con la x de la figura
+	cp (ix+005h)		;8dd0   ; ... el lado contrario al jugador
 	jr nc,L_8DFA		;8dd3
-	ld a,(ix+005h)		;8dd5   ; lee la x de la figura
+	ld a,(ix+005h)		;8dd5   ; 8 a la derecha
 	add a,008h		;8dd8
 L_8DDA:
 	ld (ix+005h),a		;8dda   ; guarda la x de la figura
-	call pon_velocidad_x		;8ddd   ; pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
-	call L_8D8F		;8de0
+	call pon_velocidad_x		;8ddd   ; la velocidad horizontal
+	call L_8D8F		;8de0   ; hacia arriba
 	ld a,(ix+003h)		;8de3   ; ... 12 mas arriba, 88 cuadros
 	sub 00ch		;8de6
 	ld (ix+003h),a		;8de8   ; guarda la y de la figura
 	ld (ix+010h),a		;8deb
 	ld (ix+00eh),000h		;8dee
-	ld (ix+014h),058h		;8df2
+	ld (ix+014h),058h		;8df2   ; 88 cuadros
 	inc (ix+001h)		;8df6   ; sube el paso en que va la figura
 	ret			;8df9
 L_8DFA:
-	call niega_de		;8dfa   ; niega_de: DE = -DE
+	call niega_de		;8dfa   ; a la izquierda
 	ld a,(ix+005h)		;8dfd   ; lee la x de la figura
 	sub 008h		;8e00
 	jr L_8DDA		;8e02
@@ -2190,15 +2190,15 @@ L_8E04:
 	ld de,00040h		;8e04   ; cae hasta su y; luego hace dano y rebota
 	call 0a13bh		;8e07
 	ld a,(ix+010h)		;8e0a
-	cp (ix+003h)		;8e0d   ; compara con la y de la figura
+	cp (ix+003h)		;8e0d   ; al llegar a su y...
 	ret nc			;8e10
 	inc (ix+001h)		;8e11   ; sube el paso en que va la figura
-	ld (ix+00ch),001h		;8e14
-	ld de,00066h		;8e18
+	ld (ix+00ch),001h		;8e14   ; ... hace dano
+	ld de,00066h		;8e18   ; la gravedad del rebote: 0x66
 	ld (ix+012h),d		;8e1b
 	ld (ix+013h),e		;8e1e
 L_8E21:
-	ld de,0fd00h		;8e21
+	ld de,0fd00h		;8e21   ; hacia arriba (0xFD00)
 	jp pon_velocidad_y		;8e24   ; pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 L_8E27:
 	dec (ix+014h)		;8e27   ; rebota cada vez mas bajo (+3 a la gravedad) hasta acabar la cuenta
@@ -2368,12 +2368,12 @@ L_8F52:
 	jr L_8F37		;8f55
 L_8F57:
 	ld hl,0cd4eh		;8f57   ; apunta lo que ya se rompio en 0xC2B0 (hasta 48, tres bytes): el tramo, la x - 8 y la y - 0x2F
-	ld a,(hl)			;8f5a
+	ld a,(hl)			;8f5a   ; cuantas van
 	cp 030h		;8f5b   ; ya 48: no se apuntan mas
 	ret nc			;8f5d
-	inc (hl)			;8f5e
+	inc (hl)			;8f5e   ; una mas
 	ld b,a			;8f5f   ; tres bytes por entrada
-	add a,a			;8f60
+	add a,a			;8f60   ; * 3
 	add a,b			;8f61
 	ld hl,0c2b0h		;8f62
 	call 04083h		;8f65   ; hl_mas_a: HL += A
@@ -2390,18 +2390,18 @@ L_8F57:
 	ret			;8f7a
 L_8F7B:
 	ld hl,0c2b0h		;8f7b   ; al entrar en la zona, la lista de lo roto (0xC2B0, 0x90 bytes) y 0xCDA0-0xCDAF a cero
-	ld d,h			;8f7e
+	ld d,h			;8f7e   ; DE = HL + 1
 	ld e,l			;8f7f
 	inc de			;8f80
 	xor a			;8f81
 	ld (hl),a			;8f82
 	ld bc,0008fh		;8f83   ; 0x90 bytes: las 48 entradas
-	ldir		;8f86
+	ldir		;8f86   ; 0xC2B0-0xC33F a cero
 	ld hl,0cda0h		;8f88   ; las compras de la zona (0xCDA0, 16) a cero
 	xor a			;8f8b
 	ld b,010h		;8f8c
 L_8F8E:
-	ld (hl),a			;8f8e
+	ld (hl),a			;8f8e   ; las 16 compras
 	inc hl			;8f8f
 	djnz L_8F8E		;8f90
 	call 0bcf2h		;8f92   ; laberinto_a_cero: lo cogido y el mapa, a cero
@@ -2469,8 +2469,8 @@ L_8FEA:
 	ld c,020h		;8ff2
 L_8FF4:
 	ld a,(hl)			;8ff4   ; la y: el nibble de arriba del primero, + 15
-	and 0f0h		;8ff5
-	add a,c			;8ff7
+	and 0f0h		;8ff5   ; la y del nibble...
+	add a,c			;8ff7   ; ... + 32 en el pasadizo
 	add a,00fh		;8ff8
 	ld e,a			;8ffa
 	inc hl			;8ffb
@@ -2480,12 +2480,12 @@ L_8FF4:
 	ld d,a			;9001
 	dec hl			;9002
 	ld a,(hl)			;9003   ; el tipo: el nibble de abajo del primero; el 0x0E pone la marca 0xFF
-	and 00fh		;9004
+	and 00fh		;9004   ; el tipo
 	cp 00eh		;9006
 	call z,L_9066		;9008
 	ld (0cd3fh),de		;900b   ; 0xCD3F/0xCD40 el sitio, 0xCD3C la ficha, 0xCD3E el tipo
 	ld (0cd3ch),ix		;900f
-	ld (0cd3eh),a		;9013
+	ld (0cd3eh),a		;9013   ; el tipo, aparte
 	ld hl,0907ch		;9016   ; cuantos sprites (0x907C)
 	call 04083h		;9019   ; hl_mas_a: HL += A
 	ld a,(hl)			;901c   ; (+0x20) los sprites
@@ -2500,25 +2500,25 @@ L_8FF4:
 	ld (hl),000h		;902c   ; [1] el paso 0
 	ld de,(0cd3fh)		;902e
 	inc l			;9032
-	ld (hl),000h		;9033
+	ld (hl),000h		;9033   ; [2] la fraccion de la y
 	inc l			;9035
 	ld (hl),e			;9036   ; [3] la y
 	inc l			;9037
-	ld (hl),000h		;9038
+	ld (hl),000h		;9038   ; [4] la fraccion de la x
 	inc l			;903a
 	ld (hl),d			;903b   ; [5] la x
 	inc l			;903c
 	ld (hl),000h		;903d
 	ld a,(ix+000h)		;903f   ; los tipos 7 y mas hacen algo al tocarlos
 	cp 007h		;9042
-	jr c,L_904A		;9044
+	jr c,L_904A		;9044   ; los tipos 1-6, no
 	ld (ix+00ch),001h		;9046   ; (ix+0x0C) = 1
 L_904A:
 	ld a,(ix+020h)		;904a   ; lee cuantos sprites lleva la figura
 	or a			;904d
 	ret z			;904e   ; sin sprites, ya esta
 	ld a,(ix+000h)		;904f   ; sus patrones (0x906C) y sus colores
-	ld de,l906ch		;9052
+	ld de,l906ch		;9052   ; de la tabla de 0x906C
 	call L_8485		;9055
 	ld (ix+00eh),001h		;9058   ; (+0x0E) = 1: no se ve hasta que le toque
 	push ix		;905c
@@ -2571,17 +2571,17 @@ L_908C:
 	ld a,(0cd41h)		;908d   ; el primer hueco libre: 0xCD41
 	ld l,a			;9090
 	ld h,000h		;9091
-	add hl,hl			;9093   ; su y en la copia (0xEE20 + 4 * n)
+	add hl,hl			;9093   ; * 4
 	add hl,hl			;9094
 	ld de,0ee20h		;9095
 	add hl,de			;9098
-	ld de,00004h		;9099
+	ld de,00004h		;9099   ; 4 bytes por sprite en la copia
 	ld c,0e1h		;909c   ; 0xE1: cogido
 	exx			;909e
 	ld de,00005h		;909f   ; HL' = (ix+0x21), el hueco del primer sprite
 	ld hl,(0cd3ch)		;90a2
-	set 5,l		;90a5
-	inc l			;90a7
+	set 5,l		;90a5   ; (+0x20)
+	inc l			;90a7   ; (+0x21): el hueco del primero
 	exx			;90a8
 	call L_90AF		;90a9   ; el primero...
 	dec b			;90ac   ; ... y el segundo si lleva dos
@@ -2590,18 +2590,18 @@ L_90AF:
 	ld (hl),c			;90af   ; cogido
 	add hl,de			;90b0   ; el siguiente hueco en la copia
 	exx			;90b1
-	ld a,(0cd41h)		;90b2
-	ld (hl),a			;90b5
-	add hl,de			;90b6
+	ld a,(0cd41h)		;90b2   ; el hueco...
+	ld (hl),a			;90b5   ; ... en la figura
+	add hl,de			;90b6   ; el sprite siguiente de la figura
 	exx			;90b7
 L_90B8:
 	ld a,(0cd41h)		;90b8   ; el hueco siguiente para la proxima
-	inc a			;90bb
+	inc a			;90bb   ; uno mas
 	ld (0cd41h),a		;90bc
 	ret			;90bf
 cosas_fijas:		; pinta las cosas fijas de la casilla
 	di			;90c0   ; las cosas fijas estan en el banco 15
-	ld a,00fh		;90c1
+	ld a,00fh		;90c1   ; el banco 15 en 0xA000
 	ld (0a000h),a		;90c3   ; el mapper: pone en 0xA000 el banco de A
 	ld (0f0f3h),a		;90c6   ; guarda la copia del banco de 0xA000
 	ei			;90c9
@@ -2613,13 +2613,13 @@ cosas_fijas:		; pinta las cosas fijas de la casilla
 	ld de,0a08eh		;90d5   ; la lista de la zona (0xA08E, fase * 7 + zona)
 	ld a,(0c288h)		;90d8   ; lee la FASE (0-6)
 	ld b,a			;90db
-	add a,a			;90dc
+	add a,a			;90dc   ; fase * 7
 	add a,a			;90dd
 	add a,a			;90de
 	sub b			;90df
 	ld b,a			;90e0
 	ld a,(0c280h)		;90e1   ; lee la ZONA (0-6)
-	add a,b			;90e4
+	add a,b			;90e4   ; + zona
 	call 0447ch		;90e5   ; palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 	call L_911E		;90e8   ; si la casilla no tiene, nada
 	jp c,04206h		;90eb   ; bancos_1_2_3: pone los bancos 1, 2 y 3

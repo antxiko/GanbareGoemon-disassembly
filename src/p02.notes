@@ -189,7 +189,6 @@ C 0x8BC2 |dy| / 32 y |dx| / 32, con su signo en 0xCD20 y 0xCD21
 C 0x8BE9 8 x 8 casos: el angulo (0-0x3F) en 0xCD1E
 C 0x8BFF y el rumbo completo, con el cuadrante, en 0xCD24
 C 0x8C12 DE = (0xCD1D * E) / 32: la componente
-C 0x8C24 HL = H * E (multiplica de 8 bits)
 C 0x8CB0 las cuatro cosas del suelo de 0xCC00, un cuadro
 C 0x8CD2 en el paso 2, su efecto de sonido
 C 0x8CDA lo que hace cada tipo (tabla de 0x8CE1)
@@ -687,7 +686,6 @@ C 0x9058 (+0x0E) = 1: no se ve hasta que le toque
 C 0x905F colores sin pose
 C 0x9066 el 0x0E: la pieza lleva marca de pared
 C 0x908D el primer hueco libre: 0xCD41
-C 0x9093 su y en la copia (0xEE20 + 4 * n)
 C 0x909C 0xE1: cogido
 C 0x909F HL' = (ix+0x21), el hueco del primer sprite
 C 0x90A9 el primero...
@@ -884,6 +882,86 @@ C 0x9DC7 y la lista de colores de 0x57ED
 C 0x9DCB HL = la figura
 C 0x9DDA otros patrones
 C 0x9DEB y la lista de colores de 0x57F3
+C 0x802A el numero, en BCD
+C 0x8030 de 0 a 9
+C 0x8034 * 8
+C 0x8036 + * 2
+C 0x803C a 0xEF0E
+C 0x8089 0xC261 = lo elegido
+C 0x81BA el patron
+C 0x81BB el siguiente sprite (4 bytes)
+C 0x82F5 los bits 2-3
+C 0x82F7 * 8
+C 0x82FE la espera
+C 0x8393 8 bytes de la copia: dos sprites
+C 0x83B3 * 4
+C 0x83BC el siguiente sprite de la figura
+C 0x83C2 el tipo 7
+C 0x83D5 la figura nueva (0xCD3C)
+C 0x83DF el primero, a 0
+C 0x83E0 y el resto
+C 0x8852 0xE1
+C 0x8875 la siguiente
+C 0x887A sin tipo: carry
+C 0x888F NC
+C 0x8898 al byte siguiente del sprite
+C 0x889B la copia de los sprites de las figuras
+C 0x8900 parado
+C 0x891D / 4
+C 0x8B79 la x
+C 0x8B80 la dificultad * 8
+C 0x8B8E D = 0
+C 0x8B9B E = el angulo complementario
+C 0x8BB3 E = el coseno
+C 0x8BBE HL = la vertical
+C 0x8BD1 0xCD21 = 0
+C 0x8BF0 el angulo
+C 0x8C06 el rumbo
+C 0x8C15 H = el modulo
+C 0x8C1A * 8 (con lo que sale de H en A)
+C 0x8C24 8 bits
+C 0x8C26 L = 0, D = 0
+C 0x8D7F su y de partida
+C 0x8D86 alli: se va
+C 0x8D8C la gravedad
+C 0x8D92 la velocidad
+C 0x8DC6 ya no se le puede dar
+C 0x8DCA 0x80 hacia...
+C 0x8DD0 ... el lado contrario al jugador
+C 0x8DD5 8 a la derecha
+C 0x8DDD la velocidad horizontal
+C 0x8DE0 hacia arriba
+C 0x8DF2 88 cuadros
+C 0x8DFA a la izquierda
+C 0x8E0D al llegar a su y...
+C 0x8E14 ... hace dano
+C 0x8E18 la gravedad del rebote: 0x66
+C 0x8E21 hacia arriba (0xFD00)
+C 0x8F5A cuantas van
+C 0x8F5E una mas
+C 0x8F60 * 3
+C 0x8F7E DE = HL + 1
+C 0x8F86 0xC2B0-0xC33F a cero
+C 0x8F8E las 16 compras
+C 0x8FF5 la y del nibble...
+C 0x8FF7 ... + 32 en el pasadizo
+C 0x9004 el tipo
+C 0x9013 el tipo, aparte
+C 0x9033 [2] la fraccion de la y
+C 0x9038 [4] la fraccion de la x
+C 0x9044 los tipos 1-6, no
+C 0x9052 de la tabla de 0x906C
+C 0x9093 * 4
+C 0x9099 4 bytes por sprite en la copia
+C 0x90A5 (+0x20)
+C 0x90A7 (+0x21): el hueco del primero
+C 0x90B2 el hueco...
+C 0x90B5 ... en la figura
+C 0x90B6 el sprite siguiente de la figura
+C 0x90BB uno mas
+C 0x90C1 el banco 15 en 0xA000
+C 0x90DC fase * 7
+C 0x90E4 + zona
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x8294 0x82F2 tabla_8294  47 destinos del despachador de 0x408D (call en p02:8291): 0x8334, 0x8334, 0xA14E, 0xA360, 0x8334, 0x8334, 0xB5C9, 0x8334 ...; lo leen p02:8291 (94 bytes)
@@ -1072,7 +1150,6 @@ C 0x8B33 niega_de: DE = -DE
 C 0x8B36 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8B39 lee la y de la figura
 C 0x8B43 la pose de la figura = 0x1B
-C 0x8B79 lee la x de la figura
 C 0x8BA9 niega_de: DE = -DE
 C 0x8BBB niega_de: DE = -DE
 C 0x8BC7 lee la y del jugador
@@ -1093,19 +1170,12 @@ C 0x8D66 guarda la y de la figura
 C 0x8D69 lee la x de la figura
 C 0x8D76 pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8D82 compara con la y de la figura
-C 0x8D86 borra_la_figura: borra la figura
-C 0x8D92 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8DB6 despacha: salta a la entrada A de la tabla que va detras del call
 C 0x8DCD lee la x de los sprites del jugador
-C 0x8DD0 compara con la x de la figura
-C 0x8DD5 lee la x de la figura
 C 0x8DDA guarda la x de la figura
-C 0x8DDD pon_velocidad_x: velocidad horizontal de la figura ((ix+8), (ix+9)) = DE
 C 0x8DE8 guarda la y de la figura
 C 0x8DF6 sube el paso en que va la figura
-C 0x8DFA niega_de: DE = -DE
 C 0x8DFD lee la x de la figura
-C 0x8E0D compara con la y de la figura
 C 0x8E11 sube el paso en que va la figura
 C 0x8E24 pon_velocidad_y: velocidad vertical de la figura ((ix+6), (ix+7)) = DE
 C 0x8E2A borra_la_figura: borra la figura

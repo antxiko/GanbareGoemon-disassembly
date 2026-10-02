@@ -309,7 +309,7 @@ L_A231:
 	ld (ix+001h),005h		;a266   ; el paso en que va la figura = 0x05
 	ret			;a26a
 L_A26B:
-	ret			;a26b
+	ret			;a26b   ; el paso 5: nada
 L_A26C:
 	ld h,(ix+009h)		;a26c   ; la velocidad horizontal += DE
 	ld l,(ix+008h)		;a26f   ; lee la velocidad horizontal (parte baja)
@@ -816,7 +816,7 @@ L_A625:
 L_A631:
 	rra			;a631   ; el bit de la direccion: 2 bytes por direccion
 	jr c,L_A638		;a632
-	inc hl			;a634
+	inc hl			;a634   ; la direccion siguiente
 	inc hl			;a635
 	jr L_A631		;a636
 L_A638:
@@ -1081,7 +1081,7 @@ L_A7B4:
 	jr z,L_A7CE		;a7c9
 	ld de,0a808h		;a7cb
 L_A7CE:
-	add a,e			;a7ce
+	add a,e			;a7ce   ; DE += el paso
 	ld e,a			;a7cf
 	jr nc,L_A7D3		;a7d0
 	inc d			;a7d2
@@ -1181,7 +1181,7 @@ L_A887:
 	jr z,L_A891		;a88e
 	inc a			;a890
 L_A891:
-	jp L_A58E		;a891
+	jp L_A58E		;a891   ; su velocidad
 L_A894:
 	inc (ix+070h)		;a894   ; si ya iba, cambia de eje
 	ld a,(ix+01fh)		;a897   ; parado: nada
@@ -1219,7 +1219,7 @@ L_A8C9:
 	neg		;a8d7
 	inc (hl)			;a8d9   ; a la izquierda: 0xCD21 = 1
 L_A8DA:
-	ld (ix+016h),a		;a8da
+	ld (ix+016h),a		;a8da   ; (ix+0x16) = |dx|
 	ret			;a8dd
 L_A8DE:
 	xor a			;a8de   ; en el paso 1, como si estuviera encima
@@ -1346,7 +1346,7 @@ L_A9D3:
 	jr nc,L_A9E4		;a9e0
 	ld a,008h		;a9e2   ; ... sin pasar de 255
 L_A9E4:
-	ld (hl),a			;a9e4
+	ld (hl),a			;a9e4   ; 0xCD60
 L_A9E5:
 	ld a,(ix+003h)		;a9e5   ; quieto, ya no hace dano, 32 cuadros
 	ld (ix+010h),a		;a9e8
@@ -1405,7 +1405,7 @@ L_AA40:
 	cp h			;aa4d
 	ret nc			;aa4e
 L_AA4F:
-	ld a,h			;aa4f
+	ld a,h			;aa4f   ; el minimo
 	ret			;aa50
 
 ; ----------------------------------------------------------------------
@@ -1575,7 +1575,7 @@ L_ABB2:
 	ld (ix+001h),001h		;abbe   ; el paso en que va la figura = 0x01
 	ret			;abc2
 L_ABC3:
-	ret			;abc3
+	ret			;abc3   ; el paso 3: nada
 L_ABC4:
 	dec (ix+075h)		;abc4   ; al acabar la cuenta de (ix+0x75), cae (paso 3)
 	ret nz			;abc7
@@ -1732,7 +1732,7 @@ L_ACC5:
 	jr nc,L_ACD3		;accf
 	ld a,008h		;acd1   ; si no, hacia arriba
 L_ACD3:
-	jp L_A58A		;acd3
+	jp L_A58A		;acd3   ; el rumbo nuevo
 L_ACD6:
 	ld de,0806dh		;acd6   ; crea la figura 0x22 en (0x6D, 0x80)
 	ld a,022h		;acd9
@@ -1873,8 +1873,8 @@ L_ADBA:
 L_ADCD:
 	cp 003h		;adcd   ; con la 3, vuelta a la 0
 	ret nz			;adcf
-	xor a			;add0
-	dec hl			;add1
+	xor a			;add0   ; la primera...
+	dec hl			;add1   ; ... HL atras
 	dec hl			;add2
 	ret			;add3
 L_ADD4:
@@ -1937,7 +1937,7 @@ L_AE11:
 	ld (hl),a			;ae33
 	call 05856h		;ae34   ; pinta_las_cosas: pinta las cosas del marcador
 L_AE37:
-	ret			;ae37
+	ret			;ae37   ; ya tiene: nada
 L_AE38:
 	ld a,(0cd8ch)		;ae38   ; el precio de la elegida (0xCD86 + 2 * n) se paga: carry si no llega el dinero
 	add a,a			;ae3b
@@ -2180,7 +2180,7 @@ L_AFD4:
 	daa			;afd6
 	ld l,a			;afd7
 	ld a,h			;afd8
-	adc a,a			;afd9
+	adc a,a			;afd9   ; la parte alta con el acarreo
 	daa			;afda
 	ld h,a			;afdb
 	djnz L_AFD4		;afdc
@@ -2199,7 +2199,7 @@ L_AFE2:
 	jr nc,L_AFF4		;aff0
 	ld e,050h		;aff2   ; ... si era impar, 50 para las decenas
 L_AFF4:
-	add a,d			;aff4
+	add a,d			;aff4   ; + el 5 de las centenas
 	ld d,a			;aff5
 	ld a,l			;aff6   ; las decenas / 2
 	and 0f0h		;aff7
@@ -2212,7 +2212,7 @@ L_AFF4:
 	add a,e			;b002
 	ld e,a			;b003
 	ex de,hl			;b004
-	jr L_AFDE		;b005
+	jr L_AFDE		;b005   ; el resultado
 L_B007:
 	rra			;b007   ; A / 2 de un nibble BCD (el 8 que baja se corrige a 5)
 	ld b,a			;b008   ; el bit que bajo de la cifra de arriba (8)...
@@ -2432,7 +2432,7 @@ L_B15C:
 	inc (ix+001h)		;b161   ; sube el paso en que va la figura
 	ret			;b164
 L_B165:
-	ret			;b165
+	ret			;b165   ; el paso 2: nada
 L_B166:
 	ld de,08070h		;b166
 	jp 08334h		;b169   ; crea_figura: crea una figura en el primer hueco libre de 0xC600
@@ -2565,7 +2565,7 @@ L_B247:
 L_B25A:
 	ld (ix+001h),003h		;b25a   ; el paso en que va la figura = 0x03
 L_B25E:
-	ret			;b25e
+	ret			;b25e   ; el paso 3: nada
 L_B25F:
 	ld a,(0cd8eh)		;b25f   ; los dos dados: sus cifras en (0x70, 0x40) y (0x80, 0x40)...
 	add a,020h		;b262   ; la cifra (letra 0x20 + n)
@@ -2682,7 +2682,7 @@ L_B314:
 	inc (ix+001h)		;b31b   ; sube el paso en que va la figura
 	ret			;b31e
 L_B31F:
-	ret			;b31f
+	ret			;b31f   ; el paso 2: nada
 L_B320:
 	ld b,013h		;b320   ; la cara siguiente, de 6
 	inc (ix+00ah)		;b322   ; sube la pose de la figura
@@ -2836,7 +2836,7 @@ L_B444:
 	jr nc,L_B455		;b452
 	xor a			;b454
 L_B455:
-	add a,a			;b455
+	add a,a			;b455   ; * 16
 	add a,a			;b456
 	add a,a			;b457
 	add a,a			;b458
@@ -2848,14 +2848,14 @@ L_B455:
 	xor a			;b45f
 L_B460:
 	or d			;b460
-	ld d,a			;b461
+	ld d,a			;b461   ; D = rojo y azul
 	ld a,(hl)			;b462   ; verde - el paso
 	inc hl			;b463
 	sub c			;b464
 	jr nc,L_B468		;b465
 	xor a			;b467
 L_B468:
-	ld e,a			;b468
+	ld e,a			;b468   ; E = verde
 	ld a,b			;b469
 	call 0463ch		;b46a   ; pon_un_color: color A de la paleta = DE
 	djnz L_B444		;b46d   ; los 15 colores, del 15 al 1
@@ -2890,7 +2890,7 @@ DATA_quince_tripletes:
 
 L_B49D:
 	ld a,(0c002h)		;b49d   ; en la posada, las poses del jugador dormido (0x3E Goemon, 0x7E Ebisumaru, + 0xB535)
-	rla			;b4a0
+	rla			;b4a0   ; el bit 7: Ebisumaru
 	ld c,03eh		;b4a1
 	jr nc,L_B4A7		;b4a3
 	ld c,07eh		;b4a5
@@ -2953,7 +2953,7 @@ L_B508:
 	call 04280h		;b52e   ; rotulo_numero: pinta el rotulo A de la tabla de 0xA9C0 (banco 12)
 	jp 087b7h		;b531   ; borra_la_figura: borra la figura
 L_B534:
-	ret			;b534
+	ret			;b534   ; el paso 3: nada
 
 ; ----------------------------------------------------------------------
 ; DATOS cuatro_B535: cuatro bytes que p03:B4B3 escoge por (ix+0x18) - 1 (4
@@ -3050,7 +3050,7 @@ L_B5C2:
 	call L_B836		;b5c2
 	inc (ix+001h)		;b5c5   ; sube el paso en que va la figura
 L_B5C8:
-	ret			;b5c8
+	ret			;b5c8   ; el paso 2: nada
 L_B5C9:
 	ld a,(0cd5bh)		;b5c9   ; los tipos 7 y 13 salen de tres en tres, en fila
 	or a			;b5cc
@@ -3322,7 +3322,7 @@ L_B7AB:
 	ld (ix+00bh),060h		;b7ab
 	ld (ix+001h),005h		;b7af   ; el paso en que va la figura = 0x05
 L_B7B3:
-	ret			;b7b3
+	ret			;b7b3   ; el paso 6: nada
 L_B7B4:
 	dec (ix+00bh)		;b7b4   ; sin dinero para pagar: el texto 0x15, fuera del interior y el jugador al estado 3 (despedido)
 	ret nz			;b7b7
@@ -3738,36 +3738,36 @@ L_BA7B:
 L_BA8E:
 	ld b,a			;ba8e   ; tantas casillas como haya hasta la pared de delante (4 si no hay)
 L_BA8F:
-	push bc			;ba8f
+	push bc			;ba8f   ; la casilla
 	push de			;ba90
 	push hl			;ba91
 	call 05a6ah		;ba92   ; sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
-	ld a,(hl)			;ba95
+	ld a,(hl)			;ba95   ; lo que hay
 	pop hl			;ba96
 	pop de			;ba97
 	pop bc			;ba98
 	push bc			;ba99
-	call L_BAA5		;ba9a
+	call L_BAA5		;ba9a   ; su dibujo
 	pop bc			;ba9d
-	call hl_mas_de		;ba9e   ; hl_mas_de: HL += DE
+	call hl_mas_de		;ba9e   ; la siguiente hacia delante
 	inc c			;baa1
 	djnz L_BA8F		;baa2
 	ret			;baa4
 L_BAA5:
 	ld b,a			;baa5   ; el dibujo de cada una: pared (1) o hueco, segun la profundidad
-	cp 001h		;baa6
+	cp 001h		;baa6   ; pared: el dibujo C
 	ld a,000h		;baa8
 	jr z,L_BAAE		;baaa
-	ld a,004h		;baac
+	ld a,004h		;baac   ; hueco: C + 4
 L_BAAE:
 	add a,c			;baae
 	push bc			;baaf
 	exx			;bab0
 	pop bc			;bab1
-	ld (hl),b			;bab2
+	ld (hl),b			;bab2   ; lo que hay, a la vista
 	push bc			;bab3
 	ld c,a			;bab4
-	ld a,001h		;bab5
+	ld a,001h		;bab5   ; si es pared...
 	cp (hl)			;bab7
 	ld a,c			;bab8
 	pop bc			;bab9
@@ -3777,24 +3777,24 @@ L_BAAE:
 	dec a			;babe
 	and 003h		;babf
 	ld b,a			;bac1
-	ld a,(0cdb2h)		;bac2   ; la de la pared de delante, con su esquina
+	ld a,(0cdb2h)		;bac2   ; ... justo antes de la pared de delante...
 	dec a			;bac5
 	cp b			;bac6
 	ld a,c			;bac7
 	pop bc			;bac8
 	jr nz,L_BACD		;bac9
-	add a,004h		;bacb
+	add a,004h		;bacb   ; ... la esquina, 4 mas
 L_BACD:
-	ld (de),a			;bacd
+	ld (de),a			;bacd   ; el dibujo
 	inc hl			;bace
 	inc de			;bacf
 	exx			;bad0
 	ret			;bad1
 hl_mas_de:		; HL += DE
-	ld a,l			;bad2
+	ld a,l			;bad2   ; L + E
 	add a,e			;bad3
 	ld l,a			;bad4
-	ld a,h			;bad5
+	ld a,h			;bad5   ; H + D (sin acarreo entre ellos)
 	add a,d			;bad6
 	ld h,a			;bad7
 	ret			;bad8
@@ -3842,7 +3842,7 @@ mapa_del_laberinto:		; el mapa entero, si se tiene (0xC27A)
 	call donde_se_esta		;bb15   ; donde_se_esta: la marca del jugador en el mapa
 	jp 045e1h		;bb18   ; enciende_la_pantalla: bit 6 del registro 1 del VDP a uno
 pinta_el_mapa:		; el laberinto en piezas de 8 x 8, centrado
-	ld a,(0cdd3h)		;bb1b   ; el mapa, centrado: x = (20 - ancho) / 2 * 8 + 0x20...
+	ld a,(0cdd3h)		;bb1b   ; el mapa, centrado: y = (20 - alto) / 2 * 8 + 0x20 (0xCDD3, el alto)...
 	ld b,a			;bb1e
 	ld a,014h		;bb1f
 	sub b			;bb21
@@ -3852,7 +3852,7 @@ pinta_el_mapa:		; el laberinto en piezas de 8 x 8, centrado
 	add a,a			;bb26
 	add a,020h		;bb27
 	ld l,a			;bb29
-	ld a,(0cdd4h)		;bb2a   ; ... y = (28 - alto) / 2 * 8 + 8
+	ld a,(0cdd4h)		;bb2a   ; ... x = (28 - ancho) / 2 * 8 + 8 (0xCDD4, el ancho)
 	ld b,a			;bb2d
 	ld a,01ch		;bb2e
 	sub b			;bb30
@@ -3862,43 +3862,43 @@ pinta_el_mapa:		; el laberinto en piezas de 8 x 8, centrado
 	add a,a			;bb35
 	add a,008h		;bb36
 	ld h,a			;bb38
-	ld (0cdd5h),hl		;bb39
-	ld a,(0cdd4h)		;bb3c
+	ld (0cdd5h),hl		;bb39   ; 0xCDD5 = y, 0xCDD6 = x: la esquina
+	ld a,(0cdd4h)		;bb3c   ; el sprite de la marca, a la derecha del mapa
 	add a,a			;bb3f
 	add a,a			;bb40
 	add a,a			;bb41
 	add a,h			;bb42
 	ld h,a			;bb43
 	ld (0ee00h),hl		;bb44   ; un sprite marca donde se esta
-	ld a,0f4h		;bb47
+	ld a,0f4h		;bb47   ; patron 0xF4
 	ld (0ee02h),a		;bb49
-	ld a,0e0h		;bb4c
+	ld a,0e0h		;bb4c   ; el segundo, fuera
 	ld (0ee04h),a		;bb4e
 	ld hl,0ec00h		;bb51
 	ld de,0ec01h		;bb54
 	ld bc,0000fh		;bb57
-	ld a,00eh		;bb5a
+	ld a,00eh		;bb5a   ; sus colores, 0x0E
 	ld (hl),a			;bb5c
 	ldir		;bb5d
 	ld a,(0cdd3h)		;bb5f   ; cada casilla, su pieza de 8 x 8 (0xBC1B segun lo que sea)
-	ld c,a			;bb62
+	ld c,a			;bb62   ; C = las filas
 	ld de,0d800h		;bb63
 	ld hl,(0cdd5h)		;bb66
 L_BB69:
-	ld a,(0cdd4h)		;bb69
+	ld a,(0cdd4h)		;bb69   ; B = las columnas
 	ld b,a			;bb6c
 	push de			;bb6d
 	push hl			;bb6e
 L_BB6F:
-	ld a,(de)			;bb6f
+	ld a,(de)			;bb6f   ; lo que hay en la casilla
 	inc de			;bb70
 	or a			;bb71
 	push de			;bb72
-	jr z,L_BB8E		;bb73
+	jr z,L_BB8E		;bb73   ; 0: nada
 	push hl			;bb75
 	cp 006h		;bb76   ; la salida (6), aparte
 	jr z,L_BBCD		;bb78
-	dec a			;bb7a
+	dec a			;bb7a   ; la pieza de lo que hay (1-5)
 	add a,a			;bb7b
 	ld de,0bc1bh		;bb7c
 	call 04088h		;bb7f   ; de_mas_a: DE += A
@@ -3914,16 +3914,16 @@ L_BB86:
 	pop bc			;bb8c
 	ex de,hl			;bb8d
 L_BB8E:
-	ld de,00800h		;bb8e
+	ld de,00800h		;bb8e   ; 8 a la derecha
 	call hl_mas_de		;bb91   ; hl_mas_de: HL += DE
 	pop de			;bb94
 	djnz L_BB6F		;bb95
 	pop hl			;bb97
 	pop de			;bb98
-	ld a,01ch		;bb99
+	ld a,01ch		;bb99   ; la fila siguiente del laberinto (28)
 	call 04088h		;bb9b   ; de_mas_a: DE += A
 	push de			;bb9e
-	ld de,00008h		;bb9f
+	ld de,00008h		;bb9f   ; 8 mas abajo
 	call hl_mas_de		;bba2   ; hl_mas_de: HL += DE
 	pop de			;bba5
 	dec c			;bba6
@@ -3931,10 +3931,10 @@ L_BB8E:
 	ret			;bba9
 donde_se_esta:		; la marca del jugador en el mapa
 	ld hl,(0cdc6h)		;bbaa   ; el sitio del jugador en el mapa
-	sla h		;bbad
+	sla h		;bbad   ; la x * 8
 	sla h		;bbaf
 	sla h		;bbb1
-	sla l		;bbb3
+	sla l		;bbb3   ; la y * 8
 	sla l		;bbb5
 	sla l		;bbb7
 	ld d,l			;bbb9

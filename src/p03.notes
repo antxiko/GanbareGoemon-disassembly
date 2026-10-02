@@ -372,11 +372,8 @@ C 0xBA47 el lado izquierdo (0xBAE1): 5 casillas, a 0xCDB3 y su dibujo a 0xCDBB
 C 0xBA62 el derecho (0xBAE9), a 0xCDB7 y 0xCDBF
 C 0xBA8E tantas casillas como haya hasta la pared de delante (4 si no hay)
 C 0xBAA5 el dibujo de cada una: pared (1) o hueco, segun la profundidad
-C 0xBAC2 la de la pared de delante, con su esquina
 C 0xBAF1 el mapa del laberinto, solo con 0xC27A (la palabra de la pausa o lo que se coge)
 C 0xBAFA 0xCDC8 = mapa en pantalla; el efecto 0x1A
-C 0xBB1B el mapa, centrado: x = (20 - ancho) / 2 * 8 + 0x20...
-C 0xBB2A ... y = (28 - alto) / 2 * 8 + 8
 C 0xBB44 un sprite marca donde se esta
 C 0xBB5F cada casilla, su pieza de 8 x 8 (0xBC1B segun lo que sea)
 C 0xBB76 la salida (6), aparte
@@ -816,6 +813,61 @@ C 0xBA4A la casilla de la izquierda, segun la direccion
 C 0xBA56 5 de profundidad
 C 0xBA59 a 0xCDB3 lo que hay, a 0xCDBB el dibujo
 C 0xBA7C hacia delante, desde alli
+C 0xA26B el paso 5: nada
+C 0xA634 la direccion siguiente
+C 0xA7CE DE += el paso
+C 0xA891 su velocidad
+C 0xA8DA (ix+0x16) = |dx|
+C 0xA9E4 0xCD60
+C 0xAA4F el minimo
+C 0xABC3 el paso 3: nada
+C 0xACD3 el rumbo nuevo
+C 0xADD0 la primera...
+C 0xADD1 ... HL atras
+C 0xAE37 ya tiene: nada
+C 0xAFD9 la parte alta con el acarreo
+C 0xAFF4 + el 5 de las centenas
+C 0xB005 el resultado
+C 0xB165 el paso 2: nada
+C 0xB25E el paso 3: nada
+C 0xB31F el paso 2: nada
+C 0xB455 * 16
+C 0xB461 D = rojo y azul
+C 0xB468 E = verde
+C 0xB4A0 el bit 7: Ebisumaru
+C 0xB534 el paso 3: nada
+C 0xB5C8 el paso 2: nada
+C 0xB7B3 el paso 6: nada
+C 0xBB1B el mapa, centrado: y = (20 - alto) / 2 * 8 + 0x20 (0xCDD3, el alto)...
+C 0xBB2A ... x = (28 - ancho) / 2 * 8 + 8 (0xCDD4, el ancho)
+C 0xBB39 0xCDD5 = y, 0xCDD6 = x: la esquina
+C 0xBB3C el sprite de la marca, a la derecha del mapa
+C 0xBB47 patron 0xF4
+C 0xBB4C el segundo, fuera
+C 0xBB5A sus colores, 0x0E
+C 0xBB62 C = las filas
+C 0xBB69 B = las columnas
+C 0xBB6F lo que hay en la casilla
+C 0xBB73 0: nada
+C 0xBB7A la pieza de lo que hay (1-5)
+C 0xBB8E 8 a la derecha
+C 0xBB99 la fila siguiente del laberinto (28)
+C 0xBB9F 8 mas abajo
+C 0xBBAD la x * 8
+C 0xBBB3 la y * 8
+C 0xBA8F la casilla
+C 0xBA95 lo que hay
+C 0xBA9A su dibujo
+C 0xBA9E la siguiente hacia delante
+C 0xBAA6 pared: el dibujo C
+C 0xBAAC hueco: C + 4
+C 0xBAB2 lo que hay, a la vista
+C 0xBAB5 si es pared...
+C 0xBAC2 ... justo antes de la pared de delante...
+C 0xBACB ... la esquina, 4 mas
+C 0xBACD el dibujo
+C 0xBAD2 L + E
+C 0xBAD5 H + D (sin acarreo entre ellos)
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA109 0xA10D tabla_A109  2 destinos del despachador de 0x408D (call en p03:A106): 0xA10D, 0xA130; lo leen p03:A106 (4 bytes)
@@ -1386,7 +1438,6 @@ C 0xBA68 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA6E hl_mas_de: HL += DE
 C 0xBA82 palabra_de_tabla_de: DE = la palabra A de la tabla de DE
 C 0xBA92 sitio_en_el_laberinto: HL = 0xD800 + H * 28 + L
-C 0xBA9E hl_mas_de: HL += DE
 C 0xBB00 sonido: A: 0x80 + n la musica n, 1-0x7F un efecto, 0 calla, 0xFD pausa, 0xFE sigue, 0xFF fundido
 C 0xBB03 apaga_la_pantalla: bit 6 del registro 1 del VDP a cero
 C 0xBB09 pinta_las_cosas: pinta las cosas del marcador

@@ -84,7 +84,6 @@ C 0x63C4 0xED [direccion]: subrutina (la vuelta en (ix+0x12))
 C 0x63C9 0xEE: vuelta de la subrutina
 C 0x63CE 0xE8 [clase]: canal de ruido, con la clase (ix+8)
 C 0x63D7 0xEC [vibrato]: vibrato (ix+0x19)
-C 0x63EF 0xE9: canal de tono
 C 0x6434 el canal acabado: fuera su bit de 0xC0AB
 C 0x6449 el efecto de sonido (ficha 0xC068), un cuadro; al acabar, callado
 C 0x6454 un cuadro de envolvente: cada (ix+0x0F) cuadros, el paso siguiente
@@ -104,6 +103,106 @@ C 0x6524 la duracion de cada paso (ix+0x0E y 0x0F)
 C 0x652C 0x28 o mas: el periodo de la envolvente del PSG (registros 12 y 11)
 C 0x654E NC: sigue sonando
 C 0x6550 carry: se acabo
+C 0x6039 la cuenta del fundido otra vez, 0x3A
+C 0x603B 0xC0A9 = la cuenta
+C 0x6062 la ficha (B)
+C 0x6066 al manejador del canal
+C 0x606C la musica: nada mas
+C 0x606F el efecto: ya no hay ninguno
+C 0x6076 2 bytes por manejador
+C 0x607F el manejador de este canal...
+C 0x6082 ... a un ret: ya no suena
+C 0x608A un canal callado no hace nada
+C 0x6096 el registro de la parte alta
+C 0x60A4 la pareja de 0x60E7
+C 0x60AB la de 0x60E1
+C 0x60B2 la de 0x60DB
+C 0x60B9 la de 0x60D5
+C 0x60BF 2 bytes por canal
+C 0x60CF y al registro 7
+C 0x6109 el canal C...
+C 0x610E ... con un efecto
+C 0x611F cada 5 cuadros...
+C 0x612E ... un cuadro de mas: la nota acaba antes
+C 0x6158 un punto menos...
+C 0x6159 ... hasta 0
+C 0x615D callado: no se escribe
+C 0x616B 10 pasos de espera
+C 0x6174 empieza (bit 0)
+C 0x617E cada cuantos pasos (nibble de arriba)
+C 0x618D el tono de ahora
+C 0x6193 cuanto se mueve (nibble de abajo)
+C 0x6199 una vez arriba y otra abajo (0xFF / 0)
+C 0x61A4 + el paso
+C 0x61AB - el paso
+C 0x61B0 el tono nuevo
+C 0x61B9 la cuenta a 0
+C 0x61BA la cuenta del vibrato
+C 0x61C3 el tono
+C 0x61DE callado: nada
+C 0x61E3 acabado: nada
+C 0x61E8 acabado
+C 0x61F9 C = el byte
+C 0x61FF la partitura sigue en el byte siguiente
+C 0x620E (ix+3): el paso
+C 0x621F (ix+9): cuantos cuadros dura
+C 0x6227 los canales A y B: nada
+C 0x622A el C, si no hay efecto...
+C 0x6231 ... vuelve a sonar
+C 0x6245 callado: no se escribe nada
+C 0x6250 2 bytes por nota
+C 0x6258 el periodo de la nota en la octava mas grave
+C 0x625E / 2 por cada octava
+C 0x6264 (ix+0x17, 0x18) el tono
+C 0x626A con el bit 6, un poco mas grave
+C 0x6285 el volumen
+C 0x6292 la clase 0, 0x8051
+C 0x62AA la 6, 0x80ED; la 7, 0x8107
+C 0x62C8 2 bytes por envolvente
+C 0x62D3 la envolvente de volumen y tono
+C 0x62DF el primer paso enseguida
+C 0x631F en pasos de (ix+3)
+C 0x6326 la duracion
+C 0x6329 sin caida
+C 0x632D ni vibrato
+C 0x6339 el volumen a 0
+C 0x635A las veces que quedan
+C 0x635E la ultima: sigue
+C 0x6361 en marcha: una menos
+C 0x6364 la primera vez: las veces del byte - 1
+C 0x636A la direccion: vuelta alli
+C 0x6374 se saltan los 3 bytes
+C 0x637B con 0xC0B2 puesto, callado
+C 0x6386 si no, n + 2
+C 0x6389 el volumen
+C 0x638C el nibble de arriba
+C 0x6396 el de abajo + 1
+C 0x63AB n
+C 0x63D3 0xEC
+C 0x63EF 0xE9 y las demas: tono
+C 0x63E3 sin tono: ruido
+C 0x63E7 la clase
+C 0x63F6 6 - n: cuantas octavas se baja
+C 0x6402 0xC0AC = 1
+C 0x6409 0xC0AC = 0
+C 0x640F un poco mas grave
+C 0x6416 la direccion nueva
+C 0x641D la direccion de la subrutina
+C 0x6421 la vuelta, en (ix+0x12, 0x13)
+C 0x642B la vuelta
+C 0x6437 el bit de la ficha (n + 1 vueltas del 0x7F)...
+C 0x645A la duracion de cada paso
+C 0x6460 donde va
+C 0x646C C = el byte
+C 0x6405 sigue con la partitura
+C 0x640C sigue
+C 0x6418 HL = la direccion
+C 0x641F DE = la subrutina
+C 0x6427 alli
+C 0x642E HL = la vuelta
+C 0x643B rlca n + 1 veces: el bit de la ficha a 0
+C 0x6442 fuera de los que suenan
+C 0x6467 0xFF?
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6552 0x6592 efectos_de_sonido  32 punteros, los de los efectos 0x01-0x20 (p00:50DF suma el doble del numero a 0x6550: la palabra del 0 serian los bytes 37 C9 de `scf / ret` de p10:6550, y no se lee porque p00:5009 para el sonido con el 0): la lista de cuadros del canal de efectos que p00:50E7 deja en 0xC074; lo leen p00:50DF (64 bytes)
