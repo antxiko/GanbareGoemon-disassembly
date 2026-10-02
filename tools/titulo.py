@@ -167,6 +167,18 @@ def titulo(cart):
     return v, 0x00, capa
 
 
+def menu_del_vecino(cart):
+    """p01:7F1A, el estado 0x0C: si p01:7EAB encontro en otra ranura la marca
+    del Game Master o la de Q*bert (0xEF00 = 0xFF), el titulo cambia el
+    recuadro del menu por otro (HMMV de 0xC0 x 0x38 desde (0x20, 0x90), marco
+    del color 0x0E) con el rotulo de 0x7F41: elegir la fase y las vidas."""
+    v, fondo, capa = titulo(cart)
+    hmmv(v, 0x20, 0x90, 0xC0, 0x38, 0x00, 0)
+    marco(v, 0x20, 0x90, 0xC0, 0x38, 0x0E)
+    rotulo(cart, S1, 0x7F41, v)
+    return v, fondo, capa
+
+
 def imagen(v, fondo, capa=None, y0=0, alto=212):
     img = []
     for y in range(y0, y0 + alto):
@@ -188,7 +200,8 @@ def coteja():
     fallos = 0
     for nombre, (v, _fondo, *_), vol, zona in (
             ("konami", konami(cart), "../v_konami/konami", (0x28, 0x40, 0xA8, 0x30)),
-            ("titulo", titulo(cart), "v02", (0, 0, 256, 212))):
+            ("titulo", titulo(cart), "v02", (0, 0, 256, 212)),
+            ("menu del vecino", menu_del_vecino(cart), "../v_vecino2/qbert", (0, 0, 256, 212))):
         ruta = os.path.join(G.RAIZ, "work", "v_demo", vol + ".vram")
         d = open(ruta, "rb").read()
         x0, y0, an, al = zona
@@ -207,6 +220,8 @@ def main():
     print(G.guarda_png(imagen(v, fondo, y0=0x30, alto=0x48), os.path.join(G.RAIZ, "work", "konami.png"), escala=2))
     v, fondo, capa = titulo(cart)
     print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.RAIZ, "work", "titulo.png"), escala=2))
+    v, fondo, capa = menu_del_vecino(cart)
+    print(G.guarda_png(imagen(v, fondo, capa, y0=0, alto=0xC8), os.path.join(G.RAIZ, "work", "menu_vecino.png"), escala=2))
 
 
 if __name__ == "__main__":
