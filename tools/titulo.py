@@ -87,25 +87,40 @@ def rotulo(cart, bancos, hl, vram):
 def sprites(vram, lista, colores, patrones=0xF800):
     """Los sprites de modo 2 del V9938: 16x16, un color por linea, ocho por
     linea como mucho (los de despues no salen) y la y una linea mas abajo.
-    `lista` son (y, x, dibujo) y `colores` los 16 bytes de color de cada uno."""
-    capa = {}
-    por_linea = {}
+    `lista` son (y, x, dibujo) y `colores` los 16 bytes de color de cada uno.
+    Con el bit CC (0x40) del color, el sprite va pegado a los de antes: donde
+    coincide con el sprite sin CC que lo precede (y con los CC de en medio),
+    los colores se juntan con OR; si en la linea no hay ninguno sin CC antes,
+    no sale. Como lo pinta openMSX (SpriteConverter, modo 2)."""
+    en_linea = {}
     for k, (y, x, n) in enumerate(lista):
         if y == 0xD8:
             break
         for fila in range(16):
             yy = (y + 1 + fila) & 0xFF
-            por_linea[yy] = por_linea.get(yy, 0) + 1
-            if por_linea[yy] > 8:
+            linea = en_linea.setdefault(yy, [])
+            if len(linea) >= 8:
                 continue
-            c = colores[k][fila] & 0x0F
-            for mitad in range(2):
-                b = vram.v[patrones + (n & 0xFC) * 8 + mitad * 16 + fila]
-                for bit in range(8):
-                    if b & (0x80 >> bit):
-                        xx = x + mitad * 8 + bit
-                        if xx < 256 and (xx, yy) not in capa:
-                            capa[(xx, yy)] = c
+            a = patrones + (n & 0xFC) * 8 + fila
+            linea.append((x, vram.v[a] << 8 | vram.v[a + 16], colores[k][fila]))
+    capa = {}
+    for yy, linea in en_linea.items():
+        primero = next((i for i, (_, _, c) in enumerate(linea) if not c & 0x40), len(linea))
+        for i in range(len(linea) - 1, primero - 1, -1):
+            x, bits, c = linea[i]
+            if not c & 0x0F:
+                continue
+            for p in range(16):
+                xx = x + p
+                if not bits & (0x8000 >> p) or xx >= 256:
+                    continue
+                color = c & 0x0F
+                for x2, bits2, c2 in linea[i + 1:]:
+                    if not c2 & 0x40:
+                        break
+                    if 0 <= xx - x2 < 16 and bits2 & (0x8000 >> (xx - x2)):
+                        color |= c2 & 0x0F
+                capa[(xx, yy)] = color
     return capa
 
 
