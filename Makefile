@@ -169,6 +169,7 @@ imagenes: $(ROM)
 	$(PYIMG) tools/interiores.py
 	$(PYIMG) tools/pasadizos.py web
 	python3 tools/finales.py
+	$(PYIMG) tools/vistas.py
 
 # Los cotejos que dibujan necesitan PIL (en esta maquina, el python de
 # Programs, no el python3 de la Store).
@@ -182,6 +183,7 @@ coteja: $(ROM)
 	$(PYIMG) tools/interiores.py coteja
 	$(PYIMG) tools/pasadizos.py coteja
 	python3 tools/finales.py coteja
+	python3 tools/vistas.py coteja
 
 # La web: las paginas se escriben en markdown y se convierten con md2html.py;
 # la portada la monta make_web.py con lo de tools/contenido_web.py.

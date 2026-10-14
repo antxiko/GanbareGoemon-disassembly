@@ -178,6 +178,32 @@ pixel and the palette.
 *The cell of interior 16 in each area; each number links to the map of its
 passage.*
 
+### The first-person view
+
+![The passage of area 1-0, walked](imagenes/vista_1_0.gif)
+
+*The passage of area 1-0, walked all the way: one frame per move.*
+
+From the current cell and facing direction, `p03:B936` looks for the wall (or the exit) up to 4 cells ahead and, on each side, whether there is wall, opening or corner at each depth. With that, `p02:98BE` draws eight side pieces and then the front one, out of 33 character drawings (`0xB91D`). On top go the frame (`p03:B843`), the compass with the arrow showing where you face (`p03:B9CB`) and the sprites of whatever is in the three cells ahead (`0x9953`).
+
+![The 33 pieces of the view](imagenes/vistas_piezas.png)
+
+*The 33 pieces: top, the front wall 1-4 cells away (0x01-0x04), no wall within 4 (0x00) and the exit (0x1D-0x20); middle, the left side (wall 0x05-0x08, opening 0x09-0x0C, corner 0x0D-0x10); bottom, the right side (0x11-0x1C).*
+
+Each walk starts at (1, 1), picks up what is there, always the nearest item first, and ends at the exit, one frame per move. The pace, 250 ms a frame, is ours: in the game the player sets it. Checked: the view by running `p03:B936` on every cell and direction of all 42 (16,696, identical) and two walks played in openMSX (1-0 and 5-6), identical to the pixel.
+
+| Stage | Area 0 | 1 | 2 | 3 | 4 | 6 |
+|---|---|---|---|---|---|---|
+| 1 | [54](imagenes/vista_1_0.gif) | [74](imagenes/vista_1_1.gif) | [61](imagenes/vista_1_2.gif) | [173](imagenes/vista_1_3.gif) | [89](imagenes/vista_1_4.gif) | [75](imagenes/vista_1_6.gif) |
+| 2 | [18](imagenes/vista_2_0.gif) | [52](imagenes/vista_2_1.gif) | [93](imagenes/vista_2_2.gif) | [57](imagenes/vista_2_3.gif) | [44](imagenes/vista_2_4.gif) | [323](imagenes/vista_2_6.gif) |
+| 3 | [100](imagenes/vista_3_0.gif) | [117](imagenes/vista_3_1.gif) | [166](imagenes/vista_3_2.gif) | [118](imagenes/vista_3_3.gif) | [236](imagenes/vista_3_4.gif) | [148](imagenes/vista_3_6.gif) |
+| 4 | [120](imagenes/vista_4_0.gif) | [78](imagenes/vista_4_1.gif) | [127](imagenes/vista_4_2.gif) | [282](imagenes/vista_4_3.gif) | [47](imagenes/vista_4_4.gif) | [254](imagenes/vista_4_6.gif) |
+| 5 | [57](imagenes/vista_5_0.gif) | [52](imagenes/vista_5_1.gif) | [93](imagenes/vista_5_2.gif) | [229](imagenes/vista_5_3.gif) | [344](imagenes/vista_5_4.gif) | [277](imagenes/vista_5_6.gif) |
+| 6 | [110](imagenes/vista_6_0.gif) | [364](imagenes/vista_6_1.gif) | [112](imagenes/vista_6_2.gif) | [230](imagenes/vista_6_3.gif) | [66](imagenes/vista_6_4.gif) | [159](imagenes/vista_6_6.gif) |
+| 7 | [62](imagenes/vista_7_0.gif) | [272](imagenes/vista_7_1.gif) | [78](imagenes/vista_7_2.gif) | [198](imagenes/vista_7_3.gif) | [313](imagenes/vista_7_4.gif) | [185](imagenes/vista_7_6.gif) |
+
+*Each number is the moves of the walk and links to its GIF.*
+
 ## The password
 
 It is 9 characters. 0x30 is subtracted from each, they are shuffled with the

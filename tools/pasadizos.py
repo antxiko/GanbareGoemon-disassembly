@@ -31,8 +31,6 @@ import glob
 import os
 import sys
 
-from PIL import Image
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import graficos as G  # noqa: E402
 
@@ -114,6 +112,7 @@ def mapa(cart, z, jugador=(1, 1)):
 
 def imagen(cart, z, escala=2):
     v, (x0, y0, an, al) = mapa(cart, z)
+    from PIL import Image
     img = Image.new("RGB", (an, al))
     img.putdata([G.rgb(v.paleta, v.punto(0, x0 + x, y0 + y)) for y in range(al) for x in range(an)])
     return img.resize((an * escala, al * escala), Image.NEAREST)

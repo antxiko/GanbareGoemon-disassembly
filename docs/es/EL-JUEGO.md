@@ -179,6 +179,32 @@ punto y la paleta.
 *La casilla del interior 16 en cada zona; cada número lleva al mapa de su
 pasadizo.*
 
+### La vista en primera persona
+
+![El pasadizo de la zona 1-0, recorrido](../imagenes/vista_1_0.gif)
+
+*El pasadizo de la zona 1-0, recorrido entero: un cuadro por movimiento.*
+
+Desde la casilla donde se está y hacia donde se mira, `p03:B936` busca la pared (o la salida) hasta 4 casillas por delante y, a cada lado, si hay pared, hueco o esquina en cada profundidad. Con eso `p02:98BE` pinta ocho piezas de los lados y luego la de delante, de 33 dibujos de caracteres (`0xB91D`). Encima van el marco (`p03:B843`), la rosa con la flecha hacia donde se mira (`p03:B9CB`) y los sprites de lo que hay en las tres casillas de delante (`0x9953`).
+
+![Las 33 piezas de la vista](../imagenes/vistas_piezas.png)
+
+*Las 33 piezas: arriba, la pared de delante a 1-4 casillas (0x01-0x04), sin pared en 4 (0x00) y la salida (0x1D-0x20); en medio, el lado izquierdo (pared 0x05-0x08, hueco 0x09-0x0C, esquina 0x0D-0x10); abajo, el derecho (0x11-0x1C).*
+
+Cada recorrido empieza en (1, 1), va cogiendo lo que hay, siempre lo más cercano, y acaba en la salida, con un cuadro por movimiento. El ritmo, 250 ms por cuadro, es nuestro: en el juego lo marca el jugador. Cotejado: la vista ejecutando `p03:B936` en todas las casillas y direcciones de los 42 (16 696, iguales) y dos recorridos andados en openMSX (1-0 y 5-6), iguales en cada píxel.
+
+| Fase | Zona 0 | 1 | 2 | 3 | 4 | 6 |
+|---|---|---|---|---|---|---|
+| 1 | [54](../imagenes/vista_1_0.gif) | [74](../imagenes/vista_1_1.gif) | [61](../imagenes/vista_1_2.gif) | [173](../imagenes/vista_1_3.gif) | [89](../imagenes/vista_1_4.gif) | [75](../imagenes/vista_1_6.gif) |
+| 2 | [18](../imagenes/vista_2_0.gif) | [52](../imagenes/vista_2_1.gif) | [93](../imagenes/vista_2_2.gif) | [57](../imagenes/vista_2_3.gif) | [44](../imagenes/vista_2_4.gif) | [323](../imagenes/vista_2_6.gif) |
+| 3 | [100](../imagenes/vista_3_0.gif) | [117](../imagenes/vista_3_1.gif) | [166](../imagenes/vista_3_2.gif) | [118](../imagenes/vista_3_3.gif) | [236](../imagenes/vista_3_4.gif) | [148](../imagenes/vista_3_6.gif) |
+| 4 | [120](../imagenes/vista_4_0.gif) | [78](../imagenes/vista_4_1.gif) | [127](../imagenes/vista_4_2.gif) | [282](../imagenes/vista_4_3.gif) | [47](../imagenes/vista_4_4.gif) | [254](../imagenes/vista_4_6.gif) |
+| 5 | [57](../imagenes/vista_5_0.gif) | [52](../imagenes/vista_5_1.gif) | [93](../imagenes/vista_5_2.gif) | [229](../imagenes/vista_5_3.gif) | [344](../imagenes/vista_5_4.gif) | [277](../imagenes/vista_5_6.gif) |
+| 6 | [110](../imagenes/vista_6_0.gif) | [364](../imagenes/vista_6_1.gif) | [112](../imagenes/vista_6_2.gif) | [230](../imagenes/vista_6_3.gif) | [66](../imagenes/vista_6_4.gif) | [159](../imagenes/vista_6_6.gif) |
+| 7 | [62](../imagenes/vista_7_0.gif) | [272](../imagenes/vista_7_1.gif) | [78](../imagenes/vista_7_2.gif) | [198](../imagenes/vista_7_3.gif) | [313](../imagenes/vista_7_4.gif) | [185](../imagenes/vista_7_6.gif) |
+
+*Cada número son los movimientos del recorrido y lleva a su GIF.*
+
 ## La contraseña
 
 Son 9 caracteres. A cada uno se le resta 0x30, se desordenan con la clave de
