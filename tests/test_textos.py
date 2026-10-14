@@ -78,5 +78,23 @@ class Textos(unittest.TestCase):
                 self.assertIn("`%s`" % e["sitio"], texto, e["clave"])
 
 
+class Finales(unittest.TestCase):
+    """tools/finales.py: el texto de 0xD800 de los cuatro finales, igual al
+    que deja el cartucho ejecutando p01:653C, y la ultima pantalla."""
+
+    def test_el_cartucho_monta_lo_mismo(self):
+        import finales
+        self.assertEqual(finales.coteja(), 0)
+
+    def test_la_ultima_pantalla(self):
+        import finales
+        v, capa = finales.pantalla_de_sprites(G.Cartucho())
+        self.assertTrue(capa)
+        self.assertEqual(set(capa.values()), {3})
+        xs = [x for x, _ in capa]
+        ys = [y for _, y in capa]
+        self.assertTrue(0x60 <= min(xs) and max(xs) < 0xA0 and 0x41 <= min(ys) and max(ys) < 0x81)
+
+
 if __name__ == "__main__":
     unittest.main()

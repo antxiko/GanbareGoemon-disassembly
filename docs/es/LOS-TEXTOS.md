@@ -242,6 +242,28 @@ Siete trozos (`p12:BCD3`). `texto_del_final` (`p01:6546`) elige uno de cuatro fi
 | 2 | sí | no | 1, 3, 6 |
 | 3 | sí | sí | 0, 2, 4, 6 |
 
+Así salen. Cada final se escribe letra a letra desde (0x20, 0x10), una letra cada 4 cuadros, con la música 0x0D (`p01:62E5`). Al acabar la música se borra la pantalla y salen los 16 sprites de `0x65C7`: el kanji 終 («fin»), del color 3, con la música 0x0F (`p01:62AE`). Esa última pantalla es la misma en los cuatro finales. Dibujadas con `tools/finales.py`; el texto montado en 0xD800 se ha cotejado ejecutando `p01:653C` con z80run.
+
+**Final 0**
+
+![final_0](../imagenes/final_0.png)
+
+**Final 1**
+
+![final_1](../imagenes/final_1.png)
+
+**Final 2**
+
+![final_2](../imagenes/final_2.png)
+
+**Final 3**
+
+![final_3](../imagenes/final_3.png)
+
+**La última pantalla**
+
+![final_sprites](../imagenes/final_sprites.png)
+
 ## Las palabras secretas
 
 Dos palabras de cinco letras que se teclean en la pausa (`p03:BE13`) y cuatro claves de nueve que acepta la pantalla de la contraseña (`p03:BE4E`); cada una pone un bit de 0xEF80. Lo que hacen está en [Hallazgos](HALLAZGOS.md).

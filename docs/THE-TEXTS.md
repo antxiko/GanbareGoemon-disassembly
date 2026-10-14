@@ -242,6 +242,28 @@ Seven pieces (`p12:BCD3`). `texto_del_final` (`p01:6546`) picks one of four endi
 | 2 | yes | no | 1, 3, 6 |
 | 3 | yes | yes | 0, 2, 4, 6 |
 
+These are the screens. Each ending is typed out letter by letter from (0x20, 0x10), one letter every 4 frames, with music 0x0D (`p01:62E5`). When the music ends, the screen is cleared and the 16 sprites at `0x65C7` appear: the kanji 終 ("end"), in colour 3, with music 0x0F (`p01:62AE`). That last screen is the same in all four endings. Drawn with `tools/finales.py`; the text assembled at 0xD800 was checked by running `p01:653C` with z80run.
+
+**Ending 0**
+
+![final_0](imagenes/final_0.png)
+
+**Ending 1**
+
+![final_1](imagenes/final_1.png)
+
+**Ending 2**
+
+![final_2](imagenes/final_2.png)
+
+**Ending 3**
+
+![final_3](imagenes/final_3.png)
+
+**The last screen**
+
+![final_sprites](imagenes/final_sprites.png)
+
 ## The secret words
 
 Two five-letter words typed during the pause (`p03:BE13`) and four nine-letter codes the password screen accepts (`p03:BE4E`); each sets a bit of 0xEF80. What they do is in [Findings](FINDINGS.md).

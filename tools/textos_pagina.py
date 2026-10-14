@@ -42,6 +42,8 @@ La tabla de `p12:A9C0` tiene 120 punteros; los seis últimos van a `0xB6D2`, don
         h_fase="## El señor de cada fase\n\nSiete textos (`p02:9E0B`), uno por fase, que escribe `p02:9B9E`. En las fases 0 a 5, si se ha golpeado 8 veces o más a la figura de tipo 0x21 (0xCD60, `p03:A9D3`), sale en su lugar el de `p02:9F92` (ver [Hallazgos](HALLAZGOS.md)).",
         h_final="## El final\n\nSiete trozos (`p12:BCD3`). `texto_del_final` (`p01:6546`) elige uno de cuatro finales por dos cosas: si el vecino (Q*bert o el Game Master) está en la otra ranura (0xEF00) y si se han pasado las 7 fases una a una (0xC26A = 7). Cada final es una lista de trozos (`p01:6589`).",
         h_finales="| Final | Vecino | 7 fases | Trozos |\n|---|---|---|---|",
+        h_pantallas="Así salen. Cada final se escribe letra a letra desde (0x20, 0x10), una letra cada 4 cuadros, con la música 0x0D (`p01:62E5`). Al acabar la música se borra la pantalla y salen los 16 sprites de `0x65C7`: el kanji 終 («fin»), del color 3, con la música 0x0F (`p01:62AE`). Esa última pantalla es la misma en los cuatro finales. Dibujadas con `tools/finales.py`; el texto montado en 0xD800 se ha cotejado ejecutando `p01:653C` con z80run.",
+        pie_final="Final %d", pie_ultima="La última pantalla",
         h_claves="## Las palabras secretas\n\nDos palabras de cinco letras que se teclean en la pausa (`p03:BE13`) y cuatro claves de nueve que acepta la pantalla de la contraseña (`p03:BE4E`); cada una pone un bit de 0xEF80. Lo que hacen está en [Hallazgos](HALLAZGOS.md).",
         cols="| | Japonés | Traducción | Lo pide |\n|---|---|---|---|",
         cols_r="| N.º | Japonés | Traducción | Lo pide |\n|---|---|---|---|",
@@ -79,6 +81,8 @@ The table at `p12:A9C0` has 120 pointers; the last six go to `0xB6D2`, where the
         h_fase="## The lord of each stage\n\nSeven texts (`p02:9E0B`), one per stage, typed out by `p02:9B9E`. In stages 0 to 5, if the type 0x21 figure has been hit 8 times or more (0xCD60, `p03:A9D3`), the one at `p02:9F92` comes out instead (see [Findings](FINDINGS.md)).",
         h_final="## The ending\n\nSeven pieces (`p12:BCD3`). `texto_del_final` (`p01:6546`) picks one of four endings by two things: whether the neighbour (Q*bert or the Game Master) is in the other slot (0xEF00) and whether the 7 stages were cleared one by one (0xC26A = 7). Each ending is a list of pieces (`p01:6589`).",
         h_finales="| Ending | Neighbour | 7 stages | Pieces |\n|---|---|---|---|",
+        h_pantallas="These are the screens. Each ending is typed out letter by letter from (0x20, 0x10), one letter every 4 frames, with music 0x0D (`p01:62E5`). When the music ends, the screen is cleared and the 16 sprites at `0x65C7` appear: the kanji 終 (\"end\"), in colour 3, with music 0x0F (`p01:62AE`). That last screen is the same in all four endings. Drawn with `tools/finales.py`; the text assembled at 0xD800 was checked by running `p01:653C` with z80run.",
+        pie_final="Ending %d", pie_ultima="The last screen",
         h_claves="## The secret words\n\nTwo five-letter words typed during the pause (`p03:BE13`) and four nine-letter codes the password screen accepts (`p03:BE4E`); each sets a bit of 0xEF80. What they do is in [Findings](FINDINGS.md).",
         cols="| | Japanese | Translation | Asked for by |\n|---|---|---|---|",
         cols_r="| No. | Japanese | Translation | Asked for by |\n|---|---|---|---|",
@@ -156,6 +160,10 @@ def pagina(docs):
             filas.append("| %d | %s | %s | %s |" % (f, P["si"] if f & 2 else P["no"], P["si"] if f & 1 else P["no"],
                                                     ", ".join(str(t) for t in trozos)))
         out.append(P["h_finales"] + "\n" + "\n".join(filas))
+        out.append(P["h_pantallas"])
+        for f in range(4):
+            out.append("**%s**\n\n![final_%d](%sfinal_%d.png)" % (P["pie_final"] % f, f, P["img"], f))
+        out.append("**%s**\n\n![final_sprites](%sfinal_sprites.png)" % (P["pie_ultima"], P["img"]))
 
         filas = []
         for i, e in enumerate(grupos["clave"]):
