@@ -190,6 +190,11 @@ web: $(ROM)
 	python3 tools/make_web.py docs/imagenes docs/es/index.html es
 	python3 tools/check_enlaces.py docs
 
+# Los textos: la pagina LOS-TEXTOS / THE-TEXTS y los rotulos de dibujo
+# (docs/imagenes/texto_*.png), sacados de la ROM; luego make web.
+textos: $(ROM)
+	python3 tools/textos.py pagina
+
 clean:
 	rm -f $(WORK)/p*.trace.json $(WORK)/p*.blocks $(WORK)/p*.out.bin \
 	      $(WORK)/goemon_reensamblada.rom $(WORK)/pasmo.err

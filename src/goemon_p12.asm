@@ -692,8 +692,9 @@ DATA_rotulo_52:
 	defb 000h,03fh,05dh,03bh,063h,060h,05dh,0ffh	; afd6  .?].c`].
 
 ; ----------------------------------------------------------------------
-; DATOS rotulo_AFDE: un rotulo con el formato de 0x48F3 en (0x68, 0x50) entre
-;   los rotulos 67 y 68, al que no apunta ninguna de las 120 entradas de
+; DATOS rotulo_AFDE: un rotulo con el formato de 0x48F3 en (0x68, 0x50), entre
+;   los rotulos 0x34 y 0x35 y a la altura del cuarto renglon del 0x34 (que
+;   acaba antes con 0xFF), al que no apunta ninguna de las 120 entradas de
 ;   0xA9C0: nadie lo escribe (8 bytes)
 ;   0xafde..0xafe6  (8 bytes)
 DATA_rotulo_AFDE:
