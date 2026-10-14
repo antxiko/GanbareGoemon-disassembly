@@ -108,9 +108,42 @@ def coteja():
     return fallos
 
 
+def coteja_omsx(ruta=os.path.join(G.RAIZ, "work", "v_final")):
+    """Contra los volcados de tools/lanza_final.sh (el final 1 por su camino):
+    la paleta en los colores que se usan (0, 3 y 14; los que no estan en las
+    listas guardan los de la zona), la pagina 0 del texto y los sprites que
+    salen en las 212 lineas (atributos en 0xF600, colores en 0xF400)."""
+    cart = G.Cartucho()
+    fallos = 0
+    for n in ("texto", "sprites"):
+        p = open(os.path.join(ruta, n + ".pal"), "rb").read()
+        pal = [((p[2 * i] >> 4) & 7, p[2 * i + 1] & 7, p[2 * i] & 7) for i in range(16)]
+        mia = vram_del_final(cart).paleta
+        malos = [i for i in (0, 3, 14) if pal[i] != mia[i]]
+        print("paleta (%s): colores 0, 3 y 14 %s" % (n, "iguales" if not malos else "DISTINTOS %s" % malos))
+        fallos += bool(malos)
+    vr = open(os.path.join(ruta, "texto.vram"), "rb").read()
+    v, _ = pantalla_de_texto(cart, 1)
+    dif = sum(1 for y in range(212) for x in range(256)
+              if v.punto(0, x, y) != ((vr[y * 128 + x // 2] >> 4) if x % 2 == 0 else vr[y * 128 + x // 2] & 15))
+    print("final 1, pagina 0: %d puntos distintos" % dif)
+    vs = open(os.path.join(ruta, "sprites.vram"), "rb").read()
+    w = G.Vram()
+    w.v[:] = vs
+    lista = [tuple(vs[0xF600 + 4 * i:0xF603 + 4 * i]) for i in range(32)]
+    colores = [list(vs[0xF400 + 16 * i:0xF410 + 16 * i]) for i in range(32)]
+    suya = {p: c for p, c in T.sprites(w, lista, colores).items() if p[1] < 212}
+    mia = {p: c for p, c in pantalla_de_sprites(cart)[1].items() if p[1] < 212}
+    print("ultima pantalla: %d puntos de sprite, %s" % (len(suya), "iguales" if suya == mia else "DISTINTOS"))
+    return fallos + (dif != 0) + (suya != mia)
+
+
 def main():
     if sys.argv[1:2] == ["coteja"]:
-        return 1 if coteja() else 0
+        malos = coteja()
+        if os.path.isdir(os.path.join(G.RAIZ, "work", "v_final")):
+            malos += coteja_omsx()
+        return 1 if malos else 0
     cart = G.Cartucho()
     for k in range(4):
         v, n = pantalla_de_texto(cart, k)
