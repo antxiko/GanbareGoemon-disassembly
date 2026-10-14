@@ -50,6 +50,18 @@ están cotejadas contra openMSX (pantalla, caracteres y paleta).
 *Casillas de cada zona (primer byte de su ficha, 0xB7D0); cada número lleva a
 su plano.*
 
+### El plano de la provincia
+
+![El plano de la fase 1](../imagenes/plano_fase_1.gif)
+
+*El plano de la fase 1, Izumo (出雲国), con la marca de Goemon en la zona 0.*
+
+Antes de entrar en cada zona, el juego enseña el plano de la fase (`p02:80D9`, el estado 4, paso 0): las siete zonas en círculo, cada una con el dibujo de su juego de gráficos (`0xB8EC`) en su sitio (`0x81C2`), las flechas del rótulo 0x0C, el castillo y, en el recuadro, el nombre de la provincia en kanji, tres sprites por fase (`0x817D`; en la 7 son dos: el 0xFF del medio no pone sprite, `p02:8173`). La marca de la zona (Goemon, dos sprites) se enciende y se apaga cada 8 cuadros (`p02:823B`). Dibujado con `tools/mapa_fase.py` y cotejado con openMSX en las siete fases, punto a punto (`tools/lanza_mapa.sh`).
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|
+| [1](../imagenes/plano_fase_1.gif) | [2](../imagenes/plano_fase_2.gif) | [3](../imagenes/plano_fase_3.gif) | [4](../imagenes/plano_fase_4.gif) | [5](../imagenes/plano_fase_5.gif) | [6](../imagenes/plano_fase_6.gif) | [7](../imagenes/plano_fase_7.gif) |
+
 ## Una pantalla
 
 Una casilla son **8 × 6 bloques de 4 × 4 caracteres** (p00:5275). Se monta en
@@ -217,3 +229,19 @@ acepta cuatro claves (ver [Hallazgos](HALLAZGOS.md)).
 El señor de la fase dice su texto (0x9E0B, uno por fase) y promete gobernar
 mejor. El juego tiene cuatro finales distintos: están en
 [Hallazgos](HALLAZGOS.md).
+
+### La sala del señor
+
+![La sala del señor en la fase 1](../imagenes/sala_fase_1.gif)
+
+*La sala del señor al acabar la fase 1, entera (unos 18 segundos): entran los criados, se inclinan, se sienta el señor y habla.*
+
+Al acabar cada fase, Goemon llega ante el señor (el estado 0x0B). Entran los criados, se inclinan, aparece el señor y dice su texto letra a letra, una cada 7 cuadros (`p02:9B34`, seis pasos). Para la animación se ejecuta con z80run lo que hace el cartucho en cada cuadro, el sonido y la máquina de estados (`p00:4045`), con `tools/sala.py`. La RAM con la que empieza la escena es un volcado de openMSX (`tools/lanza_sala.sh`); desde ahí, cada cuadro lo calcula el cartucho y lo dibuja nuestro código. Cotejado con una grabación de openMSX: los sprites de los 1080 cuadros y la pantalla cada medio segundo. El texto de cada fase está en [Los textos](LOS-TEXTOS.md).
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|
+| [1](../imagenes/sala_fase_1.gif) | [2](../imagenes/sala_fase_2.gif) | [3](../imagenes/sala_fase_3.gif) | [4](../imagenes/sala_fase_4.gif) | [5](../imagenes/sala_fase_5.gif) | [6](../imagenes/sala_fase_6.gif) | [7](../imagenes/sala_fase_7.gif) |
+
+**El señor enfadado.** Si en la fase se le ha dado 8 veces o más a la figura de tipo 0x21 (0xCD60, `p03:A9D3`), en las fases 1 a 6 el señor dice otro texto (`0x9F92`, `p02:9BBF`) y, mientras tanto, cambia a la pose 0x95 con el efecto 0x20 cada 13 cuadros (`p02:9C3D`). Es la misma escena con 0xCD60 a 8, cotejada con su propia grabación de openMSX. El señor es el mismo en las siete fases: la RAM con la que empieza la sala de la fase 4 solo se diferencia de la de la fase 1 en el número de fase.
+
+![La sala con el señor enfadado](../imagenes/sala_enfadado.gif)

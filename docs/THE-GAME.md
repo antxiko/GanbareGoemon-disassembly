@@ -50,6 +50,18 @@ checked against openMSX (screen, characters and palette).
 *Cells in each area (first byte of its record, 0xB7D0); each number links to
 its map.*
 
+### The province map
+
+![The map of stage 1](imagenes/plano_fase_1.gif)
+
+*The map of stage 1, Izumo (出雲国), with Goemon's marker on area 0.*
+
+Before each area, the game shows the map of the stage (`p02:80D9`, state 4, step 0): the seven areas in a circle, each with the drawing of its graphics set (`0xB8EC`) at its place (`0x81C2`), the arrows of label 0x0C, the castle and, in the box, the province name in kanji, three sprites per stage (`0x817D`; two in stage 7: the 0xFF in the middle puts no sprite, `p02:8173`). The area marker (Goemon, two sprites) blinks every 8 frames (`p02:823B`). Drawn with `tools/mapa_fase.py` and checked against openMSX on all seven stages, pixel by pixel (`tools/lanza_mapa.sh`).
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|
+| [1](imagenes/plano_fase_1.gif) | [2](imagenes/plano_fase_2.gif) | [3](imagenes/plano_fase_3.gif) | [4](imagenes/plano_fase_4.gif) | [5](imagenes/plano_fase_5.gif) | [6](imagenes/plano_fase_6.gif) | [7](imagenes/plano_fase_7.gif) |
+
 ## One screen
 
 A cell is **8 × 6 blocks of 4 × 4 characters** (p00:5275). It is built at
@@ -216,3 +228,19 @@ same screen accepts four keywords (see [Findings](FINDINGS.md)).
 The stage's lord says his text (0x9E0B, one per stage) and promises to rule
 better. The game has four different endings: they are in
 [Findings](FINDINGS.md).
+
+### The lord's hall
+
+![The lord's hall in stage 1](imagenes/sala_fase_1.gif)
+
+*The lord's hall at the end of stage 1, in full (about 18 seconds): the retainers come in, bow, the lord sits down and speaks.*
+
+At the end of each stage, Goemon comes before the lord (state 0x0B). The retainers come in, bow, the lord appears and says his text one letter every 7 frames (`p02:9B34`, six steps). For the animation, what the cartridge does every frame, the sound and the state machine (`p00:4045`), is run with z80run, in `tools/sala.py`. The RAM the scene starts with is an openMSX dump (`tools/lanza_sala.sh`); from there, every frame is worked out by the cartridge and drawn by our code. Checked against an openMSX recording: the sprites of all 1080 frames and the screen every half second. Each stage's text is in [The texts](THE-TEXTS.md).
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|
+| [1](imagenes/sala_fase_1.gif) | [2](imagenes/sala_fase_2.gif) | [3](imagenes/sala_fase_3.gif) | [4](imagenes/sala_fase_4.gif) | [5](imagenes/sala_fase_5.gif) | [6](imagenes/sala_fase_6.gif) | [7](imagenes/sala_fase_7.gif) |
+
+**The angry lord.** If the type 0x21 figure has been hit 8 times or more during the stage (0xCD60, `p03:A9D3`), in stages 1 to 6 the lord says a different text (`0x9F92`, `p02:9BBF`) and meanwhile switches to pose 0x95 with sound effect 0x20 every 13 frames (`p02:9C3D`). It is the same scene with 0xCD60 set to 8, checked against its own openMSX recording. The lord is the same in all seven stages: the RAM the stage 4 hall starts with differs from stage 1's only in the stage number.
+
+![The hall with the angry lord](imagenes/sala_enfadado.gif)
