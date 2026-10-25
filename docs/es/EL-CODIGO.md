@@ -109,3 +109,30 @@ silencio, y detrás ya empieza el efecto 0x20 (0x663A).
 
 La densidad: **42,5 %** de las 14.355 instrucciones llevan comentario, y las
 1.678 rutinas pasan todas del 10 % (`make densidad`).
+
+## Código compartido con otros cartuchos de Konami
+
+Este desensamblado se ha comparado, instrucción por instrucción, con
+todos los demás de Konami de la serie. Cuenta un bloque cuando las
+mismas instrucciones, al menos seis desde una etiqueta hasta su `ret`
+o su salto sin condición, están en los dos cartuchos; las direcciones
+no se miran, porque cambian de un cartucho a otro. De los otros 57,
+**43** tienen al menos un bloque en común con este; estos son los
+que más comparten:
+
+| Cartucho | Bloques | Instrucciones | Por ejemplo (aquí = allí) |
+|---|---:|---:|---|
+| [Vampire Killer](https://antxiko.github.io/VampireKiller-disassembly/es/) | 90 | 1.495 | `hmmc` (p00:47B2) |
+| [King Kong 2: Yomigaeru Densetsu](https://antxiko.github.io/KingKong2-disassembly/es/) | 65 | 970 | `lmmm` (p00:4803) |
+| [The Treasure of Usas](https://antxiko.github.io/TreasureOfUsas-disassembly/es/) | 62 | 987 | `hmmc` (p00:47B2) |
+| [Hinotori](https://antxiko.github.io/Hinotori-disassembly/es/) | 55 | 878 | `lmmm` (p00:4803) |
+| [Metal Gear](https://antxiko.github.io/MetalGear-disassembly/es/) | 38 | 638 | `lmmm` (p00:4803) = `copia_logica` |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/es/) | 36 | 547 | `hmmc` (p00:47B2) = `rectangulo_desde_ram` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/es/) | 30 | 500 | `hmmc` (p00:47B2) = `vdp_hmmc` |
+| [The Maze of Galious](https://antxiko.github.io/MazeOfGalious-disassembly/es/) | 23 | 312 | `cuadro_del_efecto` (p10:6454) = `paso_de_envolvente` |
+| [Hai no Majutsushi - Mahjong 2](https://antxiko.github.io/Majutsushi-disassembly/es/) | 23 | 241 | `rle_con_destino` (p00:4533) = `vuelca_lista_vram` |
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/es/) | 18 | 254 | `hmmv` (p00:4732) = `borra_bloque_vram` |
+
+La matriz entera, los 58 cartuchos entre sí, está en
+[Las rutinas](https://antxiko.github.io/MSX-disassembly-database/es/LAS-RUTINAS.html) de la base de datos de la
+serie, con el método y el programa que la mide.

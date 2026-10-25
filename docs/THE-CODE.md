@@ -111,3 +111,30 @@ and right behind it effect 0x20 already begins (0x663A).
 
 Density: **42.5%** of the 14,355 instructions carry a comment, and all 1,678
 routines are above 10 % (`make densidad`).
+
+## Code shared with other Konami cartridges
+
+This disassembly has been compared, instruction by instruction, with
+every other Konami one in the series. A block counts when the same
+instructions, at least six of them from a label to its `ret` or its
+unconditional jump, are in both cartridges; the addresses are left
+aside, because they change from one cartridge to the next. Of the
+other 57, **43** have at least one block in common with this one;
+these are the ones that share the most:
+
+| Cartridge | Blocks | Instructions | For example (here = there) |
+|---|---:|---:|---|
+| [Vampire Killer](https://antxiko.github.io/VampireKiller-disassembly/) | 90 | 1,495 | `hmmc` (p00:47B2) |
+| [King Kong 2: Yomigaeru Densetsu](https://antxiko.github.io/KingKong2-disassembly/) | 65 | 970 | `lmmm` (p00:4803) |
+| [The Treasure of Usas](https://antxiko.github.io/TreasureOfUsas-disassembly/) | 62 | 987 | `hmmc` (p00:47B2) |
+| [Hinotori](https://antxiko.github.io/Hinotori-disassembly/) | 55 | 878 | `lmmm` (p00:4803) |
+| [Metal Gear](https://antxiko.github.io/MetalGear-disassembly/) | 38 | 638 | `lmmm` (p00:4803) = `copia_logica` |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/) | 36 | 547 | `hmmc` (p00:47B2) = `rectangulo_desde_ram` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/) | 30 | 500 | `hmmc` (p00:47B2) = `vdp_hmmc` |
+| [The Maze of Galious](https://antxiko.github.io/MazeOfGalious-disassembly/) | 23 | 312 | `cuadro_del_efecto` (p10:6454) = `paso_de_envolvente` |
+| [Hai no Majutsushi - Mahjong 2](https://antxiko.github.io/Majutsushi-disassembly/) | 23 | 241 | `rle_con_destino` (p00:4533) = `vuelca_lista_vram` |
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/) | 18 | 254 | `hmmv` (p00:4732) = `borra_bloque_vram` |
+
+The whole matrix, the 58 cartridges against each other, is on
+[The routines](https://antxiko.github.io/MSX-disassembly-database/THE-ROUTINES.html) in the series database, along
+with the method and the program that measures it.
